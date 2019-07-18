@@ -14,10 +14,15 @@ void main() {
 """;
 
     var tr = new Transaction();
+    tr.date = DateTime(2019, 4, 14);
+    tr.flag = TransactionFlag.OKAY;
+    tr.payee = 'Cat Powder';
     Posting.Simple(tr, "Expenses:Mystery:CatPowder", "1.5", "EUR");
     Posting.Simple(tr, "Assets:Savings", null, null);
 
     final parser = Parser();
-    expect(parser.parse(input), [tr]);
+    var actual = parser.parse(input);
+    expect(actual.length, 1);
+    expect(actual[0].toString(), tr.toString());
   });
 }

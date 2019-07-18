@@ -2,9 +2,15 @@ library ledger;
 
 import 'dart:convert';
 
+import 'package:petitparser/petitparser.dart';
+
 class Account {
   String value;
   Account(this.value);
+
+  String toString() {
+    return value;
+  }
 }
 
 class Amount {
@@ -12,12 +18,17 @@ class Amount {
   String currency;
 
   Amount(this.number, this.currency);
+
+  String toString() {
+    return number.toString() + ' ' + currency;
+  }
 }
 
 class Posting {
   Account account;
   Amount amount;
 
+  Posting(this.account, this.amount);
   Posting.Simple(
     Transaction tr,
     String account,
@@ -32,6 +43,10 @@ class Posting {
       tr.postings.add(this);
     }
   }
+
+  String toString() {
+    return [account.toString(), amount?.toString()].join(' ');
+  }
 }
 
 enum TransactionFlag {
@@ -45,37 +60,112 @@ class Transaction {
   TransactionFlag flag;
   List<String> comments = [];
   List<Posting> postings = [];
+
+  String toString() {
+    var d = date.toIso8601String().substring(0, 10);
+    var header = d + ' ' + flag.toString() + ' ' + payee + '\n';
+    return header + postings.map((p) => p.toString()).join('\n');
+  }
 }
+
+class DateGrammarDefinition extends GrammarDefinition {
+  const DateGrammarDefinition();
+
+  start() => date().token().map((t) {
+        var val = t.value as List<dynamic>;
+        return DateTime(val[0], val[2], val[4]);
+      });
+
+  date() =>
+      digit().times(4).flatten().map(int.parse) &
+      char('-').map((t) => ' ').trim() &
+      digit().times(2).flatten().map(int.parse) &
+      char('-').map((t) => ' ').trim() &
+      digit().times(2).flatten().map(int.parse);
+}
+
+class DateParser extends GrammarParser {
+  DateParser() : super(const DateGrammarDefinition());
+}
+
+class TransactionHeaderGrammarDefinition extends GrammarDefinition {
+  start() => (DateParser() & space() & flag() & space() & payee()).end();
+  flag() => char('*') | char('!');
+  payee() => any().plus().flatten();
+  space() => char(' ');
+}
+
+class AccountGrammarDefinition extends GrammarDefinition {
+  const AccountGrammarDefinition();
+
+  start() => (component().separatedBy(sep())).flatten().map((a) => Account(a));
+  component() => word().plus();
+  sep() => char(':');
+}
+
+class AccountParser extends GrammarParser {
+  AccountParser() : super(const AccountGrammarDefinition());
+}
+
+class PostingAccountOnlyGrammarDefinition extends GrammarDefinition {
+  start() => ((indent() & AccountParser()).end())
+      .token()
+      .map((t) => Posting(t.value[1] as Account, null));
+  indent() => char(' ').times(2).token();
+}
+
+class PostingGrammarDefinition extends GrammarDefinition {
+  start() => (indent() & AccountParser() & indent() & amount())
+      .end()
+      .token()
+      .map((t) => Posting(t.value[1], t.value[3]));
+  amount() => (number() & char(' ') & currency())
+      .token()
+      .map((t) => Amount(double.parse(t.value[0]), t.value[2] as String));
+  number() => digit().separatedBy(decimal()).flatten();
+  currency() => word().plus().flatten();
+  decimal() => char('.');
+  indent() => char(' ').times(2).token();
+}
+
+/*
+class TransactionGrammarDefinition extends GrammarDefinition {
+  newline() => char('\n') | (char('\r') & char('\r\n'));
+  header() => TransactionHeaderGrammarDefinition().build();
+  comment() => (indent() & char(';') & any().plus().flatten().trim())
+      .token()
+      .map((t) => t.value[2] as String);
+  indent() => char(' ').times(2).token();
+
+  start() => header() & newline() &
+}
+*/
 
 class Parser {
   List<Transaction> parse(String data) {
     var transactions = <Transaction>[];
 
-    var PAT_TRANSACTION = RegExp(r'(\d{4,}.+(?:\n[^\S\n\r]{1,}.+)+)');
-    var PAT_TRANSACTION_DATA = RegExp(
-        r'(?P<year>\d{4})[/|-](?P<month>\d{2})[/|-](?P<day>\d{2})(?:=(?P<year_aux>\d{4})[/|-](?P<month_aux>\d{2})[/|-](?P<day_aux>\d{2}))? (?P<state>[\*|!])?[ ]?(\((?P<code>[^\)].+)\) )?(?P<payee>.+)');
-    var PAT_COMMENT = RegExp(r'[^\S\n\r]{1,};(.+)');
-
-    var PAT_POSTING = RegExp(
-        r'\s{2}(?P<account>[\w:]+)\s{2,}(?P<units>[+-]?[\d.]+)\s(?P<commodity>[\w\"]+)$');
-    var PAT_ACCOUNT_TOTAL_COST = RegExp(
-        r'\s{2}(?P<account>[\w:]+)\s{2,}(?P<units>[+-]?[\d.]+)\s(?P<commodity>[\w\"]+)\s@@\s(?P<cost_total_units>[+-]?[\d.]+)\s(?P<cost_commodity>[\w\"]+)$');
-    var PAT_ACCOUNT_PER_COST = RegExp(
-        r'\s{2}(?P<account>[\w:]+)\s{2,}(?P<units>[+-]?[\d.]+)\s(?P<commodity>[\w\"]+)\s@\s(?P<cost_units>[+-]?[\d.]+)\s(?P<cost_commodity>[\w\"]+)$');
-    var PAT_ACCOUNT_ONLY = RegExp(r'[\s]{2}(?P<account>[\w:]+)$');
+    var tr_header = TransactionHeaderGrammarDefinition().build();
+    var posting = PostingGrammarDefinition().build();
+    var posting_account_only = PostingAccountOnlyGrammarDefinition().build();
 
     Transaction tr;
+    print("Here we go");
     LineSplitter.split(data).forEach((line) {
-      var match = PAT_TRANSACTION_DATA.firstMatch(line);
-      if (match != null) {
-        tr = Transaction();
-        tr.date = DateTime(
-          int.parse(match.namedGroup("year")),
-          int.parse(match.namedGroup("month")),
-          int.parse(match.namedGroup("day")),
-        );
+      print("Trying to parse: " + line);
+      Result<dynamic> result;
 
-        var state = match.namedGroup("state");
+      result = tr_header.parse(line);
+      if (result.isSuccess) {
+        print("tr_header: " + result.value.toString());
+
+        if (tr != null) {
+          transactions.add(tr);
+        }
+        tr = Transaction();
+        tr.date = result.value[0];
+
+        var state = result.value[2];
         switch (state) {
           case "*":
             tr.flag = TransactionFlag.OKAY;
@@ -85,33 +175,41 @@ class Parser {
             break;
         }
 
-        tr.payee = match.namedGroup("payee");
+        tr.payee = result.value[4];
         return;
       }
+
+      result = posting.parse(line);
+      if (result.isSuccess) {
+        print("posting: " + result.value.toString());
+
+        var posting = result.value as Posting;
+        tr.postings.add(posting);
+        return;
+      }
+
+      result = posting_account_only.parse(line);
+      if (result.isSuccess) {
+        print("posting_account_only: " + result.value.toString());
+
+        var posting = result.value as Posting;
+        tr.postings.add(posting);
+        return;
+      }
+
+      /*
 
       match = PAT_COMMENT.firstMatch(line);
       if (match != null) {
         tr.comments.add(match.group(1));
         return;
       }
-
-      match = PAT_POSTING.firstMatch(line);
-      if (match != null) {
-        Posting.Simple(
-          tr,
-          match.namedGroup('account'),
-          match.namedGroup('units'),
-          match.namedGroup('commodity'),
-        );
-        return;
-      }
-
-      match = PAT_ACCOUNT_ONLY.firstMatch(line);
-      if (match != null) {
-        Posting.Simple(tr, match.namedGroup('account'), null, null);
-        return;
-      }
+      */
     });
+
+    if (tr != null) {
+      transactions.add(tr);
+    }
     return transactions;
   }
 }
