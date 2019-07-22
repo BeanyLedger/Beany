@@ -130,26 +130,22 @@ class PostingGrammarDefinition extends GrammarDefinition {
   indent() => char(' ').times(2).token();
 }
 
-/*
-class TransactionGrammarDefinition extends GrammarDefinition {
-  newline() => char('\n') | (char('\r') & char('\r\n'));
-  header() => TransactionHeaderGrammarDefinition().build();
-  comment() => (indent() & char(';') & any().plus().flatten().trim())
+class TransactionCommentDefinition extends GrammarDefinition {
+  start() => (indent() & char(';') & any().trim())
+      .end()
       .token()
-      .map((t) => t.value[2] as String);
+      .map((t) => t.value[2]);
   indent() => char(' ').times(2).token();
-
-  start() => header() & newline() &
 }
-*/
 
 class Parser {
   List<Transaction> parse(String data) {
     var transactions = <Transaction>[];
 
-    var tr_header = TransactionHeaderGrammarDefinition().build();
+    var trHeader = TransactionHeaderGrammarDefinition().build();
     var posting = PostingGrammarDefinition().build();
-    var posting_account_only = PostingAccountOnlyGrammarDefinition().build();
+    var postingAccountOnly = PostingAccountOnlyGrammarDefinition().build();
+    var transactionComment = TransactionCommentDefinition().build();
 
     Transaction tr;
     print("Here we go");
@@ -157,10 +153,8 @@ class Parser {
       print("Trying to parse: " + line);
       Result<dynamic> result;
 
-      result = tr_header.parse(line);
+      result = trHeader.parse(line);
       if (result.isSuccess) {
-        print("tr_header: " + result.value.toString());
-
         if (tr != null) {
           transactions.add(tr);
         }
@@ -183,30 +177,23 @@ class Parser {
 
       result = posting.parse(line);
       if (result.isSuccess) {
-        print("posting: " + result.value.toString());
-
         var posting = result.value as Posting;
         tr.postings.add(posting);
         return;
       }
 
-      result = posting_account_only.parse(line);
+      result = postingAccountOnly.parse(line);
       if (result.isSuccess) {
-        print("posting_account_only: " + result.value.toString());
-
         var posting = result.value as Posting;
         tr.postings.add(posting);
         return;
       }
 
-      /*
-
-      match = PAT_COMMENT.firstMatch(line);
-      if (match != null) {
-        tr.comments.add(match.group(1));
+      result = transactionComment.parse(line);
+      if (result.isSuccess) {
+        tr.comments.add(result.value as String);
         return;
       }
-      */
     });
 
     if (tr != null) {

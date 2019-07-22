@@ -9,6 +9,7 @@ void main() {
 
   test('Simple Transaction', () {
     var input = """2019-04-14 * Cat Powder
+  ; Help
   Expenses:Mystery:CatPowder  1.5 EUR
   Assets:Savings
 """;
@@ -19,6 +20,7 @@ void main() {
     tr.payee = 'Cat Powder';
     Posting.simple(tr, "Expenses:Mystery:CatPowder", "1.5", "EUR");
     Posting.simple(tr, "Assets:Savings", null, null);
+    tr.comments.add("Help");
 
     final parser = Parser();
     var actual = parser.parse(input);
