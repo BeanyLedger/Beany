@@ -46,14 +46,20 @@ class Posting {
 
   String toString() {
     return amount != null
-        ? account.toString() + ' ' + amount.toString()
-        : account.toString();
+        ? "  " + account.toString() + "  " + amount.toString()
+        : "  " + account.toString();
   }
 }
 
-enum TransactionFlag {
-  OKAY,
-  WARNING,
+class TransactionFlag {
+  final String value;
+  const TransactionFlag(this.value);
+
+  static const TransactionFlag Okay = TransactionFlag('*');
+  static const TransactionFlag Warning = TransactionFlag('!');
+
+  bool isValid() => value == '*' || value == '!';
+  String toString() => value;
 }
 
 class Transaction {
@@ -66,7 +72,18 @@ class Transaction {
   String toString() {
     var d = date.toIso8601String().substring(0, 10);
     var header = d + ' ' + flag.toString() + ' ' + payee + '\n';
-    return header + postings.map((p) => p.toString()).join('\n');
+
+    var output = header;
+    if (comments.length != 0) {
+      output += comments.map((c) => '  ; ' + c).join('\n');
+      output += '\n';
+    }
+
+    if (postings.length != 0) {
+      output += postings.map((p) => p.toString()).join('\n');
+      output += '\n';
+    }
+    return output;
   }
 }
 
@@ -92,7 +109,7 @@ class DateParser extends GrammarParser {
 
 class TransactionHeaderGrammarDefinition extends GrammarDefinition {
   start() => (DateParser() & space() & flag() & space() & payee()).end();
-  flag() => char('*') | char('!');
+  flag() => (char('*') | char('!')).map((f) => TransactionFlag(f));
   payee() => any().plus().flatten();
   space() => char(' ');
 }
@@ -131,7 +148,7 @@ class PostingGrammarDefinition extends GrammarDefinition {
 }
 
 class TransactionCommentDefinition extends GrammarDefinition {
-  start() => (indent() & char(';') & any().trim())
+  start() => (indent() & char(';') & any().plus().flatten().trim())
       .end()
       .token()
       .map((t) => t.value[2]);
@@ -160,17 +177,7 @@ class Parser {
         }
         tr = Transaction();
         tr.date = result.value[0];
-
-        var state = result.value[2];
-        switch (state) {
-          case "*":
-            tr.flag = TransactionFlag.OKAY;
-            break;
-          case "!":
-            tr.flag = TransactionFlag.WARNING;
-            break;
-        }
-
+        tr.flag = result.value[2];
         tr.payee = result.value[4];
         return;
       }
