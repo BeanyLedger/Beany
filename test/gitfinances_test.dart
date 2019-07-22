@@ -17,8 +17,8 @@ void main() {
     tr.date = DateTime(2019, 4, 14);
     tr.flag = TransactionFlag.OKAY;
     tr.payee = 'Cat Powder';
-    Posting.Simple(tr, "Expenses:Mystery:CatPowder", "1.5", "EUR");
-    Posting.Simple(tr, "Assets:Savings", null, null);
+    Posting.simple(tr, "Expenses:Mystery:CatPowder", "1.5", "EUR");
+    Posting.simple(tr, "Assets:Savings", null, null);
 
     final parser = Parser();
     var actual = parser.parse(input);

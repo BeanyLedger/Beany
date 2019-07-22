@@ -29,7 +29,7 @@ class Posting {
   Amount amount;
 
   Posting(this.account, this.amount);
-  Posting.Simple(
+  Posting.simple(
     Transaction tr,
     String account,
     String number,
