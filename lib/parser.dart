@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:decimal/decimal.dart';
 import 'package:petitparser/petitparser.dart';
 
 import './core.dart';
@@ -57,7 +58,7 @@ class PostingGrammarDefinition extends GrammarDefinition {
       .map((t) => Posting(t.value[1], t.value[3]));
   amount() => (number() & char(' ') & currency())
       .token()
-      .map((t) => Amount(double.parse(t.value[0]), t.value[2] as String));
+      .map((t) => Amount(Decimal.parse(t.value[0]), t.value[2] as String));
   number() => digit().separatedBy(decimal()).flatten();
   currency() => word().plus().flatten();
   decimal() => char('.');

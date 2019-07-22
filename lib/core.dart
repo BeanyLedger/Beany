@@ -1,3 +1,5 @@
+import 'package:decimal/decimal.dart';
+
 class Account {
   String value;
   Account(this.value);
@@ -8,7 +10,7 @@ class Account {
 }
 
 class Amount {
-  double number; // FIXME: Use something with proper precission
+  Decimal number;
   String currency;
 
   Amount(this.number, this.currency);
@@ -31,7 +33,7 @@ class Posting {
   ) {
     this.account = Account(account);
     if (number != null) {
-      this.amount = Amount(double.parse(number), currency);
+      this.amount = Amount(Decimal.parse(number), currency);
     }
     if (tr != null) {
       tr.postings.add(this);
