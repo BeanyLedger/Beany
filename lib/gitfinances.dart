@@ -45,7 +45,9 @@ class Posting {
   }
 
   String toString() {
-    return [account.toString(), amount?.toString()].join(' ');
+    return amount != null
+        ? account.toString() + ' ' + amount.toString()
+        : account.toString();
   }
 }
 
