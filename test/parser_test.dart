@@ -1,4 +1,5 @@
-import 'package:gitfinances/gitfinances.dart';
+import 'package:gitfinances/core.dart';
+import 'package:gitfinances/parser.dart';
 import 'package:test/test.dart';
 
 void main() {
