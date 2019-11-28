@@ -1,4 +1,4 @@
-# gitfinances
+# gringotts
 
 A new Flutter package project.
 

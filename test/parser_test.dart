@@ -1,5 +1,5 @@
-import 'package:gitfinances/core.dart';
-import 'package:gitfinances/parser.dart';
+import 'package:gringotts/core.dart';
+import 'package:gringotts/parser.dart';
 import 'package:test/test.dart';
 
 void main() {
