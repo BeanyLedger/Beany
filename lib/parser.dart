@@ -28,7 +28,7 @@ class DateParser extends GrammarParser {
 class TransactionHeaderGrammarDefinition extends GrammarDefinition {
   start() => (DateParser() & space() & flag() & space() & payee()).end();
   flag() => (char('*') | char('!')).map((f) => TransactionFlag(f));
-  payee() => any().plus().flatten();
+  payee() => char('"') | any().plus().flatten() | char('"');
   space() => char(' ');
 }
 

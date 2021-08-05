@@ -20,6 +20,15 @@ class Amount {
   }
 }
 
+class Cost {
+  Decimal number;
+  String currency;
+  DateTime date;
+  String label;
+
+  Cost(this.number, this.currency, this.date, this.label);
+}
+
 class Posting {
   Account account;
   Amount amount;
@@ -64,6 +73,7 @@ class Transaction {
   TransactionFlag flag;
   List<String> comments = [];
   List<Posting> postings = [];
+  List<String> tags = [];
 
   String toString() {
     var d = date.toIso8601String().substring(0, 10);
