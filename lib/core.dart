@@ -1,17 +1,23 @@
 import 'package:decimal/decimal.dart';
 
 class Account {
-  String value;
+  final String value;
   Account(this.value);
 
   String toString() {
     return value;
   }
+
+  @override
+  bool operator ==(Object t) {
+    if (t is! Account) return false;
+    return value == t.value;
+  }
 }
 
 class Amount {
-  Decimal number;
-  String currency;
+  final Decimal number;
+  final String currency;
 
   Amount(this.number, this.currency);
 
@@ -21,27 +27,27 @@ class Amount {
 }
 
 class Cost {
-  Decimal number;
-  String currency;
-  DateTime date;
-  String label;
+  final Decimal number;
+  final String currency;
+  final DateTime date;
+  final String label;
 
   Cost(this.number, this.currency, this.date, this.label);
 }
 
 class Posting {
-  Account account;
-  Amount amount;
+  late Account account;
+  Amount? amount;
 
   Posting(this.account, this.amount);
   Posting.simple(
-    Transaction tr,
+    Transaction? tr,
     String account,
-    String number,
-    String currency,
+    String? number,
+    String? currency,
   ) {
     this.account = Account(account);
-    if (number != null) {
+    if (number != null && currency != null) {
       this.amount = Amount(Decimal.parse(number), currency);
     }
     if (tr != null) {
@@ -68,16 +74,19 @@ class TransactionFlag {
 }
 
 class Transaction {
-  DateTime date;
-  String payee;
-  TransactionFlag flag;
+  final DateTime date;
+  final String payee;
+  final TransactionFlag flag;
+
   List<String> comments = [];
   List<Posting> postings = [];
   List<String> tags = [];
 
+  Transaction(this.date, this.flag, this.payee);
+
   String toString() {
     var d = date.toIso8601String().substring(0, 10);
-    var header = d + ' ' + flag.toString() + ' ' + payee + '\n';
+    var header = d + ' ' + flag.toString() + ' "' + payee + '"\n';
 
     var output = header;
     if (comments.length != 0) {
@@ -90,5 +99,11 @@ class Transaction {
       output += '\n';
     }
     return output;
+  }
+
+  @override
+  bool operator ==(Object t) {
+    if (t is! Transaction) return false;
+    return toString() == t.toString();
   }
 }

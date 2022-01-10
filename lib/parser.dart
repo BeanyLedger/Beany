@@ -5,124 +5,101 @@ import 'package:petitparser/petitparser.dart';
 
 import './core.dart';
 
-class DateGrammarDefinition extends GrammarDefinition {
-  const DateGrammarDefinition();
+final _year = digit().times(4).flatten().map(int.parse);
+final _month = digit().times(2).flatten().map(int.parse);
+final _day = digit().times(2).flatten().map(int.parse);
+final _dateSep = char('-');
+final _date = _year & _dateSep & _month & _dateSep & _day;
+final dateParser = _date.token().map((t) {
+  var val = t.value;
+  return DateTime(val[0], val[2], val[4]);
+});
 
-  start() => date().token().map((t) {
-        var val = t.value as List<dynamic>;
-        return DateTime(val[0], val[2], val[4]);
-      });
+// Check if the DateTime contains a valid date!
 
-  date() =>
-      digit().times(4).flatten().map(int.parse) &
-      char('-').map((t) => ' ').trim() &
-      digit().times(2).flatten().map(int.parse) &
-      char('-').map((t) => ' ').trim() &
-      digit().times(2).flatten().map(int.parse);
-}
+final _flag = (char('*') | char('!')).map((f) => TransactionFlag(f));
 
-class DateParser extends GrammarParser {
-  DateParser() : super(const DateGrammarDefinition());
-}
+final _quote = char('"');
+final _space = char(' ');
 
-class TransactionHeaderGrammarDefinition extends GrammarDefinition {
-  start() => (DateParser() & space() & flag() & space() & payee()).end();
-  flag() => (char('*') | char('!')).map((f) => TransactionFlag(f));
-  payee() => char('"') | any().plus().flatten() | char('"');
-  space() => char(' ');
-}
+final _quotedString = _quote & pattern('^"').star().flatten() & _quote;
+final quotedStringParser = _quotedString.token().map((t) => t.value[1]);
 
-class AccountGrammarDefinition extends GrammarDefinition {
-  const AccountGrammarDefinition();
+final _trHeader = (dateParser & _space & _flag & _space & quotedStringParser);
+final trHeaderParser = _trHeader.token().map((token) {
+  var v = token.value;
+  return Transaction(v[0], v[2], v[4]);
+});
 
-  start() => (component().separatedBy(sep())).flatten().map((a) => Account(a));
-  component() => word().plus();
-  sep() => char(':');
-}
+final _accountComponent = word().plus();
+final _accountSep = char(':');
+final _account = _accountComponent.separatedBy(_accountSep).flatten();
+final accountParser = _account.map((a) => Account(a));
 
-class AccountParser extends GrammarParser {
-  AccountParser() : super(const AccountGrammarDefinition());
-}
+final _indent = _space.times(2).flatten();
+final _postingAccountOnly = ((_indent & accountParser).end())
+    .token()
+    .map((t) => Posting(t.value[1] as Account, null));
 
-class PostingAccountOnlyGrammarDefinition extends GrammarDefinition {
-  start() => ((indent() & AccountParser()).end())
-      .token()
-      .map((t) => Posting(t.value[1] as Account, null));
-  indent() => char(' ').times(2).token();
-}
+final _decimal = char('.');
+final _number = digit().separatedBy(_decimal).flatten();
+final _currency = word().plus().flatten();
 
-class PostingGrammarDefinition extends GrammarDefinition {
-  start() => (indent() & AccountParser() & indent() & amount())
-      .end()
-      .token()
-      .map((t) => Posting(t.value[1], t.value[3]));
-  amount() => (number() & char(' ') & currency())
-      .token()
-      .map((t) => Amount(Decimal.parse(t.value[0]), t.value[2] as String));
-  number() => digit().separatedBy(decimal()).flatten();
-  currency() => word().plus().flatten();
-  decimal() => char('.');
-  indent() => char(' ').times(2).token();
-}
+final _amount = (_number & char(' ') & _currency)
+    .token()
+    .map((t) => Amount(Decimal.parse(t.value[0]), t.value[2] as String));
 
-class TransactionCommentDefinition extends GrammarDefinition {
-  start() => (indent() & char(';') & any().plus().flatten().trim())
-      .end()
-      .token()
-      .map((t) => t.value[2]);
-  indent() => char(' ').times(2).token();
-}
+final _posting = (_indent & accountParser & _indent & _amount)
+    .end()
+    .token()
+    .map((t) => Posting(t.value[1], t.value[3]));
+
+final _trComment = (_indent & char(';') & any().plus().flatten().trim())
+    .end()
+    .token()
+    .map((t) => t.value[2])
+    .cast<String>();
 
 class Parser {
   List<Transaction> parse(String data) {
     var transactions = <Transaction>[];
 
-    var trHeader = TransactionHeaderGrammarDefinition().build();
-    var posting = PostingGrammarDefinition().build();
-    var postingAccountOnly = PostingAccountOnlyGrammarDefinition().build();
-    var transactionComment = TransactionCommentDefinition().build();
-
-    Transaction tr;
+    Transaction? tr;
     print("Here we go");
     LineSplitter.split(data).forEach((line) {
       print("Trying to parse: " + line);
-      Result<dynamic> result;
 
-      result = trHeader.parse(line);
-      if (result.isSuccess) {
+      var trHeaderResult = trHeaderParser.parse(line);
+      if (trHeaderResult.isSuccess) {
         if (tr != null) {
-          transactions.add(tr);
+          transactions.add(tr!);
         }
-        tr = Transaction();
-        tr.date = result.value[0];
-        tr.flag = result.value[2];
-        tr.payee = result.value[4];
+
+        tr = trHeaderResult.value;
         return;
       }
 
-      result = posting.parse(line);
-      if (result.isSuccess) {
-        var posting = result.value as Posting;
-        tr.postings.add(posting);
+      var postingResult = _posting.parse(line);
+      if (postingResult.isSuccess) {
+        tr!.postings.add(postingResult.value);
         return;
       }
 
-      result = postingAccountOnly.parse(line);
-      if (result.isSuccess) {
-        var posting = result.value as Posting;
-        tr.postings.add(posting);
+      var postingAccOnlyResult = _postingAccountOnly.parse(line);
+      if (postingAccOnlyResult.isSuccess) {
+        tr!.postings.add(postingAccOnlyResult.value);
         return;
       }
 
-      result = transactionComment.parse(line);
-      if (result.isSuccess) {
-        tr.comments.add(result.value as String);
+      var commentResult = _trComment.parse(line);
+      if (commentResult.isSuccess) {
+        tr!.comments.add(commentResult.value);
         return;
       }
     });
 
     if (tr != null) {
-      transactions.add(tr);
+      transactions.add(tr!);
     }
     return transactions;
   }
