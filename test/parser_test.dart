@@ -32,6 +32,15 @@ void main() {
       trHeaderParser.parse('2019-04-14 ! "Cat Powder"\n').value,
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
     );
+    expect(
+      trHeaderParser.parse('2019-04-14 ! "Cat Powder" "Payee"\n').value,
+      Transaction(
+        DateTime(2019, 4, 14),
+        TransactionFlag.Warning,
+        'Cat Powder',
+        "Payee",
+      ),
+    );
   });
 
   test('Account', () {

@@ -78,6 +78,7 @@ class TransactionFlag {
 
 class Transaction {
   final DateTime date;
+  final String narration;
   final String payee;
   final TransactionFlag flag;
 
@@ -85,23 +86,28 @@ class Transaction {
   List<Posting> postings = [];
   List<String> tags = [];
 
-  Transaction(this.date, this.flag, this.payee);
+  Transaction(this.date, this.flag, this.narration, [this.payee = ""]);
 
   String toString() {
-    var d = date.toIso8601String().substring(0, 10);
-    var header = d + ' ' + flag.toString() + ' "' + payee + '"\n';
+    var sb = StringBuffer();
+    sb.write(date.toIso8601String().substring(0, 10));
+    sb.write(' $flag ');
+    sb.write('"$narration"');
+    if (payee.isNotEmpty) {
+      sb.write(' "$payee"');
+    }
+    sb.writeln();
 
-    var output = header;
     if (comments.length != 0) {
-      output += comments.map((c) => '  ; ' + c).join('\n');
-      output += '\n';
+      var s = comments.map((c) => '  ; ' + c).join('\n');
+      sb.writeln(s);
     }
 
     if (postings.length != 0) {
-      output += postings.map((p) => p.toString()).join('\n');
-      output += '\n';
+      var s = postings.map((p) => p.toString()).join('\n');
+      sb.writeln(s);
     }
-    return output;
+    return sb.toString();
   }
 
   @override

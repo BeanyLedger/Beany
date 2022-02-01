@@ -27,11 +27,17 @@ final _quotedString = _quote & any().starLazy(_quote | _eol).flatten() & _quote;
 @visibleForTesting
 final quotedStringParser = _quotedString.token().map((t) => t.value[1]);
 
-final _trHeader =
-    (dateParser & _space & _flag & _space & quotedStringParser & _eol);
+final _trHeader = (dateParser &
+    _space &
+    _flag &
+    _space &
+    quotedStringParser &
+    (_space & quotedStringParser).optional().map((v) => v?[1] ?? "") &
+    _eol);
+
 final trHeaderParser = _trHeader.token().map((token) {
   var v = token.value;
-  return Transaction(v[0], v[2], v[4]);
+  return Transaction(v[0], v[2], v[4], v[5]);
 });
 
 final _accountComponent = word().plus();
