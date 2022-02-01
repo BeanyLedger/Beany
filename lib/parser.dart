@@ -111,7 +111,8 @@ final trParser = _trParser.token().map((t) {
 
 final _emptyLine = _space.star() & char('\n');
 
-final _parser = (trParser & _emptyLine.star()).star() & endOfInput();
+final _parser =
+    _emptyLine.star() & (trParser & _emptyLine.star()).star() & endOfInput();
 final parser = _parser.map((value) {
   var trAll = <Transaction>[];
 

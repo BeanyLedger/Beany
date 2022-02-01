@@ -104,7 +104,8 @@ void main() {
   });
 
   test('Multiple Transactions', () {
-    var input = """2019-04-14 * "Cat Powder"
+    var input = """
+2019-04-14 * "Cat Powder"
   ; Help
   Expenses:Mystery:CatPowder  1.5 EUR
   Assets:Savings
