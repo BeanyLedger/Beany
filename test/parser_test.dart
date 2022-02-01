@@ -38,7 +38,7 @@ void main() {
         DateTime(2019, 4, 14),
         TransactionFlag.Warning,
         'Cat Powder',
-        "Payee",
+        payee: "Payee",
       ),
     );
   });
@@ -70,17 +70,17 @@ void main() {
   });
 
   test('Posting Account Only Parser', () {
-    var p = Posting.simple(null, 'Assets:Savings', null, null);
+    var p = Posting.simple('Assets:Savings', null, null);
     expect(postingAccountOnly.parse("  Assets:Savings\n").value, p);
   });
 
   test('Posting Full Parser', () {
-    var p = Posting.simple(null, "Expenses:Mystery:CatPowder", "1.5", "EUR");
+    var p = Posting.simple("Expenses:Mystery:CatPowder", "1.5", "EUR");
     expect(posting.parse("  Expenses:Mystery:CatPowder  1.5 EUR\n").value, p);
   });
 
   test('Posting Full Parser Extra Spaces', () {
-    var p = Posting.simple(null, "Expenses:M", "1.5", "EUR");
+    var p = Posting.simple("Expenses:M", "1.5", "EUR");
     expect(posting.parse("  Expenses:M     1.5 EUR\n").value, p);
   });
 
@@ -95,10 +95,12 @@ void main() {
       DateTime(2019, 4, 14),
       TransactionFlag.Okay,
       'Cat Powder',
+      postings: [
+        Posting.simple("Expenses:Mystery:CatPowder", "1.5", "EUR"),
+        Posting.simple("Assets:Savings", null, null),
+      ],
+      comments: ["Help"],
     );
-    Posting.simple(tr, "Expenses:Mystery:CatPowder", "1.5", "EUR");
-    Posting.simple(tr, "Assets:Savings", null, null);
-    tr.comments.add("Help");
 
     expect(trParser.parse(input).value, tr);
   });

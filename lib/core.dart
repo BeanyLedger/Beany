@@ -36,12 +36,11 @@ class Cost {
 }
 
 class Posting {
-  late Account account;
-  Amount? amount;
+  late final Account account;
+  late final Amount? amount;
 
   Posting(this.account, this.amount);
   Posting.simple(
-    Transaction? tr,
     String account,
     String? number,
     String? currency,
@@ -49,9 +48,8 @@ class Posting {
     this.account = Account(account);
     if (number != null && currency != null) {
       this.amount = Amount(Decimal.parse(number), currency);
-    }
-    if (tr != null) {
-      tr.postings.add(this);
+    } else {
+      this.amount = null;
     }
   }
 
@@ -82,11 +80,36 @@ class Transaction {
   final String payee;
   final TransactionFlag flag;
 
-  List<String> comments = [];
-  List<Posting> postings = [];
-  List<String> tags = [];
+  // FIXME: Make these immutable
+  final List<String> comments;
+  final List<Posting> postings;
+  final List<String> tags;
 
-  Transaction(this.date, this.flag, this.narration, [this.payee = ""]);
+  Transaction(
+    this.date,
+    this.flag,
+    this.narration, {
+    this.payee = "",
+    this.tags = const [],
+    this.comments = const [],
+    this.postings = const [],
+  });
+
+  Transaction copyWith({
+    List<String>? comments,
+    List<Posting>? postings,
+    List<String>? tags,
+  }) {
+    return Transaction(
+      date,
+      flag,
+      narration,
+      payee: payee,
+      tags: tags ?? this.tags,
+      comments: comments ?? this.comments,
+      postings: postings ?? this.postings,
+    );
+  }
 
   String toString() {
     var sb = StringBuffer();

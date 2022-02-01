@@ -37,7 +37,7 @@ final _trHeader = (dateParser &
 
 final trHeaderParser = _trHeader.token().map((token) {
   var v = token.value;
-  return Transaction(v[0], v[2], v[4], v[5]);
+  return Transaction(v[0], v[2], v[4], payee: v[5]);
 });
 
 final _accountComponent = word().plus();
@@ -104,9 +104,10 @@ final _trParser = trHeaderParser &
 final trParser = _trParser.token().map((t) {
   var v = t.value;
   var tr = v[0] as Transaction;
-  tr.comments = (v[1] as Token).value as List<String>;
-  tr.postings = ((v[2] as Token).value as List<dynamic>).cast<Posting>();
-  return tr;
+  return tr.copyWith(
+    comments: (v[1] as Token).value,
+    postings: ((v[2] as Token).value as List<dynamic>).cast<Posting>(),
+  );
 });
 
 final _emptyLine = _space.star() & char('\n');
