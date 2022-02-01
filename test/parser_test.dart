@@ -13,11 +13,12 @@ void main() {
     expect(quotedStringParser.parse('"foo"').value, "foo");
     expect(quotedStringParser.parse('""').value, "");
     expect(quotedStringParser.parse('"').isFailure, true);
+    expect(quotedStringParser.parse('"dafsdf\nsafasdf"').isFailure, true);
   });
 
   test('Transaction Header', () {
     expect(
-      trHeaderParser.parse('2019-04-14 * "Cat Powder"').value,
+      trHeaderParser.parse('2019-04-14 * "Cat Powder"\n').value,
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
   });
@@ -29,6 +30,20 @@ void main() {
   test('No Transactions', () {
     final parser = Parser();
     expect(parser.parse(""), []);
+  });
+
+  test('Comment Parser', () {
+    expect(trComment.parse("  ; Hello").value, "Hello");
+  });
+
+  test('Posting Account Only Parser', () {
+    var p = Posting.simple(null, 'Assets:Savings', null, null);
+    expect(postingAccountOnly.parse("  Assets:Savings").value, p);
+  });
+
+  test('Posting Full Parser', () {
+    var p = Posting.simple(null, "Expenses:Mystery:CatPowder", "1.5", "EUR");
+    expect(posting.parse("  Expenses:Mystery:CatPowder  1.5 EUR").value, p);
   });
 
   test('Simple Transaction', () {

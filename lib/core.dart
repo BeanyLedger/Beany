@@ -9,10 +9,7 @@ class Account {
   }
 
   @override
-  bool operator ==(Object t) {
-    if (t is! Account) return false;
-    return value == t.value;
-  }
+  bool operator ==(Object t) => t is Account && t.value == value;
 }
 
 class Amount {
@@ -24,6 +21,9 @@ class Amount {
   String toString() {
     return number.toString() + ' ' + currency;
   }
+
+  bool operator ==(Object other) =>
+      other is Amount && other.number == number && other.currency == currency;
 }
 
 class Cost {
@@ -60,6 +60,9 @@ class Posting {
         ? "  " + account.toString() + "  " + amount.toString()
         : "  " + account.toString();
   }
+
+  bool operator ==(Object other) =>
+      other is Posting && other.account == account && other.amount == amount;
 }
 
 class TransactionFlag {
