@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:petitparser/petitparser.dart';
 
+import 'package:meta/meta.dart';
+
 import './core.dart';
 
 final _year = digit().times(4).flatten().map(int.parse);
@@ -23,7 +25,8 @@ final _flag =
 final _quote = char('"');
 final _space = char(' ');
 
-final _quotedString = _quote & pattern('^"\n').star().flatten() & _quote;
+final _quotedString = _quote & any().starLazy(_quote | _eol).flatten() & _quote;
+@visibleForTesting
 final quotedStringParser = _quotedString.token().map((t) => t.value[1]);
 
 final _trHeader =
@@ -36,13 +39,16 @@ final trHeaderParser = _trHeader.token().map((token) {
 final _accountComponent = word().plus();
 final _accountSep = char(':');
 final _account = _accountComponent.separatedBy(_accountSep).flatten();
+
+@visibleForTesting
 final accountParser = _account.map((a) => Account(a));
 
 final _indent = _space.times(2).flatten();
 
-final postingAccountOnly = (_indent & accountParser & _eol)
-    .token()
-    .map((t) => Posting(t.value[1], null));
+@visibleForTesting
+final postingAccountOnly = (_indent & accountParser & _eol).token().map((t) {
+  return Posting(t.value[1], null);
+});
 
 final _decimal = char('.');
 final _number = digit().separatedBy(_decimal).flatten();
@@ -52,69 +58,52 @@ final _amount = (_number & char(' ') & _currency)
     .token()
     .map((t) => Amount(Decimal.parse(t.value[0]), t.value[2] as String));
 
-final posting = (_indent & accountParser & _indent & _amount & _eol)
-    .token()
-    .map((t) => Posting(t.value[1], t.value[3]));
+@visibleForTesting
+final posting =
+    (_indent & accountParser & _indent & _amount & _eol).token().map((t) {
+  return Posting(t.value[1], t.value[3]);
+});
 
-final trComment = (_indent & char(';') & any().plus().flatten().trim() & _eol)
-    .token()
-    .map((t) => t.value[2])
-    .cast<String>()
-    .labeled('Comment');
+@visibleForTesting
+final trComment =
+    (_indent & char(';') & (word() | _space).starLazy(_eol).flatten() & _eol)
+        .token()
+        .map((t) => (t.value[2] as String).trim())
+        .cast<String>()
+        .labeled('Comment');
 
-final _eol = _space.star() & (char('\n') | endOfInput());
+final _eol = _space.star() & char('\n');
 
 final _trParser = trHeaderParser &
     trComment.star().token() &
     (posting | postingAccountOnly).plus().token();
 
+@visibleForTesting
 final trParser = _trParser.token().map((t) {
-  print(t);
   var v = t.value;
-  return v[0] as Transaction;
+  var tr = v[0] as Transaction;
+  tr.comments = (v[1] as Token).value as List<String>;
+  tr.postings = ((v[2] as Token).value as List<dynamic>).cast<Posting>();
+  return tr;
 });
 
-class Parser {
-  List<Transaction> parse(String data) {
-    var transactions = <Transaction>[];
+final _emptyLine = _space.star() & char('\n');
 
-    Transaction? tr;
-    print("Here we go");
-    LineSplitter.split(data).forEach((line) {
-      print("Trying to parse: " + line);
+final _parser = (trParser & _emptyLine.star()).star() & endOfInput();
+final parser = _parser.map((value) {
+  var trAll = <Transaction>[];
 
-      var trHeaderResult = trHeaderParser.parse(line);
-      if (trHeaderResult.isSuccess) {
-        if (tr != null) {
-          transactions.add(tr!);
-        }
-
-        tr = trHeaderResult.value;
-        return;
+  void extract(List<dynamic> list) {
+    for (var x in list) {
+      if (x is List) {
+        extract(x);
       }
-
-      var postingResult = posting.parse(line);
-      if (postingResult.isSuccess) {
-        tr!.postings.add(postingResult.value);
-        return;
+      if (x is Transaction) {
+        trAll.add(x);
       }
-
-      var postingAccOnlyResult = postingAccountOnly.parse(line);
-      if (postingAccOnlyResult.isSuccess) {
-        tr!.postings.add(postingAccOnlyResult.value);
-        return;
-      }
-
-      var commentResult = trComment.parse(line);
-      if (commentResult.isSuccess) {
-        tr!.comments.add(commentResult.value);
-        return;
-      }
-    });
-
-    if (tr != null) {
-      transactions.add(tr!);
     }
-    return transactions;
   }
-}
+
+  extract(value);
+  return trAll;
+});

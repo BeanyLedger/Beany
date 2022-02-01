@@ -21,6 +21,10 @@ void main() {
       trHeaderParser.parse('2019-04-14 * "Cat Powder"\n').value,
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
+    expect(
+      trHeaderParser.parse('2019-04-14 ! "Cat Powder"\n').value,
+      Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
+    );
   });
 
   test('Account', () {
@@ -28,22 +32,31 @@ void main() {
   });
 
   test('No Transactions', () {
-    final parser = Parser();
-    expect(parser.parse(""), []);
+    expect(parser.parse("").value, []);
   });
 
   test('Comment Parser', () {
-    expect(trComment.parse("  ; Hello").value, "Hello");
+    expect(trComment.parse("  ;Hello\n").value, "Hello");
+    expect(trComment.parse("  ; Hello\n").value, "Hello");
+    expect(trComment.parse("  ; Hello \n").value, "Hello");
+    expect(trComment.parse("  ; Hello\nHi").value, "Hello");
+  });
+
+  test('Comment Only Parser', () {
+    var input = """  ; Hello
+  Expenses:Mystery:CatPowder  1.5 EUR
+""";
+    expect(trComment.parse(input).value, "Hello");
   });
 
   test('Posting Account Only Parser', () {
     var p = Posting.simple(null, 'Assets:Savings', null, null);
-    expect(postingAccountOnly.parse("  Assets:Savings").value, p);
+    expect(postingAccountOnly.parse("  Assets:Savings\n").value, p);
   });
 
   test('Posting Full Parser', () {
     var p = Posting.simple(null, "Expenses:Mystery:CatPowder", "1.5", "EUR");
-    expect(posting.parse("  Expenses:Mystery:CatPowder  1.5 EUR").value, p);
+    expect(posting.parse("  Expenses:Mystery:CatPowder  1.5 EUR\n").value, p);
   });
 
   test('Simple Transaction', () {
@@ -62,10 +75,7 @@ void main() {
     Posting.simple(tr, "Assets:Savings", null, null);
     tr.comments.add("Help");
 
-    final parser = Parser();
-    var actual = parser.parse(input);
-    expect(actual.length, 1);
-    expect(actual[0].toString(), tr.toString());
+    expect(trParser.parse(input).value, tr);
   });
 
   test('Multiple Transactions', () {
@@ -74,15 +84,14 @@ void main() {
   Expenses:Mystery:CatPowder  1.5 EUR
   Assets:Savings
 
-2019-04-19 ! Dog Powder
+2019-04-19 ! "Dog Powder"
   ; Helper
   Expenses:Mystery:DogPowder  2.5 EUR
   Assets:Dogs
 
 """;
 
-    final parser = Parser();
-    var transactions = parser.parse(input);
+    var transactions = parser.parse(input).value;
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
     expect(actual, input);
   });
