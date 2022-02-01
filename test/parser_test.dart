@@ -58,6 +58,10 @@ void main() {
     expect(trComment.parse("  ; Hello\nHi").value, "Hello");
   });
 
+  test('Comment Parser Special String', () {
+    expect(trComment.parse("  ; Róú's brithday\n").value, "Róú's brithday");
+  });
+
   test('Comment Only Parser', () {
     var input = """  ; Hello
   Expenses:Mystery:CatPowder  1.5 EUR
@@ -73,6 +77,11 @@ void main() {
   test('Posting Full Parser', () {
     var p = Posting.simple(null, "Expenses:Mystery:CatPowder", "1.5", "EUR");
     expect(posting.parse("  Expenses:Mystery:CatPowder  1.5 EUR\n").value, p);
+  });
+
+  test('Posting Full Parser Extra Spaces', () {
+    var p = Posting.simple(null, "Expenses:M", "1.5", "EUR");
+    expect(posting.parse("  Expenses:M     1.5 EUR\n").value, p);
   });
 
   test('Simple Transaction', () {
@@ -112,7 +121,3 @@ void main() {
     expect(actual, input);
   });
 }
-
-// metadata such as
-// id: "dafsdaf"
-// Currency conversion, complex posting

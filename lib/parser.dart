@@ -57,11 +57,16 @@ final postingAccountOnly = (_indent & accountParser & _eol).token().map((t) {
 final _decimal = char('.');
 final _number = char('-').optional() &
     digit().star() &
-    (_decimal & digit().star()).optional();
+    (_decimal & digit().plus()).optional();
 
 @visibleForTesting
 final numberParser = _number.flatten().map((value) {
-  return Decimal.parse(value);
+  assert(value.isNotEmpty);
+  try {
+    return Decimal.parse(value);
+  } catch (ex) {
+    throw Exception("Failed to parse '$value' as Decimal");
+  }
 });
 
 final _currency = word().plus().flatten();
@@ -71,18 +76,23 @@ final _amount = (numberParser & char(' ') & _currency)
     .map((t) => Amount(t.value[0], t.value[2] as String));
 
 @visibleForTesting
-final posting =
-    (_indent & accountParser & _indent & _amount & _eol).token().map((t) {
-  return Posting(t.value[1], t.value[3]);
+final posting = (_indent &
+        accountParser &
+        _indent &
+        whitespace().star().token() &
+        _amount &
+        _eol)
+    .token()
+    .map((t) {
+  return Posting(t.value[1], t.value[4]);
 });
 
 @visibleForTesting
-final trComment =
-    (_indent & char(';') & (word() | _space).starLazy(_eol).flatten() & _eol)
-        .token()
-        .map((t) => (t.value[2] as String).trim())
-        .cast<String>()
-        .labeled('Comment');
+final trComment = (_indent & char(';') & any().starLazy(_eol).flatten() & _eol)
+    .token()
+    .map((t) => (t.value[2] as String).trim())
+    .cast<String>()
+    .labeled('Comment');
 
 final _eol = _space.star() & char('\n');
 
