@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class Account {
   final String value;
@@ -80,34 +81,35 @@ class Transaction {
   final String payee;
   final TransactionFlag flag;
 
-  // FIXME: Make these immutable
-  final List<String> comments;
-  final List<Posting> postings;
-  final List<String> tags;
+  final IList<String> comments;
+  final IList<Posting> postings;
+  final IList<String> tags;
 
   Transaction(
     this.date,
     this.flag,
     this.narration, {
     this.payee = "",
-    this.tags = const [],
-    this.comments = const [],
-    this.postings = const [],
-  });
+    Iterable<String>? tags,
+    Iterable<String>? comments,
+    Iterable<Posting>? postings,
+  })  : tags = IList(tags),
+        comments = IList(comments),
+        postings = IList(postings);
 
   Transaction copyWith({
-    List<String>? comments,
-    List<Posting>? postings,
-    List<String>? tags,
+    Iterable<String>? comments,
+    Iterable<Posting>? postings,
+    Iterable<String>? tags,
   }) {
     return Transaction(
       date,
       flag,
       narration,
       payee: payee,
-      tags: tags ?? this.tags,
-      comments: comments ?? this.comments,
-      postings: postings ?? this.postings,
+      tags: IList.orNull(tags) ?? this.tags,
+      comments: IList.orNull(comments) ?? this.comments,
+      postings: IList.orNull(postings) ?? this.postings,
     );
   }
 
