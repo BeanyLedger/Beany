@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:gringotts/core.dart';
 import 'package:gringotts/parser.dart';
 import 'package:test/test.dart';
@@ -14,6 +15,12 @@ void main() {
     expect(quotedStringParser.parse('""').value, "");
     expect(quotedStringParser.parse('"').isFailure, true);
     expect(quotedStringParser.parse('"dafsdf\nsafasdf"').isFailure, true);
+  });
+
+  test('Number Parser', () {
+    expect(numberParser.parse('1.22').value, Decimal.fromJson("1.22"));
+    expect(numberParser.parse('-11.22').value, Decimal.fromJson("-11.22"));
+    // expect(numberParser.parse('-11.22.2').isFailure, true);
   });
 
   test('Transaction Header', () {
@@ -86,7 +93,7 @@ void main() {
 
 2019-04-19 ! "Dog Powder"
   ; Helper
-  Expenses:Mystery:DogPowder  2.5 EUR
+  Expenses:Mystery:DogPowder  -2.5 EUR
   Assets:Dogs
 
 """;

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:decimal/decimal.dart';
 import 'package:petitparser/petitparser.dart';
 
@@ -51,12 +49,20 @@ final postingAccountOnly = (_indent & accountParser & _eol).token().map((t) {
 });
 
 final _decimal = char('.');
-final _number = digit().separatedBy(_decimal).flatten();
+final _number = char('-').optional() &
+    digit().star() &
+    (_decimal & digit().star()).optional();
+
+@visibleForTesting
+final numberParser = _number.flatten().map((value) {
+  return Decimal.parse(value);
+});
+
 final _currency = word().plus().flatten();
 
-final _amount = (_number & char(' ') & _currency)
+final _amount = (numberParser & char(' ') & _currency)
     .token()
-    .map((t) => Amount(Decimal.parse(t.value[0]), t.value[2] as String));
+    .map((t) => Amount(t.value[0], t.value[2] as String));
 
 @visibleForTesting
 final posting =
