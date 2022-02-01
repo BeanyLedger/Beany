@@ -9,6 +9,9 @@ environment:
 dependencies:
   petitparser: ^4.4.0
   decimal: ^2.0.0
+  http: ^0.13.4
+  cryptography: ^2.0.5
+  rsa_pkcs: ^2.0.0
 
 dev_dependencies:
   test: ^1.19.5
