@@ -1,9 +1,11 @@
 import 'package:decimal/decimal.dart';
+import 'package:gringotts/core/open.dart';
 import 'package:petitparser/petitparser.dart';
 
 import 'package:meta/meta.dart';
 
 import 'core/balance.dart';
+import 'core/close.dart';
 import 'core/core.dart';
 import 'core/transactions.dart';
 
@@ -126,8 +128,22 @@ final balanceParser = _balanceParser.map((value) {
   return Balance(value[0], value[4], value[7]);
 });
 
+final _openParser =
+    dateParser & _space & string('open') & _space & accountParser & _eol;
+
+final openParser = _openParser.map((value) {
+  return Open(value[0], value[4]);
+});
+
+final _closeParser =
+    dateParser & _space & string('close') & _space & accountParser & _eol;
+
+final closeParser = _closeParser.map((value) {
+  return Close(value[0], value[4]);
+});
+
 final _emptyLine = _space.star() & char('\n');
-final _directive = balanceParser | trParser;
+final _directive = balanceParser | trParser | openParser | closeParser;
 
 final _parser =
     _emptyLine.star() & (_directive & _emptyLine.star()).star() & endOfInput();
