@@ -15,13 +15,15 @@ class Cost {
 class Posting {
   late final Account account;
   late final Amount? amount;
+  late final String? comment;
 
-  Posting(this.account, this.amount);
+  Posting(this.account, this.amount, {this.comment = null});
   Posting.simple(
     String account,
     String? number,
-    String? currency,
-  ) {
+    String? currency, {
+    this.comment = null,
+  }) {
     this.account = Account(account);
     if (number != null && currency != null) {
       this.amount = Amount(Decimal.parse(number), currency);
@@ -31,13 +33,20 @@ class Posting {
   }
 
   String toString() {
-    return amount != null
+    var p = amount != null
         ? "  " + account.toString() + "  " + amount.toString()
         : "  " + account.toString();
+    if (comment != null && comment!.isNotEmpty) {
+      return '$p; $comment';
+    }
+    return p;
   }
 
   bool operator ==(Object other) =>
-      other is Posting && other.account == account && other.amount == amount;
+      other is Posting &&
+      other.account == account &&
+      other.amount == amount &&
+      comment == other.comment;
 }
 
 class TransactionFlag {

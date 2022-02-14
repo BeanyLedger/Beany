@@ -90,6 +90,16 @@ void main() {
     expect(posting.parse("  Expenses:M     1.5 EUR\n").value, p);
   });
 
+  test('Posting Account Comment', () {
+    var p = Posting.simple('Assets:Savings', null, null, comment: "foo");
+    expect(postingAccountOnly.parse("  Assets:Savings ; foo\n").value, p);
+
+    expect(
+      postingAccountWithAmmount.parse("  Expenses:M  1.5 EUR ; foo\n").value,
+      Posting.simple("Expenses:M", "1.5", "EUR", comment: "foo"),
+    );
+  });
+
   test('Simple Transaction', () {
     var input = """2019-04-14 * "Cat Powder"
   ; Help

@@ -56,8 +56,11 @@ final accountParser = _account.map((a) => Account(a));
 final _indent = _space.times(2).flatten();
 
 @visibleForTesting
-final postingAccountOnly = (_indent & accountParser & _eol).token().map((t) {
-  return Posting(t.value[1], null);
+final postingAccountOnly =
+    (_indent & accountParser & _postingComment.optional() & _eol)
+        .token()
+        .map((t) {
+  return Posting(t.value[1], null, comment: t.value[2]);
 });
 
 final _decimal = char('.');
@@ -81,16 +84,24 @@ final _amount = (numberParser & char(' ') & _currency)
     .token()
     .map((t) => Amount(t.value[0], t.value[2] as String));
 
+final _postingComment =
+    (_space.star().token() & char(';') & any().starLazy(_eol).flatten())
+        .map((value) {
+  var c = value[2] as String;
+  return c.trim();
+});
+
 @visibleForTesting
-final posting = (_indent &
+final postingAccountWithAmmount = (_indent &
         accountParser &
         _indent &
         whitespace().star().token() &
         _amount &
+        _postingComment.optional() &
         _eol)
     .token()
     .map((t) {
-  return Posting(t.value[1], t.value[4]);
+  return Posting(t.value[1], t.value[4], comment: t.value[5]);
 });
 
 @visibleForTesting
@@ -102,9 +113,11 @@ final trComment = (_indent & char(';') & any().starLazy(_eol).flatten() & _eol)
 
 final _eol = _space.star() & char('\n');
 
-final _trParser = trHeaderParser &
-    trComment.star().token() &
-    (posting | postingAccountOnly).plus().token();
+@visibleForTesting
+final posting = postingAccountOnly | postingAccountWithAmmount;
+
+final _trParser =
+    trHeaderParser & trComment.star().token() & posting.plus().token();
 
 @visibleForTesting
 final trParser = _trParser.token().map((t) {
