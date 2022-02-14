@@ -1,6 +1,10 @@
 import 'package:decimal/decimal.dart';
 import 'package:gringotts/core/balance.dart';
+import 'package:gringotts/core/close.dart';
+import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/core.dart';
+import 'package:gringotts/core/open.dart';
+import 'package:gringotts/core/price.dart';
 import 'package:gringotts/core/transactions.dart';
 import 'package:gringotts/parser.dart';
 import 'package:test/test.dart';
@@ -142,10 +146,64 @@ void main() {
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
     expect(actual, input);
   });
+
+  test('Price Parser', () {
+    var input = "2002-01-15 price INR  98.87 EUR\n";
+
+    expect(
+      priceParser.parse(input).value,
+      Price(
+        DateTime(2002, 01, 15),
+        'INR',
+        Amount(Decimal.parse("98.87"), "EUR"),
+      ),
+    );
+
+    var transactions = parser.parse(input).value;
+    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    expect(actual, input);
+  });
+  test('Open Parser', () {
+    var input = "2000-11-21 open Expenses:Personal:Amazon\n";
+
+    expect(
+      openParser.parse(input).value,
+      Open(DateTime(2000, 11, 21), Account('Expenses:Personal:Amazon')),
+    );
+
+    var transactions = parser.parse(input).value;
+    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    expect(actual, input);
+  });
+
+  test('Close Parser', () {
+    var input = "2000-11-21 close Expenses:Personal:Amazon\n";
+
+    expect(
+      closeParser.parse(input).value,
+      Close(DateTime(2000, 11, 21), Account('Expenses:Personal:Amazon')),
+    );
+
+    var transactions = parser.parse(input).value;
+    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    expect(actual, input);
+  });
+
+  test('Commodity Parser', () {
+    var input = "2000-11-21 commodity INR\n";
+
+    expect(
+      commodityParser.parse(input).value,
+      Commodity(DateTime(2000, 11, 21), 'INR'),
+    );
+
+    var transactions = parser.parse(input).value;
+    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    expect(actual, input);
+  });
 }
 
 
-// Open / Close
 // Commodity
 // Note directive
 // Event directive

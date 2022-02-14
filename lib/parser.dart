@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/open.dart';
 import 'package:petitparser/petitparser.dart';
 
@@ -7,6 +8,7 @@ import 'package:meta/meta.dart';
 import 'core/balance.dart';
 import 'core/close.dart';
 import 'core/core.dart';
+import 'core/price.dart';
 import 'core/transactions.dart';
 
 final _year = digit().times(4).flatten().map(int.parse);
@@ -128,6 +130,20 @@ final balanceParser = _balanceParser.map((value) {
   return Balance(value[0], value[4], value[7]);
 });
 
+final _priceParser = dateParser &
+    _space &
+    string('price').labeled('price keyword') &
+    _space &
+    _currency &
+    _indent &
+    whitespace().star().token() &
+    _amount &
+    _eol;
+
+final priceParser = _priceParser.map((value) {
+  return Price(value[0], value[4], value[7]);
+});
+
 final _openParser =
     dateParser & _space & string('open') & _space & accountParser & _eol;
 
@@ -142,8 +158,20 @@ final closeParser = _closeParser.map((value) {
   return Close(value[0], value[4]);
 });
 
+final _commodityParser =
+    dateParser & _space & string('commodity') & _space & _currency & _eol;
+
+final commodityParser = _commodityParser.map((value) {
+  return Commodity(value[0], value[4]);
+});
+
 final _emptyLine = _space.star() & char('\n');
-final _directive = balanceParser | trParser | openParser | closeParser;
+final _directive = balanceParser |
+    priceParser |
+    trParser |
+    openParser |
+    closeParser |
+    commodityParser;
 
 final _parser =
     _emptyLine.star() & (_directive & _emptyLine.star()).star() & endOfInput();
