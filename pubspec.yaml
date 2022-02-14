@@ -7,10 +7,10 @@ environment:
   sdk: ">=2.14.0 <3.0.0"
 
 dependencies:
-  cryptography: ^2.0.5
   decimal: ^2.0.0
   fast_immutable_collections: ^7.1.3
   http: ^0.13.4
+  ninja: ^3.0.7
   petitparser: ^4.4.0
   rsa_pkcs: ^2.0.0
 
