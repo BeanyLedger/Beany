@@ -36,6 +36,11 @@ class Balance implements Directive {
   @override
   bool operator ==(Object t) {
     if (t is! Balance) return false;
-    return toString() == t.toString();
+    return date == t.date &&
+        meta == t.meta &&
+        account == t.account &&
+        amount == t.amount &&
+        tolerance == t.tolerance &&
+        diffAmount == t.diffAmount;
   }
 }
