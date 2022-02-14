@@ -1,31 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-class Account {
-  final String value;
-  Account(this.value);
-
-  String toString() {
-    return value;
-  }
-
-  @override
-  bool operator ==(Object t) => t is Account && t.value == value;
-}
-
-class Amount {
-  final Decimal number;
-  final String currency;
-
-  Amount(this.number, this.currency);
-
-  String toString() {
-    return number.toString() + ' ' + currency;
-  }
-
-  bool operator ==(Object other) =>
-      other is Amount && other.number == number && other.currency == currency;
-}
+import 'core.dart';
 
 class Cost {
   final Decimal number;
@@ -73,11 +49,6 @@ class TransactionFlag {
 
   bool isValid() => value == '*' || value == '!';
   String toString() => value;
-}
-
-abstract class Directive {
-  IMap<String, dynamic> get meta;
-  DateTime get date;
 }
 
 class Transaction implements Directive {
@@ -150,71 +121,4 @@ class Transaction implements Directive {
     if (t is! Transaction) return false;
     return toString() == t.toString();
   }
-}
-
-class Balance implements Directive {
-  final DateTime date;
-  final IMap<String, dynamic> meta;
-
-  final Account account;
-  final Amount amount;
-
-  final Decimal? tolerance;
-  final Amount? diffAmount;
-
-  Balance(
-    this.date,
-    this.account,
-    this.amount, {
-    this.tolerance,
-    this.diffAmount,
-    Map<String, dynamic>? meta,
-  }) : meta = IMap(meta);
-
-  String toString() {
-    var sb = StringBuffer();
-    sb.write(date.toIso8601String().substring(0, 10));
-    sb.write(' balance ');
-    sb.write(account);
-    sb.write('  ');
-    sb.write(amount);
-
-    return sb.toString();
-  }
-
-  @override
-  bool operator ==(Object t) {
-    if (t is! Balance) return false;
-    return toString() == t.toString();
-  }
-}
-
-class Note implements Directive {
-  final DateTime date;
-  final IMap<String, dynamic> meta;
-
-  final Account account;
-  final String comment;
-
-  Note(
-    this.date,
-    this.account,
-    this.comment, {
-    Map<String, dynamic>? meta,
-  }) : meta = IMap(meta);
-}
-
-class Event {
-  final DateTime date;
-  final IMap<String, dynamic> meta;
-
-  String type;
-  String description;
-
-  Event(
-    this.date,
-    this.type,
-    this.description, {
-    Map<String, dynamic>? meta,
-  }) : meta = IMap(meta);
 }

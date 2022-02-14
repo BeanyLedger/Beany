@@ -3,7 +3,9 @@ import 'package:petitparser/petitparser.dart';
 
 import 'package:meta/meta.dart';
 
-import './core.dart';
+import 'core/balance.dart';
+import 'core/core.dart';
+import 'core/transactions.dart';
 
 final _year = digit().times(4).flatten().map(int.parse);
 final _month = digit().times(2).flatten().map(int.parse);
