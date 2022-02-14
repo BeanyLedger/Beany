@@ -110,24 +110,39 @@ final trParser = _trParser.token().map((t) {
   );
 });
 
+final _balanceParser = dateParser &
+    _space &
+    string('balance') &
+    _space &
+    accountParser &
+    _indent &
+    whitespace().star().token() &
+    _amount &
+    _eol;
+
+final balanceParser = _balanceParser.map((value) {
+  return Balance(value[0], value[4], value[7]);
+});
+
 final _emptyLine = _space.star() & char('\n');
+final _directive = balanceParser | trParser;
 
 final _parser =
-    _emptyLine.star() & (trParser & _emptyLine.star()).star() & endOfInput();
+    _emptyLine.star() & (_directive & _emptyLine.star()).star() & endOfInput();
 final parser = _parser.map((value) {
-  var trAll = <Transaction>[];
+  var all = <Directive>[];
 
   void extract(List<dynamic> list) {
     for (var x in list) {
       if (x is List) {
         extract(x);
       }
-      if (x is Transaction) {
-        trAll.add(x);
+      if (x is Directive) {
+        all.add(x);
       }
     }
   }
 
   extract(value);
-  return trAll;
+  return all;
 });

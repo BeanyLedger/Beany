@@ -75,7 +75,12 @@ class TransactionFlag {
   String toString() => value;
 }
 
-class Transaction {
+abstract class Directive {
+  IMap<String, dynamic> get meta;
+  DateTime get date;
+}
+
+class Transaction implements Directive {
   final DateTime date;
   final String narration;
   final String payee;
@@ -85,6 +90,8 @@ class Transaction {
   final IList<Posting> postings;
   final IList<String> tags;
 
+  final IMap<String, dynamic> meta;
+
   Transaction(
     this.date,
     this.flag,
@@ -93,9 +100,11 @@ class Transaction {
     Iterable<String>? tags,
     Iterable<String>? comments,
     Iterable<Posting>? postings,
+    Map<String, dynamic>? meta,
   })  : tags = IList(tags),
         comments = IList(comments),
-        postings = IList(postings);
+        postings = IList(postings),
+        meta = IMap(meta);
 
   Transaction copyWith({
     Iterable<String>? comments,
@@ -113,6 +122,7 @@ class Transaction {
     );
   }
 
+  @override
   String toString() {
     var sb = StringBuffer();
     sb.write(date.toIso8601String().substring(0, 10));
@@ -140,4 +150,71 @@ class Transaction {
     if (t is! Transaction) return false;
     return toString() == t.toString();
   }
+}
+
+class Balance implements Directive {
+  final DateTime date;
+  final IMap<String, dynamic> meta;
+
+  final Account account;
+  final Amount amount;
+
+  final Decimal? tolerance;
+  final Amount? diffAmount;
+
+  Balance(
+    this.date,
+    this.account,
+    this.amount, {
+    this.tolerance,
+    this.diffAmount,
+    Map<String, dynamic>? meta,
+  }) : meta = IMap(meta);
+
+  String toString() {
+    var sb = StringBuffer();
+    sb.write(date.toIso8601String().substring(0, 10));
+    sb.write(' balance ');
+    sb.write(account);
+    sb.write('  ');
+    sb.write(amount);
+
+    return sb.toString();
+  }
+
+  @override
+  bool operator ==(Object t) {
+    if (t is! Balance) return false;
+    return toString() == t.toString();
+  }
+}
+
+class Note implements Directive {
+  final DateTime date;
+  final IMap<String, dynamic> meta;
+
+  final Account account;
+  final String comment;
+
+  Note(
+    this.date,
+    this.account,
+    this.comment, {
+    Map<String, dynamic>? meta,
+  }) : meta = IMap(meta);
+}
+
+class Event {
+  final DateTime date;
+  final IMap<String, dynamic> meta;
+
+  String type;
+  String description;
+
+  Event(
+    this.date,
+    this.type,
+    this.description, {
+    Map<String, dynamic>? meta,
+  }) : meta = IMap(meta);
 }

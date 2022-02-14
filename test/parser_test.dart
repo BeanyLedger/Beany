@@ -123,4 +123,31 @@ void main() {
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
     expect(actual, input);
   });
+
+  test('Balance Parser', () {
+    var input = "2002-01-15 balance Assets:Personal:Transferwise  98.87 EUR\n";
+
+    expect(
+      balanceParser.parse(input).value,
+      Balance(
+        DateTime(2002, 01, 15),
+        Account('Assets:Personal:Transferwise'),
+        Amount(Decimal.parse("98.87"), "EUR"),
+      ),
+    );
+
+    var transactions = parser.parse(input).value;
+    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    expect(actual, input);
+  });
 }
+
+
+// Open / Close
+// Commodity
+// Note directive
+// Event directive
+// Query directive
+// Price
+// Document
+// Custom
