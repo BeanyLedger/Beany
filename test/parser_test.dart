@@ -48,9 +48,9 @@ void main() {
       ),
     );
     expect(
-      trHeaderParser.parse('2019-04-14 ! "Cat" #hello #there\n').value,
+      trHeaderParser.parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').value,
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
-          tags: ["hello", "there"]),
+          tags: ["hello", "berlin-2014"]),
     );
   });
 

@@ -33,7 +33,9 @@ final _quotedString = _quote & any().starLazy(_quote | _eol).flatten() & _quote;
 @visibleForTesting
 final quotedStringParser = _quotedString.token().map((t) => t.value[1]);
 
-final _tag = (char('#') & word().star().flatten()).map((v) => v[1] as String);
+final _tag = (char('#') & (word() | char('-')).star().flatten())
+    .map((v) => v[1] as String);
+
 final _trHeader = (dateParser &
     _space &
     _flag &
