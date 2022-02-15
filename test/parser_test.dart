@@ -47,6 +47,11 @@ void main() {
         payee: "Payee",
       ),
     );
+    expect(
+      trHeaderParser.parse('2019-04-14 ! "Cat" #hello #there\n').value,
+      Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
+          tags: ["hello", "there"]),
+    );
   });
 
   test('Account', () {

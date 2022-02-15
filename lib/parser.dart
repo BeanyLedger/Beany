@@ -33,17 +33,25 @@ final _quotedString = _quote & any().starLazy(_quote | _eol).flatten() & _quote;
 @visibleForTesting
 final quotedStringParser = _quotedString.token().map((t) => t.value[1]);
 
+final _tag = (char('#') & word().star().flatten()).map((v) => v[1] as String);
 final _trHeader = (dateParser &
     _space &
     _flag &
     _space &
     quotedStringParser &
     (_space & quotedStringParser).optional().map((v) => v?[1] ?? "") &
+    (_space.star() & _tag & _space.star()).star().token() &
     _eol);
 
 final trHeaderParser = _trHeader.token().map((token) {
   var v = token.value;
-  return Transaction(v[0], v[2], v[4], payee: v[5]);
+  var tagsToken = v[6] as Token<List<List<dynamic>>>;
+  var tags = <String>{};
+  for (var tagGroup in tagsToken.value) {
+    var t = tagGroup[1] as String;
+    tags.add(t);
+  }
+  return Transaction(v[0], v[2], v[4], payee: v[5], tags: tags);
 });
 
 final _accountComponent = word().plus();
