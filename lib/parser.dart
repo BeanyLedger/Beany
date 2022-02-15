@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 
 import 'core/balance.dart';
 import 'core/close.dart';
+import 'core/comment.dart';
 import 'core/core.dart';
 import 'core/include.dart';
 import 'core/option.dart';
@@ -225,6 +226,9 @@ final _includeParser =
 @visibleForTesting
 final includeParser = _includeParser.map((v) => Include(v[2]));
 
+final _commentParser = char(';') & any().starLazy(_eol).flatten() & _eol;
+final commentParser = _commentParser.map((v) => Comment(v[1].trim()));
+
 final _emptyLine = _space.star() & char('\n');
 final _directive = balanceParser |
     priceParser |
@@ -232,7 +236,8 @@ final _directive = balanceParser |
     openParser |
     closeParser |
     commodityParser |
-    optionParser;
+    optionParser |
+    commentParser;
 
 final _parser =
     _emptyLine.star() & (_directive & _emptyLine.star()).star() & endOfInput();

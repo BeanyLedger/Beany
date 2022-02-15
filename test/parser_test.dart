@@ -162,6 +162,7 @@ void main() {
   Expenses:Mystery:DogPowder  -2.5 EUR
   Assets:Dogs
 
+; Comment
 """;
 
     var transactions = parser.parse(input).value;
