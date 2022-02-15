@@ -150,6 +150,7 @@ void main() {
     );
 
     expect(trParser.parse(input).value, tr);
+    expect(trParser.parse(input).value.toString(), tr.toString());
   });
 
   test('Multiple Transactions', () {

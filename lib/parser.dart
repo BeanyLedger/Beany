@@ -135,7 +135,7 @@ final _trMetaDataLine = _indent &
     _eol;
 
 final trMetaDataLine = _trMetaDataLine.map((v) => <String>[v[1], v[4]]);
-final trMetaData = _trMetaDataLine.star().map((v) {
+final trMetaData = trMetaDataLine.star().map((v) {
   var map = <String, dynamic>{};
   for (var m in v) {
     map[m[0]] = m[1];

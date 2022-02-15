@@ -58,10 +58,15 @@ class TransactionFlag {
 
   bool isValid() => value == '*' || value == '!';
   String toString() => value;
+
+  bool operator ==(Object other) =>
+      other is TransactionFlag && other.value == value;
 }
 
 class Transaction implements Directive {
   final DateTime date;
+  final IMap<String, dynamic> meta;
+
   final String narration;
   final String payee;
   final TransactionFlag flag;
@@ -69,8 +74,6 @@ class Transaction implements Directive {
   final IList<String> comments;
   final IList<Posting> postings;
   final IList<String> tags;
-
-  final IMap<String, dynamic> meta;
 
   Transaction(
     this.date,
@@ -115,12 +118,18 @@ class Transaction implements Directive {
     }
     sb.writeln();
 
-    if (comments.length != 0) {
+    if (meta.isNotEmpty) {
+      for (var m in meta.entries) {
+        sb.writeln('  ${m.key}: "${m.value}"');
+      }
+    }
+
+    if (comments.isNotEmpty) {
       var s = comments.map((c) => '  ; ' + c).join('\n');
       sb.writeln(s);
     }
 
-    if (postings.length != 0) {
+    if (postings.isNotEmpty) {
       var s = postings.map((p) => p.toString()).join('\n');
       sb.writeln(s);
     }
@@ -130,6 +139,13 @@ class Transaction implements Directive {
   @override
   bool operator ==(Object t) {
     if (t is! Transaction) return false;
-    return toString() == t.toString();
+    return date == t.date &&
+        meta == t.meta &&
+        narration == t.narration &&
+        payee == t.payee &&
+        flag == t.flag &&
+        comments == t.comments &&
+        postings == t.postings &&
+        tags == t.tags;
   }
 }
