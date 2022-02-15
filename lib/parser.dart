@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 import 'core/balance.dart';
 import 'core/close.dart';
 import 'core/core.dart';
+import 'core/note.dart';
 import 'core/price.dart';
 import 'core/statements.dart';
 import 'core/transactions.dart';
@@ -210,6 +211,20 @@ final commodityParser = _commodityParser.map((value) {
   return Commodity(value[0], value[4]);
 });
 
+final _noteParser = dateParser &
+    _space &
+    string('note') &
+    _space &
+    accountParser &
+    _space &
+    quotedStringParser &
+    _eol;
+
+@visibleForTesting
+final noteParser = _noteParser.map((value) {
+  return Note(value[0], value[4], value[6]);
+});
+
 final _optionParser = string('option') &
     _space.star() &
     quotedStringParser &
@@ -233,6 +248,7 @@ final _directive = balanceParser |
     trParser |
     openParser |
     closeParser |
+    noteParser |
     commodityParser;
 
 final _statement = _directive | optionParser | commentParser | includeParser;

@@ -3,6 +3,7 @@ import 'package:gringotts/core/balance.dart';
 import 'package:gringotts/core/close.dart';
 import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/core.dart';
+import 'package:gringotts/core/note.dart';
 import 'package:gringotts/core/open.dart';
 import 'package:gringotts/core/price.dart';
 import 'package:gringotts/core/statements.dart';
@@ -252,6 +253,19 @@ void main() {
     expect(
       includeParser.parse('include "../path" \n').value,
       Include('../path'),
+    );
+  });
+
+  test('Note Parser', () {
+    expect(
+      noteParser
+          .parse('2013-11-03 note Assets:CreditCard "Called about fraud."\n')
+          .value,
+      Note(
+        DateTime(2013, 11, 03),
+        Account('Assets:CreditCard'),
+        "Called about fraud.",
+      ),
     );
   });
 }
