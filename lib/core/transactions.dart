@@ -90,6 +90,7 @@ class Transaction implements Directive {
     Iterable<String>? comments,
     Iterable<Posting>? postings,
     Iterable<String>? tags,
+    Map<String, dynamic>? meta,
   }) {
     return Transaction(
       date,
@@ -99,6 +100,7 @@ class Transaction implements Directive {
       tags: IList.orNull(tags) ?? this.tags,
       comments: IList.orNull(comments) ?? this.comments,
       postings: IList.orNull(postings) ?? this.postings,
+      meta: meta ?? this.meta.unlockView,
     );
   }
 

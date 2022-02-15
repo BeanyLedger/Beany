@@ -125,21 +125,40 @@ final trComment = (_indent & char(';') & any().starLazy(_eol).flatten() & _eol)
     .cast<String>()
     .labeled('Comment');
 
+final _trMetaDataLine = _indent &
+    word().star().flatten() &
+    char(':') &
+    _space.star() &
+    quotedStringParser &
+    _eol;
+
+final trMetaDataLine = _trMetaDataLine.map((v) => <String>[v[1], v[4]]);
+final trMetaData = _trMetaDataLine.star().map((v) {
+  var map = <String, dynamic>{};
+  for (var m in v) {
+    map[m[0]] = m[1];
+  }
+  return map;
+});
+
 final _eol = _space.star() & char('\n');
 
 @visibleForTesting
 final posting = postingAccountOnly | postingAccountWithAmmount;
 
-final _trParser =
-    trHeaderParser & trComment.star().token() & posting.plus().token();
+final _trParser = trHeaderParser &
+    trMetaData &
+    trComment.star().token() &
+    posting.plus().token();
 
 @visibleForTesting
 final trParser = _trParser.token().map((t) {
   var v = t.value;
   var tr = v[0] as Transaction;
   return tr.copyWith(
-    comments: (v[1] as Token).value,
-    postings: ((v[2] as Token).value as List<dynamic>).cast<Posting>(),
+    meta: v[1],
+    comments: (v[2] as Token).value,
+    postings: ((v[3] as Token).value as List<dynamic>).cast<Posting>(),
   );
 });
 

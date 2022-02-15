@@ -128,6 +128,28 @@ void main() {
     expect(trParser.parse(input).value, tr);
   });
 
+  test('Transaction MetaData', () {
+    var input = """2019-04-14 * "Cat Powder"
+  id: "foo"
+  power: "zoo"
+  Expenses:Mystery:CatPowder  1.5 EUR
+  Assets:Savings
+""";
+
+    var tr = Transaction(
+      DateTime(2019, 4, 14),
+      TransactionFlag.Okay,
+      'Cat Powder',
+      postings: [
+        Posting.simple("Expenses:Mystery:CatPowder", "1.5", "EUR"),
+        Posting.simple("Assets:Savings", null, null),
+      ],
+      meta: {"id": "foo", "power": "zoo"},
+    );
+
+    expect(trParser.parse(input).value, tr);
+  });
+
   test('Multiple Transactions', () {
     var input = """
 2019-04-14 * "Cat Powder"
