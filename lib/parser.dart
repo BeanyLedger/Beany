@@ -7,11 +7,9 @@ import 'package:meta/meta.dart';
 
 import 'core/balance.dart';
 import 'core/close.dart';
-import 'core/comment.dart';
 import 'core/core.dart';
-import 'core/include.dart';
-import 'core/option.dart';
 import 'core/price.dart';
+import 'core/statements.dart';
 import 'core/transactions.dart';
 
 final _year = digit().times(4).flatten().map(int.parse);
@@ -235,21 +233,21 @@ final _directive = balanceParser |
     trParser |
     openParser |
     closeParser |
-    commodityParser |
-    optionParser |
-    commentParser;
+    commodityParser;
+
+final _statement = _directive | optionParser | commentParser | includeParser;
 
 final _parser =
-    _emptyLine.star() & (_directive & _emptyLine.star()).star() & endOfInput();
+    _emptyLine.star() & (_statement & _emptyLine.star()).star() & endOfInput();
 final parser = _parser.map((value) {
-  var all = <Directive>[];
+  var all = <Statement>[];
 
   void extract(List<dynamic> list) {
     for (var x in list) {
       if (x is List) {
         extract(x);
       }
-      if (x is Directive) {
+      if (x is Statement) {
         all.add(x);
       }
     }

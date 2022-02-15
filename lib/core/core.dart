@@ -27,7 +27,9 @@ class Amount {
       other is Amount && other.number == number && other.currency == currency;
 }
 
-abstract class Directive {
+abstract class Statement {}
+
+abstract class Directive extends Statement {
   IMap<String, dynamic> get meta;
   DateTime get date;
 }
