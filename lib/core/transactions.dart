@@ -116,6 +116,10 @@ class Transaction implements Directive {
     if (payee.isNotEmpty) {
       sb.write(' "$payee"');
     }
+    if (tags.isNotEmpty) {
+      sb.write(' ');
+      sb.write(tags.map((t) => '#$t').join(' '));
+    }
     sb.writeln();
 
     if (meta.isNotEmpty) {

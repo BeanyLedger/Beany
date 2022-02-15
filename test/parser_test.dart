@@ -39,22 +39,41 @@ void main() {
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
     expect(
+      trHeaderParser.parse('2019-04-14 * "Cat Powder"\n').value.toString(),
+      '2019-04-14 * "Cat Powder"\n',
+    );
+    expect(
       trHeaderParser.parse('2019-04-14 ! "Cat Powder"\n').value,
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
     );
     expect(
-      trHeaderParser.parse('2019-04-14 ! "Cat Powder" "Payee"\n').value,
+      trHeaderParser.parse('2019-04-14 ! "Cat Powder"\n').value.toString(),
+      '2019-04-14 ! "Cat Powder"\n',
+    );
+    expect(
+      trHeaderParser.parse('2019-04-14 ! "Cat" "Payee"\n').value,
       Transaction(
         DateTime(2019, 4, 14),
         TransactionFlag.Warning,
-        'Cat Powder',
+        'Cat',
         payee: "Payee",
       ),
+    );
+    expect(
+      trHeaderParser.parse('2019-04-14 ! "Cat" "Payee"\n').value.toString(),
+      '2019-04-14 ! "Cat" "Payee"\n',
     );
     expect(
       trHeaderParser.parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').value,
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
           tags: ["hello", "berlin-2014"]),
+    );
+    expect(
+      trHeaderParser
+          .parse('2019-04-14 ! "Cat" #hello #berlin-2014\n')
+          .value
+          .toString(),
+      '2019-04-14 ! "Cat" #hello #berlin-2014\n',
     );
   });
 
