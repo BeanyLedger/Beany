@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 import 'core/balance.dart';
 import 'core/close.dart';
 import 'core/core.dart';
+import 'core/option.dart';
 import 'core/price.dart';
 import 'core/transactions.dart';
 
@@ -31,7 +32,9 @@ final _space = char(' ');
 
 final _quotedString = _quote & any().starLazy(_quote | _eol).flatten() & _quote;
 @visibleForTesting
-final quotedStringParser = _quotedString.token().map((t) => t.value[1]);
+final quotedStringParser = _quotedString.token().map((t) {
+  return t.value[1] as String;
+});
 
 final _tag = (char('#') & (word() | char('-')).star().flatten())
     .map((v) => v[1] as String);
@@ -188,13 +191,23 @@ final commodityParser = _commodityParser.map((value) {
   return Commodity(value[0], value[4]);
 });
 
+final _optionParser = string('option') &
+    _space.star() &
+    quotedStringParser &
+    _space.star() &
+    quotedStringParser &
+    _eol;
+@visibleForTesting
+final optionParser = _optionParser.map((v) => Option(v[2], v[4]));
+
 final _emptyLine = _space.star() & char('\n');
 final _directive = balanceParser |
     priceParser |
     trParser |
     openParser |
     closeParser |
-    commodityParser;
+    commodityParser |
+    optionParser;
 
 final _parser =
     _emptyLine.star() & (_directive & _emptyLine.star()).star() & endOfInput();

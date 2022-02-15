@@ -4,6 +4,7 @@ import 'package:gringotts/core/close.dart';
 import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/core.dart';
 import 'package:gringotts/core/open.dart';
+import 'package:gringotts/core/option.dart';
 import 'package:gringotts/core/price.dart';
 import 'package:gringotts/core/transactions.dart';
 import 'package:gringotts/parser.dart';
@@ -216,13 +217,18 @@ void main() {
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
     expect(actual, input);
   });
+
+  test('Option Parser', () {
+    expect(
+      optionParser.parse('option "title" "Ed’s Personal Ledger"\n').value,
+      Option('title', "Ed’s Personal Ledger"),
+    );
+  });
 }
 
 
-// Commodity
 // Note directive
 // Event directive
 // Query directive
-// Price
 // Document
 // Custom
