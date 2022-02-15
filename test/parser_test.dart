@@ -3,6 +3,8 @@ import 'package:gringotts/core/balance.dart';
 import 'package:gringotts/core/close.dart';
 import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/core.dart';
+import 'package:gringotts/core/document.dart';
+import 'package:gringotts/core/event.dart';
 import 'package:gringotts/core/note.dart';
 import 'package:gringotts/core/open.dart';
 import 'package:gringotts/core/price.dart';
@@ -268,11 +270,28 @@ void main() {
       ),
     );
   });
+
+  test('Document Parser', () {
+    expect(
+      documentParser
+          .parse('2013-11-03 document Assets:Card "/home/joe/apr-2014.pdf"\n')
+          .value,
+      Document(
+        DateTime(2013, 11, 03),
+        Account('Assets:Card'),
+        "/home/joe/apr-2014.pdf",
+      ),
+    );
+  });
+
+  test('Event Parser', () {
+    expect(
+      eventParser.parse('2013-11-03 event "location" "Paris, France"\n').value,
+      Event(DateTime(2013, 11, 03), "location", "Paris, France"),
+    );
+  });
 }
 
 
-// Note directive
-// Event directive
 // Query directive
-// Document
 // Custom

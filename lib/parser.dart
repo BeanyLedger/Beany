@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:gringotts/core/commodity.dart';
+import 'package:gringotts/core/document.dart';
 import 'package:gringotts/core/open.dart';
 import 'package:petitparser/petitparser.dart';
 
@@ -8,6 +9,7 @@ import 'package:meta/meta.dart';
 import 'core/balance.dart';
 import 'core/close.dart';
 import 'core/core.dart';
+import 'core/event.dart';
 import 'core/note.dart';
 import 'core/price.dart';
 import 'core/statements.dart';
@@ -225,6 +227,34 @@ final noteParser = _noteParser.map((value) {
   return Note(value[0], value[4], value[6]);
 });
 
+final _eventParser = dateParser &
+    _space &
+    string('event') &
+    _space &
+    quotedStringParser &
+    _space &
+    quotedStringParser &
+    _eol;
+
+@visibleForTesting
+final eventParser = _eventParser.map((value) {
+  return Event(value[0], value[4], value[6]);
+});
+
+final _documentParser = dateParser &
+    _space &
+    string('document') &
+    _space &
+    accountParser &
+    _space &
+    quotedStringParser &
+    _eol;
+
+@visibleForTesting
+final documentParser = _documentParser.map((value) {
+  return Document(value[0], value[4], value[6]);
+});
+
 final _optionParser = string('option') &
     _space.star() &
     quotedStringParser &
@@ -249,7 +279,9 @@ final _directive = balanceParser |
     openParser |
     closeParser |
     noteParser |
-    commodityParser;
+    commodityParser |
+    documentParser |
+    eventParser;
 
 final _statement = _directive | optionParser | commentParser | includeParser;
 
