@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 import 'core/balance.dart';
 import 'core/close.dart';
 import 'core/core.dart';
+import 'core/include.dart';
 import 'core/option.dart';
 import 'core/price.dart';
 import 'core/transactions.dart';
@@ -199,6 +200,11 @@ final _optionParser = string('option') &
     _eol;
 @visibleForTesting
 final optionParser = _optionParser.map((v) => Option(v[2], v[4]));
+
+final _includeParser =
+    string('include') & _space.star() & quotedStringParser & _eol;
+@visibleForTesting
+final includeParser = _includeParser.map((v) => Include(v[2]));
 
 final _emptyLine = _space.star() & char('\n');
 final _directive = balanceParser |

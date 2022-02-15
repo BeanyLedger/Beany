@@ -3,6 +3,7 @@ import 'package:gringotts/core/balance.dart';
 import 'package:gringotts/core/close.dart';
 import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/core.dart';
+import 'package:gringotts/core/include.dart';
 import 'package:gringotts/core/open.dart';
 import 'package:gringotts/core/option.dart';
 import 'package:gringotts/core/price.dart';
@@ -222,6 +223,13 @@ void main() {
     expect(
       optionParser.parse('option "title" "Ed’s Personal Ledger"\n').value,
       Option('title', "Ed’s Personal Ledger"),
+    );
+  });
+
+  test('Include Parser', () {
+    expect(
+      includeParser.parse('include "../path" \n').value,
+      Include('../path'),
     );
   });
 }
