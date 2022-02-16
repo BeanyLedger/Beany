@@ -113,113 +113,18 @@ final trParser = _trParser.token().map((t) {
   );
 });
 
-final _priceParser = dateParser &
-    spaceParser &
-    string('price').labeled('price keyword') &
-    spaceParser &
-    currencyParser &
-    indent &
-    whitespace().star().token() &
-    Amount.parser &
-    eol;
-
-final priceParser = _priceParser.map((value) {
-  return Price(value[0], value[4], value[7]);
-});
-
-final _closeParser = dateParser &
-    spaceParser &
-    string('close') &
-    spaceParser &
-    Account.parser &
-    eol;
-
-final closeParser = _closeParser.map((value) {
-  return Close(value[0], value[4]);
-});
-
-final _commodityParser = dateParser &
-    spaceParser &
-    string('commodity') &
-    spaceParser &
-    currencyParser &
-    eol;
-
-final commodityParser = _commodityParser.map((value) {
-  return Commodity(value[0], value[4]);
-});
-
-final _noteParser = dateParser &
-    spaceParser &
-    string('note') &
-    spaceParser &
-    Account.parser &
-    spaceParser &
-    quotedStringParser &
-    eol;
-
-@visibleForTesting
-final noteParser = _noteParser.map((value) {
-  return Note(value[0], value[4], value[6]);
-});
-
-final _eventParser = dateParser &
-    spaceParser &
-    string('event') &
-    spaceParser &
-    quotedStringParser &
-    spaceParser &
-    quotedStringParser &
-    eol;
-
-@visibleForTesting
-final eventParser = _eventParser.map((value) {
-  return Event(value[0], value[4], value[6]);
-});
-
-final _documentParser = dateParser &
-    spaceParser &
-    string('document') &
-    spaceParser &
-    Account.parser &
-    spaceParser &
-    quotedStringParser &
-    eol;
-
-@visibleForTesting
-final documentParser = _documentParser.map((value) {
-  return Document(value[0], value[4], value[6]);
-});
-
-final _optionParser = string('option') &
-    spaceParser.star() &
-    quotedStringParser &
-    spaceParser.star() &
-    quotedStringParser &
-    eol;
-@visibleForTesting
-final optionParser = _optionParser.map((v) => Option(v[2], v[4]));
-
-final _includeParser =
-    string('include') & spaceParser.star() & quotedStringParser & eol;
-@visibleForTesting
-final includeParser = _includeParser.map((v) => Include(v[2]));
-
-final _commentParser = char(';') & any().starLazy(eol).flatten() & eol;
-final commentParser = _commentParser.map((v) => Comment(v[1].trim()));
-
 final _emptyLine = spaceParser.star() & char('\n');
 final _directive = Balance.parser |
-    priceParser |
+    Price.parser |
     trParser |
     Open.parser |
-    closeParser |
-    noteParser |
-    commodityParser |
-    documentParser |
-    eventParser;
+    Close.parser |
+    Note.parser |
+    Commodity.parser |
+    Document.parser |
+    Event.parser;
 
-final _statement = _directive | optionParser | commentParser | includeParser;
+final _statement = _directive | Option.parser | Comment.parser | Include.parser;
 
 final _parser =
     _emptyLine.star() & (_statement & _emptyLine.star()).star() & endOfInput();

@@ -23,7 +23,7 @@ final quotedStringParser = _quotedString.token().map((t) {
   return t.value[1] as String;
 });
 
-final eol = spaceParser.star() & char('\n');
+final eol = spaceParser.star() & (char('\n') | endOfInput());
 
 final indent = spaceParser.times(2).flatten();
 

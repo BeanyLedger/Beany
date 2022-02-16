@@ -1,5 +1,7 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:petitparser/petitparser.dart';
 
+import 'common.dart';
 import 'core.dart';
 
 class Price implements Directive {
@@ -35,4 +37,20 @@ class Price implements Directive {
         currency == t.currency &&
         amount == t.amount;
   }
+
+  static Parser<Price> get parser {
+    return _priceParser.map((value) {
+      return Price(value[0], value[4], value[7]);
+    });
+  }
 }
+
+final _priceParser = dateParser &
+    spaceParser &
+    string('price').labeled('price keyword') &
+    spaceParser &
+    currencyParser &
+    indent &
+    whitespace().star().token() &
+    Amount.parser &
+    eol;

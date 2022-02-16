@@ -6,10 +6,12 @@ import 'package:test/test.dart';
 
 void main() {
   test('Price Parser', () {
-    var input = "2002-01-15 price INR  98.87 EUR\n";
+    var input = "2002-01-15 price INR  98.87 EUR";
+    var price = Price.parser.parse(input).value;
 
+    expect(price.toString(), input);
     expect(
-      priceParser.parse(input).value,
+      price,
       Price(
         DateTime(2002, 01, 15),
         'INR',
@@ -18,7 +20,7 @@ void main() {
     );
 
     var transactions = parser.parse(input).value;
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    var actual = transactions.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 }

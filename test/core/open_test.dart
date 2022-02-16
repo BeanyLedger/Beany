@@ -5,15 +5,14 @@ import 'package:test/test.dart';
 
 void main() {
   test('Open Parser', () {
-    var input = "2000-11-21 open Expenses:Personal:Amazon\n";
+    var input = "2000-11-21 open Expenses:Personal";
+    var open = Open.parser.parse(input).value;
 
-    expect(
-      Open.parser.parse(input).value,
-      Open(DateTime(2000, 11, 21), Account('Expenses:Personal:Amazon')),
-    );
+    expect(open.toString(), input);
+    expect(open, Open(DateTime(2000, 11, 21), Account('Expenses:Personal')));
 
     var transactions = parser.parse(input).value;
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    var actual = transactions.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 }

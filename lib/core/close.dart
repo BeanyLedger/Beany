@@ -1,5 +1,7 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:petitparser/petitparser.dart';
 
+import 'common.dart';
 import 'core.dart';
 
 class Close implements Directive {
@@ -28,4 +30,17 @@ class Close implements Directive {
     if (t is! Close) return false;
     return date == t.date && meta == t.meta && account == t.account;
   }
+
+  static Parser<Close> get parser {
+    return _closeParser.map((value) {
+      return Close(value[0], value[4]);
+    });
+  }
 }
+
+final _closeParser = dateParser &
+    spaceParser &
+    string('close') &
+    spaceParser &
+    Account.parser &
+    eol;
