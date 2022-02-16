@@ -134,7 +134,7 @@ void main() {
       comments: ["Help"],
     );
 
-    expect(trParser.parse(input).value, tr);
+    expect(Transaction.parser.parse(input).value, tr);
   });
 
   test('Transaction MetaData', () {
@@ -156,8 +156,8 @@ void main() {
       meta: {"id": "foo", "power": "zoo"},
     );
 
-    expect(trParser.parse(input).value, tr);
-    expect(trParser.parse(input).value.toString(), tr.toString());
+    expect(Transaction.parser.parse(input).value, tr);
+    expect(Transaction.parser.parse(input).value.toString(), tr.toString());
   });
 
   test('Multiple Transactions', () {

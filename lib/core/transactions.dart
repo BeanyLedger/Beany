@@ -1,7 +1,10 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:petitparser/petitparser.dart';
+import 'package:meta/meta.dart';
 
 import 'account.dart';
+import 'common.dart';
 import 'core.dart';
 
 class Cost {
@@ -62,6 +65,12 @@ class TransactionFlag {
 
   bool operator ==(Object other) =>
       other is TransactionFlag && other.value == value;
+
+  static Parser<TransactionFlag> get parser {
+    return (char('*') | char('!'))
+        .map((f) => TransactionFlag(f))
+        .labeled('Flag');
+  }
 }
 
 class Transaction implements Directive {
@@ -153,4 +162,98 @@ class Transaction implements Directive {
         postings == t.postings &&
         tags == t.tags;
   }
+
+  static Parser<Transaction> get parser {
+    var p = trHeaderParser &
+        trMetaData &
+        trComment.star().token() &
+        posting.plus().token();
+
+    return p.token().map((t) {
+      var v = t.value;
+      var tr = v[0] as Transaction;
+      return tr.copyWith(
+        meta: v[1],
+        comments: (v[2] as Token).value,
+        postings: (v[3] as Token<List<dynamic>>).value.cast<Posting>(),
+      );
+    });
+  }
 }
+
+final _tag = (char('#') & (word() | char('-')).star().flatten())
+    .map((v) => v[1] as String);
+
+final _trHeader = (dateParser &
+    spaceParser &
+    TransactionFlag.parser &
+    spaceParser &
+    quotedStringParser &
+    (spaceParser & quotedStringParser).optional().map((v) => v?[1] ?? "") &
+    (spaceParser.star() & _tag & spaceParser.star()).star().token() &
+    eol);
+
+final trHeaderParser = _trHeader.token().map((token) {
+  var v = token.value;
+  var tagsToken = v[6] as Token<List<List<dynamic>>>;
+  var tags = <String>{};
+  for (var tagGroup in tagsToken.value) {
+    var t = tagGroup[1] as String;
+    tags.add(t);
+  }
+  return Transaction(v[0], v[2], v[4], payee: v[5], tags: tags);
+});
+
+@visibleForTesting
+final postingAccountOnly =
+    (indent & Account.parser & _postingComment.optional() & eol)
+        .token()
+        .map((t) {
+  return Posting(t.value[1], null, comment: t.value[2]);
+});
+
+final _postingComment =
+    (spaceParser.star().token() & char(';') & any().starLazy(eol).flatten())
+        .map((value) {
+  var c = value[2] as String;
+  return c.trim();
+});
+
+@visibleForTesting
+final postingAccountWithAmmount = (indent &
+        Account.parser &
+        indent &
+        whitespace().star().token() &
+        Amount.parser &
+        _postingComment.optional() &
+        eol)
+    .token()
+    .map((t) {
+  return Posting(t.value[1], t.value[4], comment: t.value[5]);
+});
+
+@visibleForTesting
+final trComment = (indent & char(';') & any().starLazy(eol).flatten() & eol)
+    .token()
+    .map((t) => (t.value[2] as String).trim())
+    .cast<String>()
+    .labeled('Comment');
+
+final _trMetaDataLine = indent &
+    word().star().flatten() &
+    char(':') &
+    spaceParser.star() &
+    quotedStringParser &
+    eol;
+
+final trMetaDataLine = _trMetaDataLine.map((v) => <String>[v[1], v[4]]);
+final trMetaData = trMetaDataLine.star().map((v) {
+  var map = <String, dynamic>{};
+  for (var m in v) {
+    map[m[0]] = m[1];
+  }
+  return map;
+});
+
+@visibleForTesting
+final posting = postingAccountOnly | postingAccountWithAmmount;
