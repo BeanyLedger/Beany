@@ -1,7 +1,7 @@
 import 'package:decimal/decimal.dart';
-import 'package:gringotts/core/balance.dart';
 import 'package:gringotts/core/close.dart';
 import 'package:gringotts/core/commodity.dart';
+import 'package:gringotts/core/common.dart';
 import 'package:gringotts/core/core.dart';
 import 'package:gringotts/core/document.dart';
 import 'package:gringotts/core/event.dart';
@@ -78,7 +78,7 @@ void main() {
   });
 
   test('Account', () {
-    expect(accountParser.parse('Hello:A:B').value, Account('Hello:A:B'));
+    expect(Account.parser.parse('Hello:A:B').value, Account('Hello:A:B'));
   });
 
   test('No Transactions', () {
@@ -186,23 +186,6 @@ void main() {
 
 ; Comment
 """;
-
-    var transactions = parser.parse(input).value;
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
-    expect(actual, input);
-  });
-
-  test('Balance Parser', () {
-    var input = "2002-01-15 balance Assets:Personal:Transferwise  98.87 EUR\n";
-
-    expect(
-      balanceParser.parse(input).value,
-      Balance(
-        DateTime(2002, 01, 15),
-        Account('Assets:Personal:Transferwise'),
-        Amount(Decimal.parse("98.87"), "EUR"),
-      ),
-    );
 
     var transactions = parser.parse(input).value;
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";

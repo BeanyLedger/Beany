@@ -1,4 +1,4 @@
-import 'package:decimal/decimal.dart';
+import 'package:gringotts/core/balance.dart';
 import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/document.dart';
 import 'package:gringotts/core/open.dart';
@@ -6,7 +6,7 @@ import 'package:petitparser/petitparser.dart';
 
 import 'package:meta/meta.dart';
 
-import 'core/balance.dart';
+import 'core/common.dart';
 import 'core/close.dart';
 import 'core/core.dart';
 import 'core/event.dart';
@@ -15,41 +15,22 @@ import 'core/price.dart';
 import 'core/statements.dart';
 import 'core/transactions.dart';
 
-final _year = digit().times(4).flatten().map(int.parse);
-final _month = digit().times(2).flatten().map(int.parse);
-final _day = digit().times(2).flatten().map(int.parse);
-final _dateSep = char('-');
-final _date = _year & _dateSep & _month & _dateSep & _day;
-final dateParser = _date.token().map((t) {
-  var val = t.value;
-  return DateTime(val[0], val[2], val[4]);
-}).labeled('date');
-
 // Check if the DateTime contains a valid date!
 
 final _flag =
     (char('*') | char('!')).map((f) => TransactionFlag(f)).labeled('Flag');
 
-final _quote = char('"');
-final _space = char(' ');
-
-final _quotedString = _quote & any().starLazy(_quote | _eol).flatten() & _quote;
-@visibleForTesting
-final quotedStringParser = _quotedString.token().map((t) {
-  return t.value[1] as String;
-});
-
 final _tag = (char('#') & (word() | char('-')).star().flatten())
     .map((v) => v[1] as String);
 
 final _trHeader = (dateParser &
-    _space &
+    spaceParser &
     _flag &
-    _space &
+    spaceParser &
     quotedStringParser &
-    (_space & quotedStringParser).optional().map((v) => v?[1] ?? "") &
-    (_space.star() & _tag & _space.star()).star().token() &
-    _eol);
+    (spaceParser & quotedStringParser).optional().map((v) => v?[1] ?? "") &
+    (spaceParser.star() & _tag & spaceParser.star()).star().token() &
+    eol);
 
 final trHeaderParser = _trHeader.token().map((token) {
   var v = token.value;
@@ -62,77 +43,47 @@ final trHeaderParser = _trHeader.token().map((token) {
   return Transaction(v[0], v[2], v[4], payee: v[5], tags: tags);
 });
 
-final _accountComponent = word().plus();
-final _accountSep = char(':');
-final _account = _accountComponent.separatedBy(_accountSep).flatten();
-
-@visibleForTesting
-final accountParser = _account.map((a) => Account(a));
-
-final _indent = _space.times(2).flatten();
-
 @visibleForTesting
 final postingAccountOnly =
-    (_indent & accountParser & _postingComment.optional() & _eol)
+    (indent & Account.parser & _postingComment.optional() & eol)
         .token()
         .map((t) {
   return Posting(t.value[1], null, comment: t.value[2]);
 });
 
-final _decimal = char('.');
-final _number = char('-').optional() &
-    digit().star() &
-    (_decimal & digit().plus()).optional();
-
-@visibleForTesting
-final numberParser = _number.flatten().map((value) {
-  assert(value.isNotEmpty);
-  try {
-    return Decimal.parse(value);
-  } catch (ex) {
-    throw Exception("Failed to parse '$value' as Decimal");
-  }
-});
-
-final _currency = word().plus().flatten();
-
-final _amount = (numberParser & char(' ') & _currency)
-    .token()
-    .map((t) => Amount(t.value[0], t.value[2] as String));
-
 final _postingComment =
-    (_space.star().token() & char(';') & any().starLazy(_eol).flatten())
+    (spaceParser.star().token() & char(';') & any().starLazy(eol).flatten())
         .map((value) {
   var c = value[2] as String;
   return c.trim();
 });
 
 @visibleForTesting
-final postingAccountWithAmmount = (_indent &
-        accountParser &
-        _indent &
+final postingAccountWithAmmount = (indent &
+        Account.parser &
+        indent &
         whitespace().star().token() &
-        _amount &
+        Amount.parser &
         _postingComment.optional() &
-        _eol)
+        eol)
     .token()
     .map((t) {
   return Posting(t.value[1], t.value[4], comment: t.value[5]);
 });
 
 @visibleForTesting
-final trComment = (_indent & char(';') & any().starLazy(_eol).flatten() & _eol)
+final trComment = (indent & char(';') & any().starLazy(eol).flatten() & eol)
     .token()
     .map((t) => (t.value[2] as String).trim())
     .cast<String>()
     .labeled('Comment');
 
-final _trMetaDataLine = _indent &
+final _trMetaDataLine = indent &
     word().star().flatten() &
     char(':') &
-    _space.star() &
+    spaceParser.star() &
     quotedStringParser &
-    _eol;
+    eol;
 
 final trMetaDataLine = _trMetaDataLine.map((v) => <String>[v[1], v[4]]);
 final trMetaData = trMetaDataLine.star().map((v) {
@@ -142,8 +93,6 @@ final trMetaData = trMetaDataLine.star().map((v) {
   }
   return map;
 });
-
-final _eol = _space.star() & char('\n');
 
 @visibleForTesting
 final posting = postingAccountOnly | postingAccountWithAmmount;
@@ -164,63 +113,61 @@ final trParser = _trParser.token().map((t) {
   );
 });
 
-final _balanceParser = dateParser &
-    _space &
-    string('balance') &
-    _space &
-    accountParser &
-    _indent &
-    whitespace().star().token() &
-    _amount &
-    _eol;
-
-final balanceParser = _balanceParser.map((value) {
-  return Balance(value[0], value[4], value[7]);
-});
-
 final _priceParser = dateParser &
-    _space &
+    spaceParser &
     string('price').labeled('price keyword') &
-    _space &
-    _currency &
-    _indent &
+    spaceParser &
+    currencyParser &
+    indent &
     whitespace().star().token() &
-    _amount &
-    _eol;
+    Amount.parser &
+    eol;
 
 final priceParser = _priceParser.map((value) {
   return Price(value[0], value[4], value[7]);
 });
 
-final _openParser =
-    dateParser & _space & string('open') & _space & accountParser & _eol;
+final _openParser = dateParser &
+    spaceParser &
+    string('open') &
+    spaceParser &
+    Account.parser &
+    eol;
 
 final openParser = _openParser.map((value) {
   return Open(value[0], value[4]);
 });
 
-final _closeParser =
-    dateParser & _space & string('close') & _space & accountParser & _eol;
+final _closeParser = dateParser &
+    spaceParser &
+    string('close') &
+    spaceParser &
+    Account.parser &
+    eol;
 
 final closeParser = _closeParser.map((value) {
   return Close(value[0], value[4]);
 });
 
-final _commodityParser =
-    dateParser & _space & string('commodity') & _space & _currency & _eol;
+final _commodityParser = dateParser &
+    spaceParser &
+    string('commodity') &
+    spaceParser &
+    currencyParser &
+    eol;
 
 final commodityParser = _commodityParser.map((value) {
   return Commodity(value[0], value[4]);
 });
 
 final _noteParser = dateParser &
-    _space &
+    spaceParser &
     string('note') &
-    _space &
-    accountParser &
-    _space &
+    spaceParser &
+    Account.parser &
+    spaceParser &
     quotedStringParser &
-    _eol;
+    eol;
 
 @visibleForTesting
 final noteParser = _noteParser.map((value) {
@@ -228,13 +175,13 @@ final noteParser = _noteParser.map((value) {
 });
 
 final _eventParser = dateParser &
-    _space &
+    spaceParser &
     string('event') &
-    _space &
+    spaceParser &
     quotedStringParser &
-    _space &
+    spaceParser &
     quotedStringParser &
-    _eol;
+    eol;
 
 @visibleForTesting
 final eventParser = _eventParser.map((value) {
@@ -242,13 +189,13 @@ final eventParser = _eventParser.map((value) {
 });
 
 final _documentParser = dateParser &
-    _space &
+    spaceParser &
     string('document') &
-    _space &
-    accountParser &
-    _space &
+    spaceParser &
+    Account.parser &
+    spaceParser &
     quotedStringParser &
-    _eol;
+    eol;
 
 @visibleForTesting
 final documentParser = _documentParser.map((value) {
@@ -256,24 +203,24 @@ final documentParser = _documentParser.map((value) {
 });
 
 final _optionParser = string('option') &
-    _space.star() &
+    spaceParser.star() &
     quotedStringParser &
-    _space.star() &
+    spaceParser.star() &
     quotedStringParser &
-    _eol;
+    eol;
 @visibleForTesting
 final optionParser = _optionParser.map((v) => Option(v[2], v[4]));
 
 final _includeParser =
-    string('include') & _space.star() & quotedStringParser & _eol;
+    string('include') & spaceParser.star() & quotedStringParser & eol;
 @visibleForTesting
 final includeParser = _includeParser.map((v) => Include(v[2]));
 
-final _commentParser = char(';') & any().starLazy(_eol).flatten() & _eol;
+final _commentParser = char(';') & any().starLazy(eol).flatten() & eol;
 final commentParser = _commentParser.map((v) => Comment(v[1].trim()));
 
-final _emptyLine = _space.star() & char('\n');
-final _directive = balanceParser |
+final _emptyLine = spaceParser.star() & char('\n');
+final _directive = Balance.parser |
     priceParser |
     trParser |
     openParser |
