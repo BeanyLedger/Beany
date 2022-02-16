@@ -11,7 +11,7 @@ import 'core/event.dart';
 import 'core/note.dart';
 import 'core/price.dart';
 import 'core/statements.dart';
-import 'core/transactions.dart';
+import 'core/transaction.dart';
 
 // Check if the DateTime contains a valid date!
 
