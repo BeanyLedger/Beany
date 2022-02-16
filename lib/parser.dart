@@ -127,17 +127,6 @@ final priceParser = _priceParser.map((value) {
   return Price(value[0], value[4], value[7]);
 });
 
-final _openParser = dateParser &
-    spaceParser &
-    string('open') &
-    spaceParser &
-    Account.parser &
-    eol;
-
-final openParser = _openParser.map((value) {
-  return Open(value[0], value[4]);
-});
-
 final _closeParser = dateParser &
     spaceParser &
     string('close') &
@@ -223,7 +212,7 @@ final _emptyLine = spaceParser.star() & char('\n');
 final _directive = Balance.parser |
     priceParser |
     trParser |
-    openParser |
+    Open.parser |
     closeParser |
     noteParser |
     commodityParser |

@@ -1,14 +1,6 @@
 import 'package:decimal/decimal.dart';
-import 'package:gringotts/core/close.dart';
-import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/core/common.dart';
 import 'package:gringotts/core/core.dart';
-import 'package:gringotts/core/document.dart';
-import 'package:gringotts/core/event.dart';
-import 'package:gringotts/core/note.dart';
-import 'package:gringotts/core/open.dart';
-import 'package:gringotts/core/price.dart';
-import 'package:gringotts/core/statements.dart';
 import 'package:gringotts/core/transactions.dart';
 import 'package:gringotts/parser.dart';
 import 'package:test/test.dart';
@@ -191,110 +183,64 @@ void main() {
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
     expect(actual, input);
   });
-
-  test('Price Parser', () {
-    var input = "2002-01-15 price INR  98.87 EUR\n";
-
-    expect(
-      priceParser.parse(input).value,
-      Price(
-        DateTime(2002, 01, 15),
-        'INR',
-        Amount(Decimal.parse("98.87"), "EUR"),
-      ),
-    );
-
-    var transactions = parser.parse(input).value;
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
-    expect(actual, input);
-  });
-  test('Open Parser', () {
-    var input = "2000-11-21 open Expenses:Personal:Amazon\n";
-
-    expect(
-      openParser.parse(input).value,
-      Open(DateTime(2000, 11, 21), Account('Expenses:Personal:Amazon')),
-    );
-
-    var transactions = parser.parse(input).value;
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
-    expect(actual, input);
-  });
-
-  test('Close Parser', () {
-    var input = "2000-11-21 close Expenses:Personal:Amazon\n";
-
-    expect(
-      closeParser.parse(input).value,
-      Close(DateTime(2000, 11, 21), Account('Expenses:Personal:Amazon')),
-    );
-
-    var transactions = parser.parse(input).value;
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
-    expect(actual, input);
-  });
-
-  test('Commodity Parser', () {
-    var input = "2000-11-21 commodity INR\n";
-
-    expect(
-      commodityParser.parse(input).value,
-      Commodity(DateTime(2000, 11, 21), 'INR'),
-    );
-
-    var transactions = parser.parse(input).value;
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
-    expect(actual, input);
-  });
-
-  test('Option Parser', () {
-    expect(
-      optionParser.parse('option "title" "Ed’s Personal Ledger"\n').value,
-      Option('title', "Ed’s Personal Ledger"),
-    );
-  });
-
-  test('Include Parser', () {
-    expect(
-      includeParser.parse('include "../path" \n').value,
-      Include('../path'),
-    );
-  });
-
-  test('Note Parser', () {
-    expect(
-      noteParser
-          .parse('2013-11-03 note Assets:CreditCard "Called about fraud."\n')
-          .value,
-      Note(
-        DateTime(2013, 11, 03),
-        Account('Assets:CreditCard'),
-        "Called about fraud.",
-      ),
-    );
-  });
-
-  test('Document Parser', () {
-    expect(
-      documentParser
-          .parse('2013-11-03 document Assets:Card "/home/joe/apr-2014.pdf"\n')
-          .value,
-      Document(
-        DateTime(2013, 11, 03),
-        Account('Assets:Card'),
-        "/home/joe/apr-2014.pdf",
-      ),
-    );
-  });
-
-  test('Event Parser', () {
-    expect(
-      eventParser.parse('2013-11-03 event "location" "Paris, France"\n').value,
-      Event(DateTime(2013, 11, 03), "location", "Paris, France"),
-    );
-  });
 }
 
 
 // Query directive
 // Custom
+
+
+// Currency conversion, complex posting
+
+/*
+2012-11-03 * "Transfer to account in Canada"
+  Assets:MyBank:Checking            -400.00 USD @ 1.09 CAD
+  Assets:FR:SocGen:Checking          436.01 CAD
+*/
+
+/*
+2012-11-03 * "Transfer to account in Canada"
+  Assets:MyBank:Checking            -400.00 USD @@ 436.01 CAD
+  Assets:FR:SocGen:Checking          436.01 CAD
+*/
+
+/*
+2014-02-11 * "Bought shares of S&P 500"
+  Assets:ETrade:IVV                10 IVV {183.07 USD}
+  Assets:ETrade:Cash         -1830.70 USD
+*/
+
+
+/*
+Links
+
+2014-02-05 * "Invoice for January" ^invoice-pepe-studios-jan14
+  Income:Clients:PepeStudios           -8450.00 USD
+  Assets:AccountsReceivable
+
+2014-02-20 * "Check deposit - payment from Pepe" ^invoice-pepe-studios-jan14
+  Assets:BofA:Checking                  8450.00 USD
+  Assets:AccountsReceivable
+
+  */
+
+
+
+
+/*
+2013-03-14 open Assets:BTrade:HOOLI
+  category: "taxable"
+
+Metadata values -
+    Strings
+    Accounts
+    Currency
+    Dates (datetime.date)
+    Tags
+    Numbers (Decimal)
+    Amount (beancount.core.amount.Amount)
+*/
+
+
+//
+//
