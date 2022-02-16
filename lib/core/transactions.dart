@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
+import 'account.dart';
 import 'core.dart';
 
 class Cost {

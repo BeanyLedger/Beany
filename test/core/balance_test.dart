@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:gringotts/core/account.dart';
 import 'package:gringotts/core/balance.dart';
 import 'package:gringotts/core/core.dart';
 import 'package:gringotts/parser.dart';

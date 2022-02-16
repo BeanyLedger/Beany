@@ -6,6 +6,7 @@ import 'package:petitparser/petitparser.dart';
 
 import 'package:meta/meta.dart';
 
+import 'core/account.dart';
 import 'core/common.dart';
 import 'core/close.dart';
 import 'core/core.dart';

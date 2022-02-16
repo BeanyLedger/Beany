@@ -69,10 +69,6 @@ void main() {
     );
   });
 
-  test('Account', () {
-    expect(Account.parser.parse('Hello:A:B').value, Account('Hello:A:B'));
-  });
-
   test('No Transactions', () {
     expect(parser.parse("").value, []);
   });

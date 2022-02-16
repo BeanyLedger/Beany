@@ -1,4 +1,4 @@
-import 'package:gringotts/core/core.dart';
+import 'package:gringotts/core/account.dart';
 import 'package:gringotts/core/note.dart';
 import 'package:gringotts/parser.dart';
 import 'package:test/test.dart';

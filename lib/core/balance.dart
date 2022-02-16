@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:petitparser/petitparser.dart';
 
+import 'account.dart';
 import 'common.dart';
 import 'core.dart';
 
