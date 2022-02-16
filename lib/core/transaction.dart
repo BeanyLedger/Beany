@@ -10,10 +10,10 @@ import 'core.dart';
 class Cost {
   final Decimal number;
   final String currency;
-  final DateTime? date;
+  final DateTime date;
   final String? label;
 
-  Cost(this.number, this.currency, {this.date, this.label});
+  Cost(this.number, this.currency, this.date, {this.label});
 
   Cost copyWith({
     Decimal? number,
@@ -24,7 +24,7 @@ class Cost {
     return Cost(
       number ?? this.number,
       currency ?? this.currency,
-      date: date ?? this.date,
+      date ?? this.date,
       label: label ?? this.label,
     );
   }
@@ -244,7 +244,7 @@ class Transaction implements Directive {
 
       return tr.copyWith(postings: tr.postings.map((p) {
         if (p.cost == null) return p;
-        if (p.cost!.date == null) {
+        if (p.cost!.date.millisecondsSinceEpoch == 0) {
           p = p.copyWith(cost: p.cost!.copyWith(date: tr.date));
         }
         return p;
@@ -319,7 +319,12 @@ final _postingWithExplicitPrice = indent &
 @visibleForTesting
 final postingWithExplicitPrice = _postingWithExplicitPrice.map((v) {
   var ca = v[8] as Amount;
-  return Posting(v[1], v[4], cost: Cost(ca.number, ca.currency), comment: v[9]);
+  var cost = Cost(
+    ca.number,
+    ca.currency,
+    DateTime.fromMillisecondsSinceEpoch(0),
+  );
+  return Posting(v[1], v[4], cost: cost, comment: v[9]);
 });
 
 @visibleForTesting

@@ -175,11 +175,7 @@ void main() {
           Posting(
             Account('Assets:MyBank:Checking'),
             Amount(Decimal.fromJson("-400.00"), "USD"),
-            cost: Cost(
-              Decimal.fromJson("1.09"),
-              "CAD",
-              date: DateTime(2012, 11, 3),
-            ),
+            cost: Cost(Decimal.fromJson("1.09"), "CAD", DateTime(2012, 11, 3)),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
