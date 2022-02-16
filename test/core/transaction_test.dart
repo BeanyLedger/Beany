@@ -1,3 +1,6 @@
+import 'package:decimal/decimal.dart';
+import 'package:gringotts/core/account.dart';
+import 'package:gringotts/core/core.dart';
 import 'package:gringotts/core/transaction.dart';
 import 'package:gringotts/parser.dart';
 import 'package:test/test.dart';
@@ -138,12 +141,12 @@ void main() {
     var input = """
 2019-04-14 * "Cat Powder"
   ; Help
-  Expenses:Mystery:CatPowder  1.5 EUR
+  Expenses:Mystery:CatPowder  1.50 EUR
   Assets:Savings
 
 2019-04-19 ! "Dog Powder"
   ; Helper
-  Expenses:Mystery:DogPowder  -2.5 EUR
+  Expenses:Mystery:DogPowder  -2.50 EUR
   Assets:Dogs
 
 ; Comment
@@ -152,6 +155,39 @@ void main() {
     var transactions = parser.parse(input).value;
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
     expect(actual, input);
+  });
+
+  test('Posting with Explicit Price', () {
+    var input = """2012-11-03 * "Transfer to account in Canada"
+  Assets:MyBank:Checking  -400.00 USD @ 1.09 CAD
+  Assets:FR:SocGen:Checking  436.01 CAD
+""";
+
+    var tr = Transaction.parser.parse(input).value;
+    expect(tr.toString(), input);
+    expect(
+      tr,
+      Transaction(
+        DateTime(2012, 11, 3),
+        TransactionFlag.Okay,
+        "Transfer to account in Canada",
+        postings: [
+          Posting(
+            Account('Assets:MyBank:Checking'),
+            Amount(Decimal.fromJson("-400.00"), "USD"),
+            cost: Cost(
+              Decimal.fromJson("1.09"),
+              "CAD",
+              date: DateTime(2012, 11, 3),
+            ),
+          ),
+          Posting(
+            Account('Assets:FR:SocGen:Checking'),
+            Amount(Decimal.fromJson("436.01"), "CAD"),
+          )
+        ],
+      ),
+    );
   });
 }
 
@@ -162,24 +198,32 @@ void main() {
 
 // Currency conversion, complex posting
 
-/*
-2012-11-03 * "Transfer to account in Canada"
-  Assets:MyBank:Checking            -400.00 USD @ 1.09 CAD
-  Assets:FR:SocGen:Checking          436.01 CAD
-*/
 
 /*
 2012-11-03 * "Transfer to account in Canada"
   Assets:MyBank:Checking            -400.00 USD @@ 436.01 CAD
   Assets:FR:SocGen:Checking          436.01 CAD
+
+- Posting with Price Total Cost
+
 */
 
 /*
 2014-02-11 * "Bought shares of S&P 500"
   Assets:ETrade:IVV                10 IVV {183.07 USD}
   Assets:ETrade:Cash         -1830.70 USD
+
+- Posting At Cost
 */
 
+/*
+2014-07-11 * "Sold shares of S&P 500"
+  Assets:ETrade:IVV               -10 IVV {183.07 USD} @ 197.90 USD
+  Assets:ETrade:Cash          1979.90 USD
+  Income:ETrade:CapitalGains
+
+- Posting At Cost With Price
+*/
 
 /*
 Links

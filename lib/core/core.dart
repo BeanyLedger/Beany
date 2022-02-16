@@ -11,7 +11,7 @@ class Amount {
   Amount(this.number, this.currency);
 
   String toString() {
-    return number.toString() + ' ' + currency;
+    return number.toStringAsFixed(2) + ' ' + currency;
   }
 
   bool operator ==(Object other) =>
