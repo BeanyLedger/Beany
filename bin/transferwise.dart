@@ -6,7 +6,7 @@ import 'package:ninja/asymmetric/rsa/encoder/emsaPkcs1v15.dart';
 import 'package:ninja/ninja.dart';
 
 void main() async {
-  var startDate = DateTime.now().subtract(Duration(days: 100));
+  var startDate = DateTime.now().subtract(Duration(days: 300));
   var endDate = DateTime.now();
 
   var start = startDate.toUtc().toIso8601String();
@@ -19,28 +19,24 @@ void main() async {
       "https://api.transferwise.com/v3/profiles/$profileId/borderless-accounts/$accountId/statement.json?currency=$currency&intervalStart=$start&intervalEnd=$end");
 
   var headers = {
-    HttpHeaders.authorizationHeader: 'Bearer <X>',
+    HttpHeaders.authorizationHeader:
+        'Bearer d492ee04-007a-4796-99b4-ed2e8b9a4705',
     HttpHeaders.contentTypeHeader: 'application/json',
   };
 
   var client = http.Client();
   var response = await client.get(url, headers: headers);
-  print(response);
-  print(response.headers);
 
   var twoFAStatus = response.headers['x-2fa-approval-result'];
-  var twoFAHeader = response.headers['x-2fa-approval']!;
+  if (twoFAStatus != 'APPROVED') {
+    var twoFAHeader = response.headers['x-2fa-approval']!;
 
-  print(twoFAStatus);
-  print(twoFAHeader);
-
-  var s = sign(twoFAHeader);
-  headers['X-Signature'] = s;
-  headers['x-2fa-approval'] = twoFAHeader;
+    var s = sign(twoFAHeader);
+    headers['X-Signature'] = s;
+    headers['x-2fa-approval'] = twoFAHeader;
+  }
 
   response = await client.get(url, headers: headers);
-  print(response);
-  print(response.headers);
   print(response.body);
 }
 
