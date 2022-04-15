@@ -6,8 +6,13 @@ import 'package:ninja/asymmetric/rsa/encoder/emsaPkcs1v15.dart';
 import 'package:ninja/ninja.dart';
 
 void main() async {
-  var startDate = DateTime.now().subtract(Duration(days: 300));
-  var endDate = DateTime.now();
+  var body = await fetch();
+  print(body);
+}
+
+Future<String> fetch() async {
+  var startDate = DateTime.now().subtract(Duration(days: 800));
+  var endDate = DateTime.now().subtract(Duration(days: 299));
 
   var start = startDate.toUtc().toIso8601String();
   var end = endDate.toUtc().toIso8601String();
@@ -28,21 +33,25 @@ void main() async {
   var response = await client.get(url, headers: headers);
 
   var twoFAStatus = response.headers['x-2fa-approval-result'];
-  if (twoFAStatus != 'APPROVED') {
-    var twoFAHeader = response.headers['x-2fa-approval']!;
-
-    var s = sign(twoFAHeader);
-    headers['X-Signature'] = s;
-    headers['x-2fa-approval'] = twoFAHeader;
+  if (twoFAStatus == 'APPROVED') {
+    var body = await response.body;
+    client.close();
+    return body;
   }
+  var twoFAHeader = response.headers['x-2fa-approval']!;
+
+  var s = sign(twoFAHeader);
+  headers['X-Signature'] = s;
+  headers['x-2fa-approval'] = twoFAHeader;
 
   response = await client.get(url, headers: headers);
-  print(response.body);
+
+  var body = await response.body;
+  client.close();
+  return body;
 }
 
 String sign(String message) {
-  // var message = 'be2f6579-9426-480b-9cb7-d8f1116cc8b9';
-
   final privateKeyPem = File('private.pem').readAsStringSync();
   final privateKey = RSAPrivateKey.fromPEM(privateKeyPem);
 
