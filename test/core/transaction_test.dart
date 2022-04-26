@@ -167,36 +167,6 @@ void main() {
 // Query directive
 // Custom
 
-
-// Currency conversion, complex posting
-
-
-/*
-2012-11-03 * "Transfer to account in Canada"
-  Assets:MyBank:Checking            -400.00 USD @@ 436.01 CAD
-  Assets:FR:SocGen:Checking          436.01 CAD
-
-- Posting with Price Total Cost
-
-*/
-
-/*
-2014-02-11 * "Bought shares of S&P 500"
-  Assets:ETrade:IVV                10 IVV {183.07 USD}
-  Assets:ETrade:Cash         -1830.70 USD
-
-- Posting At Cost
-*/
-
-/*
-2014-07-11 * "Sold shares of S&P 500"
-  Assets:ETrade:IVV               -10 IVV {183.07 USD} @ 197.90 USD
-  Assets:ETrade:Cash          1979.90 USD
-  Income:ETrade:CapitalGains
-
-- Posting At Cost With Price
-*/
-
 /*
 Links
 
@@ -209,9 +179,6 @@ Links
   Assets:AccountsReceivable
 
   */
-
-
-
 
 /*
 2013-03-14 open Assets:BTrade:HOOLI
@@ -226,7 +193,3 @@ Metadata values -
     Numbers (Decimal)
     Amount (beancount.core.amount.Amount)
 */
-
-
-//
-//
