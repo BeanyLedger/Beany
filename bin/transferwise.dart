@@ -26,13 +26,18 @@ class _BalanceAccountInfo {
   final String currency;
 
   _BalanceAccountInfo(this.id, this.currency);
+
+  @override
+  String toString() {
+    return "_BalanceAccountInfo{id: $id, currency: $currency}";
+  }
 }
 
 class TransferWiseImporter {
   final String token = "d492ee04-007a-4796-99b4-ed2e8b9a4705";
 
   Future<String> profile() async {
-    var url = Uri.parse("https://api.transferwise.com/v2/profiles");
+    var url = "https://api.transferwise.com/v2/profiles";
     var data = jsonDecode(await _fetch(url));
     if (data is! List) {
       throw new Exception("Faulty data when asking for profiles");
@@ -53,15 +58,15 @@ class TransferWiseImporter {
   }
 
   Future<List<String>> availableCurrencies(String profileId) async {
-    var url = Uri.parse(
-        "https://api.transferwise.com/v2/borderless-accounts-configuration/profiles/${profileId}/available-currencies");
+    var url =
+        "https://api.transferwise.com/v2/borderless-accounts-configuration/profiles/${profileId}/available-currencies";
 
     return jsonDecode(await _fetch(url));
   }
 
   Future<List<_BalanceAccountInfo>> balanceAccount(String profileId) async {
-    var url = Uri.parse(
-        "https://api.transferwise.com/v4/profiles/${profileId}/balances?types=STANDARD");
+    var url =
+        "https://api.transferwise.com/v4/profiles/${profileId}/balances?types=STANDARD";
     var data = jsonDecode(await _fetch(url));
 
     if (data is! List) {
@@ -90,16 +95,15 @@ class TransferWiseImporter {
       throw Exception("Transferwise Duration's must be less than 300 days");
     }
 
-    var url = Uri.parse(
-        "https://api.transferwise.com/v3/profiles/$profileId/borderless-accounts/$balanceAccountId/statement.json?currency=$currency&intervalStart=$startDate&intervalEnd=$endDate");
+    var url =
+        "https://api.transferwise.com/v3/profiles/$profileId/borderless-accounts/$balanceAccountId/statement.json?currency=$currency&intervalStart=$startDate&intervalEnd=$endDate";
 
     print(url);
     return _fetch(url);
   }
 
-  Future<String> _fetch(
-    Uri url,
-  ) async {
+  Future<String> _fetch(String uri) async {
+    final url = Uri.parse(uri);
     var headers = {
       HttpHeaders.authorizationHeader: 'Bearer ${token}',
       HttpHeaders.contentTypeHeader: 'application/json',
