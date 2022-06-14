@@ -16,8 +16,9 @@ void main() async {
 
   final accounts = await importer.balanceAccount(p);
   for (var ac in accounts) {
-    var body = await importer.fetch(p, ac.id, startDate, endDate, ac.currency);
-    print("fetched " + body.toString());
+    var body =
+        await importer.statement(p, ac.id, startDate, endDate, ac.currency);
+    print("fetched " + body);
   }
 }
 
@@ -35,9 +36,10 @@ class _BalanceAccountInfo {
 
 class TransferWiseImporter {
   final String token = "d492ee04-007a-4796-99b4-ed2e8b9a4705";
+  final bool useProduction = true;
 
   Future<String> profile() async {
-    var url = "https://api.transferwise.com/v2/profiles";
+    var url = "/v2/profiles";
     var data = jsonDecode(await _fetch(url));
     if (data is! List) {
       throw new Exception("Faulty data when asking for profiles");
@@ -59,14 +61,13 @@ class TransferWiseImporter {
 
   Future<List<String>> availableCurrencies(String profileId) async {
     var url =
-        "https://api.transferwise.com/v2/borderless-accounts-configuration/profiles/${profileId}/available-currencies";
+        "/v2/borderless-accounts-configuration/profiles/${profileId}/available-currencies";
 
     return jsonDecode(await _fetch(url));
   }
 
   Future<List<_BalanceAccountInfo>> balanceAccount(String profileId) async {
-    var url =
-        "https://api.transferwise.com/v4/profiles/${profileId}/balances?types=STANDARD";
+    var url = "/v4/profiles/${profileId}/balances?types=STANDARD";
     var data = jsonDecode(await _fetch(url));
 
     if (data is! List) {
@@ -78,7 +79,7 @@ class TransferWiseImporter {
         .toList();
   }
 
-  Future<String> fetch(
+  Future<String> statement(
     String profileId,
     String balanceAccountId,
     DateTime startDate,
@@ -96,14 +97,17 @@ class TransferWiseImporter {
     }
 
     var url =
-        "https://api.transferwise.com/v3/profiles/$profileId/borderless-accounts/$balanceAccountId/statement.json?currency=$currency&intervalStart=$startDate&intervalEnd=$endDate";
+        "/v3/profiles/$profileId/borderless-accounts/$balanceAccountId/statement.json?currency=$currency&intervalStart=$startDate&intervalEnd=$endDate";
 
     print(url);
     return _fetch(url);
   }
 
   Future<String> _fetch(String uri) async {
-    final url = Uri.parse(uri);
+    final baseUrl = useProduction
+        ? "https://api.transferwise.com"
+        : "https://api.sandbox.transferwise.tech";
+    final url = Uri.parse(baseUrl + uri);
     var headers = {
       HttpHeaders.authorizationHeader: 'Bearer ${token}',
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -111,8 +115,9 @@ class TransferWiseImporter {
 
     var client = http.Client();
     var response = await client.get(url, headers: headers);
-    if (response.statusCode != 200 && response.statusCode != 400) {
-      print("Wrong status code: ${response.statusCode}");
+    var code = response.statusCode;
+    if (code != 200 && code != 403) {
+      print("Wrong status code: $code");
       print(response.body);
 
       throw Exception("Wrong status code: ${response.statusCode}");
