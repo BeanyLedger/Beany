@@ -18,7 +18,13 @@ void main() async {
   for (var ac in accounts) {
     var body =
         await importer.statement(p, ac.id, startDate, endDate, ac.currency);
-    print("fetched " + body);
+
+    var startDateOnly = startDate.toIso8601String().substring(0, 10);
+    var endDateOnly = endDate.toIso8601String().substring(0, 10);
+    var fileName = "$startDateOnly.$endDateOnly.${ac.currency}.json";
+    File(fileName).writeAsStringSync(body);
+
+    print(fileName);
   }
 }
 
@@ -86,7 +92,6 @@ class TransferWiseImporter {
     DateTime endDate,
     String currency,
   ) async {
-    print("fetch $profileId $balanceAccountId $currency");
     if (endDate.isBefore(startDate)) {
       throw Exception("EndDate before Start Date");
     }
@@ -96,10 +101,10 @@ class TransferWiseImporter {
       throw Exception("Transferwise Duration's must be less than 300 days");
     }
 
+    final sd = startDate.toUtc().toIso8601String();
+    final ed = endDate.toUtc().toIso8601String();
     var url =
-        "/v3/profiles/$profileId/borderless-accounts/$balanceAccountId/statement.json?currency=$currency&intervalStart=$startDate&intervalEnd=$endDate";
-
-    print(url);
+        "/v1/profiles/$profileId/balance-statements/$balanceAccountId/statement.json?currency=$currency&intervalStart=$sd&intervalEnd=$ed&type=COMPACT";
     return _fetch(url);
   }
 
@@ -117,8 +122,8 @@ class TransferWiseImporter {
     var response = await client.get(url, headers: headers);
     var code = response.statusCode;
     if (code != 200 && code != 403) {
-      print("Wrong status code: $code");
-      print(response.body);
+      // print("Wrong status code: $code");
+      // print(response.body);
 
       throw Exception("Wrong status code: ${response.statusCode}");
       // return null;
@@ -127,8 +132,8 @@ class TransferWiseImporter {
     var twoFAStatus = response.headers['x-2fa-approval-result'];
     if (twoFAStatus == 'APPROVED') {
       var body = await response.body;
-      print("Approved $body");
-      print("Approved ${response.headers}");
+      // print("Approved $body");
+      // print("Approved ${response.headers}");
       client.close();
       return body;
     }
@@ -146,7 +151,6 @@ class TransferWiseImporter {
 
     var body = await response.body;
 
-    print("got body $body");
     client.close();
     return body;
   }
