@@ -7,7 +7,12 @@ import 'package:ninja/asymmetric/rsa/encoder/emsaPkcs1v15.dart';
 import 'package:ninja/ninja.dart';
 
 void main() async {
-  var importer = TransferWiseImporter();
+  final privateKeyPem = File('private.pem').readAsStringSync();
+
+  var importer = TransferWiseImporter(
+    token: "d492ee04-007a-4796-99b4-ed2e8b9a4705",
+    certificatePEM: privateKeyPem,
+  );
 
   final p = await importer.profile();
 
@@ -41,8 +46,11 @@ class _BalanceAccountInfo {
 }
 
 class TransferWiseImporter {
-  final String token = "d492ee04-007a-4796-99b4-ed2e8b9a4705";
+  final String token;
+  final String certificatePEM;
   final bool useProduction = true;
+
+  TransferWiseImporter({required this.token, required this.certificatePEM});
 
   Future<String> profile() async {
     var url = "/v2/profiles";
@@ -143,7 +151,7 @@ class TransferWiseImporter {
       return response.body;
     }
 
-    var s = sign(twoFAHeader);
+    var s = _sign(twoFAHeader, certificatePEM);
     headers['X-Signature'] = s;
     headers['x-2fa-approval'] = twoFAHeader;
 
@@ -156,9 +164,7 @@ class TransferWiseImporter {
   }
 }
 
-String sign(String message) {
-  final privateKeyPem = File('private.pem').readAsStringSync();
-  final privateKey = RSAPrivateKey.fromPEM(privateKeyPem);
-
+String _sign(String message, String pemCertificate) {
+  final privateKey = RSAPrivateKey.fromPEM(pemCertificate);
   return privateKey.signSsaPkcs1v15ToBase64(message, hasher: EmsaHasher.sha256);
 }
