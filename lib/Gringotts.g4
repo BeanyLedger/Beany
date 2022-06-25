@@ -4,19 +4,19 @@ grammar Gringotts;
  * Parser Rules
  */
 
-all: (statement | comment | empty_line)+ EOF;
-comment: '#'+ ~NEWLINE+ NEWLINE;
+all: (statement | comment | empty_line)* EOF;
+comment: '#' ~NEWLINE NEWLINE;
 
-statement: (balanceStatement | closeStatement | openStatement)+ NEWLINE;
+statement: (balanceStatement | closeStatement | openStatement) NEWLINE;
 
-account: WORD+ (':'+ WORD)*;
+account: WORD (':'+ WORD);
 currency: WORD;
 
-amount: NUMBER+ currency;
+amount: NUMBER currency;
 
-balanceStatement: DATE+ 'balance'+ account+ amount;
-closeStatement: DATE+ 'close'+ account;
-openStatement: DATE+ 'open'+ account;
+balanceStatement: DATE 'balance' account amount;
+closeStatement: DATE 'close' account;
+openStatement: DATE 'open' account;
 
 empty_line: NEWLINE;
 
