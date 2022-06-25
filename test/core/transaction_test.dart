@@ -3,7 +3,7 @@ import 'package:gringotts/core/account.dart';
 import 'package:gringotts/core/core.dart';
 import 'package:gringotts/core/posting.dart';
 import 'package:gringotts/core/transaction.dart';
-import 'package:gringotts/parser.dart';
+import 'package:gringotts/parser/parser.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -109,8 +109,8 @@ void main() {
       meta: {"id": "foo", "power": "zoo"},
     );
 
-    expect(Transaction.parser.parse(input).value, tr);
-    expect(Transaction.parser.parse(input).value.toString(), tr.toString());
+    expect(parse(input).trStatement().val(), tr);
+    expect(parse(input).trStatement().val().toString(), tr.toString());
   });
 
   test('Multiple Transactions', () {

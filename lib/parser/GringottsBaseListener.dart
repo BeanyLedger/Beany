@@ -132,11 +132,11 @@ class GringottsBaseListener implements GringottsListener {
 
   /// The default implementation does nothing.
   @override
-  void enterTr_statement(Tr_statementContext ctx) {}
+  void enterTrStatement(TrStatementContext ctx) {}
 
   /// The default implementation does nothing.
   @override
-  void exitTr_statement(Tr_statementContext ctx) {}
+  void exitTrStatement(TrStatementContext ctx) {}
 
   /// The default implementation does nothing.
   @override
@@ -185,6 +185,14 @@ class GringottsBaseListener implements GringottsListener {
   /// The default implementation does nothing.
   @override
   void exitDate(DateContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterQuoted_string(Quoted_stringContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitQuoted_string(Quoted_stringContext ctx) {}
 
   /// The default implementation does nothing.
   @override

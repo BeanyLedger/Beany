@@ -16,10 +16,10 @@ statement: (
 		| eventStatement
 		| documentStatement
 		| noteStatement
-		| tr_statement
+		| trStatement
 	) NEWLINE;
 
-account: WORD (':'+ WORD);
+account: WORD (':' WORD)+;
 currency: WORD;
 
 amount: NUMBER currency;
@@ -29,13 +29,14 @@ closeStatement: date 'close' account;
 openStatement: date 'open' account;
 commodityStatement: date 'commodity' currency;
 priceStatement: date 'price' currency amount;
-eventStatement: date 'event' name = STRING value = STRING;
-documentStatement: date 'document' account STRING;
-noteStatement: date 'document' account STRING;
+eventStatement:
+	date 'event' name = quoted_string value = quoted_string;
+documentStatement: date 'document' account quoted_string;
+noteStatement: date 'note' account quoted_string;
 
 empty_line: NEWLINE;
 
-tr_statement:
+trStatement:
 	tr_header NEWLINE (
 		(
 			posting_spec_account_only
@@ -43,15 +44,18 @@ tr_statement:
 			| inline_comment
 		) NEWLINE
 	)+;
-tr_header: date TR_FLAG narration = STRING payee = STRING?;
+tr_header:
+	date TR_FLAG narration = quoted_string payee = quoted_string? TAG+;
 tr_comment: INDENT inline_comment;
 
-inline_comment: ';' ~NEWLINE*;
-posting_spec_account_only: INDENT account TAG+ inline_comment?;
+inline_comment: ';' (~NEWLINE)*;
+posting_spec_account_only: INDENT account TAG* inline_comment?;
 posting_spec_account_amount:
 	INDENT account amount TAG+ inline_comment?;
 
 date: DATE;
+// quoted_string: '"' (.)? '"';
+quoted_string: STR;
 
 /*
  * Lexer Rules
@@ -69,6 +73,6 @@ WORD: [A-Za-z0-9]+;
 WHITESPACE: (' ' | '\t') -> skip;
 NEWLINE: ('\r'? '\n' | '\r')+;
 
-STRING: ["][^"]* ["];
-TR_FLAG: [!] | [*];
+TR_FLAG: '!' | '*';
 INDENT: WHITESPACE+;
+STR: '"' (~[\\"] | '\\' [\\"()])* '"';

@@ -1,9 +1,5 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:gringotts/core/posting.dart';
-import 'package:petitparser/petitparser.dart';
-import 'package:meta/meta.dart';
-
-import 'common.dart';
 import 'core.dart';
 
 class TransactionFlag {
@@ -18,12 +14,6 @@ class TransactionFlag {
 
   bool operator ==(Object other) =>
       other is TransactionFlag && other.value == value;
-
-  static Parser<TransactionFlag> get parser {
-    return (char('*') | char('!'))
-        .map((f) => TransactionFlag(f))
-        .labeled('Flag');
-  }
 }
 
 class Transaction implements Directive {
@@ -123,75 +113,6 @@ class Transaction implements Directive {
         postings == t.postings &&
         tags == t.tags;
   }
-
-  static Parser<Transaction> get parser {
-    var p = trHeaderParser &
-        trMetaData &
-        trComment.star().token() &
-        Posting.parser.plus().token();
-
-    return p.token().map((t) {
-      var v = t.value;
-      var tr = v[0] as Transaction;
-      tr = tr.copyWith(
-        meta: v[1],
-        comments: (v[2] as Token).value,
-        postings: (v[3] as Token<List<dynamic>>).value.cast<Posting>(),
-      );
-
-      return tr.copyWith(postings: tr.postings.map((p) {
-        if (p.cost == null) return p;
-        if (p.cost!.date.millisecondsSinceEpoch == 0) {
-          p = p.copyWith(cost: p.cost!.copyWith(date: tr.date));
-        }
-        return p;
-      }));
-    });
-  }
 }
 
-final _tag = (char('#') & (word() | char('-')).star().flatten())
-    .map((v) => v[1] as String);
-
-final _trHeader = (dateParser &
-    spaceParser &
-    TransactionFlag.parser &
-    spaceParser &
-    quotedStringParser &
-    (spaceParser & quotedStringParser).optional().map((v) => v?[1] ?? "") &
-    (spaceParser.star() & _tag & spaceParser.star()).star().token() &
-    eol);
-
-final trHeaderParser = _trHeader.token().map((token) {
-  var v = token.value;
-  var tagsToken = v[6] as Token<List<List<dynamic>>>;
-  var tags = <String>{};
-  for (var tagGroup in tagsToken.value) {
-    var t = tagGroup[1] as String;
-    tags.add(t);
-  }
-  return Transaction(v[0], v[2], v[4], payee: v[5], tags: tags);
-});
-
-@visibleForTesting
-final trComment = (indent & char(';') & any().starLazy(eol).flatten() & eol)
-    .token()
-    .map((t) => (t.value[2] as String).trim())
-    .cast<String>()
-    .labeled('Comment');
-
-final _trMetaDataLine = indent &
-    word().star().flatten() &
-    char(':') &
-    spaceParser.star() &
-    quotedStringParser &
-    eol;
-
-final trMetaDataLine = _trMetaDataLine.map((v) => <String>[v[1], v[4]]);
-final trMetaData = trMetaDataLine.star().map((v) {
-  var map = <String, dynamic>{};
-  for (var m in v) {
-    map[m[0]] = m[1];
-  }
-  return map;
-});
+// FIXME: Transaction MetaData

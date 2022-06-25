@@ -1,7 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:gringotts/core/core.dart';
 import 'package:gringotts/core/price.dart';
-import 'package:gringotts/parser.dart';
 import 'package:gringotts/parser/parser.dart';
 import 'package:test/test.dart';
 
@@ -20,7 +19,7 @@ void main() {
       ),
     );
 
-    var transactions = parser.parse(input).value;
+    var transactions = parse(input).all().val();
     var actual = transactions.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });

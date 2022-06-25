@@ -1,9 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:petitparser/petitparser.dart';
 
 import 'account.dart';
-import 'common.dart';
 import 'core.dart';
 
 class Balance implements Directive {
@@ -46,20 +44,4 @@ class Balance implements Directive {
         tolerance == t.tolerance &&
         diffAmount == t.diffAmount;
   }
-
-  static Parser<Balance> get parser {
-    return _balanceParser.map((value) {
-      return Balance(value[0], value[4], value[7]);
-    });
-  }
 }
-
-final _balanceParser = dateParser &
-    spaceParser &
-    string('balance') &
-    spaceParser &
-    Account.parser &
-    indent &
-    whitespace().star().token() &
-    Amount.parser &
-    eol;

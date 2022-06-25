@@ -1,9 +1,5 @@
-import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:gringotts/parser/GringottsParser.dart';
-import 'package:petitparser/petitparser.dart';
 
-import 'common.dart';
 import 'core.dart';
 
 class Price implements Directive {
@@ -39,43 +35,4 @@ class Price implements Directive {
         currency == t.currency &&
         amount == t.amount;
   }
-
-  static Parser<Price> get parser {
-    return _priceParser.map((value) {
-      return Price(value[0], value[4], value[7]);
-    });
-  }
-}
-
-final _priceParser = dateParser &
-    spaceParser &
-    string('price').labeled('price keyword') &
-    spaceParser &
-    currencyParser &
-    indent &
-    whitespace().star().token() &
-    Amount.parser &
-    eol;
-
-extension DateParsing on DateContext {
-  DateTime val() {
-    if (exception != null) {
-      // FIXME: How to show a better error?
-      print("WTF  $exception#");
-    }
-
-    return DateTime.parse(DATE()!.text!);
-  }
-}
-
-extension AmountParsing on AmountContext {
-  Amount val() {
-    var c = currency()!.text;
-    var n = Decimal.parse(NUMBER()!.text!);
-    return Amount(n, c);
-  }
-}
-
-extension PriceParsing on PriceStatementContext {
-  Price val() => Price(date()!.val(), currency()!.text, amount()!.val());
 }

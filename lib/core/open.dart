@@ -1,8 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:petitparser/petitparser.dart';
 
 import 'account.dart';
-import 'common.dart';
 import 'core.dart';
 
 class Open implements Directive {
@@ -31,17 +29,4 @@ class Open implements Directive {
     if (t is! Open) return false;
     return date == t.date && meta == t.meta && account == t.account;
   }
-
-  static Parser<Open> get parser {
-    return _openParser.map((value) {
-      return Open(value[0], value[4]);
-    });
-  }
 }
-
-final _openParser = dateParser &
-    spaceParser &
-    string('open') &
-    spaceParser &
-    Account.parser &
-    eol;

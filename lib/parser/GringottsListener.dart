@@ -112,12 +112,12 @@ abstract class GringottsListener extends ParseTreeListener {
   /// [ctx] the parse tree
   void exitEmpty_line(Empty_lineContext ctx);
 
-  /// Enter a parse tree produced by [GringottsParser.tr_statement].
+  /// Enter a parse tree produced by [GringottsParser.trStatement].
   /// [ctx] the parse tree
-  void enterTr_statement(Tr_statementContext ctx);
-  /// Exit a parse tree produced by [GringottsParser.tr_statement].
+  void enterTrStatement(TrStatementContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.trStatement].
   /// [ctx] the parse tree
-  void exitTr_statement(Tr_statementContext ctx);
+  void exitTrStatement(TrStatementContext ctx);
 
   /// Enter a parse tree produced by [GringottsParser.tr_header].
   /// [ctx] the parse tree
@@ -160,4 +160,11 @@ abstract class GringottsListener extends ParseTreeListener {
   /// Exit a parse tree produced by [GringottsParser.date].
   /// [ctx] the parse tree
   void exitDate(DateContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.quoted_string].
+  /// [ctx] the parse tree
+  void enterQuoted_string(Quoted_stringContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.quoted_string].
+  /// [ctx] the parse tree
+  void exitQuoted_string(Quoted_stringContext ctx);
 }

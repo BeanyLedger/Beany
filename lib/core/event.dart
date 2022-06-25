@@ -1,7 +1,5 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:petitparser/petitparser.dart';
 
-import 'common.dart';
 import 'core.dart';
 
 class Event implements Directive {
@@ -34,19 +32,4 @@ class Event implements Directive {
         type == t.type &&
         value == t.value;
   }
-
-  static Parser<Event> get parser {
-    return _eventParser.map((value) {
-      return Event(value[0], value[4], value[6]);
-    });
-  }
 }
-
-final _eventParser = dateParser &
-    spaceParser &
-    string('event') &
-    spaceParser &
-    quotedStringParser &
-    spaceParser &
-    quotedStringParser &
-    eol;

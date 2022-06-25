@@ -1,8 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:petitparser/petitparser.dart';
 
 import 'account.dart';
-import 'common.dart';
 import 'core.dart';
 
 class Document implements Directive {
@@ -37,19 +35,4 @@ class Document implements Directive {
         account == t.account &&
         path == t.path;
   }
-
-  static Parser<Document> get parser {
-    return _documentParser.map((value) {
-      return Document(value[0], value[4], value[6]);
-    });
-  }
 }
-
-final _documentParser = dateParser &
-    spaceParser &
-    string('document') &
-    spaceParser &
-    Account.parser &
-    spaceParser &
-    quotedStringParser &
-    eol;

@@ -1,9 +1,6 @@
 import 'package:decimal/decimal.dart';
-import 'package:petitparser/petitparser.dart';
-import 'package:meta/meta.dart';
 
 import 'account.dart';
-import 'common.dart';
 import 'core.dart';
 
 class Cost {
@@ -106,62 +103,4 @@ class Posting {
         comment == other.comment &&
         cost == other.cost;
   }
-
-  static Parser<Posting> get parser {
-    return (postingAccountOnly |
-            postingAccountWithAmmount |
-            postingWithExplicitPrice)
-        .cast();
-  }
 }
-
-final _postingComment =
-    (spaceParser.star().token() & char(';') & any().starLazy(eol).flatten())
-        .map((value) {
-  var c = value[2] as String;
-  return c.trim();
-});
-
-final _postingAccountOnly =
-    indent & Account.parser & _postingComment.optional() & eol;
-
-@visibleForTesting
-final postingAccountOnly = _postingAccountOnly.map((v) {
-  return Posting(v[1], null, comment: v[2]);
-});
-
-final _postingAccountWithAmmount = indent &
-    Account.parser &
-    indent &
-    whitespace().star().token() &
-    Amount.parser &
-    _postingComment.optional() &
-    eol;
-
-@visibleForTesting
-final postingAccountWithAmmount = _postingAccountWithAmmount.map((v) {
-  return Posting(v[1], v[4], comment: v[5]);
-});
-
-final _postingWithExplicitPrice = indent &
-    Account.parser &
-    indent &
-    whitespace().star().token() &
-    Amount.parser &
-    whitespace().star().token() &
-    char('@') &
-    whitespace().star().token() &
-    Amount.parser &
-    _postingComment.optional() &
-    eol;
-
-@visibleForTesting
-final postingWithExplicitPrice = _postingWithExplicitPrice.map((v) {
-  var ca = v[8] as Amount;
-  var cost = Cost(
-    ca.number,
-    ca.currency,
-    DateTime.fromMillisecondsSinceEpoch(0),
-  );
-  return Posting(v[1], v[4], cost: cost, comment: v[9]);
-});
