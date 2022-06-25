@@ -1,0 +1,16 @@
+T__0=1
+T__1=2
+T__2=3
+T__3=4
+T__4=5
+DATE=6
+NUMBER=7
+WORD=8
+WHITESPACE=9
+NEWLINE=10
+STRING=11
+'#'=1
+':'=2
+'balance'=3
+'close'=4
+'open'=5

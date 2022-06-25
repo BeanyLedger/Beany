@@ -4,28 +4,36 @@ grammar Gringotts;
  * Parser Rules
  */
 
+all: (statement | comment | empty_line)+ EOF;
+comment: '#'+ ~NEWLINE+ NEWLINE;
+
+statement: (balanceStatement | closeStatement | openStatement)+ NEWLINE;
+
 account: WORD+ (':'+ WORD)*;
 currency: WORD;
 
-amount: NUMBER+ WHITESPACE+ currency;
+amount: NUMBER+ currency;
 
-date: YEAR+ '-'+ MONTH+ '-'+ DAY;
+balanceStatement: DATE+ 'balance'+ account+ amount;
+closeStatement: DATE+ 'close'+ account;
+openStatement: DATE+ 'open'+ account;
 
-balanceStatement:
-	date+ WHITESPACE+ 'balance'+ WHITESPACE+ account+ WHITESPACE+ amount;
-closeStatement: date+ WHITESPACE+ 'close'+ WHITESPACE+ account;
-openStatement: date+ WHITESPACE+ 'open'+ WHITESPACE+ account;
-
-statement: balanceStatement | closeStatement | openStatement;
+empty_line: NEWLINE;
 
 /*
  * Lexer Rules
  */
 
-YEAR: [0-9][0-9][0-9][0-9];
-MONTH: [0-9][0-9];
-DAY: [0-9][0-9];
+fragment DIGIT: [0-9];
+fragment YEAR: DIGIT DIGIT DIGIT DIGIT;
+fragment MONTH: DIGIT DIGIT;
+fragment DAY: DIGIT DIGIT;
+DATE: YEAR [\-] MONTH [\-] DAY;
 
-NUMBER: [0-9]+ ([.][0-9]+)?;
+NUMBER: DIGIT+ ([.] DIGIT+)?;
+
 WORD: [A-Za-z0-9]+;
-WHITESPACE: (' ' | '\t');
+WHITESPACE: (' ' | '\t') -> skip;
+NEWLINE: ('\r'? '\n' | '\r')+;
+
+STRING: ["][^"]* ["];
