@@ -84,11 +84,107 @@ class GringottsBaseListener implements GringottsListener {
 
   /// The default implementation does nothing.
   @override
+  void enterCommodityStatement(CommodityStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitCommodityStatement(CommodityStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterPriceStatement(PriceStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitPriceStatement(PriceStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterEventStatement(EventStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitEventStatement(EventStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterDocumentStatement(DocumentStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitDocumentStatement(DocumentStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterNoteStatement(NoteStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitNoteStatement(NoteStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
   void enterEmpty_line(Empty_lineContext ctx) {}
 
   /// The default implementation does nothing.
   @override
   void exitEmpty_line(Empty_lineContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterTr_statement(Tr_statementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitTr_statement(Tr_statementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterTr_header(Tr_headerContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitTr_header(Tr_headerContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterTr_comment(Tr_commentContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitTr_comment(Tr_commentContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterInline_comment(Inline_commentContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitInline_comment(Inline_commentContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterPosting_spec_account_only(Posting_spec_account_onlyContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitPosting_spec_account_only(Posting_spec_account_onlyContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterPosting_spec_account_amount(Posting_spec_account_amountContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitPosting_spec_account_amount(Posting_spec_account_amountContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterDate(DateContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitDate(DateContext ctx) {}
 
   /// The default implementation does nothing.
   @override

@@ -81,6 +81,80 @@ class TreeShapeListener implements GringottsListener {
 
   @override
   void exitStatement(StatementContext ctx) {}
+
+  @override
+  void enterCommodityStatement(CommodityStatementContext ctx) {}
+
+  @override
+  void enterDate(DateContext ctx) {}
+
+  @override
+  void enterDocumentStatement(DocumentStatementContext ctx) {}
+
+  @override
+  void enterEventStatement(EventStatementContext ctx) {}
+
+  @override
+  void enterInline_comment(Inline_commentContext ctx) {}
+
+  @override
+  void enterNoteStatement(NoteStatementContext ctx) {}
+
+  @override
+  void enterPosting_spec_account_amount(
+      Posting_spec_account_amountContext ctx) {}
+
+  @override
+  void enterPosting_spec_account_only(Posting_spec_account_onlyContext ctx) {}
+
+  @override
+  void enterPriceStatement(PriceStatementContext ctx) {}
+
+  @override
+  void enterTr_comment(Tr_commentContext ctx) {}
+
+  @override
+  void enterTr_header(Tr_headerContext ctx) {}
+
+  @override
+  void enterTr_statement(Tr_statementContext ctx) {}
+
+  @override
+  void exitCommodityStatement(CommodityStatementContext ctx) {}
+
+  @override
+  void exitDate(DateContext ctx) {}
+
+  @override
+  void exitDocumentStatement(DocumentStatementContext ctx) {}
+
+  @override
+  void exitEventStatement(EventStatementContext ctx) {}
+
+  @override
+  void exitInline_comment(Inline_commentContext ctx) {}
+
+  @override
+  void exitNoteStatement(NoteStatementContext ctx) {}
+
+  @override
+  void exitPosting_spec_account_amount(
+      Posting_spec_account_amountContext ctx) {}
+
+  @override
+  void exitPosting_spec_account_only(Posting_spec_account_onlyContext ctx) {}
+
+  @override
+  void exitPriceStatement(PriceStatementContext ctx) {}
+
+  @override
+  void exitTr_comment(Tr_commentContext ctx) {}
+
+  @override
+  void exitTr_header(Tr_headerContext ctx) {}
+
+  @override
+  void exitTr_statement(Tr_statementContext ctx) {}
 }
 
 void main() {

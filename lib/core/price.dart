@@ -1,4 +1,6 @@
+import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:gringotts/parser/GringottsParser.dart';
 import 'package:petitparser/petitparser.dart';
 
 import 'common.dart';
@@ -54,3 +56,26 @@ final _priceParser = dateParser &
     whitespace().star().token() &
     Amount.parser &
     eol;
+
+extension DateParsing on DateContext {
+  DateTime val() {
+    if (exception != null) {
+      // FIXME: How to show a better error?
+      print("WTF  $exception#");
+    }
+
+    return DateTime.parse(DATE()!.text!);
+  }
+}
+
+extension AmountParsing on AmountContext {
+  Amount val() {
+    var c = currency()!.text;
+    var n = Decimal.parse(NUMBER()!.text!);
+    return Amount(n, c);
+  }
+}
+
+extension PriceParsing on PriceStatementContext {
+  Price val() => Price(date()!.val(), currency()!.text, amount()!.val());
+}

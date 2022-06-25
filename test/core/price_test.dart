@@ -2,12 +2,13 @@ import 'package:decimal/decimal.dart';
 import 'package:gringotts/core/core.dart';
 import 'package:gringotts/core/price.dart';
 import 'package:gringotts/parser.dart';
+import 'package:gringotts/parser/parser.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('Price Parser', () {
     var input = "2002-01-15 price INR  98.87 EUR";
-    var price = Price.parser.parse(input).value;
+    var price = parse(input).priceStatement().val();
 
     expect(price.toString(), input);
     expect(
