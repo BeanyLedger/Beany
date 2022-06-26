@@ -47,12 +47,8 @@ noteStatement: date 'note' account quoted_string;
 empty_line: NEWLINE;
 
 trStatement:
-	tr_header NEWLINE (
-		(
-			posting_spec_account_only
-			| posting_spec_account_amount
-			| tr_comment
-		) NEWLINE
+	tr_header NEWLINE (tr_comment NEWLINE)* (
+		(posting_spec_account_only | posting_spec_account_amount) NEWLINE
 	)+;
 tr_header:
 	date TR_FLAG narration = quoted_string payee = quoted_string? tags?;
@@ -78,7 +74,7 @@ MONTH: DIGIT DIGIT;
 DAY: DIGIT DIGIT;
 DATE: YEAR [-] MONTH [-] DAY;
 
-NUMBER: DIGIT+ ([.] DIGIT+)?;
+NUMBER: [-]? DIGIT+ ([.] DIGIT+)?;
 
 TAG: [#]WORD;
 WORD: [A-Za-z0-9\\-]+;
