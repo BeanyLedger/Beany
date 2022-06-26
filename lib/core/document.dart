@@ -27,6 +27,7 @@ class Document implements Directive {
     return sb.toString();
   }
 
+  // FIXME: Use identical(this, other)
   @override
   bool operator ==(Object t) {
     if (t is! Document) return false;

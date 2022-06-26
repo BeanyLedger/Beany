@@ -4,10 +4,15 @@ grammar Gringotts;
  * Parser Rules
  */
 
-all: (statement | comment | empty_line)* EOF;
-comment: ('#' | ';') ~NEWLINE NEWLINE;
+all: (statement | empty_line)* EOF;
 
-statement: (
+statement:
+	directive
+	| includeStatement
+	| optionStatement
+	| commentStatement;
+
+directive: (
 		balanceStatement
 		| closeStatement
 		| openStatement
@@ -23,6 +28,11 @@ account: WORD (':' WORD)+;
 currency: WORD;
 
 amount: NUMBER currency;
+
+includeStatement: 'include' quoted_string;
+optionStatement:
+	'option' key = quoted_string value = quoted_string;
+commentStatement: ('#' | ';') (~NEWLINE)* NEWLINE;
 
 balanceStatement: date 'balance' account amount;
 closeStatement: date 'close' account;

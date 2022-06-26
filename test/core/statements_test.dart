@@ -1,40 +1,40 @@
 import 'package:gringotts/core/statements.dart';
-import 'package:gringotts/parser.dart';
+import 'package:gringotts/parser/parser.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('Include Parser', () {
     var input = 'include "../path"';
-    var include = Include.parser.parse(input).value;
+    var include = parse(input).includeStatement().val();
 
     expect(include.toString(), input);
     expect(include, Include('../path'));
 
-    var transactions = parser.parse(input).value;
+    var transactions = parse(input).all().val();
     var actual = transactions.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
   test('Option Parser', () {
     var input = 'option "title" "Ed’s Personal Ledger"';
-    var option = Option.parser.parse(input).value;
+    var option = parse(input).optionStatement().val();
 
     expect(option.toString(), input);
     expect(option, Option('title', "Ed’s Personal Ledger"));
 
-    var transactions = parser.parse(input).value;
+    var transactions = parse(input).all().val();
     var actual = transactions.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
   test('Comment Parser', () {
     var input = '; Hello';
-    var comment = Comment.parser.parse(input).value;
+    var comment = parse(input).commentStatement().val();
 
     expect(comment.toString(), input);
     expect(comment, Comment('Hello'));
 
-    var transactions = parser.parse(input).value;
+    var transactions = parse(input).all().val();
     var actual = transactions.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });

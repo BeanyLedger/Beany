@@ -20,19 +20,19 @@ class GringottsBaseListener implements GringottsListener {
 
   /// The default implementation does nothing.
   @override
-  void enterComment(CommentContext ctx) {}
-
-  /// The default implementation does nothing.
-  @override
-  void exitComment(CommentContext ctx) {}
-
-  /// The default implementation does nothing.
-  @override
   void enterStatement(StatementContext ctx) {}
 
   /// The default implementation does nothing.
   @override
   void exitStatement(StatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterDirective(DirectiveContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitDirective(DirectiveContext ctx) {}
 
   /// The default implementation does nothing.
   @override
@@ -57,6 +57,30 @@ class GringottsBaseListener implements GringottsListener {
   /// The default implementation does nothing.
   @override
   void exitAmount(AmountContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterIncludeStatement(IncludeStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitIncludeStatement(IncludeStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterOptionStatement(OptionStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitOptionStatement(OptionStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterCommentStatement(CommentStatementContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitCommentStatement(CommentStatementContext ctx) {}
 
   /// The default implementation does nothing.
   @override

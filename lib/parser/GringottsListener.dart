@@ -14,19 +14,19 @@ abstract class GringottsListener extends ParseTreeListener {
   /// [ctx] the parse tree
   void exitAll(AllContext ctx);
 
-  /// Enter a parse tree produced by [GringottsParser.comment].
-  /// [ctx] the parse tree
-  void enterComment(CommentContext ctx);
-  /// Exit a parse tree produced by [GringottsParser.comment].
-  /// [ctx] the parse tree
-  void exitComment(CommentContext ctx);
-
   /// Enter a parse tree produced by [GringottsParser.statement].
   /// [ctx] the parse tree
   void enterStatement(StatementContext ctx);
   /// Exit a parse tree produced by [GringottsParser.statement].
   /// [ctx] the parse tree
   void exitStatement(StatementContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.directive].
+  /// [ctx] the parse tree
+  void enterDirective(DirectiveContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.directive].
+  /// [ctx] the parse tree
+  void exitDirective(DirectiveContext ctx);
 
   /// Enter a parse tree produced by [GringottsParser.account].
   /// [ctx] the parse tree
@@ -48,6 +48,27 @@ abstract class GringottsListener extends ParseTreeListener {
   /// Exit a parse tree produced by [GringottsParser.amount].
   /// [ctx] the parse tree
   void exitAmount(AmountContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.includeStatement].
+  /// [ctx] the parse tree
+  void enterIncludeStatement(IncludeStatementContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.includeStatement].
+  /// [ctx] the parse tree
+  void exitIncludeStatement(IncludeStatementContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.optionStatement].
+  /// [ctx] the parse tree
+  void enterOptionStatement(OptionStatementContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.optionStatement].
+  /// [ctx] the parse tree
+  void exitOptionStatement(OptionStatementContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.commentStatement].
+  /// [ctx] the parse tree
+  void enterCommentStatement(CommentStatementContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.commentStatement].
+  /// [ctx] the parse tree
+  void exitCommentStatement(CommentStatementContext ctx);
 
   /// Enter a parse tree produced by [GringottsParser.balanceStatement].
   /// [ctx] the parse tree

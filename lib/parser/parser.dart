@@ -10,6 +10,7 @@ import 'package:gringotts/core/note.dart';
 import 'package:gringotts/core/open.dart';
 import 'package:gringotts/core/posting.dart';
 import 'package:gringotts/core/price.dart';
+import 'package:gringotts/core/statements.dart';
 import 'package:gringotts/core/transaction.dart';
 
 import 'package:gringotts/parser/GringottsLexer.dart';
@@ -124,17 +125,22 @@ extension TransactionParsing on TrStatementContext {
       header.narration!.val(),
       payee: header.payee!.val(),
       tags: header.TAGs().map((e) => e.text!),
-      postings: children!.where((c) => c is BalanceStatementContext).map((c) {
+      postings: children!
+          .where((c) =>
+              c is Posting_spec_account_onlyContext ||
+              c is Posting_spec_account_amountContext)
+          .map((c) {
         if (c is Posting_spec_account_onlyContext) return c.val();
         if (c is Posting_spec_account_amountContext) return c.val();
         throw new Exception("Unknown Posting Type??");
       }),
+      comments: inline_comments().map((e) => e.val()),
     );
   }
 }
 
-extension StatementParsing on StatementContext {
-  Statement val() {
+extension DirectiveParsing on DirectiveContext {
+  Directive val() {
     if (balanceStatement() != null) return balanceStatement()!.val();
     if (closeStatement() != null) return closeStatement()!.val();
     if (openStatement() != null) return openStatement()!.val();
@@ -144,6 +150,39 @@ extension StatementParsing on StatementContext {
     if (eventStatement() != null) return eventStatement()!.val();
     if (noteStatement() != null) return noteStatement()!.val();
     if (trStatement() != null) return trStatement()!.val();
+
+    throw new Exception("Unknown Directive");
+  }
+}
+
+extension CommentStatementParsing on CommentStatementContext {
+  Comment val() {
+    var s = NEWLINEs().map((e) => e.text!).join("");
+    return Comment(s);
+  }
+}
+
+extension OptionStatementParsing on OptionStatementContext {
+  Option val() => Option(key!.val(), value!.val());
+}
+
+extension IncludeStatementParsing on IncludeStatementContext {
+  Include val() => Include(quoted_string()!.val());
+}
+
+extension StatementParsing on StatementContext {
+  Statement val() {
+    var d = directive();
+    if (d != null) return d.val();
+
+    var c = commentStatement();
+    if (c != null) return c.val();
+
+    var o = optionStatement();
+    if (o != null) return o.val();
+
+    var i = includeStatement();
+    if (i != null) return i.val();
 
     throw new Exception("Unknown Statement");
   }

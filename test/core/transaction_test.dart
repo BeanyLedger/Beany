@@ -9,23 +9,23 @@ import 'package:test/test.dart';
 void main() {
   test('Transaction Header', () {
     expect(
-      trHeaderParser.parse('2019-04-14 * "Cat Powder"\n').value,
+      parse('2019-04-14 * "Cat Powder"\n').trStatement().val(),
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
     expect(
-      trHeaderParser.parse('2019-04-14 * "Cat Powder"\n').value.toString(),
+      parse('2019-04-14 * "Cat Powder"\n').trStatement().val().toString(),
       '2019-04-14 * "Cat Powder"\n',
     );
     expect(
-      trHeaderParser.parse('2019-04-14 ! "Cat Powder"\n').value,
+      parse('2019-04-14 ! "Cat Powder"\n').trStatement().val(),
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
     );
     expect(
-      trHeaderParser.parse('2019-04-14 ! "Cat Powder"\n').value.toString(),
+      parse('2019-04-14 ! "Cat Powder"\n').trStatement().val().toString(),
       '2019-04-14 ! "Cat Powder"\n',
     );
     expect(
-      trHeaderParser.parse('2019-04-14 ! "Cat" "Payee"\n').value,
+      parse('2019-04-14 ! "Cat" "Payee"\n').trStatement().val(),
       Transaction(
         DateTime(2019, 4, 14),
         TransactionFlag.Warning,
@@ -34,40 +34,43 @@ void main() {
       ),
     );
     expect(
-      trHeaderParser.parse('2019-04-14 ! "Cat" "Payee"\n').value.toString(),
+      parse('2019-04-14 ! "Cat" "Payee"\n').trStatement().val().toString(),
       '2019-04-14 ! "Cat" "Payee"\n',
     );
     expect(
-      trHeaderParser.parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').value,
+      parse('2019-04-14 ! "Cat" #hello #bertrStatement().val()014\n')
+          .trStatement()
+          .val(),
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
           tags: ["hello", "berlin-2014"]),
     );
     expect(
-      trHeaderParser
-          .parse('2019-04-14 ! "Cat" #hello #berlin-2014\n')
-          .value
+      parse('2019-04-14 ! "Cat" #hello #berlin-2014\n')
+          .trStatement()
+          .val()
           .toString(),
       '2019-04-14 ! "Cat" #hello #berlin-2014\n',
     );
   });
 
   test('Comment Parser', () {
-    expect(trComment.parse("  ;Hello\n").value, "Hello");
-    expect(trComment.parse("  ; Hello\n").value, "Hello");
-    expect(trComment.parse("  ; Hello \n").value, "Hello");
-    expect(trComment.parse("  ; Hello\nHi").value, "Hello");
+    expect(parse("  ;Hello\n").inline_comment().val(), "Hello");
+    expect(parse("  ; Hello\n").inline_comment().val(), "Hello");
+    expect(parse("  ; Hello \n").inline_comment().val(), "Hello");
+    expect(parse("  ; Hello\nHi").inline_comment().val(), "Hello");
   });
 
   test('Comment Parser Special String', () {
-    expect(trComment.parse("  ; Róú's brithday\n").value, "Róú's brithday");
+    expect(
+        parse("  ; Róú's brithday\n").inline_comment().val(), "Róú's brithday");
   });
 
-  test('Comment Only Parser', () {
-    var input = """  ; Hello
-  Expenses:Mystery:CatPowder  1.5 EUR
-""";
-    expect(trComment.parse(input).value, "Hello");
-  });
+//   test('Comment Only Parser', () {
+//     var input = """  ; Hello
+//   Expenses:Mystery:CatPowder  1.5 EUR
+// """;
+//     expect(trComment.parse(input).value, "Hello");
+//   });
 
   test('Simple Transaction', () {
     var input = """2019-04-14 * "Cat Powder"
@@ -87,7 +90,7 @@ void main() {
       comments: ["Help"],
     );
 
-    expect(Transaction.parser.parse(input).value, tr);
+    expect(parse(input).trStatement().val(), tr);
   });
 
   test('Transaction MetaData', () {
@@ -128,7 +131,7 @@ void main() {
 ; Comment
 """;
 
-    var transactions = parser.parse(input).value;
+    var transactions = parse(input).all().val();
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
     expect(actual, input);
   });
@@ -139,7 +142,7 @@ void main() {
   Assets:FR:SocGen:Checking  436.01 CAD
 """;
 
-    var tr = Transaction.parser.parse(input).value;
+    var tr = parse(input).trStatement().val();
     expect(tr.toString(), input);
     expect(
       tr,

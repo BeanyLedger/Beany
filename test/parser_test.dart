@@ -7,6 +7,7 @@ void main() {
     expect(p('"Hello/World"'), "Hello/World");
     expect(p('"foo"'), "foo");
     expect(p('""'), "");
+    expect(p('"Róú\'s brithday"'), "Róú's brithday");
 
     // expect(p('"').isFailure, true);
     // expect(p('"dafsdf\nsafasdf"').isFailure, true);
