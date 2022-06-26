@@ -12,7 +12,8 @@ const int RULE_all = 0, RULE_statement = 1, RULE_directive = 2, RULE_account = 3
           RULE_noteStatement = 16, RULE_empty_line = 17, RULE_trStatement = 18, 
           RULE_tr_header = 19, RULE_inline_comment = 20, RULE_tr_comment = 21, 
           RULE_posting_spec_account_only = 22, RULE_posting_spec_account_amount = 23, 
-          RULE_date = 24, RULE_quoted_string = 25, RULE_tags = 26;
+          RULE_posting_spec_explicit_per_cost = 24, RULE_cost = 25, RULE_date = 26, 
+          RULE_quoted_string = 27, RULE_tags = 28;
 class GringottsParser extends Parser {
   static final checkVersion = () => RuntimeMetaData.checkVersion('4.10.1', RuntimeMetaData.VERSION);
   static const int TOKEN_EOF = IntStream.EOF;
@@ -23,10 +24,10 @@ class GringottsParser extends Parser {
   static const int TOKEN_T__0 = 1, TOKEN_T__1 = 2, TOKEN_T__2 = 3, TOKEN_T__3 = 4, 
                    TOKEN_T__4 = 5, TOKEN_T__5 = 6, TOKEN_T__6 = 7, TOKEN_T__7 = 8, 
                    TOKEN_T__8 = 9, TOKEN_T__9 = 10, TOKEN_T__10 = 11, TOKEN_T__11 = 12, 
-                   TOKEN_T__12 = 13, TOKEN_DIGIT = 14, TOKEN_YEAR = 15, 
-                   TOKEN_MONTH = 16, TOKEN_DAY = 17, TOKEN_DATE = 18, TOKEN_NUMBER = 19, 
-                   TOKEN_TAG = 20, TOKEN_WORD = 21, TOKEN_WHITESPACE = 22, 
-                   TOKEN_NEWLINE = 23, TOKEN_TR_FLAG = 24, TOKEN_STR = 25;
+                   TOKEN_T__12 = 13, TOKEN_T__13 = 14, TOKEN_DIGIT = 15, 
+                   TOKEN_YEAR = 16, TOKEN_MONTH = 17, TOKEN_DAY = 18, TOKEN_DATE = 19, 
+                   TOKEN_NUMBER = 20, TOKEN_TAG = 21, TOKEN_WORD = 22, TOKEN_WHITESPACE = 23, 
+                   TOKEN_NEWLINE = 24, TOKEN_TR_FLAG = 25, TOKEN_STR = 26;
 
   @override
   final List<String> ruleNames = [
@@ -35,16 +36,17 @@ class GringottsParser extends Parser {
     'openStatement', 'commodityStatement', 'priceStatement', 'eventStatement', 
     'documentStatement', 'noteStatement', 'empty_line', 'trStatement', 'tr_header', 
     'inline_comment', 'tr_comment', 'posting_spec_account_only', 'posting_spec_account_amount', 
-    'date', 'quoted_string', 'tags'
+    'posting_spec_explicit_per_cost', 'cost', 'date', 'quoted_string', 'tags'
   ];
 
   static final List<String?> _LITERAL_NAMES = [
       null, "':'", "'include'", "'option'", "'#'", "';'", "'balance'", "'close'", 
-      "'open'", "'commodity'", "'price'", "'event'", "'document'", "'note'"
+      "'open'", "'commodity'", "'price'", "'event'", "'document'", "'note'", 
+      "'@'"
   ];
   static final List<String?> _SYMBOLIC_NAMES = [
       null, null, null, null, null, null, null, null, null, null, null, 
-      null, null, null, "DIGIT", "YEAR", "MONTH", "DAY", "DATE", "NUMBER", 
+      null, null, null, null, "DIGIT", "YEAR", "MONTH", "DAY", "DATE", "NUMBER", 
       "TAG", "WORD", "WHITESPACE", "NEWLINE", "TR_FLAG", "STR"
   ];
   static final Vocabulary VOCABULARY = VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
@@ -75,11 +77,11 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 58;
+      state = 62;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NEWLINE))) != BigInt.zero)) {
-        state = 56;
+        state = 60;
         errorHandler.sync(this);
         switch (tokenStream.LA(1)!) {
         case TOKEN_T__1:
@@ -87,21 +89,21 @@ class GringottsParser extends Parser {
         case TOKEN_T__3:
         case TOKEN_T__4:
         case TOKEN_DATE:
-          state = 54;
+          state = 58;
           statement();
           break;
         case TOKEN_NEWLINE:
-          state = 55;
+          state = 59;
           empty_line();
           break;
         default:
           throw NoViableAltException(this);
         }
-        state = 60;
+        state = 64;
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       }
-      state = 61;
+      state = 65;
       match(TOKEN_EOF);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -117,28 +119,28 @@ class GringottsParser extends Parser {
     dynamic _localctx = StatementContext(context, state);
     enterRule(_localctx, 2, RULE_statement);
     try {
-      state = 67;
+      state = 71;
       errorHandler.sync(this);
       switch (tokenStream.LA(1)!) {
       case TOKEN_DATE:
         enterOuterAlt(_localctx, 1);
-        state = 63;
+        state = 67;
         directive();
         break;
       case TOKEN_T__1:
         enterOuterAlt(_localctx, 2);
-        state = 64;
+        state = 68;
         includeStatement();
         break;
       case TOKEN_T__2:
         enterOuterAlt(_localctx, 3);
-        state = 65;
+        state = 69;
         optionStatement();
         break;
       case TOKEN_T__3:
       case TOKEN_T__4:
         enterOuterAlt(_localctx, 4);
-        state = 66;
+        state = 70;
         commentStatement();
         break;
       default:
@@ -159,47 +161,47 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 4, RULE_directive);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 78;
+      state = 82;
       errorHandler.sync(this);
       switch (interpreter!.adaptivePredict(tokenStream, 3, context)) {
       case 1:
-        state = 69;
+        state = 73;
         balanceStatement();
         break;
       case 2:
-        state = 70;
+        state = 74;
         closeStatement();
         break;
       case 3:
-        state = 71;
+        state = 75;
         openStatement();
         break;
       case 4:
-        state = 72;
+        state = 76;
         commodityStatement();
         break;
       case 5:
-        state = 73;
+        state = 77;
         priceStatement();
         break;
       case 6:
-        state = 74;
+        state = 78;
         eventStatement();
         break;
       case 7:
-        state = 75;
+        state = 79;
         documentStatement();
         break;
       case 8:
-        state = 76;
+        state = 80;
         noteStatement();
         break;
       case 9:
-        state = 77;
+        state = 81;
         trStatement();
         break;
       }
-      state = 80;
+      state = 84;
       match(TOKEN_NEWLINE);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -217,17 +219,17 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 82;
+      state = 86;
       match(TOKEN_WORD);
-      state = 85; 
+      state = 89; 
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       do {
-        state = 83;
+        state = 87;
         match(TOKEN_T__0);
-        state = 84;
+        state = 88;
         match(TOKEN_WORD);
-        state = 87; 
+        state = 91; 
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       } while (_la == TOKEN_T__0);
@@ -246,7 +248,7 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 8, RULE_currency);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 89;
+      state = 93;
       match(TOKEN_WORD);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -263,9 +265,9 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 10, RULE_amount);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 91;
+      state = 95;
       match(TOKEN_NUMBER);
-      state = 92;
+      state = 96;
       currency();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -282,9 +284,9 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 12, RULE_includeStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 94;
+      state = 98;
       match(TOKEN_T__1);
-      state = 95;
+      state = 99;
       quoted_string();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -301,11 +303,11 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 14, RULE_optionStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 97;
+      state = 101;
       match(TOKEN_T__2);
-      state = 98;
+      state = 102;
       _localctx.key = quoted_string();
-      state = 99;
+      state = 103;
       _localctx.value = quoted_string();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -323,7 +325,7 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 101;
+      state = 105;
       _la = tokenStream.LA(1)!;
       if (!(_la == TOKEN_T__3 || _la == TOKEN_T__4)) {
       errorHandler.recoverInline(this);
@@ -332,11 +334,11 @@ class GringottsParser extends Parser {
         errorHandler.reportMatch(this);
         consume();
       }
-      state = 105;
+      state = 109;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
-        state = 102;
+      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_T__13) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
+        state = 106;
         _la = tokenStream.LA(1)!;
         if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
         errorHandler.recoverInline(this);
@@ -345,11 +347,11 @@ class GringottsParser extends Parser {
           errorHandler.reportMatch(this);
           consume();
         }
-        state = 107;
+        state = 111;
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       }
-      state = 108;
+      state = 112;
       match(TOKEN_NEWLINE);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -366,13 +368,13 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 18, RULE_balanceStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 110;
+      state = 114;
       date();
-      state = 111;
+      state = 115;
       match(TOKEN_T__5);
-      state = 112;
+      state = 116;
       account();
-      state = 113;
+      state = 117;
       amount();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -389,11 +391,11 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 20, RULE_closeStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 115;
+      state = 119;
       date();
-      state = 116;
+      state = 120;
       match(TOKEN_T__6);
-      state = 117;
+      state = 121;
       account();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -410,11 +412,11 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 22, RULE_openStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 119;
+      state = 123;
       date();
-      state = 120;
+      state = 124;
       match(TOKEN_T__7);
-      state = 121;
+      state = 125;
       account();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -431,11 +433,11 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 24, RULE_commodityStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 123;
+      state = 127;
       date();
-      state = 124;
+      state = 128;
       match(TOKEN_T__8);
-      state = 125;
+      state = 129;
       currency();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -452,13 +454,13 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 26, RULE_priceStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 127;
+      state = 131;
       date();
-      state = 128;
+      state = 132;
       match(TOKEN_T__9);
-      state = 129;
+      state = 133;
       currency();
-      state = 130;
+      state = 134;
       amount();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -475,13 +477,13 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 28, RULE_eventStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 132;
+      state = 136;
       date();
-      state = 133;
+      state = 137;
       match(TOKEN_T__10);
-      state = 134;
+      state = 138;
       _localctx.name = quoted_string();
-      state = 135;
+      state = 139;
       _localctx.value = quoted_string();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -498,13 +500,13 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 30, RULE_documentStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 137;
+      state = 141;
       date();
-      state = 138;
+      state = 142;
       match(TOKEN_T__11);
-      state = 139;
+      state = 143;
       account();
-      state = 140;
+      state = 144;
       quoted_string();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -521,13 +523,13 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 32, RULE_noteStatement);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 142;
+      state = 146;
       date();
-      state = 143;
+      state = 147;
       match(TOKEN_T__12);
-      state = 144;
+      state = 148;
       account();
-      state = 145;
+      state = 149;
       quoted_string();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -544,7 +546,7 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 34, RULE_empty_line);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 147;
+      state = 151;
       match(TOKEN_NEWLINE);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -562,41 +564,45 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 149;
+      state = 153;
       tr_header();
-      state = 150;
+      state = 154;
       match(TOKEN_NEWLINE);
-      state = 156;
+      state = 160;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       while (_la == TOKEN_T__4) {
-        state = 151;
+        state = 155;
         tr_comment();
-        state = 152;
+        state = 156;
         match(TOKEN_NEWLINE);
-        state = 158;
+        state = 162;
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       }
-      state = 165; 
+      state = 170; 
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       do {
-        state = 161;
+        state = 166;
         errorHandler.sync(this);
         switch (interpreter!.adaptivePredict(tokenStream, 7, context)) {
         case 1:
-          state = 159;
+          state = 163;
           posting_spec_account_only();
           break;
         case 2:
-          state = 160;
+          state = 164;
           posting_spec_account_amount();
           break;
+        case 3:
+          state = 165;
+          posting_spec_explicit_per_cost();
+          break;
         }
-        state = 163;
+        state = 168;
         match(TOKEN_NEWLINE);
-        state = 167; 
+        state = 172; 
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       } while (_la == TOKEN_WORD);
@@ -616,25 +622,25 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 169;
+      state = 174;
       date();
-      state = 170;
+      state = 175;
       match(TOKEN_TR_FLAG);
-      state = 171;
+      state = 176;
       _localctx.narration = quoted_string();
-      state = 173;
+      state = 178;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_STR) {
-        state = 172;
+        state = 177;
         _localctx.payee = quoted_string();
       }
 
-      state = 176;
+      state = 181;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_TAG) {
-        state = 175;
+        state = 180;
         tags();
       }
 
@@ -654,13 +660,13 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 178;
+      state = 183;
       match(TOKEN_T__4);
-      state = 182;
+      state = 187;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
-        state = 179;
+      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_T__13) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
+        state = 184;
         _la = tokenStream.LA(1)!;
         if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
         errorHandler.recoverInline(this);
@@ -669,7 +675,7 @@ class GringottsParser extends Parser {
           errorHandler.reportMatch(this);
           consume();
         }
-        state = 184;
+        state = 189;
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       }
@@ -688,7 +694,7 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 42, RULE_tr_comment);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 185;
+      state = 190;
       inline_comment();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -706,21 +712,21 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 187;
+      state = 192;
       account();
-      state = 189;
+      state = 194;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_TAG) {
-        state = 188;
+        state = 193;
         tags();
       }
 
-      state = 192;
+      state = 197;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_T__4) {
-        state = 191;
+        state = 196;
         inline_comment();
       }
 
@@ -740,23 +746,23 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 194;
+      state = 199;
       account();
-      state = 195;
+      state = 200;
       amount();
-      state = 197;
+      state = 202;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_TAG) {
-        state = 196;
+        state = 201;
         tags();
       }
 
-      state = 200;
+      state = 205;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_T__4) {
-        state = 199;
+        state = 204;
         inline_comment();
       }
 
@@ -770,12 +776,69 @@ class GringottsParser extends Parser {
     return _localctx;
   }
 
-  DateContext date() {
-    dynamic _localctx = DateContext(context, state);
-    enterRule(_localctx, 48, RULE_date);
+  Posting_spec_explicit_per_costContext posting_spec_explicit_per_cost() {
+    dynamic _localctx = Posting_spec_explicit_per_costContext(context, state);
+    enterRule(_localctx, 48, RULE_posting_spec_explicit_per_cost);
+    int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 202;
+      state = 207;
+      account();
+      state = 208;
+      amount();
+      state = 209;
+      match(TOKEN_T__13);
+      state = 210;
+      cost();
+      state = 212;
+      errorHandler.sync(this);
+      _la = tokenStream.LA(1)!;
+      if (_la == TOKEN_TAG) {
+        state = 211;
+        tags();
+      }
+
+      state = 215;
+      errorHandler.sync(this);
+      _la = tokenStream.LA(1)!;
+      if (_la == TOKEN_T__4) {
+        state = 214;
+        inline_comment();
+      }
+
+    } on RecognitionException catch (re) {
+      _localctx.exception = re;
+      errorHandler.reportError(this, re);
+      errorHandler.recover(this, re);
+    } finally {
+      exitRule();
+    }
+    return _localctx;
+  }
+
+  CostContext cost() {
+    dynamic _localctx = CostContext(context, state);
+    enterRule(_localctx, 50, RULE_cost);
+    try {
+      enterOuterAlt(_localctx, 1);
+      state = 217;
+      amount();
+    } on RecognitionException catch (re) {
+      _localctx.exception = re;
+      errorHandler.reportError(this, re);
+      errorHandler.recover(this, re);
+    } finally {
+      exitRule();
+    }
+    return _localctx;
+  }
+
+  DateContext date() {
+    dynamic _localctx = DateContext(context, state);
+    enterRule(_localctx, 52, RULE_date);
+    try {
+      enterOuterAlt(_localctx, 1);
+      state = 219;
       match(TOKEN_DATE);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -789,10 +852,10 @@ class GringottsParser extends Parser {
 
   Quoted_stringContext quoted_string() {
     dynamic _localctx = Quoted_stringContext(context, state);
-    enterRule(_localctx, 50, RULE_quoted_string);
+    enterRule(_localctx, 54, RULE_quoted_string);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 204;
+      state = 221;
       match(TOKEN_STR);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -806,17 +869,17 @@ class GringottsParser extends Parser {
 
   TagsContext tags() {
     dynamic _localctx = TagsContext(context, state);
-    enterRule(_localctx, 52, RULE_tags);
+    enterRule(_localctx, 56, RULE_tags);
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 207; 
+      state = 224; 
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       do {
-        state = 206;
+        state = 223;
         match(TOKEN_TAG);
-        state = 209; 
+        state = 226; 
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       } while (_la == TOKEN_TAG);
@@ -831,74 +894,80 @@ class GringottsParser extends Parser {
   }
 
   static const List<int> _serializedATN = [
-      4,1,25,212,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,
+      4,1,26,229,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,
       2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,
       14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,
-      2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,1,0,1,
-      0,5,0,57,8,0,10,0,12,0,60,9,0,1,0,1,0,1,1,1,1,1,1,1,1,3,1,68,8,1,1,
-      2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,79,8,2,1,2,1,2,1,3,1,3,1,3,4,
-      3,86,8,3,11,3,12,3,87,1,4,1,4,1,5,1,5,1,5,1,6,1,6,1,6,1,7,1,7,1,7,
-      1,7,1,8,1,8,5,8,104,8,8,10,8,12,8,107,9,8,1,8,1,8,1,9,1,9,1,9,1,9,
-      1,9,1,10,1,10,1,10,1,10,1,11,1,11,1,11,1,11,1,12,1,12,1,12,1,12,1,
-      13,1,13,1,13,1,13,1,13,1,14,1,14,1,14,1,14,1,14,1,15,1,15,1,15,1,15,
-      1,15,1,16,1,16,1,16,1,16,1,16,1,17,1,17,1,18,1,18,1,18,1,18,1,18,5,
-      18,155,8,18,10,18,12,18,158,9,18,1,18,1,18,3,18,162,8,18,1,18,1,18,
-      4,18,166,8,18,11,18,12,18,167,1,19,1,19,1,19,1,19,3,19,174,8,19,1,
-      19,3,19,177,8,19,1,20,1,20,5,20,181,8,20,10,20,12,20,184,9,20,1,21,
-      1,21,1,22,1,22,3,22,190,8,22,1,22,3,22,193,8,22,1,23,1,23,1,23,3,23,
-      198,8,23,1,23,3,23,201,8,23,1,24,1,24,1,25,1,25,1,26,4,26,208,8,26,
-      11,26,12,26,209,1,26,0,0,27,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
-      30,32,34,36,38,40,42,44,46,48,50,52,0,2,1,0,4,5,1,0,23,23,210,0,58,
-      1,0,0,0,2,67,1,0,0,0,4,78,1,0,0,0,6,82,1,0,0,0,8,89,1,0,0,0,10,91,
-      1,0,0,0,12,94,1,0,0,0,14,97,1,0,0,0,16,101,1,0,0,0,18,110,1,0,0,0,
-      20,115,1,0,0,0,22,119,1,0,0,0,24,123,1,0,0,0,26,127,1,0,0,0,28,132,
-      1,0,0,0,30,137,1,0,0,0,32,142,1,0,0,0,34,147,1,0,0,0,36,149,1,0,0,
-      0,38,169,1,0,0,0,40,178,1,0,0,0,42,185,1,0,0,0,44,187,1,0,0,0,46,194,
-      1,0,0,0,48,202,1,0,0,0,50,204,1,0,0,0,52,207,1,0,0,0,54,57,3,2,1,0,
-      55,57,3,34,17,0,56,54,1,0,0,0,56,55,1,0,0,0,57,60,1,0,0,0,58,56,1,
-      0,0,0,58,59,1,0,0,0,59,61,1,0,0,0,60,58,1,0,0,0,61,62,5,0,0,1,62,1,
-      1,0,0,0,63,68,3,4,2,0,64,68,3,12,6,0,65,68,3,14,7,0,66,68,3,16,8,0,
-      67,63,1,0,0,0,67,64,1,0,0,0,67,65,1,0,0,0,67,66,1,0,0,0,68,3,1,0,0,
-      0,69,79,3,18,9,0,70,79,3,20,10,0,71,79,3,22,11,0,72,79,3,24,12,0,73,
-      79,3,26,13,0,74,79,3,28,14,0,75,79,3,30,15,0,76,79,3,32,16,0,77,79,
-      3,36,18,0,78,69,1,0,0,0,78,70,1,0,0,0,78,71,1,0,0,0,78,72,1,0,0,0,
-      78,73,1,0,0,0,78,74,1,0,0,0,78,75,1,0,0,0,78,76,1,0,0,0,78,77,1,0,
-      0,0,79,80,1,0,0,0,80,81,5,23,0,0,81,5,1,0,0,0,82,85,5,21,0,0,83,84,
-      5,1,0,0,84,86,5,21,0,0,85,83,1,0,0,0,86,87,1,0,0,0,87,85,1,0,0,0,87,
-      88,1,0,0,0,88,7,1,0,0,0,89,90,5,21,0,0,90,9,1,0,0,0,91,92,5,19,0,0,
-      92,93,3,8,4,0,93,11,1,0,0,0,94,95,5,2,0,0,95,96,3,50,25,0,96,13,1,
-      0,0,0,97,98,5,3,0,0,98,99,3,50,25,0,99,100,3,50,25,0,100,15,1,0,0,
-      0,101,105,7,0,0,0,102,104,8,1,0,0,103,102,1,0,0,0,104,107,1,0,0,0,
-      105,103,1,0,0,0,105,106,1,0,0,0,106,108,1,0,0,0,107,105,1,0,0,0,108,
-      109,5,23,0,0,109,17,1,0,0,0,110,111,3,48,24,0,111,112,5,6,0,0,112,
-      113,3,6,3,0,113,114,3,10,5,0,114,19,1,0,0,0,115,116,3,48,24,0,116,
-      117,5,7,0,0,117,118,3,6,3,0,118,21,1,0,0,0,119,120,3,48,24,0,120,121,
-      5,8,0,0,121,122,3,6,3,0,122,23,1,0,0,0,123,124,3,48,24,0,124,125,5,
-      9,0,0,125,126,3,8,4,0,126,25,1,0,0,0,127,128,3,48,24,0,128,129,5,10,
-      0,0,129,130,3,8,4,0,130,131,3,10,5,0,131,27,1,0,0,0,132,133,3,48,24,
-      0,133,134,5,11,0,0,134,135,3,50,25,0,135,136,3,50,25,0,136,29,1,0,
-      0,0,137,138,3,48,24,0,138,139,5,12,0,0,139,140,3,6,3,0,140,141,3,50,
-      25,0,141,31,1,0,0,0,142,143,3,48,24,0,143,144,5,13,0,0,144,145,3,6,
-      3,0,145,146,3,50,25,0,146,33,1,0,0,0,147,148,5,23,0,0,148,35,1,0,0,
-      0,149,150,3,38,19,0,150,156,5,23,0,0,151,152,3,42,21,0,152,153,5,23,
-      0,0,153,155,1,0,0,0,154,151,1,0,0,0,155,158,1,0,0,0,156,154,1,0,0,
-      0,156,157,1,0,0,0,157,165,1,0,0,0,158,156,1,0,0,0,159,162,3,44,22,
-      0,160,162,3,46,23,0,161,159,1,0,0,0,161,160,1,0,0,0,162,163,1,0,0,
-      0,163,164,5,23,0,0,164,166,1,0,0,0,165,161,1,0,0,0,166,167,1,0,0,0,
-      167,165,1,0,0,0,167,168,1,0,0,0,168,37,1,0,0,0,169,170,3,48,24,0,170,
-      171,5,24,0,0,171,173,3,50,25,0,172,174,3,50,25,0,173,172,1,0,0,0,173,
-      174,1,0,0,0,174,176,1,0,0,0,175,177,3,52,26,0,176,175,1,0,0,0,176,
-      177,1,0,0,0,177,39,1,0,0,0,178,182,5,5,0,0,179,181,8,1,0,0,180,179,
-      1,0,0,0,181,184,1,0,0,0,182,180,1,0,0,0,182,183,1,0,0,0,183,41,1,0,
-      0,0,184,182,1,0,0,0,185,186,3,40,20,0,186,43,1,0,0,0,187,189,3,6,3,
-      0,188,190,3,52,26,0,189,188,1,0,0,0,189,190,1,0,0,0,190,192,1,0,0,
-      0,191,193,3,40,20,0,192,191,1,0,0,0,192,193,1,0,0,0,193,45,1,0,0,0,
-      194,195,3,6,3,0,195,197,3,10,5,0,196,198,3,52,26,0,197,196,1,0,0,0,
-      197,198,1,0,0,0,198,200,1,0,0,0,199,201,3,40,20,0,200,199,1,0,0,0,
-      200,201,1,0,0,0,201,47,1,0,0,0,202,203,5,18,0,0,203,49,1,0,0,0,204,
-      205,5,25,0,0,205,51,1,0,0,0,206,208,5,20,0,0,207,206,1,0,0,0,208,209,
-      1,0,0,0,209,207,1,0,0,0,209,210,1,0,0,0,210,53,1,0,0,0,17,56,58,67,
-      78,87,105,156,161,167,173,176,182,189,192,197,200,209
+      2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,
+      27,2,28,7,28,1,0,1,0,5,0,61,8,0,10,0,12,0,64,9,0,1,0,1,0,1,1,1,1,1,
+      1,1,1,3,1,72,8,1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,83,8,2,1,
+      2,1,2,1,3,1,3,1,3,4,3,90,8,3,11,3,12,3,91,1,4,1,4,1,5,1,5,1,5,1,6,
+      1,6,1,6,1,7,1,7,1,7,1,7,1,8,1,8,5,8,108,8,8,10,8,12,8,111,9,8,1,8,
+      1,8,1,9,1,9,1,9,1,9,1,9,1,10,1,10,1,10,1,10,1,11,1,11,1,11,1,11,1,
+      12,1,12,1,12,1,12,1,13,1,13,1,13,1,13,1,13,1,14,1,14,1,14,1,14,1,14,
+      1,15,1,15,1,15,1,15,1,15,1,16,1,16,1,16,1,16,1,16,1,17,1,17,1,18,1,
+      18,1,18,1,18,1,18,5,18,159,8,18,10,18,12,18,162,9,18,1,18,1,18,1,18,
+      3,18,167,8,18,1,18,1,18,4,18,171,8,18,11,18,12,18,172,1,19,1,19,1,
+      19,1,19,3,19,179,8,19,1,19,3,19,182,8,19,1,20,1,20,5,20,186,8,20,10,
+      20,12,20,189,9,20,1,21,1,21,1,22,1,22,3,22,195,8,22,1,22,3,22,198,
+      8,22,1,23,1,23,1,23,3,23,203,8,23,1,23,3,23,206,8,23,1,24,1,24,1,24,
+      1,24,1,24,3,24,213,8,24,1,24,3,24,216,8,24,1,25,1,25,1,26,1,26,1,27,
+      1,27,1,28,4,28,225,8,28,11,28,12,28,226,1,28,0,0,29,0,2,4,6,8,10,12,
+      14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,
+      0,2,1,0,4,5,1,0,24,24,228,0,62,1,0,0,0,2,71,1,0,0,0,4,82,1,0,0,0,6,
+      86,1,0,0,0,8,93,1,0,0,0,10,95,1,0,0,0,12,98,1,0,0,0,14,101,1,0,0,0,
+      16,105,1,0,0,0,18,114,1,0,0,0,20,119,1,0,0,0,22,123,1,0,0,0,24,127,
+      1,0,0,0,26,131,1,0,0,0,28,136,1,0,0,0,30,141,1,0,0,0,32,146,1,0,0,
+      0,34,151,1,0,0,0,36,153,1,0,0,0,38,174,1,0,0,0,40,183,1,0,0,0,42,190,
+      1,0,0,0,44,192,1,0,0,0,46,199,1,0,0,0,48,207,1,0,0,0,50,217,1,0,0,
+      0,52,219,1,0,0,0,54,221,1,0,0,0,56,224,1,0,0,0,58,61,3,2,1,0,59,61,
+      3,34,17,0,60,58,1,0,0,0,60,59,1,0,0,0,61,64,1,0,0,0,62,60,1,0,0,0,
+      62,63,1,0,0,0,63,65,1,0,0,0,64,62,1,0,0,0,65,66,5,0,0,1,66,1,1,0,0,
+      0,67,72,3,4,2,0,68,72,3,12,6,0,69,72,3,14,7,0,70,72,3,16,8,0,71,67,
+      1,0,0,0,71,68,1,0,0,0,71,69,1,0,0,0,71,70,1,0,0,0,72,3,1,0,0,0,73,
+      83,3,18,9,0,74,83,3,20,10,0,75,83,3,22,11,0,76,83,3,24,12,0,77,83,
+      3,26,13,0,78,83,3,28,14,0,79,83,3,30,15,0,80,83,3,32,16,0,81,83,3,
+      36,18,0,82,73,1,0,0,0,82,74,1,0,0,0,82,75,1,0,0,0,82,76,1,0,0,0,82,
+      77,1,0,0,0,82,78,1,0,0,0,82,79,1,0,0,0,82,80,1,0,0,0,82,81,1,0,0,0,
+      83,84,1,0,0,0,84,85,5,24,0,0,85,5,1,0,0,0,86,89,5,22,0,0,87,88,5,1,
+      0,0,88,90,5,22,0,0,89,87,1,0,0,0,90,91,1,0,0,0,91,89,1,0,0,0,91,92,
+      1,0,0,0,92,7,1,0,0,0,93,94,5,22,0,0,94,9,1,0,0,0,95,96,5,20,0,0,96,
+      97,3,8,4,0,97,11,1,0,0,0,98,99,5,2,0,0,99,100,3,54,27,0,100,13,1,0,
+      0,0,101,102,5,3,0,0,102,103,3,54,27,0,103,104,3,54,27,0,104,15,1,0,
+      0,0,105,109,7,0,0,0,106,108,8,1,0,0,107,106,1,0,0,0,108,111,1,0,0,
+      0,109,107,1,0,0,0,109,110,1,0,0,0,110,112,1,0,0,0,111,109,1,0,0,0,
+      112,113,5,24,0,0,113,17,1,0,0,0,114,115,3,52,26,0,115,116,5,6,0,0,
+      116,117,3,6,3,0,117,118,3,10,5,0,118,19,1,0,0,0,119,120,3,52,26,0,
+      120,121,5,7,0,0,121,122,3,6,3,0,122,21,1,0,0,0,123,124,3,52,26,0,124,
+      125,5,8,0,0,125,126,3,6,3,0,126,23,1,0,0,0,127,128,3,52,26,0,128,129,
+      5,9,0,0,129,130,3,8,4,0,130,25,1,0,0,0,131,132,3,52,26,0,132,133,5,
+      10,0,0,133,134,3,8,4,0,134,135,3,10,5,0,135,27,1,0,0,0,136,137,3,52,
+      26,0,137,138,5,11,0,0,138,139,3,54,27,0,139,140,3,54,27,0,140,29,1,
+      0,0,0,141,142,3,52,26,0,142,143,5,12,0,0,143,144,3,6,3,0,144,145,3,
+      54,27,0,145,31,1,0,0,0,146,147,3,52,26,0,147,148,5,13,0,0,148,149,
+      3,6,3,0,149,150,3,54,27,0,150,33,1,0,0,0,151,152,5,24,0,0,152,35,1,
+      0,0,0,153,154,3,38,19,0,154,160,5,24,0,0,155,156,3,42,21,0,156,157,
+      5,24,0,0,157,159,1,0,0,0,158,155,1,0,0,0,159,162,1,0,0,0,160,158,1,
+      0,0,0,160,161,1,0,0,0,161,170,1,0,0,0,162,160,1,0,0,0,163,167,3,44,
+      22,0,164,167,3,46,23,0,165,167,3,48,24,0,166,163,1,0,0,0,166,164,1,
+      0,0,0,166,165,1,0,0,0,167,168,1,0,0,0,168,169,5,24,0,0,169,171,1,0,
+      0,0,170,166,1,0,0,0,171,172,1,0,0,0,172,170,1,0,0,0,172,173,1,0,0,
+      0,173,37,1,0,0,0,174,175,3,52,26,0,175,176,5,25,0,0,176,178,3,54,27,
+      0,177,179,3,54,27,0,178,177,1,0,0,0,178,179,1,0,0,0,179,181,1,0,0,
+      0,180,182,3,56,28,0,181,180,1,0,0,0,181,182,1,0,0,0,182,39,1,0,0,0,
+      183,187,5,5,0,0,184,186,8,1,0,0,185,184,1,0,0,0,186,189,1,0,0,0,187,
+      185,1,0,0,0,187,188,1,0,0,0,188,41,1,0,0,0,189,187,1,0,0,0,190,191,
+      3,40,20,0,191,43,1,0,0,0,192,194,3,6,3,0,193,195,3,56,28,0,194,193,
+      1,0,0,0,194,195,1,0,0,0,195,197,1,0,0,0,196,198,3,40,20,0,197,196,
+      1,0,0,0,197,198,1,0,0,0,198,45,1,0,0,0,199,200,3,6,3,0,200,202,3,10,
+      5,0,201,203,3,56,28,0,202,201,1,0,0,0,202,203,1,0,0,0,203,205,1,0,
+      0,0,204,206,3,40,20,0,205,204,1,0,0,0,205,206,1,0,0,0,206,47,1,0,0,
+      0,207,208,3,6,3,0,208,209,3,10,5,0,209,210,5,14,0,0,210,212,3,50,25,
+      0,211,213,3,56,28,0,212,211,1,0,0,0,212,213,1,0,0,0,213,215,1,0,0,
+      0,214,216,3,40,20,0,215,214,1,0,0,0,215,216,1,0,0,0,216,49,1,0,0,0,
+      217,218,3,10,5,0,218,51,1,0,0,0,219,220,5,19,0,0,220,53,1,0,0,0,221,
+      222,5,26,0,0,222,55,1,0,0,0,223,225,5,21,0,0,224,223,1,0,0,0,225,226,
+      1,0,0,0,226,224,1,0,0,0,226,227,1,0,0,0,227,57,1,0,0,0,19,60,62,71,
+      82,91,109,160,166,172,178,181,187,194,197,202,205,212,215,226
   ];
 
   static final ATN _ATN =
@@ -1221,6 +1290,8 @@ class TrStatementContext extends ParserRuleContext {
   Posting_spec_account_onlyContext? posting_spec_account_only(int i) => getRuleContext<Posting_spec_account_onlyContext>(i);
   List<Posting_spec_account_amountContext> posting_spec_account_amounts() => getRuleContexts<Posting_spec_account_amountContext>();
   Posting_spec_account_amountContext? posting_spec_account_amount(int i) => getRuleContext<Posting_spec_account_amountContext>(i);
+  List<Posting_spec_explicit_per_costContext> posting_spec_explicit_per_costs() => getRuleContexts<Posting_spec_explicit_per_costContext>();
+  Posting_spec_explicit_per_costContext? posting_spec_explicit_per_cost(int i) => getRuleContext<Posting_spec_explicit_per_costContext>(i);
   TrStatementContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_trStatement;
@@ -1318,6 +1389,40 @@ class Posting_spec_account_amountContext extends ParserRuleContext {
   @override
   void exitRule(ParseTreeListener listener) {
     if (listener is GringottsListener) listener.exitPosting_spec_account_amount(this);
+  }
+}
+
+class Posting_spec_explicit_per_costContext extends ParserRuleContext {
+  AccountContext? account() => getRuleContext<AccountContext>(0);
+  AmountContext? amount() => getRuleContext<AmountContext>(0);
+  CostContext? cost() => getRuleContext<CostContext>(0);
+  TagsContext? tags() => getRuleContext<TagsContext>(0);
+  Inline_commentContext? inline_comment() => getRuleContext<Inline_commentContext>(0);
+  Posting_spec_explicit_per_costContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
+  @override
+  int get ruleIndex => RULE_posting_spec_explicit_per_cost;
+  @override
+  void enterRule(ParseTreeListener listener) {
+    if (listener is GringottsListener) listener.enterPosting_spec_explicit_per_cost(this);
+  }
+  @override
+  void exitRule(ParseTreeListener listener) {
+    if (listener is GringottsListener) listener.exitPosting_spec_explicit_per_cost(this);
+  }
+}
+
+class CostContext extends ParserRuleContext {
+  AmountContext? amount() => getRuleContext<AmountContext>(0);
+  CostContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
+  @override
+  int get ruleIndex => RULE_cost;
+  @override
+  void enterRule(ParseTreeListener listener) {
+    if (listener is GringottsListener) listener.enterCost(this);
+  }
+  @override
+  void exitRule(ParseTreeListener listener) {
+    if (listener is GringottsListener) listener.exitCost(this);
   }
 }
 

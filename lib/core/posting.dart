@@ -4,10 +4,11 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'account.dart';
 import 'core.dart';
 
+// Rename to CostSpec
 class Cost {
   final Decimal number;
   final String currency;
-  final DateTime date;
+  final DateTime? date;
   final String? label;
 
   Cost(this.number, this.currency, this.date, {this.label});
@@ -41,6 +42,7 @@ class Cost {
   }
 }
 
+// Rename to PostingSpec
 class Posting {
   late final Account account;
   late final Amount? amount;
@@ -114,7 +116,8 @@ class Posting {
   bool operator ==(Object other) {
     if (other is! Posting) return false;
 
-    // print(toString());
+    // print('this ${toString()}');
+    // print('other ${other.toString()}');
     // print('account: ${account == other.account}');
     // print('amount: ${amount == other.amount}');
     // print('comment: ${comment == other.comment}');

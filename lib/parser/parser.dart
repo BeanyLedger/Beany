@@ -128,7 +128,27 @@ extension PostingSpecAccountAmountParsing
   }
 }
 
-extension TrComment on Tr_commentContext {
+extension CostParsing on CostContext {
+  Cost val() {
+    var amt = amount()!.val();
+    return Cost(amt.number, amt.currency, null);
+  }
+}
+
+extension PostingSpecExplicitPerCostParsing
+    on Posting_spec_explicit_per_costContext {
+  Posting val() {
+    return Posting(
+      account()!.val(),
+      amount()!.val(),
+      cost: cost()!.val(),
+      comment: inline_comment()?.val(),
+      tags: tags()?.val(),
+    );
+  }
+}
+
+extension TrCommentParsing on Tr_commentContext {
   String val() => inline_comment()!.val();
 }
 
@@ -146,10 +166,12 @@ extension TransactionParsing on TrStatementContext {
       postings: children!
           .where((c) =>
               c is Posting_spec_account_onlyContext ||
-              c is Posting_spec_account_amountContext)
+              c is Posting_spec_account_amountContext ||
+              c is Posting_spec_explicit_per_costContext)
           .map((c) {
         if (c is Posting_spec_account_onlyContext) return c.val();
         if (c is Posting_spec_account_amountContext) return c.val();
+        if (c is Posting_spec_explicit_per_costContext) return c.val();
         throw new Exception("Unknown Posting Type??");
       }),
       comments: tr_comments().map((e) => e.val()),

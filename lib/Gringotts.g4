@@ -48,7 +48,11 @@ empty_line: NEWLINE;
 
 trStatement:
 	tr_header NEWLINE (tr_comment NEWLINE)* (
-		(posting_spec_account_only | posting_spec_account_amount) NEWLINE
+		(
+			posting_spec_account_only
+			| posting_spec_account_amount
+			| posting_spec_explicit_per_cost
+		) NEWLINE
 	)+;
 tr_header:
 	date TR_FLAG narration = quoted_string payee = quoted_string? tags?;
@@ -59,6 +63,10 @@ tr_comment: inline_comment;
 posting_spec_account_only: account tags? inline_comment?;
 posting_spec_account_amount:
 	account amount tags? inline_comment?;
+posting_spec_explicit_per_cost:
+	account amount '@' cost tags? inline_comment?;
+
+cost: amount;
 
 date: DATE;
 // quoted_string: '"' (.)? '"';
