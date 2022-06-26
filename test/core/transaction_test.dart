@@ -52,15 +52,15 @@ void main() {
   });
 
   test('Comment Parser', () {
-    expect(parse("  ;Hello\n").inline_comment().val(), "Hello");
-    expect(parse("  ; Hello\n").inline_comment().val(), "Hello");
-    expect(parse("  ; Hello \n").inline_comment().val(), "Hello");
-    expect(parse("  ; Hello\nHi").inline_comment().val(), "Hello");
+    expect(parse("  ;Hello").tr_comment().val(), "Hello");
+    expect(parse("  ;Hello\n").tr_comment().val(), "Hello");
+    expect(parse("  ; Hello\n").tr_comment().val(), "Hello");
+    expect(parse("  ; Hello \n").tr_comment().val(), "Hello");
+    expect(parse("  ; Hello\nHi").tr_comment().val(), "Hello");
   });
 
   test('Comment Parser Special String', () {
-    expect(
-        parse("  ; Róú's brithday\n").inline_comment().val(), "Róú's brithday");
+    expect(parse("  ; Róú's brithday\n").tr_comment().val(), "Róú's brithday");
   });
 
 //   test('Comment Only Parser', () {

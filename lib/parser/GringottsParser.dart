@@ -584,7 +584,7 @@ class GringottsParser extends Parser {
           break;
         case 3:
           state = 153;
-          inline_comment();
+          tr_comment();
           break;
         }
         state = 156;
@@ -592,7 +592,7 @@ class GringottsParser extends Parser {
         state = 160; 
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
-      } while (_la == TOKEN_T__4 || _la == TOKEN_INDENT);
+      } while (_la == TOKEN_INDENT);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
       errorHandler.reportError(this, re);
@@ -879,7 +879,7 @@ class GringottsParser extends Parser {
       12,0,0,139,140,3,6,3,0,140,141,3,50,25,0,141,31,1,0,0,0,142,143,3,
       48,24,0,143,144,5,13,0,0,144,145,3,6,3,0,145,146,3,50,25,0,146,33,
       1,0,0,0,147,148,5,23,0,0,148,35,1,0,0,0,149,150,3,38,19,0,150,158,
-      5,23,0,0,151,155,3,44,22,0,152,155,3,46,23,0,153,155,3,42,21,0,154,
+      5,23,0,0,151,155,3,44,22,0,152,155,3,46,23,0,153,155,3,40,20,0,154,
       151,1,0,0,0,154,152,1,0,0,0,154,153,1,0,0,0,155,156,1,0,0,0,156,157,
       5,23,0,0,157,159,1,0,0,0,158,154,1,0,0,0,159,160,1,0,0,0,160,158,1,
       0,0,0,160,161,1,0,0,0,161,37,1,0,0,0,162,163,3,48,24,0,163,164,5,24,
@@ -1217,8 +1217,8 @@ class TrStatementContext extends ParserRuleContext {
   Posting_spec_account_onlyContext? posting_spec_account_only(int i) => getRuleContext<Posting_spec_account_onlyContext>(i);
   List<Posting_spec_account_amountContext> posting_spec_account_amounts() => getRuleContexts<Posting_spec_account_amountContext>();
   Posting_spec_account_amountContext? posting_spec_account_amount(int i) => getRuleContext<Posting_spec_account_amountContext>(i);
-  List<Inline_commentContext> inline_comments() => getRuleContexts<Inline_commentContext>();
-  Inline_commentContext? inline_comment(int i) => getRuleContext<Inline_commentContext>(i);
+  List<Tr_commentContext> tr_comments() => getRuleContexts<Tr_commentContext>();
+  Tr_commentContext? tr_comment(int i) => getRuleContext<Tr_commentContext>(i);
   TrStatementContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_trStatement;

@@ -112,7 +112,7 @@ extension PostingSpecAccountOnlyParsing on Posting_spec_account_onlyContext {
 extension InlineCommentParsing on Inline_commentContext {
   String val() {
     var x = text;
-    assert(x.startsWith(';'));
+    assert(x.startsWith(';'), "`$x` does not start with a ;");
     return x.substring(1);
   }
 }
@@ -127,6 +127,10 @@ extension PostingSpecAccountAmountParsing
       tags: tags()?.val(),
     );
   }
+}
+
+extension TrComment on Tr_commentContext {
+  String val() => inline_comment()!.val();
 }
 
 extension TransactionParsing on TrStatementContext {
@@ -149,7 +153,7 @@ extension TransactionParsing on TrStatementContext {
         if (c is Posting_spec_account_amountContext) return c.val();
         throw new Exception("Unknown Posting Type??");
       }),
-      comments: inline_comments().map((e) => e.val()),
+      comments: tr_comments().map((e) => e.val()),
     );
   }
 }

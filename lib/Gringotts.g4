@@ -51,7 +51,7 @@ trStatement:
 		(
 			posting_spec_account_only
 			| posting_spec_account_amount
-			| inline_comment
+			| tr_comment
 		) NEWLINE
 	)+;
 tr_header:
