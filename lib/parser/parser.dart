@@ -171,8 +171,7 @@ extension DirectiveParsing on DirectiveContext {
 
 extension CommentStatementParsing on CommentStatementContext {
   Comment val() {
-    var s = NEWLINEs().map((e) => e.text!).join("");
-    return Comment(s);
+    return Comment(text.substring(1, text.length - 1));
   }
 }
 

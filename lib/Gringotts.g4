@@ -83,6 +83,7 @@ TAG: [#]WORD;
 WORD: [A-Za-z0-9\\-]+;
 WHITESPACE: (' ' | '\t') -> skip;
 NEWLINE: ('\r'? '\n' | '\r')+;
+// NOT_NEWLINE: ~('\r' | '\n' | '\r\n');
 
 TR_FLAG: '!' | '*';
 INDENT: WHITESPACE+;
