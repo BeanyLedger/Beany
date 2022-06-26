@@ -20,7 +20,8 @@ void main() {
   test('Posting Full Parser Extra Spaces', () {
     var p = Posting.simple("Expenses:M", "1.5", "EUR");
     expect(
-        parse("  Expenses:M     1.5 EUR").posting_spec_account_only().val(), p);
+        parse("  Expenses:M     1.5 EUR").posting_spec_account_amount().val(),
+        p);
   });
 
   test('Posting Account Comment', () {

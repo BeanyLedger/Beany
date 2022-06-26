@@ -92,26 +92,35 @@ extension DocumentParsing on DocumentStatementContext {
 }
 
 extension PostingSpecAccountOnlyParsing on Posting_spec_account_onlyContext {
-  Posting val() => Posting(
-        account()!.val(),
-        null,
-        comment: inline_comment()?.val(),
-      );
+  Posting val() {
+    return Posting(
+      account()!.val(),
+      null,
+      comment: inline_comment()?.val(),
+    );
+    // FIXME: Handle tags!
+  }
 }
 
 extension InlineCommentParsing on Inline_commentContext {
   String val() {
-    return NEWLINEs().map((e) => e.text!).join("");
+    var x = text;
+    assert(x.startsWith(';'));
+    return x.substring(1);
   }
 }
 
 extension PostingSpecAccountAmountParsing
     on Posting_spec_account_amountContext {
-  Posting val() => Posting(
-        account()!.val(),
-        amount()!.val(),
-        comment: inline_comment()?.val(),
-      );
+  Posting val() {
+    return Posting(
+      account()!.val(),
+      amount()!.val(),
+      comment: inline_comment()?.val(),
+    );
+
+    // FIXME: Handle tags!
+  }
 }
 
 extension TransactionParsing on TrStatementContext {
