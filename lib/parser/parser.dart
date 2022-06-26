@@ -93,6 +93,7 @@ extension DocumentParsing on DocumentStatementContext {
 
 extension TagParsing on TagsContext {
   Iterable<String> val() {
+    print('Giving tgs $text');
     return TAGs().map((e) => e.text!.substring(1));
   }
 }
@@ -137,8 +138,8 @@ extension TransactionParsing on TrStatementContext {
       header.date()!.val(),
       flag,
       header.narration!.val(),
-      payee: header.payee!.val(),
-      tags: header.TAGs().map((e) => e.text!),
+      payee: header.payee?.val(),
+      tags: header.tags()?.val(),
       postings: children!
           .where((c) =>
               c is Posting_spec_account_onlyContext ||

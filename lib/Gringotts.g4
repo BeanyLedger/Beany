@@ -55,7 +55,7 @@ trStatement:
 		) NEWLINE
 	)+;
 tr_header:
-	date TR_FLAG narration = quoted_string payee = quoted_string? TAG+;
+	date TR_FLAG narration = quoted_string payee = quoted_string? tags?;
 tr_comment: INDENT inline_comment;
 
 inline_comment: ';' (~NEWLINE)*;

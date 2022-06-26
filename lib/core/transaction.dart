@@ -21,7 +21,7 @@ class Transaction implements Directive {
   final IMap<String, dynamic> meta;
 
   final String narration;
-  final String payee;
+  final String? payee;
   final TransactionFlag flag;
 
   final IList<String> comments;
@@ -32,7 +32,7 @@ class Transaction implements Directive {
     this.date,
     this.flag,
     this.narration, {
-    this.payee = "",
+    this.payee,
     Iterable<String>? tags,
     Iterable<String>? comments,
     Iterable<Posting>? postings,
@@ -66,7 +66,7 @@ class Transaction implements Directive {
     sb.write(date.toIso8601String().substring(0, 10));
     sb.write(' $flag ');
     sb.write('"$narration"');
-    if (payee.isNotEmpty) {
+    if (payee != null) {
       sb.write(' "$payee"');
     }
     if (tags.isNotEmpty) {

@@ -38,9 +38,7 @@ void main() {
       '2019-04-14 ! "Cat" "Payee"\n',
     );
     expect(
-      parse('2019-04-14 ! "Cat" #hello #bertrStatement().val()014\n')
-          .trStatement()
-          .val(),
+      parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').trStatement().val(),
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
           tags: ["hello", "berlin-2014"]),
     );

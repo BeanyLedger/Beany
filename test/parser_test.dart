@@ -12,6 +12,11 @@ void main() {
     // expect(p('"').isFailure, true);
     // expect(p('"dafsdf\nsafasdf"').isFailure, true);
   });
+
+  test('Tags', () {
+    expect(t('#hello #berlin-2014'), ["hello", "berlin-2014"]);
+  });
 }
 
 String p(String str) => parse(str).quoted_string().val();
+List<String> t(String str) => parse(str).tags().val().toList();
