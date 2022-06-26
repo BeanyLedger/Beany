@@ -172,19 +172,19 @@ class GringottsBaseListener implements GringottsListener {
 
   /// The default implementation does nothing.
   @override
-  void enterTr_comment(Tr_commentContext ctx) {}
-
-  /// The default implementation does nothing.
-  @override
-  void exitTr_comment(Tr_commentContext ctx) {}
-
-  /// The default implementation does nothing.
-  @override
   void enterInline_comment(Inline_commentContext ctx) {}
 
   /// The default implementation does nothing.
   @override
   void exitInline_comment(Inline_commentContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterTr_comment(Tr_commentContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitTr_comment(Tr_commentContext ctx) {}
 
   /// The default implementation does nothing.
   @override

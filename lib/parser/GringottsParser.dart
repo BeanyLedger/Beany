@@ -10,7 +10,7 @@ const int RULE_all = 0, RULE_statement = 1, RULE_directive = 2, RULE_account = 3
           RULE_closeStatement = 10, RULE_openStatement = 11, RULE_commodityStatement = 12, 
           RULE_priceStatement = 13, RULE_eventStatement = 14, RULE_documentStatement = 15, 
           RULE_noteStatement = 16, RULE_empty_line = 17, RULE_trStatement = 18, 
-          RULE_tr_header = 19, RULE_tr_comment = 20, RULE_inline_comment = 21, 
+          RULE_tr_header = 19, RULE_inline_comment = 20, RULE_tr_comment = 21, 
           RULE_posting_spec_account_only = 22, RULE_posting_spec_account_amount = 23, 
           RULE_date = 24, RULE_quoted_string = 25, RULE_tags = 26;
 class GringottsParser extends Parser {
@@ -26,8 +26,7 @@ class GringottsParser extends Parser {
                    TOKEN_T__12 = 13, TOKEN_DIGIT = 14, TOKEN_YEAR = 15, 
                    TOKEN_MONTH = 16, TOKEN_DAY = 17, TOKEN_DATE = 18, TOKEN_NUMBER = 19, 
                    TOKEN_TAG = 20, TOKEN_WORD = 21, TOKEN_WHITESPACE = 22, 
-                   TOKEN_NEWLINE = 23, TOKEN_TR_FLAG = 24, TOKEN_INDENT = 25, 
-                   TOKEN_STR = 26;
+                   TOKEN_NEWLINE = 23, TOKEN_TR_FLAG = 24, TOKEN_STR = 25;
 
   @override
   final List<String> ruleNames = [
@@ -35,7 +34,7 @@ class GringottsParser extends Parser {
     'optionStatement', 'commentStatement', 'balanceStatement', 'closeStatement', 
     'openStatement', 'commodityStatement', 'priceStatement', 'eventStatement', 
     'documentStatement', 'noteStatement', 'empty_line', 'trStatement', 'tr_header', 
-    'tr_comment', 'inline_comment', 'posting_spec_account_only', 'posting_spec_account_amount', 
+    'inline_comment', 'tr_comment', 'posting_spec_account_only', 'posting_spec_account_amount', 
     'date', 'quoted_string', 'tags'
   ];
 
@@ -46,7 +45,7 @@ class GringottsParser extends Parser {
   static final List<String?> _SYMBOLIC_NAMES = [
       null, null, null, null, null, null, null, null, null, null, null, 
       null, null, null, "DIGIT", "YEAR", "MONTH", "DAY", "DATE", "NUMBER", 
-      "TAG", "WORD", "WHITESPACE", "NEWLINE", "TR_FLAG", "INDENT", "STR"
+      "TAG", "WORD", "WHITESPACE", "NEWLINE", "TR_FLAG", "STR"
   ];
   static final Vocabulary VOCABULARY = VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -336,7 +335,7 @@ class GringottsParser extends Parser {
       state = 105;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_INDENT) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
+      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
         state = 102;
         _la = tokenStream.LA(1)!;
         if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
@@ -592,7 +591,7 @@ class GringottsParser extends Parser {
         state = 160; 
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
-      } while (_la == TOKEN_INDENT);
+      } while (_la == TOKEN_T__4 || _la == TOKEN_WORD);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
       errorHandler.reportError(this, re);
@@ -641,15 +640,31 @@ class GringottsParser extends Parser {
     return _localctx;
   }
 
-  Tr_commentContext tr_comment() {
-    dynamic _localctx = Tr_commentContext(context, state);
-    enterRule(_localctx, 40, RULE_tr_comment);
+  Inline_commentContext inline_comment() {
+    dynamic _localctx = Inline_commentContext(context, state);
+    enterRule(_localctx, 40, RULE_inline_comment);
+    int _la;
     try {
       enterOuterAlt(_localctx, 1);
       state = 171;
-      match(TOKEN_INDENT);
-      state = 172;
-      inline_comment();
+      match(TOKEN_T__4);
+      state = 175;
+      errorHandler.sync(this);
+      _la = tokenStream.LA(1)!;
+      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
+        state = 172;
+        _la = tokenStream.LA(1)!;
+        if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
+        errorHandler.recoverInline(this);
+        } else {
+          if ( tokenStream.LA(1)! == IntStream.EOF ) matchedEOF = true;
+          errorHandler.reportMatch(this);
+          consume();
+        }
+        state = 177;
+        errorHandler.sync(this);
+        _la = tokenStream.LA(1)!;
+      }
     } on RecognitionException catch (re) {
       _localctx.exception = re;
       errorHandler.reportError(this, re);
@@ -660,31 +675,13 @@ class GringottsParser extends Parser {
     return _localctx;
   }
 
-  Inline_commentContext inline_comment() {
-    dynamic _localctx = Inline_commentContext(context, state);
-    enterRule(_localctx, 42, RULE_inline_comment);
-    int _la;
+  Tr_commentContext tr_comment() {
+    dynamic _localctx = Tr_commentContext(context, state);
+    enterRule(_localctx, 42, RULE_tr_comment);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 174;
-      match(TOKEN_T__4);
       state = 178;
-      errorHandler.sync(this);
-      _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 && ((BigInt.one << _la) & ((BigInt.one << TOKEN_T__0) | (BigInt.one << TOKEN_T__1) | (BigInt.one << TOKEN_T__2) | (BigInt.one << TOKEN_T__3) | (BigInt.one << TOKEN_T__4) | (BigInt.one << TOKEN_T__5) | (BigInt.one << TOKEN_T__6) | (BigInt.one << TOKEN_T__7) | (BigInt.one << TOKEN_T__8) | (BigInt.one << TOKEN_T__9) | (BigInt.one << TOKEN_T__10) | (BigInt.one << TOKEN_T__11) | (BigInt.one << TOKEN_T__12) | (BigInt.one << TOKEN_DIGIT) | (BigInt.one << TOKEN_YEAR) | (BigInt.one << TOKEN_MONTH) | (BigInt.one << TOKEN_DAY) | (BigInt.one << TOKEN_DATE) | (BigInt.one << TOKEN_NUMBER) | (BigInt.one << TOKEN_TAG) | (BigInt.one << TOKEN_WORD) | (BigInt.one << TOKEN_WHITESPACE) | (BigInt.one << TOKEN_TR_FLAG) | (BigInt.one << TOKEN_INDENT) | (BigInt.one << TOKEN_STR))) != BigInt.zero)) {
-        state = 175;
-        _la = tokenStream.LA(1)!;
-        if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
-        errorHandler.recoverInline(this);
-        } else {
-          if ( tokenStream.LA(1)! == IntStream.EOF ) matchedEOF = true;
-          errorHandler.reportMatch(this);
-          consume();
-        }
-        state = 180;
-        errorHandler.sync(this);
-        _la = tokenStream.LA(1)!;
-      }
+      inline_comment();
     } on RecognitionException catch (re) {
       _localctx.exception = re;
       errorHandler.reportError(this, re);
@@ -701,23 +698,21 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 181;
-      match(TOKEN_INDENT);
-      state = 182;
+      state = 180;
       account();
-      state = 184;
+      state = 182;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_TAG) {
-        state = 183;
+        state = 181;
         tags();
       }
 
-      state = 187;
+      state = 185;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_T__4) {
-        state = 186;
+        state = 184;
         inline_comment();
       }
 
@@ -737,25 +732,23 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 189;
-      match(TOKEN_INDENT);
-      state = 190;
+      state = 187;
       account();
-      state = 191;
+      state = 188;
       amount();
-      state = 193;
+      state = 190;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_TAG) {
-        state = 192;
+        state = 189;
         tags();
       }
 
-      state = 196;
+      state = 193;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       if (_la == TOKEN_T__4) {
-        state = 195;
+        state = 192;
         inline_comment();
       }
 
@@ -774,7 +767,7 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 48, RULE_date);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 198;
+      state = 195;
       match(TOKEN_DATE);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -791,7 +784,7 @@ class GringottsParser extends Parser {
     enterRule(_localctx, 50, RULE_quoted_string);
     try {
       enterOuterAlt(_localctx, 1);
-      state = 200;
+      state = 197;
       match(TOKEN_STR);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
@@ -809,13 +802,13 @@ class GringottsParser extends Parser {
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
-      state = 203; 
+      state = 200; 
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
       do {
-        state = 202;
+        state = 199;
         match(TOKEN_TAG);
-        state = 205; 
+        state = 202; 
         errorHandler.sync(this);
         _la = tokenStream.LA(1)!;
       } while (_la == TOKEN_TAG);
@@ -830,7 +823,7 @@ class GringottsParser extends Parser {
   }
 
   static const List<int> _serializedATN = [
-      4,1,26,208,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,
+      4,1,25,205,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,
       2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,
       14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,
       2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,1,0,1,
@@ -842,61 +835,60 @@ class GringottsParser extends Parser {
       13,1,13,1,13,1,13,1,13,1,14,1,14,1,14,1,14,1,14,1,15,1,15,1,15,1,15,
       1,15,1,16,1,16,1,16,1,16,1,16,1,17,1,17,1,18,1,18,1,18,1,18,1,18,3,
       18,155,8,18,1,18,1,18,4,18,159,8,18,11,18,12,18,160,1,19,1,19,1,19,
-      1,19,3,19,167,8,19,1,19,3,19,170,8,19,1,20,1,20,1,20,1,21,1,21,5,21,
-      177,8,21,10,21,12,21,180,9,21,1,22,1,22,1,22,3,22,185,8,22,1,22,3,
-      22,188,8,22,1,23,1,23,1,23,1,23,3,23,194,8,23,1,23,3,23,197,8,23,1,
-      24,1,24,1,25,1,25,1,26,4,26,204,8,26,11,26,12,26,205,1,26,0,0,27,0,
-      2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,
-      50,52,0,2,1,0,4,5,1,0,23,23,206,0,58,1,0,0,0,2,67,1,0,0,0,4,78,1,0,
-      0,0,6,82,1,0,0,0,8,89,1,0,0,0,10,91,1,0,0,0,12,94,1,0,0,0,14,97,1,
-      0,0,0,16,101,1,0,0,0,18,110,1,0,0,0,20,115,1,0,0,0,22,119,1,0,0,0,
-      24,123,1,0,0,0,26,127,1,0,0,0,28,132,1,0,0,0,30,137,1,0,0,0,32,142,
-      1,0,0,0,34,147,1,0,0,0,36,149,1,0,0,0,38,162,1,0,0,0,40,171,1,0,0,
-      0,42,174,1,0,0,0,44,181,1,0,0,0,46,189,1,0,0,0,48,198,1,0,0,0,50,200,
-      1,0,0,0,52,203,1,0,0,0,54,57,3,2,1,0,55,57,3,34,17,0,56,54,1,0,0,0,
-      56,55,1,0,0,0,57,60,1,0,0,0,58,56,1,0,0,0,58,59,1,0,0,0,59,61,1,0,
-      0,0,60,58,1,0,0,0,61,62,5,0,0,1,62,1,1,0,0,0,63,68,3,4,2,0,64,68,3,
-      12,6,0,65,68,3,14,7,0,66,68,3,16,8,0,67,63,1,0,0,0,67,64,1,0,0,0,67,
-      65,1,0,0,0,67,66,1,0,0,0,68,3,1,0,0,0,69,79,3,18,9,0,70,79,3,20,10,
-      0,71,79,3,22,11,0,72,79,3,24,12,0,73,79,3,26,13,0,74,79,3,28,14,0,
-      75,79,3,30,15,0,76,79,3,32,16,0,77,79,3,36,18,0,78,69,1,0,0,0,78,70,
-      1,0,0,0,78,71,1,0,0,0,78,72,1,0,0,0,78,73,1,0,0,0,78,74,1,0,0,0,78,
-      75,1,0,0,0,78,76,1,0,0,0,78,77,1,0,0,0,79,80,1,0,0,0,80,81,5,23,0,
-      0,81,5,1,0,0,0,82,85,5,21,0,0,83,84,5,1,0,0,84,86,5,21,0,0,85,83,1,
-      0,0,0,86,87,1,0,0,0,87,85,1,0,0,0,87,88,1,0,0,0,88,7,1,0,0,0,89,90,
-      5,21,0,0,90,9,1,0,0,0,91,92,5,19,0,0,92,93,3,8,4,0,93,11,1,0,0,0,94,
-      95,5,2,0,0,95,96,3,50,25,0,96,13,1,0,0,0,97,98,5,3,0,0,98,99,3,50,
-      25,0,99,100,3,50,25,0,100,15,1,0,0,0,101,105,7,0,0,0,102,104,8,1,0,
-      0,103,102,1,0,0,0,104,107,1,0,0,0,105,103,1,0,0,0,105,106,1,0,0,0,
-      106,108,1,0,0,0,107,105,1,0,0,0,108,109,5,23,0,0,109,17,1,0,0,0,110,
-      111,3,48,24,0,111,112,5,6,0,0,112,113,3,6,3,0,113,114,3,10,5,0,114,
-      19,1,0,0,0,115,116,3,48,24,0,116,117,5,7,0,0,117,118,3,6,3,0,118,21,
-      1,0,0,0,119,120,3,48,24,0,120,121,5,8,0,0,121,122,3,6,3,0,122,23,1,
-      0,0,0,123,124,3,48,24,0,124,125,5,9,0,0,125,126,3,8,4,0,126,25,1,0,
-      0,0,127,128,3,48,24,0,128,129,5,10,0,0,129,130,3,8,4,0,130,131,3,10,
-      5,0,131,27,1,0,0,0,132,133,3,48,24,0,133,134,5,11,0,0,134,135,3,50,
-      25,0,135,136,3,50,25,0,136,29,1,0,0,0,137,138,3,48,24,0,138,139,5,
-      12,0,0,139,140,3,6,3,0,140,141,3,50,25,0,141,31,1,0,0,0,142,143,3,
-      48,24,0,143,144,5,13,0,0,144,145,3,6,3,0,145,146,3,50,25,0,146,33,
-      1,0,0,0,147,148,5,23,0,0,148,35,1,0,0,0,149,150,3,38,19,0,150,158,
-      5,23,0,0,151,155,3,44,22,0,152,155,3,46,23,0,153,155,3,40,20,0,154,
-      151,1,0,0,0,154,152,1,0,0,0,154,153,1,0,0,0,155,156,1,0,0,0,156,157,
-      5,23,0,0,157,159,1,0,0,0,158,154,1,0,0,0,159,160,1,0,0,0,160,158,1,
-      0,0,0,160,161,1,0,0,0,161,37,1,0,0,0,162,163,3,48,24,0,163,164,5,24,
-      0,0,164,166,3,50,25,0,165,167,3,50,25,0,166,165,1,0,0,0,166,167,1,
-      0,0,0,167,169,1,0,0,0,168,170,3,52,26,0,169,168,1,0,0,0,169,170,1,
-      0,0,0,170,39,1,0,0,0,171,172,5,25,0,0,172,173,3,42,21,0,173,41,1,0,
-      0,0,174,178,5,5,0,0,175,177,8,1,0,0,176,175,1,0,0,0,177,180,1,0,0,
-      0,178,176,1,0,0,0,178,179,1,0,0,0,179,43,1,0,0,0,180,178,1,0,0,0,181,
-      182,5,25,0,0,182,184,3,6,3,0,183,185,3,52,26,0,184,183,1,0,0,0,184,
-      185,1,0,0,0,185,187,1,0,0,0,186,188,3,42,21,0,187,186,1,0,0,0,187,
-      188,1,0,0,0,188,45,1,0,0,0,189,190,5,25,0,0,190,191,3,6,3,0,191,193,
-      3,10,5,0,192,194,3,52,26,0,193,192,1,0,0,0,193,194,1,0,0,0,194,196,
-      1,0,0,0,195,197,3,42,21,0,196,195,1,0,0,0,196,197,1,0,0,0,197,47,1,
-      0,0,0,198,199,5,18,0,0,199,49,1,0,0,0,200,201,5,26,0,0,201,51,1,0,
-      0,0,202,204,5,20,0,0,203,202,1,0,0,0,204,205,1,0,0,0,205,203,1,0,0,
-      0,205,206,1,0,0,0,206,53,1,0,0,0,16,56,58,67,78,87,105,154,160,166,
-      169,178,184,187,193,196,205
+      1,19,3,19,167,8,19,1,19,3,19,170,8,19,1,20,1,20,5,20,174,8,20,10,20,
+      12,20,177,9,20,1,21,1,21,1,22,1,22,3,22,183,8,22,1,22,3,22,186,8,22,
+      1,23,1,23,1,23,3,23,191,8,23,1,23,3,23,194,8,23,1,24,1,24,1,25,1,25,
+      1,26,4,26,201,8,26,11,26,12,26,202,1,26,0,0,27,0,2,4,6,8,10,12,14,
+      16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,0,2,1,0,4,
+      5,1,0,23,23,203,0,58,1,0,0,0,2,67,1,0,0,0,4,78,1,0,0,0,6,82,1,0,0,
+      0,8,89,1,0,0,0,10,91,1,0,0,0,12,94,1,0,0,0,14,97,1,0,0,0,16,101,1,
+      0,0,0,18,110,1,0,0,0,20,115,1,0,0,0,22,119,1,0,0,0,24,123,1,0,0,0,
+      26,127,1,0,0,0,28,132,1,0,0,0,30,137,1,0,0,0,32,142,1,0,0,0,34,147,
+      1,0,0,0,36,149,1,0,0,0,38,162,1,0,0,0,40,171,1,0,0,0,42,178,1,0,0,
+      0,44,180,1,0,0,0,46,187,1,0,0,0,48,195,1,0,0,0,50,197,1,0,0,0,52,200,
+      1,0,0,0,54,57,3,2,1,0,55,57,3,34,17,0,56,54,1,0,0,0,56,55,1,0,0,0,
+      57,60,1,0,0,0,58,56,1,0,0,0,58,59,1,0,0,0,59,61,1,0,0,0,60,58,1,0,
+      0,0,61,62,5,0,0,1,62,1,1,0,0,0,63,68,3,4,2,0,64,68,3,12,6,0,65,68,
+      3,14,7,0,66,68,3,16,8,0,67,63,1,0,0,0,67,64,1,0,0,0,67,65,1,0,0,0,
+      67,66,1,0,0,0,68,3,1,0,0,0,69,79,3,18,9,0,70,79,3,20,10,0,71,79,3,
+      22,11,0,72,79,3,24,12,0,73,79,3,26,13,0,74,79,3,28,14,0,75,79,3,30,
+      15,0,76,79,3,32,16,0,77,79,3,36,18,0,78,69,1,0,0,0,78,70,1,0,0,0,78,
+      71,1,0,0,0,78,72,1,0,0,0,78,73,1,0,0,0,78,74,1,0,0,0,78,75,1,0,0,0,
+      78,76,1,0,0,0,78,77,1,0,0,0,79,80,1,0,0,0,80,81,5,23,0,0,81,5,1,0,
+      0,0,82,85,5,21,0,0,83,84,5,1,0,0,84,86,5,21,0,0,85,83,1,0,0,0,86,87,
+      1,0,0,0,87,85,1,0,0,0,87,88,1,0,0,0,88,7,1,0,0,0,89,90,5,21,0,0,90,
+      9,1,0,0,0,91,92,5,19,0,0,92,93,3,8,4,0,93,11,1,0,0,0,94,95,5,2,0,0,
+      95,96,3,50,25,0,96,13,1,0,0,0,97,98,5,3,0,0,98,99,3,50,25,0,99,100,
+      3,50,25,0,100,15,1,0,0,0,101,105,7,0,0,0,102,104,8,1,0,0,103,102,1,
+      0,0,0,104,107,1,0,0,0,105,103,1,0,0,0,105,106,1,0,0,0,106,108,1,0,
+      0,0,107,105,1,0,0,0,108,109,5,23,0,0,109,17,1,0,0,0,110,111,3,48,24,
+      0,111,112,5,6,0,0,112,113,3,6,3,0,113,114,3,10,5,0,114,19,1,0,0,0,
+      115,116,3,48,24,0,116,117,5,7,0,0,117,118,3,6,3,0,118,21,1,0,0,0,119,
+      120,3,48,24,0,120,121,5,8,0,0,121,122,3,6,3,0,122,23,1,0,0,0,123,124,
+      3,48,24,0,124,125,5,9,0,0,125,126,3,8,4,0,126,25,1,0,0,0,127,128,3,
+      48,24,0,128,129,5,10,0,0,129,130,3,8,4,0,130,131,3,10,5,0,131,27,1,
+      0,0,0,132,133,3,48,24,0,133,134,5,11,0,0,134,135,3,50,25,0,135,136,
+      3,50,25,0,136,29,1,0,0,0,137,138,3,48,24,0,138,139,5,12,0,0,139,140,
+      3,6,3,0,140,141,3,50,25,0,141,31,1,0,0,0,142,143,3,48,24,0,143,144,
+      5,13,0,0,144,145,3,6,3,0,145,146,3,50,25,0,146,33,1,0,0,0,147,148,
+      5,23,0,0,148,35,1,0,0,0,149,150,3,38,19,0,150,158,5,23,0,0,151,155,
+      3,44,22,0,152,155,3,46,23,0,153,155,3,42,21,0,154,151,1,0,0,0,154,
+      152,1,0,0,0,154,153,1,0,0,0,155,156,1,0,0,0,156,157,5,23,0,0,157,159,
+      1,0,0,0,158,154,1,0,0,0,159,160,1,0,0,0,160,158,1,0,0,0,160,161,1,
+      0,0,0,161,37,1,0,0,0,162,163,3,48,24,0,163,164,5,24,0,0,164,166,3,
+      50,25,0,165,167,3,50,25,0,166,165,1,0,0,0,166,167,1,0,0,0,167,169,
+      1,0,0,0,168,170,3,52,26,0,169,168,1,0,0,0,169,170,1,0,0,0,170,39,1,
+      0,0,0,171,175,5,5,0,0,172,174,8,1,0,0,173,172,1,0,0,0,174,177,1,0,
+      0,0,175,173,1,0,0,0,175,176,1,0,0,0,176,41,1,0,0,0,177,175,1,0,0,0,
+      178,179,3,40,20,0,179,43,1,0,0,0,180,182,3,6,3,0,181,183,3,52,26,0,
+      182,181,1,0,0,0,182,183,1,0,0,0,183,185,1,0,0,0,184,186,3,40,20,0,
+      185,184,1,0,0,0,185,186,1,0,0,0,186,45,1,0,0,0,187,188,3,6,3,0,188,
+      190,3,10,5,0,189,191,3,52,26,0,190,189,1,0,0,0,190,191,1,0,0,0,191,
+      193,1,0,0,0,192,194,3,40,20,0,193,192,1,0,0,0,193,194,1,0,0,0,194,
+      47,1,0,0,0,195,196,5,18,0,0,196,49,1,0,0,0,197,198,5,25,0,0,198,51,
+      1,0,0,0,199,201,5,20,0,0,200,199,1,0,0,0,201,202,1,0,0,0,202,200,1,
+      0,0,0,202,203,1,0,0,0,203,53,1,0,0,0,16,56,58,67,78,87,105,154,160,
+      166,169,175,182,185,190,193,202
   ];
 
   static final ATN _ATN =
@@ -1253,22 +1245,6 @@ class Tr_headerContext extends ParserRuleContext {
   }
 }
 
-class Tr_commentContext extends ParserRuleContext {
-  TerminalNode? INDENT() => getToken(GringottsParser.TOKEN_INDENT, 0);
-  Inline_commentContext? inline_comment() => getRuleContext<Inline_commentContext>(0);
-  Tr_commentContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
-  @override
-  int get ruleIndex => RULE_tr_comment;
-  @override
-  void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterTr_comment(this);
-  }
-  @override
-  void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitTr_comment(this);
-  }
-}
-
 class Inline_commentContext extends ParserRuleContext {
   List<TerminalNode> NEWLINEs() => getTokens(GringottsParser.TOKEN_NEWLINE);
   TerminalNode? NEWLINE(int i) => getToken(GringottsParser.TOKEN_NEWLINE, i);
@@ -1285,8 +1261,22 @@ class Inline_commentContext extends ParserRuleContext {
   }
 }
 
+class Tr_commentContext extends ParserRuleContext {
+  Inline_commentContext? inline_comment() => getRuleContext<Inline_commentContext>(0);
+  Tr_commentContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
+  @override
+  int get ruleIndex => RULE_tr_comment;
+  @override
+  void enterRule(ParseTreeListener listener) {
+    if (listener is GringottsListener) listener.enterTr_comment(this);
+  }
+  @override
+  void exitRule(ParseTreeListener listener) {
+    if (listener is GringottsListener) listener.exitTr_comment(this);
+  }
+}
+
 class Posting_spec_account_onlyContext extends ParserRuleContext {
-  TerminalNode? INDENT() => getToken(GringottsParser.TOKEN_INDENT, 0);
   AccountContext? account() => getRuleContext<AccountContext>(0);
   TagsContext? tags() => getRuleContext<TagsContext>(0);
   Inline_commentContext? inline_comment() => getRuleContext<Inline_commentContext>(0);
@@ -1304,7 +1294,6 @@ class Posting_spec_account_onlyContext extends ParserRuleContext {
 }
 
 class Posting_spec_account_amountContext extends ParserRuleContext {
-  TerminalNode? INDENT() => getToken(GringottsParser.TOKEN_INDENT, 0);
   AccountContext? account() => getRuleContext<AccountContext>(0);
   AmountContext? amount() => getRuleContext<AmountContext>(0);
   TagsContext? tags() => getRuleContext<TagsContext>(0);

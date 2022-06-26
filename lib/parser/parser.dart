@@ -93,7 +93,6 @@ extension DocumentParsing on DocumentStatementContext {
 
 extension TagParsing on TagsContext {
   Iterable<String> val() {
-    print('Giving tgs $text');
     return TAGs().map((e) => e.text!.substring(1));
   }
 }

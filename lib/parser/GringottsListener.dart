@@ -147,19 +147,19 @@ abstract class GringottsListener extends ParseTreeListener {
   /// [ctx] the parse tree
   void exitTr_header(Tr_headerContext ctx);
 
-  /// Enter a parse tree produced by [GringottsParser.tr_comment].
-  /// [ctx] the parse tree
-  void enterTr_comment(Tr_commentContext ctx);
-  /// Exit a parse tree produced by [GringottsParser.tr_comment].
-  /// [ctx] the parse tree
-  void exitTr_comment(Tr_commentContext ctx);
-
   /// Enter a parse tree produced by [GringottsParser.inline_comment].
   /// [ctx] the parse tree
   void enterInline_comment(Inline_commentContext ctx);
   /// Exit a parse tree produced by [GringottsParser.inline_comment].
   /// [ctx] the parse tree
   void exitInline_comment(Inline_commentContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.tr_comment].
+  /// [ctx] the parse tree
+  void enterTr_comment(Tr_commentContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.tr_comment].
+  /// [ctx] the parse tree
+  void exitTr_comment(Tr_commentContext ctx);
 
   /// Enter a parse tree produced by [GringottsParser.posting_spec_account_only].
   /// [ctx] the parse tree

@@ -56,12 +56,13 @@ trStatement:
 	)+;
 tr_header:
 	date TR_FLAG narration = quoted_string payee = quoted_string? tags?;
-tr_comment: INDENT inline_comment;
 
 inline_comment: ';' (~NEWLINE)*;
-posting_spec_account_only: INDENT account tags? inline_comment?;
+
+tr_comment: inline_comment;
+posting_spec_account_only: account tags? inline_comment?;
 posting_spec_account_amount:
-	INDENT account amount tags? inline_comment?;
+	account amount tags? inline_comment?;
 
 date: DATE;
 // quoted_string: '"' (.)? '"';
@@ -81,10 +82,9 @@ NUMBER: DIGIT+ ([.] DIGIT+)?;
 
 TAG: [#]WORD;
 WORD: [A-Za-z0-9\\-]+;
-WHITESPACE: (' ' | '\t') -> skip;
+WHITESPACE: (' ' | '\t')+ -> skip;
 NEWLINE: ('\r'? '\n' | '\r')+;
 // NOT_NEWLINE: ~('\r' | '\n' | '\r\n');
 
 TR_FLAG: '!' | '*';
-INDENT: WHITESPACE+;
 STR: '"' (~[\\"] | '\\' [\\"()])* '"';
