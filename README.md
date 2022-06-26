@@ -18,14 +18,26 @@ The parser has been derived from exclusively looking at the [documentation](http
       - Excel sheets?
       - Command line tools - jq, csv, awk
     - How to use this with Python?
+      - Pandas
     - How to use this with Javascript?
     - GoLang?
     - Rust?
+    - R?
+    - Julia?
   - How to diagnose an error?
   - How to report a bug? And provide all the required information?
   - How to figure out Beancount incompatibility?
 
   - How easy is it to contribute changes?
+  - VS Code integration
+    - Via an LSP
+      - Actions to rename an account
+      - Fix mispelled accounts
+      - Add an action to add an account
+  - Linter
+    - Open accounts at the start of the financial year
+    - Or just before they are used
+  - How to integrate it with GNU Plot?
 
 - How to migrate?
   - From YNAB?
@@ -40,3 +52,9 @@ The parser has been derived from exclusively looking at the [documentation](http
 - More info
   - Beancount
   - Plain Text Accounting
+
+## Misc
+
+* Mark every transaction with a unique ID
+  - Either derived from the CSV
+  - or the sha1 hash of the input csv line which caused it
