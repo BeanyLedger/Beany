@@ -63,13 +63,6 @@ void main() {
     expect(parse("  ; Róú's brithday\n").tr_comment().val(), "Róú's brithday");
   });
 
-//   test('Comment Only Parser', () {
-//     var input = """  ; Hello
-//   Expenses:Mystery:CatPowder  1.5 EUR
-// """;
-//     expect(trComment.parse(input).value, "Hello");
-//   });
-
   test('Simple Transaction', () {
     var input = """2019-04-14 * "Cat Powder"
   ; Help
