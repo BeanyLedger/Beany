@@ -35,6 +35,26 @@ void main() {
     );
   });
 
+  test('Posting Account Tags', () {
+    var p = Posting.simple(
+      'Assets:Savings',
+      null,
+      null,
+      tags: ['fire', 'water'],
+    );
+    expect(
+      parse("  Assets:Savings #fire #water").posting_spec_account_only().val(),
+      p,
+    );
+
+    expect(
+      parse("  Expenses:M  1.5 EUR #ele-ment #gogo")
+          .posting_spec_account_amount()
+          .val(),
+      Posting.simple("Expenses:M", "1.5", "EUR", tags: ["ele-ment", "gogo"]),
+    );
+  });
+
   // Posting with a cost spec per unit
   //                cost spec total
   //                price per unit

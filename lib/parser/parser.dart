@@ -91,14 +91,20 @@ extension DocumentParsing on DocumentStatementContext {
       Document(date()!.val(), account()!.val(), quoted_string()!.val());
 }
 
+extension TagParsing on TagsContext {
+  Iterable<String> val() {
+    return TAGs().map((e) => e.text!.substring(1));
+  }
+}
+
 extension PostingSpecAccountOnlyParsing on Posting_spec_account_onlyContext {
   Posting val() {
     return Posting(
       account()!.val(),
       null,
       comment: inline_comment()?.val(),
+      tags: tags()?.val(),
     );
-    // FIXME: Handle tags!
   }
 }
 
@@ -117,9 +123,8 @@ extension PostingSpecAccountAmountParsing
       account()!.val(),
       amount()!.val(),
       comment: inline_comment()?.val(),
+      tags: tags()?.val(),
     );
-
-    // FIXME: Handle tags!
   }
 }
 

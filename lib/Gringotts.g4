@@ -59,13 +59,14 @@ tr_header:
 tr_comment: INDENT inline_comment;
 
 inline_comment: ';' (~NEWLINE)*;
-posting_spec_account_only: INDENT account TAG* inline_comment?;
+posting_spec_account_only: INDENT account tags? inline_comment?;
 posting_spec_account_amount:
-	INDENT account amount TAG* inline_comment?;
+	INDENT account amount tags? inline_comment?;
 
 date: DATE;
 // quoted_string: '"' (.)? '"';
 quoted_string: STR;
+tags: TAG+;
 
 /*
  * Lexer Rules
@@ -79,7 +80,7 @@ DATE: YEAR [-] MONTH [-] DAY;
 NUMBER: DIGIT+ ([.] DIGIT+)?;
 
 TAG: [#]WORD;
-WORD: [A-Za-z0-9]+;
+WORD: [A-Za-z0-9\\-]+;
 WHITESPACE: (' ' | '\t') -> skip;
 NEWLINE: ('\r'? '\n' | '\r')+;
 

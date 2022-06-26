@@ -220,6 +220,14 @@ class GringottsBaseListener implements GringottsListener {
 
   /// The default implementation does nothing.
   @override
+  void enterTags(TagsContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitTags(TagsContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
   void enterEveryRule(ParserRuleContext ctx) {}
 
   /// The default implementation does nothing.

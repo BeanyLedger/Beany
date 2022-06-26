@@ -188,4 +188,11 @@ abstract class GringottsListener extends ParseTreeListener {
   /// Exit a parse tree produced by [GringottsParser.quoted_string].
   /// [ctx] the parse tree
   void exitQuoted_string(Quoted_stringContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.tags].
+  /// [ctx] the parse tree
+  void enterTags(TagsContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.tags].
+  /// [ctx] the parse tree
+  void exitTags(TagsContext ctx);
 }
