@@ -4,22 +4,21 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'account.dart';
 import 'core.dart';
 
-// Rename to CostSpec
-class Cost {
+class CostSpec {
   final Decimal number;
   final String currency;
   final DateTime? date;
   final String? label;
 
-  Cost(this.number, this.currency, this.date, {this.label});
+  CostSpec(this.number, this.currency, this.date, {this.label});
 
-  Cost copyWith({
+  CostSpec copyWith({
     Decimal? number,
     String? currency,
     DateTime? date,
     String? lable,
   }) {
-    return Cost(
+    return CostSpec(
       number ?? this.number,
       currency ?? this.currency,
       date ?? this.date,
@@ -28,7 +27,7 @@ class Cost {
   }
 
   bool operator ==(Object other) {
-    if (other is! Cost) return false;
+    if (other is! CostSpec) return false;
 
     // print('cost ...');
     // print('number ${number == other.number}');
@@ -48,8 +47,8 @@ class Posting {
   late final Amount? amount;
   late final String? comment;
   // FIXME: Rename to price?
-  late final Cost? cost;
-  late final Cost? totalCost;
+  late final CostSpec? cost;
+  late final CostSpec? totalCost;
   late final IList<String> tags;
 
   Posting(
@@ -111,8 +110,8 @@ class Posting {
     Amount? amount,
     List<String>? tags,
     String? comment,
-    Cost? cost,
-    Cost? totalCost,
+    CostSpec? cost,
+    CostSpec? totalCost,
   }) {
     return Posting(
       account ?? this.account,

@@ -129,9 +129,9 @@ extension PostingSpecAccountAmountParsing
 }
 
 extension CostParsing on CostContext {
-  Cost val() {
+  CostSpec val() {
     var amt = amount()!.val();
-    return Cost(amt.number, amt.currency, null);
+    return CostSpec(amt.number, amt.currency, null);
   }
 }
 
