@@ -86,8 +86,15 @@ void main() {
 
   test('Transaction MetaData', () {
     var input = """2019-04-14 * "Cat Powder"
-  id: "foo"
-  power: "zoo"
+  stringValue: "foo"
+  numberValue: 1.5
+  amountValue: 4.4 EUR
+  datesVal1: 2022-12-09
+  datesVal2: 2022-12-09T14:05:00
+  datesVal3: 2022-12-09 14:05:00
+  tagValue: #berlin-wall
+  currencyValue: EUR
+  accountValue: Assets:Fire
   Expenses:Mystery:CatPowder  1.5 EUR
   Assets:Savings
 """;
@@ -155,6 +162,35 @@ void main() {
       ),
     );
   });
+
+  test('Posting with Total Price', () {
+    var input = """2012-11-03 * "Transfer to account in Canada"
+  Assets:MyBank:Checking  -400.00 USD @@ 436.01 CAD
+  Assets:FR:SocGen:Checking  436.01 CAD
+""";
+
+    var tr = parse(input).trStatement().val();
+    expect(tr.toString(), input);
+    expect(
+      tr,
+      Transaction(
+        DateTime(2012, 11, 3),
+        TransactionFlag.Okay,
+        "Transfer to account in Canada",
+        postings: [
+          Posting(
+            Account('Assets:MyBank:Checking'),
+            Amount(Decimal.fromJson("-400.00"), "USD"),
+            totalCost: Cost(Decimal.fromJson("436.01"), "CAD", null),
+          ),
+          Posting(
+            Account('Assets:FR:SocGen:Checking'),
+            Amount(Decimal.fromJson("436.01"), "CAD"),
+          )
+        ],
+      ),
+    );
+  });
 }
 
 
@@ -187,3 +223,7 @@ Metadata values -
     Numbers (Decimal)
     Amount (beancount.core.amount.Amount)
 */
+
+// TOD0: Write a test for -
+// date txn <narration>
+// date txn <payee> <narration>

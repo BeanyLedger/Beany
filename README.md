@@ -63,3 +63,5 @@ The parser has been derived from exclusively looking at the [documentation](http
 
 - Beancount is GPL licensed - so shipping it on Apply devices is impossible
 - It's written in Python which isn't very portable for the Web / Mobile apps.
+
+- Allow closed accounts to be re-opened?

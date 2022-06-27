@@ -24,6 +24,7 @@ directive: (
 		| trStatement
 	) NEWLINE;
 
+// FIXME: Make this more strict?
 account: WORD (':' WORD)+;
 currency: WORD;
 
@@ -86,6 +87,8 @@ NUMBER: [-]? DIGIT+ ([.] DIGIT+)?;
 
 TAG: [#]WORD;
 WORD: [A-Za-z0-9\\-]+;
+// CURRENCY: [A-Z][A-Z'.\\-_]* [A-Z0-9]; // max 24 characters long CURRENCY: WORD; // max 24
+// characters long
 WHITESPACE: (' ' | '\t')+ -> skip;
 NEWLINE: ('\r'? '\n' | '\r')+;
 // NOT_NEWLINE: ~('\r' | '\n' | '\r\n');

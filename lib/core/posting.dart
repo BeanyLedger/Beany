@@ -47,7 +47,9 @@ class Posting {
   late final Account account;
   late final Amount? amount;
   late final String? comment;
+  // FIXME: Rename to price?
   late final Cost? cost;
+  late final Cost? totalCost;
   late final IList<String> tags;
 
   Posting(
@@ -55,6 +57,7 @@ class Posting {
     this.amount, {
     this.comment = null,
     this.cost = null,
+    this.totalCost = null,
     Iterable<String>? tags,
   }) : tags = IList(tags);
   Posting.simple(
@@ -63,6 +66,7 @@ class Posting {
     String? currency, {
     this.comment = null,
     this.cost = null,
+    this.totalCost = null,
     List<String>? tags,
   }) : tags = IList(tags) {
     this.account = Account(account);
@@ -83,6 +87,11 @@ class Posting {
       sb.write(cost!.number.toStringAsFixed(2));
       sb.write(' ');
       sb.write(cost!.currency);
+    } else if (totalCost != null) {
+      sb.write(' @@ ');
+      sb.write(totalCost!.number.toStringAsFixed(2));
+      sb.write(' ');
+      sb.write(totalCost!.currency);
     }
     if (tags.isNotEmpty) {
       for (var tag in tags) {
@@ -103,6 +112,7 @@ class Posting {
     List<String>? tags,
     String? comment,
     Cost? cost,
+    Cost? totalCost,
   }) {
     return Posting(
       account ?? this.account,
@@ -110,6 +120,7 @@ class Posting {
       tags: tags ?? this.tags.toList(),
       comment: comment ?? this.comment,
       cost: cost ?? this.cost,
+      totalCost: totalCost ?? this.totalCost,
     );
   }
 
@@ -126,6 +137,7 @@ class Posting {
         other.amount == amount &&
         other.tags == tags &&
         comment == other.comment &&
-        cost == other.cost;
+        cost == other.cost &&
+        totalCost == other.totalCost;
   }
 }
