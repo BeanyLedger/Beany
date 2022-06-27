@@ -46,15 +46,21 @@ class Posting {
   late final Account account;
   late final Amount? amount;
   late final String? comment;
-  // FIXME: Rename to price?
+
+  late final CostSpec? price;
+  late final CostSpec? totalPrice;
+
   late final CostSpec? cost;
   late final CostSpec? totalCost;
+
   late final IList<String> tags;
 
   Posting(
     this.account,
     this.amount, {
     this.comment = null,
+    this.price = null,
+    this.totalPrice = null,
     this.cost = null,
     this.totalCost = null,
     Iterable<String>? tags,
@@ -64,6 +70,8 @@ class Posting {
     String? number,
     String? currency, {
     this.comment = null,
+    this.price = null,
+    this.totalPrice = null,
     this.cost = null,
     this.totalCost = null,
     List<String>? tags,
@@ -81,16 +89,16 @@ class Posting {
     sb.write(amount != null
         ? "  " + account.toString() + "  " + amount.toString()
         : "  " + account.toString());
-    if (cost != null) {
+    if (price != null) {
       sb.write(' @ ');
-      sb.write(cost!.number.toStringAsFixed(2));
+      sb.write(price!.number.toStringAsFixed(2));
       sb.write(' ');
-      sb.write(cost!.currency);
-    } else if (totalCost != null) {
+      sb.write(price!.currency);
+    } else if (totalPrice != null) {
       sb.write(' @@ ');
-      sb.write(totalCost!.number.toStringAsFixed(2));
+      sb.write(totalPrice!.number.toStringAsFixed(2));
       sb.write(' ');
-      sb.write(totalCost!.currency);
+      sb.write(totalPrice!.currency);
     }
     if (tags.isNotEmpty) {
       for (var tag in tags) {
@@ -110,6 +118,8 @@ class Posting {
     Amount? amount,
     List<String>? tags,
     String? comment,
+    CostSpec? price,
+    CostSpec? totalPrice,
     CostSpec? cost,
     CostSpec? totalCost,
   }) {
@@ -118,6 +128,8 @@ class Posting {
       amount ?? this.amount,
       tags: tags ?? this.tags.toList(),
       comment: comment ?? this.comment,
+      price: price ?? this.price,
+      totalPrice: totalPrice ?? this.totalPrice,
       cost: cost ?? this.cost,
       totalCost: totalCost ?? this.totalCost,
     );
@@ -136,6 +148,8 @@ class Posting {
         other.amount == amount &&
         other.tags == tags &&
         comment == other.comment &&
+        price == other.price &&
+        totalPrice == other.totalPrice &&
         cost == other.cost &&
         totalCost == other.totalCost;
   }

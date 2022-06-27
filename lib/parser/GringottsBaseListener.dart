@@ -204,19 +204,19 @@ class GringottsBaseListener implements GringottsListener {
 
   /// The default implementation does nothing.
   @override
-  void enterPosting_spec_explicit_per_cost(Posting_spec_explicit_per_costContext ctx) {}
+  void enterPosting_spec_explicit_per_price(Posting_spec_explicit_per_priceContext ctx) {}
 
   /// The default implementation does nothing.
   @override
-  void exitPosting_spec_explicit_per_cost(Posting_spec_explicit_per_costContext ctx) {}
+  void exitPosting_spec_explicit_per_price(Posting_spec_explicit_per_priceContext ctx) {}
 
   /// The default implementation does nothing.
   @override
-  void enterCost(CostContext ctx) {}
+  void enterPrice(PriceContext ctx) {}
 
   /// The default implementation does nothing.
   @override
-  void exitCost(CostContext ctx) {}
+  void exitPrice(PriceContext ctx) {}
 
   /// The default implementation does nothing.
   @override

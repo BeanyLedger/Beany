@@ -175,19 +175,19 @@ abstract class GringottsListener extends ParseTreeListener {
   /// [ctx] the parse tree
   void exitPosting_spec_account_amount(Posting_spec_account_amountContext ctx);
 
-  /// Enter a parse tree produced by [GringottsParser.posting_spec_explicit_per_cost].
+  /// Enter a parse tree produced by [GringottsParser.posting_spec_explicit_per_price].
   /// [ctx] the parse tree
-  void enterPosting_spec_explicit_per_cost(Posting_spec_explicit_per_costContext ctx);
-  /// Exit a parse tree produced by [GringottsParser.posting_spec_explicit_per_cost].
+  void enterPosting_spec_explicit_per_price(Posting_spec_explicit_per_priceContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.posting_spec_explicit_per_price].
   /// [ctx] the parse tree
-  void exitPosting_spec_explicit_per_cost(Posting_spec_explicit_per_costContext ctx);
+  void exitPosting_spec_explicit_per_price(Posting_spec_explicit_per_priceContext ctx);
 
-  /// Enter a parse tree produced by [GringottsParser.cost].
+  /// Enter a parse tree produced by [GringottsParser.price].
   /// [ctx] the parse tree
-  void enterCost(CostContext ctx);
-  /// Exit a parse tree produced by [GringottsParser.cost].
+  void enterPrice(PriceContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.price].
   /// [ctx] the parse tree
-  void exitCost(CostContext ctx);
+  void exitPrice(PriceContext ctx);
 
   /// Enter a parse tree produced by [GringottsParser.date].
   /// [ctx] the parse tree

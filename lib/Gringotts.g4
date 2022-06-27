@@ -52,7 +52,7 @@ trStatement:
 		(
 			posting_spec_account_only
 			| posting_spec_account_amount
-			| posting_spec_explicit_per_cost
+			| posting_spec_explicit_per_price
 		) NEWLINE
 	)+;
 tr_header:
@@ -64,11 +64,10 @@ tr_comment: inline_comment;
 posting_spec_account_only: account tags? inline_comment?;
 posting_spec_account_amount:
 	account amount tags? inline_comment?;
-posting_spec_explicit_per_cost:
-	account amount '@' cost tags? inline_comment?;
+posting_spec_explicit_per_price:
+	account amount '@' price tags? inline_comment?;
 
-cost: amount;
-
+price: amount;
 date: DATE;
 // quoted_string: '"' (.)? '"';
 quoted_string: STR;

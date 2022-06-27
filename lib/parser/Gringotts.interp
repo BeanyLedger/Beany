@@ -81,8 +81,8 @@ inline_comment
 tr_comment
 posting_spec_account_only
 posting_spec_account_amount
-posting_spec_explicit_per_cost
-cost
+posting_spec_explicit_per_price
+price
 date
 quoted_string
 tags

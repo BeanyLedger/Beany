@@ -54,7 +54,7 @@ extension AcountParsing on AccountContext {
   Account val() => Account(WORDs().join(':'));
 }
 
-extension PriceParsing on PriceStatementContext {
+extension PriceStatementParsing on PriceStatementContext {
   Price val() => Price(date()!.val(), currency()!.text, amount()!.val());
 }
 
@@ -128,7 +128,7 @@ extension PostingSpecAccountAmountParsing
   }
 }
 
-extension CostParsing on CostContext {
+extension PriceParsing on PriceContext {
   CostSpec val() {
     var amt = amount()!.val();
     return CostSpec(amt.number, amt.currency, null);
@@ -136,12 +136,12 @@ extension CostParsing on CostContext {
 }
 
 extension PostingSpecExplicitPerCostParsing
-    on Posting_spec_explicit_per_costContext {
+    on Posting_spec_explicit_per_priceContext {
   Posting val() {
     return Posting(
       account()!.val(),
       amount()!.val(),
-      cost: cost()!.val(),
+      price: price()!.val(),
       comment: inline_comment()?.val(),
       tags: tags()?.val(),
     );
@@ -167,11 +167,11 @@ extension TransactionParsing on TrStatementContext {
           .where((c) =>
               c is Posting_spec_account_onlyContext ||
               c is Posting_spec_account_amountContext ||
-              c is Posting_spec_explicit_per_costContext)
+              c is Posting_spec_explicit_per_priceContext)
           .map((c) {
         if (c is Posting_spec_account_onlyContext) return c.val();
         if (c is Posting_spec_account_amountContext) return c.val();
-        if (c is Posting_spec_explicit_per_costContext) return c.val();
+        if (c is Posting_spec_explicit_per_priceContext) return c.val();
         throw new Exception("Unknown Posting Type??");
       }),
       comments: tr_comments().map((e) => e.val()),

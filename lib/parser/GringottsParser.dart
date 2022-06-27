@@ -12,7 +12,7 @@ const int RULE_all = 0, RULE_statement = 1, RULE_directive = 2, RULE_account = 3
           RULE_noteStatement = 16, RULE_empty_line = 17, RULE_trStatement = 18, 
           RULE_tr_header = 19, RULE_inline_comment = 20, RULE_tr_comment = 21, 
           RULE_posting_spec_account_only = 22, RULE_posting_spec_account_amount = 23, 
-          RULE_posting_spec_explicit_per_cost = 24, RULE_cost = 25, RULE_date = 26, 
+          RULE_posting_spec_explicit_per_price = 24, RULE_price = 25, RULE_date = 26, 
           RULE_quoted_string = 27, RULE_tags = 28;
 class GringottsParser extends Parser {
   static final checkVersion = () => RuntimeMetaData.checkVersion('4.10.1', RuntimeMetaData.VERSION);
@@ -36,7 +36,8 @@ class GringottsParser extends Parser {
     'openStatement', 'commodityStatement', 'priceStatement', 'eventStatement', 
     'documentStatement', 'noteStatement', 'empty_line', 'trStatement', 'tr_header', 
     'inline_comment', 'tr_comment', 'posting_spec_account_only', 'posting_spec_account_amount', 
-    'posting_spec_explicit_per_cost', 'cost', 'date', 'quoted_string', 'tags'
+    'posting_spec_explicit_per_price', 'price', 'date', 'quoted_string', 
+    'tags'
   ];
 
   static final List<String?> _LITERAL_NAMES = [
@@ -597,7 +598,7 @@ class GringottsParser extends Parser {
           break;
         case 3:
           state = 165;
-          posting_spec_explicit_per_cost();
+          posting_spec_explicit_per_price();
           break;
         }
         state = 168;
@@ -776,9 +777,9 @@ class GringottsParser extends Parser {
     return _localctx;
   }
 
-  Posting_spec_explicit_per_costContext posting_spec_explicit_per_cost() {
-    dynamic _localctx = Posting_spec_explicit_per_costContext(context, state);
-    enterRule(_localctx, 48, RULE_posting_spec_explicit_per_cost);
+  Posting_spec_explicit_per_priceContext posting_spec_explicit_per_price() {
+    dynamic _localctx = Posting_spec_explicit_per_priceContext(context, state);
+    enterRule(_localctx, 48, RULE_posting_spec_explicit_per_price);
     int _la;
     try {
       enterOuterAlt(_localctx, 1);
@@ -789,7 +790,7 @@ class GringottsParser extends Parser {
       state = 209;
       match(TOKEN_T__13);
       state = 210;
-      cost();
+      price();
       state = 212;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
@@ -816,9 +817,9 @@ class GringottsParser extends Parser {
     return _localctx;
   }
 
-  CostContext cost() {
-    dynamic _localctx = CostContext(context, state);
-    enterRule(_localctx, 50, RULE_cost);
+  PriceContext price() {
+    dynamic _localctx = PriceContext(context, state);
+    enterRule(_localctx, 50, RULE_price);
     try {
       enterOuterAlt(_localctx, 1);
       state = 217;
@@ -1290,8 +1291,8 @@ class TrStatementContext extends ParserRuleContext {
   Posting_spec_account_onlyContext? posting_spec_account_only(int i) => getRuleContext<Posting_spec_account_onlyContext>(i);
   List<Posting_spec_account_amountContext> posting_spec_account_amounts() => getRuleContexts<Posting_spec_account_amountContext>();
   Posting_spec_account_amountContext? posting_spec_account_amount(int i) => getRuleContext<Posting_spec_account_amountContext>(i);
-  List<Posting_spec_explicit_per_costContext> posting_spec_explicit_per_costs() => getRuleContexts<Posting_spec_explicit_per_costContext>();
-  Posting_spec_explicit_per_costContext? posting_spec_explicit_per_cost(int i) => getRuleContext<Posting_spec_explicit_per_costContext>(i);
+  List<Posting_spec_explicit_per_priceContext> posting_spec_explicit_per_prices() => getRuleContexts<Posting_spec_explicit_per_priceContext>();
+  Posting_spec_explicit_per_priceContext? posting_spec_explicit_per_price(int i) => getRuleContext<Posting_spec_explicit_per_priceContext>(i);
   TrStatementContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_trStatement;
@@ -1392,37 +1393,37 @@ class Posting_spec_account_amountContext extends ParserRuleContext {
   }
 }
 
-class Posting_spec_explicit_per_costContext extends ParserRuleContext {
+class Posting_spec_explicit_per_priceContext extends ParserRuleContext {
   AccountContext? account() => getRuleContext<AccountContext>(0);
   AmountContext? amount() => getRuleContext<AmountContext>(0);
-  CostContext? cost() => getRuleContext<CostContext>(0);
+  PriceContext? price() => getRuleContext<PriceContext>(0);
   TagsContext? tags() => getRuleContext<TagsContext>(0);
   Inline_commentContext? inline_comment() => getRuleContext<Inline_commentContext>(0);
-  Posting_spec_explicit_per_costContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
+  Posting_spec_explicit_per_priceContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
-  int get ruleIndex => RULE_posting_spec_explicit_per_cost;
+  int get ruleIndex => RULE_posting_spec_explicit_per_price;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterPosting_spec_explicit_per_cost(this);
+    if (listener is GringottsListener) listener.enterPosting_spec_explicit_per_price(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitPosting_spec_explicit_per_cost(this);
+    if (listener is GringottsListener) listener.exitPosting_spec_explicit_per_price(this);
   }
 }
 
-class CostContext extends ParserRuleContext {
+class PriceContext extends ParserRuleContext {
   AmountContext? amount() => getRuleContext<AmountContext>(0);
-  CostContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
+  PriceContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
-  int get ruleIndex => RULE_cost;
+  int get ruleIndex => RULE_price;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterCost(this);
+    if (listener is GringottsListener) listener.enterPrice(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitCost(this);
+    if (listener is GringottsListener) listener.exitPrice(this);
   }
 }
 
