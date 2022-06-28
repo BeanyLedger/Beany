@@ -88,7 +88,7 @@ DATE: YEAR [-] MONTH [-] DAY;
 NUMBER: [-]? DIGIT+ ([.] DIGIT+)?;
 
 TAG: [#]WORD;
-WORD: [A-Za-z0-9\\-]+;
+WORD: [\p{Alnum}\-_]+;
 // CURRENCY: [A-Z][A-Z'.\\-_]* [A-Z0-9]; // max 24 characters long CURRENCY: WORD; // max 24
 // characters long
 WHITESPACE: (' ' | '\t')+ -> skip;

@@ -15,6 +15,7 @@ void main() {
 
   test('Tags', () {
     expect(t('#hello #berlin-2014'), ["hello", "berlin-2014"]);
+    expect(t('#bérlin-2014'), ["bérlin-2014"]);
   });
 }
 
