@@ -25,6 +25,10 @@ void main() {
       '2019-04-14 ! "Cat Powder"\n',
     );
     expect(
+      parse('2019-04-14 txn "Cat Powder"\n').trStatement().val().toString(),
+      '2019-04-14 * "Cat Powder"\n',
+    );
+    expect(
       parse('2019-04-14 ! "Cat" "Payee"\n').trStatement().val(),
       Transaction(
         DateTime(2019, 4, 14),

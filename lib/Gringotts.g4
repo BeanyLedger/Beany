@@ -57,8 +57,9 @@ trStatement:
 		) NEWLINE
 	)+;
 tr_header:
-	date TR_FLAG narration = quoted_string payee = quoted_string? tags?;
+	date tr_flag narration = quoted_string payee = quoted_string? tags?;
 
+tr_flag: TR_FLAG | 'txn';
 inline_comment: ';' (~NEWLINE)*;
 
 tr_comment: inline_comment;

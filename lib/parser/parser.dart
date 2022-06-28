@@ -165,14 +165,23 @@ extension TrCommentParsing on Tr_commentContext {
   String val() => inline_comment()!.val();
 }
 
+extension TrFlagParsing on Tr_flagContext {
+  TransactionFlag val() {
+    if (TR_FLAG() == null) {
+      return TransactionFlag.Okay;
+    }
+
+    return TransactionFlag(TR_FLAG()!.text!);
+  }
+}
+
 extension TransactionParsing on TrStatementContext {
   Transaction val() {
     var header = tr_header()!;
-    var flag = TransactionFlag(header.TR_FLAG()!.text!);
 
     return Transaction(
       header.date()!.val(),
-      flag,
+      header.tr_flag()!.val(),
       header.narration!.val(),
       payee: header.payee?.val(),
       tags: header.tags()?.val(),
