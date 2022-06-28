@@ -182,6 +182,13 @@ abstract class GringottsListener extends ParseTreeListener {
   /// [ctx] the parse tree
   void exitPosting_spec_explicit_per_price(Posting_spec_explicit_per_priceContext ctx);
 
+  /// Enter a parse tree produced by [GringottsParser.posting_spec_explicit_total_price].
+  /// [ctx] the parse tree
+  void enterPosting_spec_explicit_total_price(Posting_spec_explicit_total_priceContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.posting_spec_explicit_total_price].
+  /// [ctx] the parse tree
+  void exitPosting_spec_explicit_total_price(Posting_spec_explicit_total_priceContext ctx);
+
   /// Enter a parse tree produced by [GringottsParser.price].
   /// [ctx] the parse tree
   void enterPrice(PriceContext ctx);

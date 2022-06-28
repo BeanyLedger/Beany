@@ -53,6 +53,7 @@ trStatement:
 			posting_spec_account_only
 			| posting_spec_account_amount
 			| posting_spec_explicit_per_price
+			| posting_spec_explicit_total_price
 		) NEWLINE
 	)+;
 tr_header:
@@ -66,6 +67,8 @@ posting_spec_account_amount:
 	account amount tags? inline_comment?;
 posting_spec_explicit_per_price:
 	account amount '@' price tags? inline_comment?;
+posting_spec_explicit_total_price:
+	account amount '@@' price tags? inline_comment?;
 
 price: amount;
 date: DATE;

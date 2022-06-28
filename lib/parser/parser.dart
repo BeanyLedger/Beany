@@ -135,13 +135,26 @@ extension PriceParsing on PriceContext {
   }
 }
 
-extension PostingSpecExplicitPerCostParsing
+extension PostingSpecExplicitPerPriseParsing
     on Posting_spec_explicit_per_priceContext {
   Posting val() {
     return Posting(
       account()!.val(),
       amount()!.val(),
       price: price()!.val(),
+      comment: inline_comment()?.val(),
+      tags: tags()?.val(),
+    );
+  }
+}
+
+extension PostingSpecExplicitTotalPriceParsing
+    on Posting_spec_explicit_total_priceContext {
+  Posting val() {
+    return Posting(
+      account()!.val(),
+      amount()!.val(),
+      totalPrice: price()!.val(),
       comment: inline_comment()?.val(),
       tags: tags()?.val(),
     );
@@ -164,16 +177,16 @@ extension TransactionParsing on TrStatementContext {
       payee: header.payee?.val(),
       tags: header.tags()?.val(),
       postings: children!
-          .where((c) =>
-              c is Posting_spec_account_onlyContext ||
-              c is Posting_spec_account_amountContext ||
-              c is Posting_spec_explicit_per_priceContext)
           .map((c) {
-        if (c is Posting_spec_account_onlyContext) return c.val();
-        if (c is Posting_spec_account_amountContext) return c.val();
-        if (c is Posting_spec_explicit_per_priceContext) return c.val();
-        throw new Exception("Unknown Posting Type??");
-      }),
+            if (c is Posting_spec_account_onlyContext) return c.val();
+            if (c is Posting_spec_account_amountContext) return c.val();
+            if (c is Posting_spec_explicit_per_priceContext) return c.val();
+            if (c is Posting_spec_explicit_total_priceContext) return c.val();
+
+            return null;
+          })
+          .where((x) => x != null)
+          .map((e) => e!),
       comments: tr_comments().map((e) => e.val()),
     );
   }
