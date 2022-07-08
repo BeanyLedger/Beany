@@ -1,5 +1,8 @@
+import 'package:meta/meta.dart';
+
 import 'core.dart';
 
+@immutable
 class Include implements Statement {
   final String path;
 
@@ -14,6 +17,7 @@ class Include implements Statement {
   }
 }
 
+@immutable
 class Option implements Statement {
   final String key;
   final String value;
@@ -39,6 +43,7 @@ class Option implements Statement {
   //   return _optionParser.map((v) => Option(v[2], v[4]));
 }
 
+@immutable
 class Comment implements Statement {
   final String value;
 

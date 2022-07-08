@@ -1,9 +1,11 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:meta/meta.dart';
 
 import 'account.dart';
 import 'core.dart';
 
+@immutable
 class Balance implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;

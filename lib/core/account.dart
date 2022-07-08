@@ -1,3 +1,6 @@
+import 'package:meta/meta.dart';
+
+@immutable
 class Account {
   final String value;
   Account(this.value);

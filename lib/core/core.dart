@@ -1,8 +1,10 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:meta/meta.dart';
 
 import 'account.dart';
 
+@immutable
 class Amount {
   final Decimal number;
   final String currency;
@@ -25,6 +27,7 @@ abstract class Directive extends Statement {
   DateTime get date;
 }
 
+@immutable
 class MetaDataValue {
   String? stringValue;
   Decimal? numberValue;

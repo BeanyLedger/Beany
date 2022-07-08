@@ -1,9 +1,11 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:meta/meta.dart';
 
 import 'account.dart';
 import 'core.dart';
 
+@immutable
 class CostSpec {
   final Decimal number;
   final String currency;
@@ -42,6 +44,7 @@ class CostSpec {
 }
 
 // Rename to PostingSpec
+@immutable
 class Posting {
   late final Account account;
   late final Amount? amount;

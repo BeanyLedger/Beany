@@ -1,7 +1,8 @@
+import 'package:test/test.dart';
+
 import 'package:gringotts/core/account.dart';
 import 'package:gringotts/core/open.dart';
 import 'package:gringotts/parser/parser.dart';
-import 'package:test/test.dart';
 
 void main() {
   test('Open Parser', () {

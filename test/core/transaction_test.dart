@@ -1,10 +1,11 @@
 import 'package:decimal/decimal.dart';
+import 'package:test/test.dart';
+
 import 'package:gringotts/core/account.dart';
 import 'package:gringotts/core/core.dart';
 import 'package:gringotts/core/posting.dart';
 import 'package:gringotts/core/transaction.dart';
 import 'package:gringotts/parser/parser.dart';
-import 'package:test/test.dart';
 
 void main() {
   test('Transaction Header', () {

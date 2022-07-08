@@ -1,7 +1,10 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:meta/meta.dart';
+
 import 'package:gringotts/core/posting.dart';
 import 'core.dart';
 
+@immutable
 class TransactionFlag {
   final String value;
   const TransactionFlag(this.value);
@@ -16,6 +19,7 @@ class TransactionFlag {
       other is TransactionFlag && other.value == value;
 }
 
+@immutable
 class Transaction implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;

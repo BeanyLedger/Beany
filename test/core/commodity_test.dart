@@ -1,6 +1,7 @@
+import 'package:test/test.dart';
+
 import 'package:gringotts/core/commodity.dart';
 import 'package:gringotts/parser/parser.dart';
-import 'package:test/test.dart';
 
 void main() {
   test('Commodity Parser', () {

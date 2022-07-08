@@ -1,6 +1,7 @@
+import 'package:test/test.dart';
+
 import 'package:gringotts/core/event.dart';
 import 'package:gringotts/parser/parser.dart';
-import 'package:test/test.dart';
 
 void main() {
   test('Event Parser', () {

@@ -1,7 +1,9 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:meta/meta.dart';
 
 import 'core.dart';
 
+@immutable
 class Price implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
