@@ -22,7 +22,7 @@ class TransactionFlag {
 @immutable
 class Transaction implements Directive {
   final DateTime date;
-  final IMap<String, dynamic> meta;
+  final IMap<String, MetaDataValue> meta;
 
   final String narration;
   final String? payee;
@@ -40,7 +40,7 @@ class Transaction implements Directive {
     Iterable<String>? tags,
     Iterable<String>? comments,
     Iterable<Posting>? postings,
-    Map<String, dynamic>? meta,
+    Map<String, MetaDataValue>? meta,
   })  : tags = IList(tags),
         comments = IList(comments),
         postings = IList(postings),
@@ -50,7 +50,7 @@ class Transaction implements Directive {
     Iterable<String>? comments,
     Iterable<Posting>? postings,
     Iterable<String>? tags,
-    Map<String, dynamic>? meta,
+    Map<String, MetaDataValue>? meta,
   }) {
     return Transaction(
       date,
@@ -81,7 +81,7 @@ class Transaction implements Directive {
 
     if (meta.isNotEmpty) {
       for (var m in meta.entries) {
-        sb.writeln('  ${m.key}: "${m.value}"');
+        sb.writeln('  ${m.key}: ${m.value}');
       }
     }
 
@@ -102,6 +102,14 @@ class Transaction implements Directive {
     if (t is! Transaction) return false;
     // print('date: ${date == t.date}');
     // print('meta: ${meta == t.meta}');
+    // for (var key in meta.keys) {
+    //   print("  $key -> ${meta[key] == t.meta[key]}");
+    // }
+    // print('  meta keys order: ${meta.keys.toIList() == t.meta.keys.toIList()}');
+    // print(' map config ${meta.config == t.meta.config}');
+    // print(' map hash ${meta.hashCode == t.meta.hashCode}');
+    // print(' map string ${meta.toString() == t.meta.toString()}');
+    // print(' map bah ${meta.equalItemsAndConfig(t.meta)}');
     // print('narration: ${narration == t.narration}');
     // print('payee: ${payee == t.payee}');
     // print('flag: ${flag == t.flag}');
@@ -109,7 +117,8 @@ class Transaction implements Directive {
     // print('postings: ${postings == t.postings}');
     // print('tags: ${tags == t.tags}');
     return date == t.date &&
-        meta == t.meta &&
+        // FIXME: Compare the IMap directly. Why does this not work?
+        meta.toString() == t.meta.toString() &&
         narration == t.narration &&
         payee == t.payee &&
         flag == t.flag &&

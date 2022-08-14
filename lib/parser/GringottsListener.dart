@@ -223,4 +223,25 @@ abstract class GringottsListener extends ParseTreeListener {
   /// Exit a parse tree produced by [GringottsParser.tags].
   /// [ctx] the parse tree
   void exitTags(TagsContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.metadata].
+  /// [ctx] the parse tree
+  void enterMetadata(MetadataContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.metadata].
+  /// [ctx] the parse tree
+  void exitMetadata(MetadataContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.metadata_key].
+  /// [ctx] the parse tree
+  void enterMetadata_key(Metadata_keyContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.metadata_key].
+  /// [ctx] the parse tree
+  void exitMetadata_key(Metadata_keyContext ctx);
+
+  /// Enter a parse tree produced by [GringottsParser.metadata_value].
+  /// [ctx] the parse tree
+  void enterMetadata_value(Metadata_valueContext ctx);
+  /// Exit a parse tree produced by [GringottsParser.metadata_value].
+  /// [ctx] the parse tree
+  void exitMetadata_value(Metadata_valueContext ctx);
 }

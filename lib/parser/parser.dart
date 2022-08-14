@@ -1,4 +1,6 @@
+import 'package:antlr4/antlr4.dart';
 import 'package:decimal/decimal.dart';
+
 import 'package:gringotts/core/account.dart';
 import 'package:gringotts/core/balance.dart';
 import 'package:gringotts/core/close.dart';
@@ -12,10 +14,8 @@ import 'package:gringotts/core/posting.dart';
 import 'package:gringotts/core/price.dart';
 import 'package:gringotts/core/statements.dart';
 import 'package:gringotts/core/transaction.dart';
-
 import 'package:gringotts/parser/GringottsLexer.dart';
 import 'package:gringotts/parser/GringottsParser.dart';
-import 'package:antlr4/antlr4.dart';
 
 GringottsParser parse(String text) {
   if (!text.endsWith('\n')) text += '\n';
@@ -175,6 +175,44 @@ extension TrFlagParsing on Tr_flagContext {
   }
 }
 
+extension Metadaata_valueParsing on Metadata_valueContext {
+  MetaDataValue val() {
+    if (NUMBER() != null) {
+      return MetaDataValue(numberValue: Decimal.parse(NUMBER()!.text!));
+    }
+    if (account() != null) {
+      return MetaDataValue(accountValue: account()!.val());
+    }
+    if (amount() != null) {
+      return MetaDataValue(amountValue: amount()!.val());
+    }
+    if (quoted_string() != null) {
+      return MetaDataValue(stringValue: quoted_string()!.val());
+    }
+    if (TAG() != null) {
+      return MetaDataValue(tagValue: TAG()!.text!.substring(1));
+    }
+
+    throw Exception("Couldn't parse metadata value");
+  }
+}
+
+extension MetadaataParsing on MetadataContext {
+  Map<String, MetaDataValue> val() {
+    var m = <String, MetaDataValue>{};
+
+    var keys = metadata_keys();
+    var values = metadata_values();
+
+    assert(keys.length == values.length);
+    for (var i = 0; i < keys.length; i++) {
+      m[keys[i].text] = values[i].val();
+    }
+
+    return m;
+  }
+}
+
 extension TransactionParsing on TrStatementContext {
   Transaction val() {
     var header = tr_header()!;
@@ -197,6 +235,7 @@ extension TransactionParsing on TrStatementContext {
           .where((x) => x != null)
           .map((e) => e!),
       comments: tr_comments().map((e) => e.val()),
+      meta: metadata()!.val(),
     );
   }
 }

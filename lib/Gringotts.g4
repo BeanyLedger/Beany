@@ -48,7 +48,7 @@ noteStatement: date 'note' account quoted_string;
 empty_line: NEWLINE;
 
 trStatement:
-	tr_header NEWLINE (tr_comment NEWLINE)* (
+	tr_header NEWLINE (tr_comment NEWLINE)* metadata (
 		(
 			posting_spec_account_only
 			| posting_spec_account_amount
@@ -76,6 +76,10 @@ date: DATE;
 // quoted_string: '"' (.)? '"';
 quoted_string: STR;
 tags: TAG+;
+
+metadata: (metadata_key ':' metadata_value NEWLINE)*;
+metadata_key: WORD;
+metadata_value: quoted_string | TAG | NUMBER | amount | account;
 
 /*
  * Lexer Rules

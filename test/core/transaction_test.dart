@@ -94,15 +94,19 @@ void main() {
   stringValue: "foo"
   numberValue: 1.5
   amountValue: 4.4 EUR
-  datesVal1: 2022-12-09
-  datesVal2: 2022-12-09T14:05:00
-  datesVal3: 2022-12-09 14:05:00
   tagValue: #berlin-wall
-  currencyValue: EUR
   accountValue: Assets:Fire
   Expenses:Mystery:CatPowder  1.5 EUR
   Assets:Savings
 """;
+
+/*
+
+  datesVal1: 2022-12-09
+  datesVal2: 2022-12-09T14:05:00
+  datesVal3: 2022-12-09 14:05:00
+  currencyValue: EUR
+  */
 
     var tr = Transaction(
       DateTime(2019, 4, 14),
@@ -112,7 +116,19 @@ void main() {
         Posting.simple("Expenses:Mystery:CatPowder", "1.5", "EUR"),
         Posting.simple("Assets:Savings", null, null),
       ],
-      meta: {"id": "foo", "power": "zoo"},
+      meta: {
+        "stringValue": MetaDataValue(stringValue: "foo"),
+        "numberValue": MetaDataValue(numberValue: Decimal.parse("1.5")),
+        "amountValue": MetaDataValue(
+          amountValue: Amount(Decimal.parse("4.4"), "EUR"),
+        ),
+        // "datesVal1": MetaDataValue(dateValue: "2022-12-09"),
+        // "datesVal2": "2022-12-09T14:05:00",
+        // "datesVal3": "2022-12-09 14:05:00",
+        "tagValue": MetaDataValue(tagValue: 'berlin-wall'),
+        // "currencyValue": MetaDataValue(currencyValue: "EUR"),
+        "accountValue": MetaDataValue(accountValue: Account("Assets:Fire")),
+      },
     );
 
     expect(parse(input).trStatement().val(), tr);

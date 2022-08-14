@@ -260,6 +260,30 @@ class GringottsBaseListener implements GringottsListener {
 
   /// The default implementation does nothing.
   @override
+  void enterMetadata(MetadataContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitMetadata(MetadataContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterMetadata_key(Metadata_keyContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitMetadata_key(Metadata_keyContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void enterMetadata_value(Metadata_valueContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
+  void exitMetadata_value(Metadata_valueContext ctx) {}
+
+  /// The default implementation does nothing.
+  @override
   void enterEveryRule(ParserRuleContext ctx) {}
 
   /// The default implementation does nothing.
