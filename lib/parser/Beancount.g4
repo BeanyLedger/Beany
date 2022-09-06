@@ -1,4 +1,4 @@
-grammar Gringotts;
+grammar Beancount;
 
 /*
  * Parser Rules

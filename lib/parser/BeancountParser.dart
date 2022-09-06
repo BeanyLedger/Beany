@@ -1,9 +1,11 @@
-// Generated from Gringotts.g4 by ANTLR 4.10.1
+// Generated from Beancount.g4 by ANTLR 4.10.1
 // ignore_for_file: unused_import, unused_local_variable, prefer_single_quotes
+
 import 'package:antlr4/antlr4.dart';
 
-import 'GringottsListener.dart';
-import 'GringottsBaseListener.dart';
+import 'BeancountBaseListener.dart';
+import 'BeancountListener.dart';
+
 const int RULE_all = 0, RULE_statement = 1, RULE_directive = 2, RULE_account = 3, 
           RULE_currency = 4, RULE_amount = 5, RULE_includeStatement = 6, 
           RULE_optionStatement = 7, RULE_commentStatement = 8, RULE_balanceStatement = 9, 
@@ -15,7 +17,7 @@ const int RULE_all = 0, RULE_statement = 1, RULE_directive = 2, RULE_account = 3
           RULE_posting_spec_explicit_per_price = 25, RULE_posting_spec_explicit_total_price = 26, 
           RULE_price = 27, RULE_date = 28, RULE_quoted_string = 29, RULE_tags = 30, 
           RULE_metadata = 31, RULE_metadata_key = 32, RULE_metadata_value = 33;
-class GringottsParser extends Parser {
+class BeancountParser extends Parser {
   static final checkVersion = () => RuntimeMetaData.checkVersion('4.10.1', RuntimeMetaData.VERSION);
   static const int TOKEN_EOF = IntStream.EOF;
 
@@ -62,7 +64,7 @@ class GringottsParser extends Parser {
   }
 
   @override
-  String get grammarFileName => 'Gringotts.g4';
+  String get grammarFileName => 'Beancount.g4';
 
   @override
   List<int> get serializedATN => _serializedATN;
@@ -72,7 +74,7 @@ class GringottsParser extends Parser {
    return _ATN;
   }
 
-  GringottsParser(TokenStream input) : super(input) {
+  BeancountParser(TokenStream input) : super(input) {
     interpreter = ParserATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
   }
 
@@ -1160,7 +1162,7 @@ class GringottsParser extends Parser {
       ATNDeserializer().deserialize(_serializedATN);
 }
 class AllContext extends ParserRuleContext {
-  TerminalNode? EOF() => getToken(GringottsParser.TOKEN_EOF, 0);
+  TerminalNode? EOF() => getToken(BeancountParser.TOKEN_EOF, 0);
   List<StatementContext> statements() => getRuleContexts<StatementContext>();
   StatementContext? statement(int i) => getRuleContext<StatementContext>(i);
   List<Empty_lineContext> empty_lines() => getRuleContexts<Empty_lineContext>();
@@ -1170,11 +1172,11 @@ class AllContext extends ParserRuleContext {
   int get ruleIndex => RULE_all;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterAll(this);
+    if (listener is BeancountListener) listener.enterAll(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitAll(this);
+    if (listener is BeancountListener) listener.exitAll(this);
   }
 }
 
@@ -1188,16 +1190,16 @@ class StatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_statement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterStatement(this);
+    if (listener is BeancountListener) listener.enterStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitStatement(this);
+    if (listener is BeancountListener) listener.exitStatement(this);
   }
 }
 
 class DirectiveContext extends ParserRuleContext {
-  TerminalNode? NEWLINE() => getToken(GringottsParser.TOKEN_NEWLINE, 0);
+  TerminalNode? NEWLINE() => getToken(BeancountParser.TOKEN_NEWLINE, 0);
   BalanceStatementContext? balanceStatement() => getRuleContext<BalanceStatementContext>(0);
   CloseStatementContext? closeStatement() => getRuleContext<CloseStatementContext>(0);
   OpenStatementContext? openStatement() => getRuleContext<OpenStatementContext>(0);
@@ -1212,58 +1214,58 @@ class DirectiveContext extends ParserRuleContext {
   int get ruleIndex => RULE_directive;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterDirective(this);
+    if (listener is BeancountListener) listener.enterDirective(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitDirective(this);
+    if (listener is BeancountListener) listener.exitDirective(this);
   }
 }
 
 class AccountContext extends ParserRuleContext {
-  List<TerminalNode> WORDs() => getTokens(GringottsParser.TOKEN_WORD);
-  TerminalNode? WORD(int i) => getToken(GringottsParser.TOKEN_WORD, i);
+  List<TerminalNode> WORDs() => getTokens(BeancountParser.TOKEN_WORD);
+  TerminalNode? WORD(int i) => getToken(BeancountParser.TOKEN_WORD, i);
   AccountContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_account;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterAccount(this);
+    if (listener is BeancountListener) listener.enterAccount(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitAccount(this);
+    if (listener is BeancountListener) listener.exitAccount(this);
   }
 }
 
 class CurrencyContext extends ParserRuleContext {
-  TerminalNode? WORD() => getToken(GringottsParser.TOKEN_WORD, 0);
+  TerminalNode? WORD() => getToken(BeancountParser.TOKEN_WORD, 0);
   CurrencyContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_currency;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterCurrency(this);
+    if (listener is BeancountListener) listener.enterCurrency(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitCurrency(this);
+    if (listener is BeancountListener) listener.exitCurrency(this);
   }
 }
 
 class AmountContext extends ParserRuleContext {
-  TerminalNode? NUMBER() => getToken(GringottsParser.TOKEN_NUMBER, 0);
+  TerminalNode? NUMBER() => getToken(BeancountParser.TOKEN_NUMBER, 0);
   CurrencyContext? currency() => getRuleContext<CurrencyContext>(0);
   AmountContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_amount;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterAmount(this);
+    if (listener is BeancountListener) listener.enterAmount(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitAmount(this);
+    if (listener is BeancountListener) listener.exitAmount(this);
   }
 }
 
@@ -1274,11 +1276,11 @@ class IncludeStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_includeStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterIncludeStatement(this);
+    if (listener is BeancountListener) listener.enterIncludeStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitIncludeStatement(this);
+    if (listener is BeancountListener) listener.exitIncludeStatement(this);
   }
 }
 
@@ -1292,27 +1294,27 @@ class OptionStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_optionStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterOptionStatement(this);
+    if (listener is BeancountListener) listener.enterOptionStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitOptionStatement(this);
+    if (listener is BeancountListener) listener.exitOptionStatement(this);
   }
 }
 
 class CommentStatementContext extends ParserRuleContext {
-  List<TerminalNode> NEWLINEs() => getTokens(GringottsParser.TOKEN_NEWLINE);
-  TerminalNode? NEWLINE(int i) => getToken(GringottsParser.TOKEN_NEWLINE, i);
+  List<TerminalNode> NEWLINEs() => getTokens(BeancountParser.TOKEN_NEWLINE);
+  TerminalNode? NEWLINE(int i) => getToken(BeancountParser.TOKEN_NEWLINE, i);
   CommentStatementContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_commentStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterCommentStatement(this);
+    if (listener is BeancountListener) listener.enterCommentStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitCommentStatement(this);
+    if (listener is BeancountListener) listener.exitCommentStatement(this);
   }
 }
 
@@ -1325,11 +1327,11 @@ class BalanceStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_balanceStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterBalanceStatement(this);
+    if (listener is BeancountListener) listener.enterBalanceStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitBalanceStatement(this);
+    if (listener is BeancountListener) listener.exitBalanceStatement(this);
   }
 }
 
@@ -1341,11 +1343,11 @@ class CloseStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_closeStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterCloseStatement(this);
+    if (listener is BeancountListener) listener.enterCloseStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitCloseStatement(this);
+    if (listener is BeancountListener) listener.exitCloseStatement(this);
   }
 }
 
@@ -1357,11 +1359,11 @@ class OpenStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_openStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterOpenStatement(this);
+    if (listener is BeancountListener) listener.enterOpenStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitOpenStatement(this);
+    if (listener is BeancountListener) listener.exitOpenStatement(this);
   }
 }
 
@@ -1373,11 +1375,11 @@ class CommodityStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_commodityStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterCommodityStatement(this);
+    if (listener is BeancountListener) listener.enterCommodityStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitCommodityStatement(this);
+    if (listener is BeancountListener) listener.exitCommodityStatement(this);
   }
 }
 
@@ -1390,11 +1392,11 @@ class PriceStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_priceStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterPriceStatement(this);
+    if (listener is BeancountListener) listener.enterPriceStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitPriceStatement(this);
+    if (listener is BeancountListener) listener.exitPriceStatement(this);
   }
 }
 
@@ -1409,11 +1411,11 @@ class EventStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_eventStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterEventStatement(this);
+    if (listener is BeancountListener) listener.enterEventStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitEventStatement(this);
+    if (listener is BeancountListener) listener.exitEventStatement(this);
   }
 }
 
@@ -1426,11 +1428,11 @@ class DocumentStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_documentStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterDocumentStatement(this);
+    if (listener is BeancountListener) listener.enterDocumentStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitDocumentStatement(this);
+    if (listener is BeancountListener) listener.exitDocumentStatement(this);
   }
 }
 
@@ -1443,33 +1445,33 @@ class NoteStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_noteStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterNoteStatement(this);
+    if (listener is BeancountListener) listener.enterNoteStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitNoteStatement(this);
+    if (listener is BeancountListener) listener.exitNoteStatement(this);
   }
 }
 
 class Empty_lineContext extends ParserRuleContext {
-  TerminalNode? NEWLINE() => getToken(GringottsParser.TOKEN_NEWLINE, 0);
+  TerminalNode? NEWLINE() => getToken(BeancountParser.TOKEN_NEWLINE, 0);
   Empty_lineContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_empty_line;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterEmpty_line(this);
+    if (listener is BeancountListener) listener.enterEmpty_line(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitEmpty_line(this);
+    if (listener is BeancountListener) listener.exitEmpty_line(this);
   }
 }
 
 class TrStatementContext extends ParserRuleContext {
   Tr_headerContext? tr_header() => getRuleContext<Tr_headerContext>(0);
-  List<TerminalNode> NEWLINEs() => getTokens(GringottsParser.TOKEN_NEWLINE);
-  TerminalNode? NEWLINE(int i) => getToken(GringottsParser.TOKEN_NEWLINE, i);
+  List<TerminalNode> NEWLINEs() => getTokens(BeancountParser.TOKEN_NEWLINE);
+  TerminalNode? NEWLINE(int i) => getToken(BeancountParser.TOKEN_NEWLINE, i);
   MetadataContext? metadata() => getRuleContext<MetadataContext>(0);
   List<Tr_commentContext> tr_comments() => getRuleContexts<Tr_commentContext>();
   Tr_commentContext? tr_comment(int i) => getRuleContext<Tr_commentContext>(i);
@@ -1486,11 +1488,11 @@ class TrStatementContext extends ParserRuleContext {
   int get ruleIndex => RULE_trStatement;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterTrStatement(this);
+    if (listener is BeancountListener) listener.enterTrStatement(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitTrStatement(this);
+    if (listener is BeancountListener) listener.exitTrStatement(this);
   }
 }
 
@@ -1507,42 +1509,42 @@ class Tr_headerContext extends ParserRuleContext {
   int get ruleIndex => RULE_tr_header;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterTr_header(this);
+    if (listener is BeancountListener) listener.enterTr_header(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitTr_header(this);
+    if (listener is BeancountListener) listener.exitTr_header(this);
   }
 }
 
 class Tr_flagContext extends ParserRuleContext {
-  TerminalNode? TR_FLAG() => getToken(GringottsParser.TOKEN_TR_FLAG, 0);
+  TerminalNode? TR_FLAG() => getToken(BeancountParser.TOKEN_TR_FLAG, 0);
   Tr_flagContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_tr_flag;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterTr_flag(this);
+    if (listener is BeancountListener) listener.enterTr_flag(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitTr_flag(this);
+    if (listener is BeancountListener) listener.exitTr_flag(this);
   }
 }
 
 class Inline_commentContext extends ParserRuleContext {
-  List<TerminalNode> NEWLINEs() => getTokens(GringottsParser.TOKEN_NEWLINE);
-  TerminalNode? NEWLINE(int i) => getToken(GringottsParser.TOKEN_NEWLINE, i);
+  List<TerminalNode> NEWLINEs() => getTokens(BeancountParser.TOKEN_NEWLINE);
+  TerminalNode? NEWLINE(int i) => getToken(BeancountParser.TOKEN_NEWLINE, i);
   Inline_commentContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_inline_comment;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterInline_comment(this);
+    if (listener is BeancountListener) listener.enterInline_comment(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitInline_comment(this);
+    if (listener is BeancountListener) listener.exitInline_comment(this);
   }
 }
 
@@ -1553,11 +1555,11 @@ class Tr_commentContext extends ParserRuleContext {
   int get ruleIndex => RULE_tr_comment;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterTr_comment(this);
+    if (listener is BeancountListener) listener.enterTr_comment(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitTr_comment(this);
+    if (listener is BeancountListener) listener.exitTr_comment(this);
   }
 }
 
@@ -1570,11 +1572,11 @@ class Posting_spec_account_onlyContext extends ParserRuleContext {
   int get ruleIndex => RULE_posting_spec_account_only;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterPosting_spec_account_only(this);
+    if (listener is BeancountListener) listener.enterPosting_spec_account_only(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitPosting_spec_account_only(this);
+    if (listener is BeancountListener) listener.exitPosting_spec_account_only(this);
   }
 }
 
@@ -1588,11 +1590,11 @@ class Posting_spec_account_amountContext extends ParserRuleContext {
   int get ruleIndex => RULE_posting_spec_account_amount;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterPosting_spec_account_amount(this);
+    if (listener is BeancountListener) listener.enterPosting_spec_account_amount(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitPosting_spec_account_amount(this);
+    if (listener is BeancountListener) listener.exitPosting_spec_account_amount(this);
   }
 }
 
@@ -1607,11 +1609,11 @@ class Posting_spec_explicit_per_priceContext extends ParserRuleContext {
   int get ruleIndex => RULE_posting_spec_explicit_per_price;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterPosting_spec_explicit_per_price(this);
+    if (listener is BeancountListener) listener.enterPosting_spec_explicit_per_price(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitPosting_spec_explicit_per_price(this);
+    if (listener is BeancountListener) listener.exitPosting_spec_explicit_per_price(this);
   }
 }
 
@@ -1626,11 +1628,11 @@ class Posting_spec_explicit_total_priceContext extends ParserRuleContext {
   int get ruleIndex => RULE_posting_spec_explicit_total_price;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterPosting_spec_explicit_total_price(this);
+    if (listener is BeancountListener) listener.enterPosting_spec_explicit_total_price(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitPosting_spec_explicit_total_price(this);
+    if (listener is BeancountListener) listener.exitPosting_spec_explicit_total_price(this);
   }
 }
 
@@ -1641,57 +1643,57 @@ class PriceContext extends ParserRuleContext {
   int get ruleIndex => RULE_price;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterPrice(this);
+    if (listener is BeancountListener) listener.enterPrice(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitPrice(this);
+    if (listener is BeancountListener) listener.exitPrice(this);
   }
 }
 
 class DateContext extends ParserRuleContext {
-  TerminalNode? DATE() => getToken(GringottsParser.TOKEN_DATE, 0);
+  TerminalNode? DATE() => getToken(BeancountParser.TOKEN_DATE, 0);
   DateContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_date;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterDate(this);
+    if (listener is BeancountListener) listener.enterDate(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitDate(this);
+    if (listener is BeancountListener) listener.exitDate(this);
   }
 }
 
 class Quoted_stringContext extends ParserRuleContext {
-  TerminalNode? STR() => getToken(GringottsParser.TOKEN_STR, 0);
+  TerminalNode? STR() => getToken(BeancountParser.TOKEN_STR, 0);
   Quoted_stringContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_quoted_string;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterQuoted_string(this);
+    if (listener is BeancountListener) listener.enterQuoted_string(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitQuoted_string(this);
+    if (listener is BeancountListener) listener.exitQuoted_string(this);
   }
 }
 
 class TagsContext extends ParserRuleContext {
-  List<TerminalNode> TAGs() => getTokens(GringottsParser.TOKEN_TAG);
-  TerminalNode? TAG(int i) => getToken(GringottsParser.TOKEN_TAG, i);
+  List<TerminalNode> TAGs() => getTokens(BeancountParser.TOKEN_TAG);
+  TerminalNode? TAG(int i) => getToken(BeancountParser.TOKEN_TAG, i);
   TagsContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_tags;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterTags(this);
+    if (listener is BeancountListener) listener.enterTags(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitTags(this);
+    if (listener is BeancountListener) listener.exitTags(this);
   }
 }
 
@@ -1700,40 +1702,40 @@ class MetadataContext extends ParserRuleContext {
   Metadata_keyContext? metadata_key(int i) => getRuleContext<Metadata_keyContext>(i);
   List<Metadata_valueContext> metadata_values() => getRuleContexts<Metadata_valueContext>();
   Metadata_valueContext? metadata_value(int i) => getRuleContext<Metadata_valueContext>(i);
-  List<TerminalNode> NEWLINEs() => getTokens(GringottsParser.TOKEN_NEWLINE);
-  TerminalNode? NEWLINE(int i) => getToken(GringottsParser.TOKEN_NEWLINE, i);
+  List<TerminalNode> NEWLINEs() => getTokens(BeancountParser.TOKEN_NEWLINE);
+  TerminalNode? NEWLINE(int i) => getToken(BeancountParser.TOKEN_NEWLINE, i);
   MetadataContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_metadata;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterMetadata(this);
+    if (listener is BeancountListener) listener.enterMetadata(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitMetadata(this);
+    if (listener is BeancountListener) listener.exitMetadata(this);
   }
 }
 
 class Metadata_keyContext extends ParserRuleContext {
-  TerminalNode? WORD() => getToken(GringottsParser.TOKEN_WORD, 0);
+  TerminalNode? WORD() => getToken(BeancountParser.TOKEN_WORD, 0);
   Metadata_keyContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
   @override
   int get ruleIndex => RULE_metadata_key;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterMetadata_key(this);
+    if (listener is BeancountListener) listener.enterMetadata_key(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitMetadata_key(this);
+    if (listener is BeancountListener) listener.exitMetadata_key(this);
   }
 }
 
 class Metadata_valueContext extends ParserRuleContext {
   Quoted_stringContext? quoted_string() => getRuleContext<Quoted_stringContext>(0);
-  TerminalNode? TAG() => getToken(GringottsParser.TOKEN_TAG, 0);
-  TerminalNode? NUMBER() => getToken(GringottsParser.TOKEN_NUMBER, 0);
+  TerminalNode? TAG() => getToken(BeancountParser.TOKEN_TAG, 0);
+  TerminalNode? NUMBER() => getToken(BeancountParser.TOKEN_NUMBER, 0);
   AmountContext? amount() => getRuleContext<AmountContext>(0);
   AccountContext? account() => getRuleContext<AccountContext>(0);
   Metadata_valueContext([ParserRuleContext? parent, int? invokingState]) : super(parent, invokingState);
@@ -1741,11 +1743,11 @@ class Metadata_valueContext extends ParserRuleContext {
   int get ruleIndex => RULE_metadata_value;
   @override
   void enterRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.enterMetadata_value(this);
+    if (listener is BeancountListener) listener.enterMetadata_value(this);
   }
   @override
   void exitRule(ParseTreeListener listener) {
-    if (listener is GringottsListener) listener.exitMetadata_value(this);
+    if (listener is BeancountListener) listener.exitMetadata_value(this);
   }
 }
 

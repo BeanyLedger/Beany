@@ -2,7 +2,9 @@ test:
 	dart test
 
 antlr:
-	cd lib && antlr -Dlanguage=Dart Gringotts.g4 -o parser
+	cd lib/parser && antlr -Dlanguage=Dart Beancount.g4 -o .
+	cd lib/parser && antlr -Dlanguage=Dart Beancount.g4 -o .
+	dart pub run import_sorter:main --no-comments
 
 fmt:
 	dart pub run import_sorter:main --no-comments

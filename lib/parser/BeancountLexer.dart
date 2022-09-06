@@ -1,9 +1,9 @@
-// Generated from Gringotts.g4 by ANTLR 4.10.1
+// Generated from Beancount.g4 by ANTLR 4.10.1
 // ignore_for_file: unused_import, unused_local_variable, prefer_single_quotes
+
 import 'package:antlr4/antlr4.dart';
 
-
-class GringottsLexer extends Lexer {
+class BeancountLexer extends Lexer {
   static final checkVersion = () => RuntimeMetaData.checkVersion('4.10.1', RuntimeMetaData.VERSION);
 
   static final List<DFA> _decisionToDFA = List.generate(
@@ -54,7 +54,7 @@ class GringottsLexer extends Lexer {
   }
 
 
-  GringottsLexer(CharStream input) : super(input) {
+  BeancountLexer(CharStream input) : super(input) {
     interpreter = LexerATNSimulator(_ATN, _decisionToDFA, _sharedContextCache, recog: this);
   }
 
@@ -62,7 +62,7 @@ class GringottsLexer extends Lexer {
   List<int> get serializedATN => _serializedATN;
 
   @override
-  String get grammarFileName => 'Gringotts.g4';
+  String get grammarFileName => 'Beancount.g4';
 
   @override
   ATN getATN() { return _ATN; }

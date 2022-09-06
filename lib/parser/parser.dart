@@ -14,15 +14,15 @@ import 'package:gringotts/core/posting.dart';
 import 'package:gringotts/core/price.dart';
 import 'package:gringotts/core/statements.dart';
 import 'package:gringotts/core/transaction.dart';
-import 'package:gringotts/parser/GringottsLexer.dart';
-import 'package:gringotts/parser/GringottsParser.dart';
+import 'package:gringotts/parser/BeancountLexer.dart';
+import 'package:gringotts/parser/BeancountParser.dart';
 
-GringottsParser parse(String text) {
+BeancountParser parse(String text) {
   if (!text.endsWith('\n')) text += '\n';
   final inputStream = InputStream.fromString(text);
-  final lexer = GringottsLexer(inputStream);
+  final lexer = BeancountLexer(inputStream);
   final tokens = CommonTokenStream(lexer);
-  final parser = GringottsParser(tokens);
+  final parser = BeancountParser(tokens);
   parser.addErrorListener(DiagnosticErrorListener());
 
   return parser;

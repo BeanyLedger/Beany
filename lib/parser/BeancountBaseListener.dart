@@ -1,15 +1,15 @@
-// Generated from Gringotts.g4 by ANTLR 4.10.1
+// Generated from Beancount.g4 by ANTLR 4.10.1
 // ignore_for_file: unused_import, unused_local_variable, prefer_single_quotes
+
 import 'package:antlr4/antlr4.dart';
 
-import 'GringottsParser.dart';
-import 'GringottsListener.dart';
+import 'BeancountListener.dart';
+import 'BeancountParser.dart';
 
-
-/// This class provides an empty implementation of [GringottsListener],
+/// This class provides an empty implementation of [BeancountListener],
 /// which can be extended to create a listener which only needs to handle
 /// a subset of the available methods.
-class GringottsBaseListener implements GringottsListener {
+class BeancountBaseListener implements BeancountListener {
   /// The default implementation does nothing.
   @override
   void enterAll(AllContext ctx) {}
