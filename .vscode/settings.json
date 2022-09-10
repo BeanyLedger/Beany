@@ -1,0 +1,14 @@
+{
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.g4$",
+        "cmd": "make antlr"
+      },
+      {
+        "match": "\\.dart$",
+        "cmd": "make fmt"
+      }
+    ]
+  }
+}
