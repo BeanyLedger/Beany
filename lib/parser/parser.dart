@@ -252,7 +252,7 @@ extension DirectiveParsing on DirectiveContext {
     if (noteStatement() != null) return noteStatement()!.val();
     if (trStatement() != null) return trStatement()!.val();
 
-    throw new Exception("Unknown Directive");
+    throw Exception("Unknown Directive");
   }
 }
 
@@ -284,7 +284,7 @@ extension StatementParsing on StatementContext {
     var i = includeStatement();
     if (i != null) return i.val();
 
-    throw new Exception("Unknown Statement");
+    throw Exception("Unknown Statement");
   }
 }
 
