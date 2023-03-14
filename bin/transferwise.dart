@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:ninja/asymmetric/rsa/encoder/emsaPkcs1v15.dart';
 import 'package:ninja/ninja.dart';
+import 'package:path/path.dart' as p;
 
-void main() async {
+void main(List<String> argv) async {
   final privateKeyPem = File('private.pem').readAsStringSync();
 
   var importer = TransferWiseImporter(
@@ -13,23 +14,30 @@ void main() async {
     certificatePEM: privateKeyPem,
   );
 
-  final p = await importer.profile();
+  final profile = await importer.profile();
 
   var startDate = DateTime.now().subtract(Duration(days: 60));
   var endDate = DateTime.now();
 
-  final accounts = await importer.balanceAccount(p);
+  final accounts = await importer.balanceAccount(profile);
   for (var ac in accounts) {
-    var body =
-        await importer.statement(p, ac.id, startDate, endDate, ac.currency);
+    var body = await importer.statement(
+        profile, ac.id, startDate, endDate, ac.currency);
 
     var startDateOnly = startDate.toIso8601String().substring(0, 10);
     var endDateOnly = endDate.toIso8601String().substring(0, 10);
     var fileName = "$startDateOnly.$endDateOnly.${ac.currency}.json";
-    File(fileName).writeAsStringSync(body);
+    var outputPath = fileName;
+    if (argv.isNotEmpty) {
+      outputPath = p.join(argv.first, fileName);
+    }
 
-    print(fileName);
+    File(outputPath).writeAsStringSync(body);
+
+    print(outputPath);
   }
+
+  exit(0);
 }
 
 class _BalanceAccountInfo {
