@@ -179,21 +179,21 @@ extension TrFlagParsing on Tr_flagContext {
 }
 
 extension Metadaata_valueParsing on Metadata_valueContext {
-  MetaDataValue val() {
+  MetaValue val() {
     if (NUMBER() != null) {
-      return MetaDataValue(numberValue: Decimal.parse(NUMBER()!.text!));
+      return MetaValue(numberValue: Decimal.parse(NUMBER()!.text!));
     }
     if (account() != null) {
-      return MetaDataValue(accountValue: account()!.val());
+      return MetaValue(accountValue: account()!.val());
     }
     if (amount() != null) {
-      return MetaDataValue(amountValue: amount()!.val());
+      return MetaValue(amountValue: amount()!.val());
     }
     if (quoted_string() != null) {
-      return MetaDataValue(stringValue: quoted_string()!.val());
+      return MetaValue(stringValue: quoted_string()!.val());
     }
     if (TAG() != null) {
-      return MetaDataValue(tagValue: TAG()!.text!.substring(1));
+      return MetaValue(tagValue: TAG()!.text!.substring(1));
     }
 
     throw Exception("Couldn't parse metadata value");
@@ -201,8 +201,8 @@ extension Metadaata_valueParsing on Metadata_valueContext {
 }
 
 extension MetadaataParsing on MetadataContext {
-  Map<String, MetaDataValue> val() {
-    var m = <String, MetaDataValue>{};
+  Map<String, MetaValue> val() {
+    var m = <String, MetaValue>{};
 
     var keys = metadata_keys();
     var values = metadata_values();

@@ -19,7 +19,7 @@ enum TransactionFlag {
 @immutable
 class Transaction extends Equatable implements Directive {
   final DateTime date;
-  final IMap<String, MetaDataValue> meta;
+  final IMap<String, MetaValue> meta;
 
   final String narration;
   final String? payee;
@@ -37,7 +37,7 @@ class Transaction extends Equatable implements Directive {
     Iterable<String>? tags,
     Iterable<String>? comments,
     Iterable<Posting>? postings,
-    Map<String, MetaDataValue>? meta,
+    Map<String, MetaValue>? meta,
   })  : tags = IList(tags),
         comments = IList(comments),
         postings = IList(postings),
@@ -47,7 +47,7 @@ class Transaction extends Equatable implements Directive {
     Iterable<String>? comments,
     Iterable<Posting>? postings,
     Iterable<String>? tags,
-    Map<String, MetaDataValue>? meta,
+    Map<String, MetaValue>? meta,
   }) {
     return Transaction(
       date,

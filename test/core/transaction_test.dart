@@ -117,17 +117,17 @@ void main() {
         Posting.simple("Assets:Savings", null, null),
       ],
       meta: {
-        "stringValue": MetaDataValue(stringValue: "foo"),
-        "numberValue": MetaDataValue(numberValue: Decimal.parse("1.5")),
-        "amountValue": MetaDataValue(
+        "stringValue": MetaValue(stringValue: "foo"),
+        "numberValue": MetaValue(numberValue: Decimal.parse("1.5")),
+        "amountValue": MetaValue(
           amountValue: Amount(Decimal.parse("4.4"), "EUR"),
         ),
         // "datesVal1": MetaDataValue(dateValue: "2022-12-09"),
         // "datesVal2": "2022-12-09T14:05:00",
         // "datesVal3": "2022-12-09 14:05:00",
-        "tagValue": MetaDataValue(tagValue: 'berlin-wall'),
+        "tagValue": MetaValue(tagValue: 'berlin-wall'),
         // "currencyValue": MetaDataValue(currencyValue: "EUR"),
-        "accountValue": MetaDataValue(accountValue: Account("Assets:Fire")),
+        "accountValue": MetaValue(accountValue: Account("Assets:Fire")),
       },
     );
 

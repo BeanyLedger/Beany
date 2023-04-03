@@ -29,7 +29,7 @@ abstract class Directive extends Statement {
 }
 
 @immutable
-class MetaDataValue extends Equatable {
+class MetaValue extends Equatable {
   final String? stringValue;
   final Decimal? numberValue;
   final Amount? amountValue;
@@ -38,7 +38,7 @@ class MetaDataValue extends Equatable {
   final String? currencyValue;
   final Account? accountValue;
 
-  MetaDataValue({
+  MetaValue({
     this.stringValue,
     this.numberValue,
     this.amountValue,
