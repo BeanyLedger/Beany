@@ -1,6 +1,5 @@
-// Generated from Beancount.g4 by ANTLR 4.10.1
+// Generated from Beancount.g4 by ANTLR 4.12.0
 // ignore_for_file: unused_import, unused_local_variable, prefer_single_quotes
-
 import 'package:antlr4/antlr4.dart';
 
 import 'BeancountParser.dart';

@@ -3,7 +3,6 @@ test:
 
 antlr:
 	cd lib/parser && antlr -Werror -Dlanguage=Dart Beancount.g4 -o .
-	dart pub run import_sorter:main --no-comments
 	dart format --fix lib/parser
 
 .PHONY: list test

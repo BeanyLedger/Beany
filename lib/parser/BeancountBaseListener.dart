@@ -1,10 +1,9 @@
-// Generated from Beancount.g4 by ANTLR 4.10.1
+// Generated from Beancount.g4 by ANTLR 4.12.0
 // ignore_for_file: unused_import, unused_local_variable, prefer_single_quotes
-
 import 'package:antlr4/antlr4.dart';
 
-import 'BeancountListener.dart';
 import 'BeancountParser.dart';
+import 'BeancountListener.dart';
 
 /// This class provides an empty implementation of [BeancountListener],
 /// which can be extended to create a listener which only needs to handle

@@ -1,10 +1,9 @@
-// Generated from Beancount.g4 by ANTLR 4.10.1
+// Generated from Beancount.g4 by ANTLR 4.12.0
 // ignore_for_file: unused_import, unused_local_variable, prefer_single_quotes
-
 import 'package:antlr4/antlr4.dart';
 
-import 'BeancountBaseListener.dart';
 import 'BeancountListener.dart';
+import 'BeancountBaseListener.dart';
 
 const int RULE_all = 0,
     RULE_statement = 1,
@@ -43,7 +42,7 @@ const int RULE_all = 0,
 
 class BeancountParser extends Parser {
   static final checkVersion =
-      () => RuntimeMetaData.checkVersion('4.10.1', RuntimeMetaData.VERSION);
+      () => RuntimeMetaData.checkVersion('4.12.0', RuntimeMetaData.VERSION);
   static const int TOKEN_EOF = IntStream.EOF;
 
   static final List<DFA> _decisionToDFA = List.generate(
@@ -200,15 +199,7 @@ class BeancountParser extends Parser {
       state = 72;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 &&
-          ((BigInt.one << _la) &
-                  ((BigInt.one << TOKEN_T__1) |
-                      (BigInt.one << TOKEN_T__2) |
-                      (BigInt.one << TOKEN_T__3) |
-                      (BigInt.one << TOKEN_T__4) |
-                      (BigInt.one << TOKEN_DATE) |
-                      (BigInt.one << TOKEN_NEWLINE))) !=
-              BigInt.zero)) {
+      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 69206076) != 0)) {
         state = 70;
         errorHandler.sync(this);
         switch (tokenStream.LA(1)!) {
@@ -465,36 +456,7 @@ class BeancountParser extends Parser {
       state = 119;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 &&
-          ((BigInt.one << _la) &
-                  ((BigInt.one << TOKEN_T__0) |
-                      (BigInt.one << TOKEN_T__1) |
-                      (BigInt.one << TOKEN_T__2) |
-                      (BigInt.one << TOKEN_T__3) |
-                      (BigInt.one << TOKEN_T__4) |
-                      (BigInt.one << TOKEN_T__5) |
-                      (BigInt.one << TOKEN_T__6) |
-                      (BigInt.one << TOKEN_T__7) |
-                      (BigInt.one << TOKEN_T__8) |
-                      (BigInt.one << TOKEN_T__9) |
-                      (BigInt.one << TOKEN_T__10) |
-                      (BigInt.one << TOKEN_T__11) |
-                      (BigInt.one << TOKEN_T__12) |
-                      (BigInt.one << TOKEN_T__13) |
-                      (BigInt.one << TOKEN_T__14) |
-                      (BigInt.one << TOKEN_T__15) |
-                      (BigInt.one << TOKEN_DIGIT) |
-                      (BigInt.one << TOKEN_YEAR) |
-                      (BigInt.one << TOKEN_MONTH) |
-                      (BigInt.one << TOKEN_DAY) |
-                      (BigInt.one << TOKEN_DATE) |
-                      (BigInt.one << TOKEN_NUMBER) |
-                      (BigInt.one << TOKEN_TAG) |
-                      (BigInt.one << TOKEN_WORD) |
-                      (BigInt.one << TOKEN_WHITESPACE) |
-                      (BigInt.one << TOKEN_TR_FLAG) |
-                      (BigInt.one << TOKEN_STR))) !=
-              BigInt.zero)) {
+      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 469762046) != 0)) {
         state = 116;
         _la = tokenStream.LA(1)!;
         if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
@@ -852,36 +814,7 @@ class BeancountParser extends Parser {
       state = 201;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 &&
-          ((BigInt.one << _la) &
-                  ((BigInt.one << TOKEN_T__0) |
-                      (BigInt.one << TOKEN_T__1) |
-                      (BigInt.one << TOKEN_T__2) |
-                      (BigInt.one << TOKEN_T__3) |
-                      (BigInt.one << TOKEN_T__4) |
-                      (BigInt.one << TOKEN_T__5) |
-                      (BigInt.one << TOKEN_T__6) |
-                      (BigInt.one << TOKEN_T__7) |
-                      (BigInt.one << TOKEN_T__8) |
-                      (BigInt.one << TOKEN_T__9) |
-                      (BigInt.one << TOKEN_T__10) |
-                      (BigInt.one << TOKEN_T__11) |
-                      (BigInt.one << TOKEN_T__12) |
-                      (BigInt.one << TOKEN_T__13) |
-                      (BigInt.one << TOKEN_T__14) |
-                      (BigInt.one << TOKEN_T__15) |
-                      (BigInt.one << TOKEN_DIGIT) |
-                      (BigInt.one << TOKEN_YEAR) |
-                      (BigInt.one << TOKEN_MONTH) |
-                      (BigInt.one << TOKEN_DAY) |
-                      (BigInt.one << TOKEN_DATE) |
-                      (BigInt.one << TOKEN_NUMBER) |
-                      (BigInt.one << TOKEN_TAG) |
-                      (BigInt.one << TOKEN_WORD) |
-                      (BigInt.one << TOKEN_WHITESPACE) |
-                      (BigInt.one << TOKEN_TR_FLAG) |
-                      (BigInt.one << TOKEN_STR))) !=
-              BigInt.zero)) {
+      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 469762046) != 0)) {
         state = 198;
         _la = tokenStream.LA(1)!;
         if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
