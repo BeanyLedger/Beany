@@ -167,11 +167,14 @@ extension TrCommentParsing on Tr_commentContext {
 
 extension TrFlagParsing on Tr_flagContext {
   TransactionFlag val() {
-    if (TR_FLAG() == null) {
-      return TransactionFlag.Okay;
+    switch (TR_FLAG()?.text) {
+      case '*':
+        return TransactionFlag.Okay;
+      case '!':
+        return TransactionFlag.Warning;
+      default:
+        throw Exception("Unknown transaction flag");
     }
-
-    return TransactionFlag(TR_FLAG()!.text!);
   }
 }
 

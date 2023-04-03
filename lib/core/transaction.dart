@@ -5,19 +5,15 @@ import 'package:meta/meta.dart';
 import 'package:gringotts/core/posting.dart';
 import 'core.dart';
 
-@immutable
-class TransactionFlag {
+enum TransactionFlag {
+  Okay('*'),
+  Warning('!');
+
   final String value;
   const TransactionFlag(this.value);
 
-  static const TransactionFlag Okay = TransactionFlag('*');
-  static const TransactionFlag Warning = TransactionFlag('!');
-
   bool isValid() => value == '*' || value == '!';
   String toString() => value;
-
-  bool operator ==(Object other) =>
-      other is TransactionFlag && other.value == value;
 }
 
 @immutable
