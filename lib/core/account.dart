@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 @immutable
-class Account {
+class Account extends Equatable {
   final String value;
   Account(this.value);
 
@@ -10,5 +11,5 @@ class Account {
   }
 
   @override
-  bool operator ==(Object t) => t is Account && t.value == value;
+  List<Object?> get props => [value];
 }

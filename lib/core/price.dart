@@ -1,10 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 import 'core.dart';
 
 @immutable
-class Price implements Directive {
+class Price extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
 
@@ -30,11 +31,5 @@ class Price implements Directive {
   }
 
   @override
-  bool operator ==(Object t) {
-    if (t is! Price) return false;
-    return date == t.date &&
-        meta == t.meta &&
-        currency == t.currency &&
-        amount == t.amount;
-  }
+  List<Object?> get props => [date, meta, currency, amount];
 }

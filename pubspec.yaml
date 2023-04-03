@@ -18,6 +18,7 @@ dependencies:
   http: ^0.13.4
   ninja: ^3.0.7
   rsa_pkcs: ^2.0.1
+  equatable: ^2.0.5
 
 dev_dependencies:
   test: ^1.19.5

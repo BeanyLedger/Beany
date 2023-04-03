@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
@@ -5,7 +6,7 @@ import 'account.dart';
 import 'core.dart';
 
 @immutable
-class Open implements Directive {
+class Open extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
 
@@ -27,8 +28,5 @@ class Open implements Directive {
   }
 
   @override
-  bool operator ==(Object t) {
-    if (t is! Open) return false;
-    return date == t.date && meta == t.meta && account == t.account;
-  }
+  List<Object?> get props => [date, meta, account];
 }

@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
@@ -6,7 +7,7 @@ import 'account.dart';
 import 'core.dart';
 
 @immutable
-class CostSpec {
+class CostSpec extends Equatable {
   final Decimal number;
   final String currency;
   final DateTime? date;
@@ -28,24 +29,13 @@ class CostSpec {
     );
   }
 
-  bool operator ==(Object other) {
-    if (other is! CostSpec) return false;
-
-    // print('cost ...');
-    // print('number ${number == other.number}');
-    // print('currency ${currency == other.currency}');
-    // print('date ${date == other.date}');
-    // print('label ${label == other.label}');
-    return other.number == number &&
-        other.currency == currency &&
-        date == other.date &&
-        label == other.label;
-  }
+  @override
+  List<Object?> get props => [number, currency, date, label];
 }
 
 // Rename to PostingSpec
 @immutable
-class Posting {
+class Posting extends Equatable {
   late final Account account;
   late final Amount? amount;
   late final String? comment;
@@ -138,22 +128,15 @@ class Posting {
     );
   }
 
-  bool operator ==(Object other) {
-    if (other is! Posting) return false;
-
-    // print('this ${toString()}');
-    // print('other ${other.toString()}');
-    // print('account: ${account == other.account}');
-    // print('amount: ${amount == other.amount}');
-    // print('comment: ${comment == other.comment}');
-    // print('cost: ${cost == other.cost}');
-    return other.account == account &&
-        other.amount == amount &&
-        other.tags == tags &&
-        comment == other.comment &&
-        price == other.price &&
-        totalPrice == other.totalPrice &&
-        cost == other.cost &&
-        totalCost == other.totalCost;
-  }
+  @override
+  List<Object?> get props => [
+        account,
+        amount,
+        comment,
+        price,
+        totalPrice,
+        cost,
+        totalCost,
+        tags,
+      ];
 }

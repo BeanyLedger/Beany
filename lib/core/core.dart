@@ -1,11 +1,12 @@
 import 'package:decimal/decimal.dart';
+import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 import 'account.dart';
 
 @immutable
-class Amount {
+class Amount extends Equatable {
   final Decimal number;
   final String currency;
 
@@ -16,8 +17,8 @@ class Amount {
     return number.toStringAsFixed(2) + ' ' + currency;
   }
 
-  bool operator ==(Object other) =>
-      other is Amount && other.number == number && other.currency == currency;
+  @override
+  List<Object?> get props => [number, currency];
 }
 
 abstract class Statement {}
@@ -28,7 +29,7 @@ abstract class Directive extends Statement {
 }
 
 @immutable
-class MetaDataValue {
+class MetaDataValue extends Equatable {
   final String? stringValue;
   final Decimal? numberValue;
   final Amount? amountValue;
@@ -60,13 +61,14 @@ class MetaDataValue {
     throw new Exception("Unknown MetaData Value");
   }
 
-  bool operator ==(Object other) =>
-      other is MetaDataValue &&
-      other.stringValue == stringValue &&
-      other.numberValue == numberValue &&
-      other.amountValue == amountValue &&
-      other.dateValue == dateValue &&
-      other.tagValue == tagValue &&
-      other.currencyValue == currencyValue &&
-      other.accountValue == accountValue;
+  @override
+  List<Object?> get props => [
+        stringValue,
+        numberValue,
+        amountValue,
+        dateValue,
+        tagValue,
+        currencyValue,
+        accountValue,
+      ];
 }

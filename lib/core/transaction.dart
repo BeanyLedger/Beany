@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
@@ -20,7 +21,7 @@ class TransactionFlag {
 }
 
 @immutable
-class Transaction implements Directive {
+class Transaction extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, MetaDataValue> meta;
 
@@ -98,34 +99,8 @@ class Transaction implements Directive {
   }
 
   @override
-  bool operator ==(Object t) {
-    if (t is! Transaction) return false;
-    // print('date: ${date == t.date}');
-    // print('meta: ${meta == t.meta}');
-    // for (var key in meta.keys) {
-    //   print("  $key -> ${meta[key] == t.meta[key]}");
-    // }
-    // print('  meta keys order: ${meta.keys.toIList() == t.meta.keys.toIList()}');
-    // print(' map config ${meta.config == t.meta.config}');
-    // print(' map hash ${meta.hashCode == t.meta.hashCode}');
-    // print(' map string ${meta.toString() == t.meta.toString()}');
-    // print(' map bah ${meta.equalItemsAndConfig(t.meta)}');
-    // print('narration: ${narration == t.narration}');
-    // print('payee: ${payee == t.payee}');
-    // print('flag: ${flag == t.flag}');
-    // print('comments: ${comments == t.comments}');
-    // print('postings: ${postings == t.postings}');
-    // print('tags: ${tags == t.tags}');
-    return date == t.date &&
-        // FIXME: Compare the IMap directly. Why does this not work?
-        meta.toString() == t.meta.toString() &&
-        narration == t.narration &&
-        payee == t.payee &&
-        flag == t.flag &&
-        comments == t.comments &&
-        postings == t.postings &&
-        tags == t.tags;
-  }
+  List<Object?> get props =>
+      [date, meta, narration, payee, flag, comments, postings, tags];
 }
 
 // FIXME: Transaction MetaData
