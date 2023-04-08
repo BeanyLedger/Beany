@@ -186,6 +186,8 @@ void main() {
   });
 
   test('Quoted String', () {
+    String p(String str) => parse(str).quoted_string().val();
+
     expect(p('"Hello"'), "Hello");
     expect(p('"Hello/World"'), "Hello/World");
     expect(p('"foo"'), "foo");
@@ -197,10 +199,9 @@ void main() {
   });
 
   test('Tags', () {
+    List<String> t(String str) => parse(str).tags().val().toList();
+
     expect(t('#hello #berlin-2014'), ["hello", "berlin-2014"]);
     expect(t('#bérlin-2014'), ["bérlin-2014"]);
   });
 }
-
-String p(String str) => parse(str).quoted_string().val();
-List<String> t(String str) => parse(str).tags().val().toList();
