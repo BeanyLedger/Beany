@@ -1,3 +1,4 @@
+import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';

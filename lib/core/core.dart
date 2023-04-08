@@ -4,17 +4,6 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 @immutable
-class AmountSpec extends Equatable {
-  final Decimal? number;
-  final String? currency;
-
-  AmountSpec(this.number, this.currency);
-
-  @override
-  List<Object?> get props => [number, currency];
-}
-
-@immutable
 class Amount extends Equatable {
   final Decimal number;
   final String currency;
