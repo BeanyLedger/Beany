@@ -41,15 +41,15 @@ void main() {
     });
 
     test('Comment Parser', () {
-      var input = '; Hello';
+      var input = '; Hello\n\n';
       var comment = parse(input).commentStatement().val();
 
-      expect(comment.toString(), input);
+      expect(comment.toString(), '; Hello');
       expect(comment, Comment('Hello'));
 
       var transactions = parse(input).all().val();
       var actual = transactions.map((t) => t.toString()).join("\n");
-      expect(actual, input);
+      expect(actual, '; Hello');
     });
   });
 

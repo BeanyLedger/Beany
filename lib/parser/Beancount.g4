@@ -33,7 +33,7 @@ amount: NUMBER currency;
 includeStatement: 'include' quoted_string;
 optionStatement:
 	'option' key = quoted_string value = quoted_string;
-commentStatement: ('#' | ';') (~NEWLINE)* NEWLINE;
+commentStatement: ('#' | ';') ~(NEWLINE)* NEWLINE;
 
 balanceStatement: date 'balance' account amount;
 closeStatement: date 'close' account;
@@ -60,7 +60,7 @@ tr_header:
 	date tr_flag narration = quoted_string payee = quoted_string? tags?;
 
 tr_flag: TR_FLAG;
-inline_comment: ';' (~NEWLINE)*;
+inline_comment: ';' ~(NEWLINE)*;
 
 tr_comment: inline_comment;
 posting_spec_account_only: account tags? inline_comment?;
