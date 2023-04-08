@@ -8,57 +8,61 @@ import 'core.dart';
 
 @immutable
 class CostSpec extends Equatable {
-  final Decimal? numberPer;
-  final Decimal? numberTotal;
-  final String? currency;
+  final AmountSpec? amountPer;
+  final AmountSpec? amountTotal;
   final DateTime? date;
   final String? label;
 
   CostSpec({
-    this.numberPer,
-    this.numberTotal,
-    this.currency,
+    this.amountPer,
+    this.amountTotal,
     this.date,
     this.label,
   }) {
-    if (numberPer != null && numberTotal != null) {
-      throw ArgumentError('numberPer and numberTotal cannot both be defined');
+    if (amountPer != null && amountTotal != null) {
+      throw ArgumentError('amountPer and amountTotal cannot both be defined');
     }
   }
 
   CostSpec copyWith({
-    Decimal? numberPer,
-    Decimal? numberTotal,
+    AmountSpec? amountPer,
+    AmountSpec? amountTotal,
     String? currency,
     DateTime? date,
     String? lable,
   }) {
     return CostSpec(
-      numberPer: numberPer ?? this.numberPer,
-      numberTotal: numberTotal ?? this.numberTotal,
-      currency: currency ?? this.currency,
+      amountPer: amountPer ?? this.amountPer,
+      amountTotal: amountTotal ?? this.amountTotal,
       date: date ?? this.date,
       label: label ?? this.label,
     );
   }
 
   @override
-  List<Object?> get props => [numberPer, numberTotal, currency, date, label];
+  List<Object?> get props => [amountPer, amountTotal, date, label];
 
   @override
   String toString() {
     var sb = StringBuffer();
-    if (numberPer != null) {
+
+    AmountSpec? amount;
+    if (amountPer != null) {
+      amount = amountPer!;
       sb.write(' @ ');
-      sb.write(numberPer!.toStringAsFixed(2));
     }
-    if (numberTotal != null) {
+    if (amountTotal != null) {
+      amount = amountTotal!;
       sb.write(' @@ ');
-      sb.write(numberTotal!.toStringAsFixed(2));
     }
-    if (currency != null) {
-      sb.write(' ');
-      sb.write(currency);
+    if (amount != null) {
+      if (amount.number != null) {
+        sb.write(amount.number!.toStringAsFixed(2));
+      }
+      if (amount.currency != null) {
+        if (amount.number != null) sb.write(' ');
+        sb.write(amount.currency);
+      }
     }
     /*
     if (date != null) {

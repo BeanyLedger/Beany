@@ -141,8 +141,7 @@ extension CostSpecParsing on Cost_specContext {
 extension CostSpecPerParsing on Cost_spec_perContext {
   CostSpec val() {
     return CostSpec(
-      numberPer: Decimal.parse(NUMBER()!.text!),
-      currency: currency()?.val(),
+      amountPer: amount_spec()!.val(),
     );
   }
 }
@@ -150,9 +149,25 @@ extension CostSpecPerParsing on Cost_spec_perContext {
 extension CostSpecTotalParsing on Cost_spec_totalContext {
   CostSpec val() {
     return CostSpec(
-      numberTotal: Decimal.parse(NUMBER()!.text!),
-      currency: currency()?.val(),
+      amountTotal: amount_spec()!.val(),
     );
+  }
+}
+
+extension AmountSpecParsing on Amount_specContext {
+  AmountSpec val() {
+    var n = NUMBER();
+    var c = currency();
+
+    if (n == null && c == null) {
+      throw Exception("AmountSpec has no number or currency");
+    }
+
+    Decimal? number;
+    if (n != null) {
+      number = Decimal.parse(NUMBER()!.text!);
+    }
+    return AmountSpec(number, currency()?.val());
   }
 }
 

@@ -153,7 +153,7 @@ void main() {
 
     var transactions = parse(input).all().val();
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
-    expect(actual, input);
+    expect(actual.trim(), input.trim());
   });
 
   test('Posting with Explicit Price', () {
@@ -174,8 +174,9 @@ void main() {
           Posting(
             Account('Assets:MyBank:Checking'),
             Amount(Decimal.fromJson("-400.00"), "USD"),
-            costSpec:
-                CostSpec(numberPer: Decimal.fromJson("1.09"), currency: "CAD"),
+            costSpec: CostSpec(
+              amountPer: AmountSpec(Decimal.fromJson("1.09"), "CAD"),
+            ),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
@@ -205,8 +206,7 @@ void main() {
             Account('Assets:MyBank:Checking'),
             Amount(Decimal.fromJson("-400.00"), "USD"),
             costSpec: CostSpec(
-              numberTotal: Decimal.fromJson("436.01"),
-              currency: "CAD",
+              amountTotal: AmountSpec(Decimal.fromJson("436.01"), "CAD"),
             ),
           ),
           Posting(
@@ -217,7 +217,47 @@ void main() {
       ),
     );
   });
+
+  test('Posting with Cost Spec', () {
+    var input = """2023-03-15 * "Blimey"
+  Assets:A  -19095.86 USD @ 0.93
+  Expenses:B  89.33 USD @@ EUR
+  Assets:A  17715.04 EUR
+""";
+
+    var tr = parse(input).trStatement().val();
+    expect(tr.toString(), input);
+    expect(
+      tr,
+      Transaction(
+        DateTime(2023, 3, 15),
+        TransactionFlag.Okay,
+        "Blimey",
+        postings: [
+          Posting(
+            Account('Assets:A'),
+            Amount(Decimal.fromJson("-19095.86"), "USD"),
+            costSpec: CostSpec(
+              amountPer: AmountSpec(Decimal.fromJson("0.93"), null),
+            ),
+          ),
+          Posting(
+            Account('Expenses:B'),
+            Amount(Decimal.fromJson("89.33"), "USD"),
+            costSpec: CostSpec(
+              amountTotal: AmountSpec(null, "EUR"),
+            ),
+          ),
+          Posting(
+            Account('Assets:A'),
+            Amount(Decimal.fromJson("17715.04"), "EUR"),
+          )
+        ],
+      ),
+    );
+  });
 }
+
 
 // Query directive
 // Custom

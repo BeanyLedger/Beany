@@ -69,8 +69,9 @@ posting_spec_with_cost:
 	account amount cost_spec tags? inline_comment?;
 
 cost_spec: cost_spec_per | cost_spec_total;
-cost_spec_per: '@' NUMBER currency?;
-cost_spec_total: '@@' NUMBER currency?;
+cost_spec_per: '@' amount_spec;
+cost_spec_total: '@@' amount_spec;
+amount_spec: NUMBER? currency?;
 
 date: DATE;
 // quoted_string: '"' (.)? '"';
