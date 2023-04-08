@@ -12,27 +12,27 @@ import 'package:beany/parser/parser.dart';
 void main() {
   test('Transaction Header', () {
     expect(
-      parse('2019-04-14 * "Cat Powder"\n').trStatement().val(),
+      parse('2019-04-14 * "Cat Powder"\n').tr_header().val(),
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
     expect(
-      parse('2019-04-14 * "Cat Powder"\n').trStatement().val().toString(),
+      parse('2019-04-14 * "Cat Powder"\n').tr_header().val().toString(),
       '2019-04-14 * "Cat Powder"\n',
     );
     expect(
-      parse('2019-04-14 ! "Cat Powder"\n').trStatement().val(),
+      parse('2019-04-14 ! "Cat Powder"\n').tr_header().val(),
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
     );
     expect(
-      parse('2019-04-14 ! "Cat Powder"\n').trStatement().val().toString(),
+      parse('2019-04-14 ! "Cat Powder"\n').tr_header().val().toString(),
       '2019-04-14 ! "Cat Powder"\n',
     );
     expect(
-      parse('2019-04-14 txn "Cat Powder"\n').trStatement().val().toString(),
+      parse('2019-04-14 txn "Cat Powder"\n').tr_header().val().toString(),
       '2019-04-14 * "Cat Powder"\n',
     );
     expect(
-      parse('2019-04-14 ! "Cat" "Payee"\n').trStatement().val(),
+      parse('2019-04-14 ! "Cat" "Payee"\n').tr_header().val(),
       Transaction(
         DateTime(2019, 4, 14),
         TransactionFlag.Warning,
@@ -41,17 +41,17 @@ void main() {
       ),
     );
     expect(
-      parse('2019-04-14 ! "Cat" "Payee"\n').trStatement().val().toString(),
+      parse('2019-04-14 ! "Cat" "Payee"\n').tr_header().val().toString(),
       '2019-04-14 ! "Cat" "Payee"\n',
     );
     expect(
-      parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').trStatement().val(),
+      parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').tr_header().val(),
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
           tags: ["hello", "berlin-2014"]),
     );
     expect(
       parse('2019-04-14 ! "Cat" #hello #berlin-2014\n')
-          .trStatement()
+          .tr_header()
           .val()
           .toString(),
       '2019-04-14 ! "Cat" #hello #berlin-2014\n',
