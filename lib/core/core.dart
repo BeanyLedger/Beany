@@ -37,6 +37,7 @@ class MetaValue extends Equatable {
   final String? tagValue;
   final String? currencyValue;
   final Account? accountValue;
+  final bool? boolValue;
 
   MetaValue({
     this.stringValue,
@@ -46,6 +47,7 @@ class MetaValue extends Equatable {
     this.tagValue,
     this.currencyValue,
     this.accountValue,
+    this.boolValue,
   });
 
   String toString() {
@@ -57,6 +59,7 @@ class MetaValue extends Equatable {
     if (tagValue != null) return '#$tagValue';
     if (currencyValue != null) return currencyValue!;
     if (accountValue != null) return accountValue!.toString();
+    if (boolValue != null) return boolValue.toString();
 
     throw new Exception("Unknown MetaData Value");
   }
@@ -70,5 +73,6 @@ class MetaValue extends Equatable {
         tagValue,
         currencyValue,
         accountValue,
+        boolValue,
       ];
 }
