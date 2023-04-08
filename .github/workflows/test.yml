@@ -16,5 +16,7 @@ jobs:
     - name: Install devenv.sh
       run: nix profile install github:cachix/devenv/latest
       shell: sh
+    - name: Install Deps
+      run: devenv shell dart pub get
     - name: Tests
       run: devenv shell make test
