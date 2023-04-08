@@ -246,16 +246,23 @@ extension MetadaataParsing on MetadataContext {
   }
 }
 
+extension TransactionHeaderParsing on Tr_headerContext {
+  Transaction val() {
+    return Transaction(
+      date()!.val(),
+      tr_flag()!.val(),
+      narration!.val(),
+      payee: payee?.val(),
+      tags: tags()?.val(),
+    );
+  }
+}
+
 extension TransactionParsing on TrStatementContext {
   Transaction val() {
-    var header = tr_header()!;
+    var tr = tr_header()!.val();
 
-    return Transaction(
-      header.date()!.val(),
-      header.tr_flag()!.val(),
-      header.narration!.val(),
-      payee: header.payee?.val(),
-      tags: header.tags()?.val(),
+    return tr.copyWith(
       postings: children!
           .map((c) {
             if (c is Posting_spec_account_onlyContext) return c.val();
