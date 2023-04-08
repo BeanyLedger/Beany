@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:gringotts/parser/parser.dart';
+import 'package:beany/parser/parser.dart';
 
 int main(List<String> args) {
   if (args.length != 1) {

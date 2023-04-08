@@ -1,9 +1,9 @@
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 
-import 'package:gringotts/core/core.dart';
-import 'package:gringotts/core/price.dart';
-import 'package:gringotts/parser/parser.dart';
+import 'package:beany/core/core.dart';
+import 'package:beany/core/price.dart';
+import 'package:beany/parser/parser.dart';
 
 void main() {
   test('Price Parser', () {

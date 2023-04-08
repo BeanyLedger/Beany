@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
-import 'package:gringotts/core/posting.dart';
+import 'package:beany/core/posting.dart';
 import 'core.dart';
 
 enum TransactionFlag {

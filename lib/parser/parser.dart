@@ -1,21 +1,21 @@
 import 'package:antlr4/antlr4.dart';
 import 'package:decimal/decimal.dart';
 
-import 'package:gringotts/core/account.dart';
-import 'package:gringotts/core/balance.dart';
-import 'package:gringotts/core/close.dart';
-import 'package:gringotts/core/commodity.dart';
-import 'package:gringotts/core/core.dart';
-import 'package:gringotts/core/document.dart';
-import 'package:gringotts/core/event.dart';
-import 'package:gringotts/core/note.dart';
-import 'package:gringotts/core/open.dart';
-import 'package:gringotts/core/posting.dart';
-import 'package:gringotts/core/price.dart';
-import 'package:gringotts/core/statements.dart';
-import 'package:gringotts/core/transaction.dart';
-import 'package:gringotts/parser/BeancountLexer.dart';
-import 'package:gringotts/parser/BeancountParser.dart';
+import 'package:beany/core/account.dart';
+import 'package:beany/core/balance.dart';
+import 'package:beany/core/close.dart';
+import 'package:beany/core/commodity.dart';
+import 'package:beany/core/core.dart';
+import 'package:beany/core/document.dart';
+import 'package:beany/core/event.dart';
+import 'package:beany/core/note.dart';
+import 'package:beany/core/open.dart';
+import 'package:beany/core/posting.dart';
+import 'package:beany/core/price.dart';
+import 'package:beany/core/statements.dart';
+import 'package:beany/core/transaction.dart';
+import 'package:beany/parser/BeancountLexer.dart';
+import 'package:beany/parser/BeancountParser.dart';
 
 BeancountParser parse(String text) {
   if (!text.endsWith('\n')) text += '\n';

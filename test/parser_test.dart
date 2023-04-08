@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import 'package:gringotts/parser/parser.dart';
+import 'package:beany/parser/parser.dart';
 
 void main() {
   test('Quoted String', () {

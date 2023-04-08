@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
-import 'package:gringotts/core/posting.dart';
-import 'package:gringotts/parser/parser.dart';
+import 'package:beany/core/posting.dart';
+import 'package:beany/parser/parser.dart';
 
 void main() {
   test('Posting Account Only Parser', () {
