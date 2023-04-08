@@ -8,8 +8,8 @@ import 'core.dart';
 
 @immutable
 class CostSpec extends Equatable {
-  final Decimal number;
-  final String currency;
+  final Decimal? number;
+  final String? currency;
   final DateTime? date;
   final String? label;
 
@@ -84,12 +84,16 @@ class Posting extends Equatable {
         : "  " + account.toString());
     if (price != null) {
       sb.write(' @ ');
-      sb.write(price!.number.toStringAsFixed(2));
+      if (price!.number != null) {
+        sb.write(price!.number?.toStringAsFixed(2));
+      }
       sb.write(' ');
       sb.write(price!.currency);
     } else if (totalPrice != null) {
       sb.write(' @@ ');
-      sb.write(totalPrice!.number.toStringAsFixed(2));
+      if (totalPrice!.number != null) {
+        sb.write(totalPrice!.number?.toStringAsFixed(2));
+      }
       sb.write(' ');
       sb.write(totalPrice!.currency);
     }
