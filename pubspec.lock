@@ -24,11 +24,7 @@ packages:
       sha256: aeb591332cd6a32d298389df1ab41f2ce7b117da98c58eae35785ed44ee0abb3
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
-    version: "4.11.1"
-=======
     version: "4.12.0"
->>>>>>> c304e4d (Regenerate parser files)
   args:
     dependency: transitive
     description:
