@@ -26,16 +26,6 @@ class Option extends Equatable implements Statement {
 
   @override
   List<Object?> get props => [key, value];
-
-  // static Parser<Option> get parser {
-  //   final _optionParser = string('option') &
-  //       spaceParser.star() &
-  //       quotedStringParser &
-  //       spaceParser.star() &
-  //       quotedStringParser &
-  //       eol;
-
-  //   return _optionParser.map((v) => Option(v[2], v[4]));
 }
 
 @immutable

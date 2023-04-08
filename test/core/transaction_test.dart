@@ -289,7 +289,3 @@ Metadata values -
     Numbers (Decimal)
     Amount (beancount.core.amount.Amount)
 */
-
-// TOD0: Write a test for -
-// date txn <narration>
-// date txn <payee> <narration>
