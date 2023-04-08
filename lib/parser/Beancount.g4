@@ -59,7 +59,7 @@ trStatement:
 tr_header:
 	date tr_flag narration = quoted_string payee = quoted_string? tags?;
 
-tr_flag: TR_FLAG | 'txn';
+tr_flag: TR_FLAG;
 inline_comment: ';' (~NEWLINE)*;
 
 tr_comment: inline_comment;
@@ -100,5 +100,5 @@ WHITESPACE: (' ' | '\t')+ -> skip;
 NEWLINE: ('\r'? '\n' | '\r')+;
 // NOT_NEWLINE: ~('\r' | '\n' | '\r\n');
 
-TR_FLAG: '!' | '*';
+TR_FLAG: 'txn' | '!' | '*';
 STR: '"' (~[\\"] | '\\' [\\"()])* '"';

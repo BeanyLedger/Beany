@@ -168,13 +168,14 @@ extension TrCommentParsing on Tr_commentContext {
 
 extension TrFlagParsing on Tr_flagContext {
   TransactionFlag val() {
-    switch (TR_FLAG()?.text) {
+    switch (text) {
       case '*':
+      case 'txn':
         return TransactionFlag.Okay;
       case '!':
         return TransactionFlag.Warning;
       default:
-        throw Exception("Unknown transaction flag");
+        throw Exception("Unknown transaction flag - $text");
     }
   }
 }
@@ -239,7 +240,7 @@ extension TransactionParsing on TrStatementContext {
           .where((x) => x != null)
           .map((e) => e!),
       comments: tr_comments().map((e) => e.val()),
-      meta: metadata()!.val(),
+      meta: metadata()?.val(),
     );
   }
 }

@@ -64,19 +64,18 @@ class BeancountParser extends Parser {
       TOKEN_T__12 = 13,
       TOKEN_T__13 = 14,
       TOKEN_T__14 = 15,
-      TOKEN_T__15 = 16,
-      TOKEN_DIGIT = 17,
-      TOKEN_YEAR = 18,
-      TOKEN_MONTH = 19,
-      TOKEN_DAY = 20,
-      TOKEN_DATE = 21,
-      TOKEN_NUMBER = 22,
-      TOKEN_TAG = 23,
-      TOKEN_WORD = 24,
-      TOKEN_WHITESPACE = 25,
-      TOKEN_NEWLINE = 26,
-      TOKEN_TR_FLAG = 27,
-      TOKEN_STR = 28;
+      TOKEN_DIGIT = 16,
+      TOKEN_YEAR = 17,
+      TOKEN_MONTH = 18,
+      TOKEN_DAY = 19,
+      TOKEN_DATE = 20,
+      TOKEN_NUMBER = 21,
+      TOKEN_TAG = 22,
+      TOKEN_WORD = 23,
+      TOKEN_WHITESPACE = 24,
+      TOKEN_NEWLINE = 25,
+      TOKEN_TR_FLAG = 26,
+      TOKEN_STR = 27;
 
   @override
   final List<String> ruleNames = [
@@ -131,12 +130,10 @@ class BeancountParser extends Parser {
     "'event'",
     "'document'",
     "'note'",
-    "'txn'",
     "'@'",
     "'@@'"
   ];
   static final List<String?> _SYMBOLIC_NAMES = [
-    null,
     null,
     null,
     null,
@@ -199,7 +196,7 @@ class BeancountParser extends Parser {
       state = 72;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 69206076) != 0)) {
+      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 34603068) != 0)) {
         state = 70;
         errorHandler.sync(this);
         switch (tokenStream.LA(1)!) {
@@ -456,7 +453,7 @@ class BeancountParser extends Parser {
       state = 119;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 469762046) != 0)) {
+      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 234881022) != 0)) {
         state = 116;
         _la = tokenStream.LA(1)!;
         if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
@@ -781,18 +778,10 @@ class BeancountParser extends Parser {
   Tr_flagContext tr_flag() {
     dynamic _localctx = Tr_flagContext(context, state);
     enterRule(_localctx, 40, RULE_tr_flag);
-    int _la;
     try {
       enterOuterAlt(_localctx, 1);
       state = 195;
-      _la = tokenStream.LA(1)!;
-      if (!(_la == TOKEN_T__13 || _la == TOKEN_TR_FLAG)) {
-        errorHandler.recoverInline(this);
-      } else {
-        if (tokenStream.LA(1)! == IntStream.EOF) matchedEOF = true;
-        errorHandler.reportMatch(this);
-        consume();
-      }
+      match(TOKEN_TR_FLAG);
     } on RecognitionException catch (re) {
       _localctx.exception = re;
       errorHandler.reportError(this, re);
@@ -814,7 +803,7 @@ class BeancountParser extends Parser {
       state = 201;
       errorHandler.sync(this);
       _la = tokenStream.LA(1)!;
-      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 469762046) != 0)) {
+      while ((((_la) & ~0x3f) == 0 && ((1 << _la) & 234881022) != 0)) {
         state = 198;
         _la = tokenStream.LA(1)!;
         if (_la <= 0 || (_la == TOKEN_NEWLINE)) {
@@ -934,7 +923,7 @@ class BeancountParser extends Parser {
       state = 222;
       amount();
       state = 223;
-      match(TOKEN_T__14);
+      match(TOKEN_T__13);
       state = 224;
       price();
       state = 226;
@@ -974,7 +963,7 @@ class BeancountParser extends Parser {
       state = 232;
       amount();
       state = 233;
-      match(TOKEN_T__15);
+      match(TOKEN_T__14);
       state = 234;
       price();
       state = 236;
@@ -1176,7 +1165,7 @@ class BeancountParser extends Parser {
   static const List<int> _serializedATN = [
     4,
     1,
-    28,
+    27,
     272,
     2,
     0,
@@ -1790,21 +1779,15 @@ class BeancountParser extends Parser {
     64,
     66,
     0,
-    3,
+    2,
     1,
     0,
     4,
     5,
     1,
     0,
-    26,
-    26,
-    2,
-    0,
-    14,
-    14,
-    27,
-    27,
+    25,
+    25,
     274,
     0,
     72,
@@ -2247,7 +2230,7 @@ class BeancountParser extends Parser {
     94,
     95,
     5,
-    26,
+    25,
     0,
     0,
     95,
@@ -2259,7 +2242,7 @@ class BeancountParser extends Parser {
     96,
     99,
     5,
-    24,
+    23,
     0,
     0,
     97,
@@ -2271,7 +2254,7 @@ class BeancountParser extends Parser {
     98,
     100,
     5,
-    24,
+    23,
     0,
     0,
     99,
@@ -2307,7 +2290,7 @@ class BeancountParser extends Parser {
     103,
     104,
     5,
-    24,
+    23,
     0,
     0,
     104,
@@ -2319,7 +2302,7 @@ class BeancountParser extends Parser {
     105,
     106,
     5,
-    22,
+    21,
     0,
     0,
     106,
@@ -2427,7 +2410,7 @@ class BeancountParser extends Parser {
     122,
     123,
     5,
-    26,
+    25,
     0,
     0,
     123,
@@ -2661,7 +2644,7 @@ class BeancountParser extends Parser {
     161,
     162,
     5,
-    26,
+    25,
     0,
     0,
     162,
@@ -2679,7 +2662,7 @@ class BeancountParser extends Parser {
     164,
     170,
     5,
-    26,
+    25,
     0,
     0,
     165,
@@ -2691,7 +2674,7 @@ class BeancountParser extends Parser {
     166,
     167,
     5,
-    26,
+    25,
     0,
     0,
     167,
@@ -2799,7 +2782,7 @@ class BeancountParser extends Parser {
     180,
     181,
     5,
-    26,
+    25,
     0,
     0,
     181,
@@ -2906,8 +2889,8 @@ class BeancountParser extends Parser {
     0,
     195,
     196,
-    7,
-    2,
+    5,
+    26,
     0,
     0,
     196,
@@ -3105,7 +3088,7 @@ class BeancountParser extends Parser {
     223,
     224,
     5,
-    15,
+    14,
     0,
     0,
     224,
@@ -3177,7 +3160,7 @@ class BeancountParser extends Parser {
     233,
     234,
     5,
-    16,
+    15,
     0,
     0,
     234,
@@ -3249,7 +3232,7 @@ class BeancountParser extends Parser {
     243,
     244,
     5,
-    21,
+    20,
     0,
     0,
     244,
@@ -3261,7 +3244,7 @@ class BeancountParser extends Parser {
     245,
     246,
     5,
-    28,
+    27,
     0,
     0,
     246,
@@ -3273,7 +3256,7 @@ class BeancountParser extends Parser {
     247,
     249,
     5,
-    23,
+    22,
     0,
     0,
     248,
@@ -3327,7 +3310,7 @@ class BeancountParser extends Parser {
     255,
     256,
     5,
-    26,
+    25,
     0,
     0,
     256,
@@ -3375,7 +3358,7 @@ class BeancountParser extends Parser {
     262,
     263,
     5,
-    24,
+    23,
     0,
     0,
     263,
@@ -3393,13 +3376,13 @@ class BeancountParser extends Parser {
     265,
     270,
     5,
-    23,
+    22,
     0,
     0,
     266,
     270,
     5,
-    22,
+    21,
     0,
     0,
     267,
