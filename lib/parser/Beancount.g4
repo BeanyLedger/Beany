@@ -52,8 +52,7 @@ trStatement:
 		(
 			posting_spec_account_only
 			| posting_spec_account_amount
-			| posting_spec_explicit_per_price
-			| posting_spec_explicit_total_price
+			| posting_spec_with_cost
 		) NEWLINE
 	)+;
 tr_header:
@@ -66,12 +65,13 @@ tr_comment: inline_comment;
 posting_spec_account_only: account tags? inline_comment?;
 posting_spec_account_amount:
 	account amount tags? inline_comment?;
-posting_spec_explicit_per_price:
-	account amount '@' price tags? inline_comment?;
-posting_spec_explicit_total_price:
-	account amount '@@' price tags? inline_comment?;
+posting_spec_with_cost:
+	account amount cost_spec tags? inline_comment?;
 
-price: amount;
+cost_spec: cost_spec_per | cost_spec_total;
+cost_spec_per: '@' NUMBER currency?;
+cost_spec_total: '@@' NUMBER currency?;
+
 date: DATE;
 // quoted_string: '"' (.)? '"';
 quoted_string: STR;

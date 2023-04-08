@@ -129,33 +129,39 @@ extension PostingSpecAccountAmountParsing
   }
 }
 
-extension PriceParsing on PriceContext {
+extension CostSpecParsing on Cost_specContext {
   CostSpec val() {
-    var amt = amount()!.val();
-    return CostSpec(amt.number, amt.currency, null);
+    if (cost_spec_per() != null) return cost_spec_per()!.val();
+    if (cost_spec_total() != null) return cost_spec_total()!.val();
+
+    throw Exception("Unknown cost spec");
   }
 }
 
-extension PostingSpecExplicitPerPriseParsing
-    on Posting_spec_explicit_per_priceContext {
-  Posting val() {
-    return Posting(
-      account()!.val(),
-      amount()!.val(),
-      price: price()!.val(),
-      comment: inline_comment()?.val(),
-      tags: tags()?.val(),
+extension CostSpecPerParsing on Cost_spec_perContext {
+  CostSpec val() {
+    return CostSpec(
+      numberPer: Decimal.parse(NUMBER()!.text!),
+      currency: currency()?.val(),
     );
   }
 }
 
-extension PostingSpecExplicitTotalPriceParsing
-    on Posting_spec_explicit_total_priceContext {
+extension CostSpecTotalParsing on Cost_spec_totalContext {
+  CostSpec val() {
+    return CostSpec(
+      numberTotal: Decimal.parse(NUMBER()!.text!),
+      currency: currency()?.val(),
+    );
+  }
+}
+
+extension PostingSpecWithCostParsing on Posting_spec_with_costContext {
   Posting val() {
     return Posting(
       account()!.val(),
       amount()!.val(),
-      totalPrice: price()!.val(),
+      costSpec: cost_spec()!.val(),
       comment: inline_comment()?.val(),
       tags: tags()?.val(),
     );
@@ -232,8 +238,7 @@ extension TransactionParsing on TrStatementContext {
           .map((c) {
             if (c is Posting_spec_account_onlyContext) return c.val();
             if (c is Posting_spec_account_amountContext) return c.val();
-            if (c is Posting_spec_explicit_per_priceContext) return c.val();
-            if (c is Posting_spec_explicit_total_priceContext) return c.val();
+            if (c is Posting_spec_with_costContext) return c.val();
 
             return null;
           })

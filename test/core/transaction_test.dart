@@ -174,7 +174,8 @@ void main() {
           Posting(
             Account('Assets:MyBank:Checking'),
             Amount(Decimal.fromJson("-400.00"), "USD"),
-            price: CostSpec(Decimal.fromJson("1.09"), "CAD", null),
+            costSpec:
+                CostSpec(numberPer: Decimal.fromJson("1.09"), currency: "CAD"),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
@@ -203,7 +204,10 @@ void main() {
           Posting(
             Account('Assets:MyBank:Checking'),
             Amount(Decimal.fromJson("-400.00"), "USD"),
-            totalPrice: CostSpec(Decimal.fromJson("436.01"), "CAD", null),
+            costSpec: CostSpec(
+              numberTotal: Decimal.fromJson("436.01"),
+              currency: "CAD",
+            ),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
