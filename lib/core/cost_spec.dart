@@ -19,6 +19,9 @@ class CostSpec extends Equatable {
     if (amountPer != null && amountTotal != null) {
       throw ArgumentError('amountPer and amountTotal cannot both be defined');
     }
+    if (amountPer == null && amountTotal == null) {
+      throw ArgumentError('amountPer or amountTotal must be defined');
+    }
   }
 
   CostSpec copyWith({
