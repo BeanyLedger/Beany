@@ -20,5 +20,7 @@ jobs:
       run: devenv shell pwd
     - name: Install Deps
       run: devenv shell dart pub get
+    - name: Generate Code
+      run: devenv shell make antlr
     - name: Tests
       run: devenv shell make test
