@@ -4,7 +4,7 @@ grammar Beancount;
  * Parser Rules
  */
 
-all: (statement | empty_line)* EOF;
+all: (statement | emptyLine)* EOF;
 
 statement:
 	directive
@@ -45,42 +45,41 @@ eventStatement:
 documentStatement: date 'document' account quoted_string;
 noteStatement: date 'note' account quoted_string;
 
-empty_line: NEWLINE;
+emptyLine: NEWLINE;
 
 trStatement:
-	tr_header NEWLINE (tr_comment NEWLINE)* metadata (
+	trHeader NEWLINE (tr_comment NEWLINE)* metadata (
 		(
-			posting_spec_account_only
-			| posting_spec_account_amount
-			| posting_spec_with_cost
+			postingSpecAccountOnly
+			| postingSpecAccountAmount
+			| postingSpecWithCost
 		) NEWLINE
 	)+;
-tr_header:
-	date tr_flag narration = quoted_string payee = quoted_string? tags?;
+trHeader:
+	date trFlag narration = quoted_string payee = quoted_string? tags?;
 
-tr_flag: TR_FLAG;
-inline_comment: ';' ~(NEWLINE)*;
+trFlag: TR_FLAG;
+inlineComment: ';' ~(NEWLINE)*;
 
-tr_comment: inline_comment;
-posting_spec_account_only: account tags? inline_comment?;
-posting_spec_account_amount:
-	account amount tags? inline_comment?;
-posting_spec_with_cost:
-	account amount cost_spec tags? inline_comment?;
+tr_comment: inlineComment;
+postingSpecAccountOnly: account tags? inlineComment?;
+postingSpecAccountAmount: account amount tags? inlineComment?;
+postingSpecWithCost:
+	account amount costSpec tags? inlineComment?;
 
-cost_spec: cost_spec_per | cost_spec_total;
-cost_spec_per: '@' amount_spec;
-cost_spec_total: '@@' amount_spec;
-amount_spec: NUMBER? currency?;
+costSpec: costSpecPer | costSpecTotal;
+costSpecPer: '@' amountSpec;
+costSpecTotal: '@@' amountSpec;
+amountSpec: NUMBER? currency?;
 
 date: DATE;
 // quoted_string: '"' (.)? '"';
 quoted_string: STR;
 tags: TAG+;
 
-metadata: (metadata_key metadata_value NEWLINE)*;
-metadata_key: METAKEY_WITH_COLON;
-metadata_value: quoted_string | TAG | NUMBER | amount | account;
+metadata: (metadataKey metadataValue NEWLINE)*;
+metadataKey: METAKEY_WITH_COLON;
+metadataValue: quoted_string | TAG | NUMBER | amount | account;
 
 /*
  * Lexer Rules

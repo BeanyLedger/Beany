@@ -102,18 +102,18 @@ extension TagParsing on TagsContext {
   }
 }
 
-extension PostingSpecAccountOnlyParsing on Posting_spec_account_onlyContext {
+extension PostingSpecAccountOnlyParsing on PostingSpecAccountOnlyContext {
   Posting val() {
     return Posting(
       account()!.val(),
       null,
-      comment: inline_comment()?.val(),
+      comment: inlineComment()?.val(),
       tags: tags()?.val(),
     );
   }
 }
 
-extension InlineCommentParsing on Inline_commentContext {
+extension InlineCommentParsing on InlineCommentContext {
   String val() {
     var x = text;
     assert(x.startsWith(';'), "`$x` does not start with a ;");
@@ -121,44 +121,43 @@ extension InlineCommentParsing on Inline_commentContext {
   }
 }
 
-extension PostingSpecAccountAmountParsing
-    on Posting_spec_account_amountContext {
+extension PostingSpecAccountAmountParsing on PostingSpecAccountAmountContext {
   Posting val() {
     return Posting(
       account()!.val(),
       amount()!.val(),
-      comment: inline_comment()?.val(),
+      comment: inlineComment()?.val(),
       tags: tags()?.val(),
     );
   }
 }
 
-extension CostSpecParsing on Cost_specContext {
+extension CostSpecParsing on CostSpecContext {
   CostSpec val() {
-    if (cost_spec_per() != null) return cost_spec_per()!.val();
-    if (cost_spec_total() != null) return cost_spec_total()!.val();
+    if (costSpecPer() != null) return costSpecPer()!.val();
+    if (costSpecTotal() != null) return costSpecTotal()!.val();
 
     throw Exception("Unknown cost spec");
   }
 }
 
-extension CostSpecPerParsing on Cost_spec_perContext {
+extension CostSpecPerParsing on CostSpecPerContext {
   CostSpec val() {
     return CostSpec(
-      amountPer: amount_spec()!.val(),
+      amountPer: amountSpec()!.val(),
     );
   }
 }
 
-extension CostSpecTotalParsing on Cost_spec_totalContext {
+extension CostSpecTotalParsing on CostSpecTotalContext {
   CostSpec val() {
     return CostSpec(
-      amountTotal: amount_spec()!.val(),
+      amountTotal: amountSpec()!.val(),
     );
   }
 }
 
-extension AmountSpecParsing on Amount_specContext {
+extension AmountSpecParsing on AmountSpecContext {
   AmountSpec val() {
     var n = NUMBER();
     var c = currency();
@@ -175,23 +174,23 @@ extension AmountSpecParsing on Amount_specContext {
   }
 }
 
-extension PostingSpecWithCostParsing on Posting_spec_with_costContext {
+extension PostingSpecWithCostParsing on PostingSpecWithCostContext {
   Posting val() {
     return Posting(
       account()!.val(),
       amount()!.val(),
-      costSpec: cost_spec()!.val(),
-      comment: inline_comment()?.val(),
+      costSpec: costSpec()!.val(),
+      comment: inlineComment()?.val(),
       tags: tags()?.val(),
     );
   }
 }
 
 extension TrCommentParsing on Tr_commentContext {
-  String val() => inline_comment()!.val();
+  String val() => inlineComment()!.val();
 }
 
-extension TrFlagParsing on Tr_flagContext {
+extension TrFlagParsing on TrFlagContext {
   TransactionFlag val() {
     switch (text) {
       case '*':
@@ -205,7 +204,7 @@ extension TrFlagParsing on Tr_flagContext {
   }
 }
 
-extension Metadaata_valueParsing on Metadata_valueContext {
+extension Metadaata_valueParsing on MetadataValueContext {
   MetaValue val() {
     if (NUMBER() != null) {
       return MetaValue(numberValue: Decimal.parse(NUMBER()!.text!));
@@ -231,8 +230,8 @@ extension MetadaataParsing on MetadataContext {
   Map<String, MetaValue> val() {
     var m = <String, MetaValue>{};
 
-    var keys = metadata_keys();
-    var values = metadata_values();
+    var keys = metadataKeys();
+    var values = metadataValues();
 
     assert(keys.length == values.length);
     for (var i = 0; i < keys.length; i++) {
@@ -246,11 +245,11 @@ extension MetadaataParsing on MetadataContext {
   }
 }
 
-extension TransactionHeaderParsing on Tr_headerContext {
+extension TransactionHeaderParsing on TrHeaderContext {
   Transaction val() {
     return Transaction(
       date()!.val(),
-      tr_flag()!.val(),
+      trFlag()!.val(),
       narration!.val(),
       payee: payee?.val(),
       tags: tags()?.val(),
@@ -260,14 +259,14 @@ extension TransactionHeaderParsing on Tr_headerContext {
 
 extension TransactionParsing on TrStatementContext {
   Transaction val() {
-    var tr = tr_header()!.val();
+    var tr = trHeader()!.val();
 
     return tr.copyWith(
       postings: children!
           .map((c) {
-            if (c is Posting_spec_account_onlyContext) return c.val();
-            if (c is Posting_spec_account_amountContext) return c.val();
-            if (c is Posting_spec_with_costContext) return c.val();
+            if (c is PostingSpecAccountOnlyContext) return c.val();
+            if (c is PostingSpecAccountAmountContext) return c.val();
+            if (c is PostingSpecWithCostContext) return c.val();
 
             return null;
           })
