@@ -78,8 +78,8 @@ date: DATE;
 quoted_string: STR;
 tags: TAG+;
 
-metadata: (metadata_key ':' metadata_value NEWLINE)*;
-metadata_key: WORD;
+metadata: (metadata_key metadata_value NEWLINE)*;
+metadata_key: METAKEY_WITH_COLON;
 metadata_value: quoted_string | TAG | NUMBER | amount | account;
 
 /*
@@ -92,6 +92,9 @@ DAY: DIGIT DIGIT;
 DATE: YEAR [-] MONTH [-] DAY;
 
 NUMBER: [-]? DIGIT+ ([.] DIGIT+)?;
+
+fragment METAKEY: [a-z][A-Za-z0-9\\-_]*;
+METAKEY_WITH_COLON: METAKEY ':';
 
 TAG: [#]WORD;
 WORD: [\p{Alnum}\-_]+;

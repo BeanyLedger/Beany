@@ -26,7 +26,7 @@ BeancountParser parse(String text) {
   final tokens = CommonTokenStream(lexer);
   final parser = BeancountParser(tokens);
 
-  parser.errorHandler = BailErrorStrategy();
+  // parser.errorHandler = BailErrorStrategy();
   parser.addErrorListener(DiagnosticErrorListener());
 
   return parser;
@@ -235,7 +235,10 @@ extension MetadaataParsing on MetadataContext {
 
     assert(keys.length == values.length);
     for (var i = 0; i < keys.length; i++) {
-      m[keys[i].text] = values[i].val();
+      var key = keys[i].text;
+      assert(key.endsWith(':'), "Key $key does not end with :");
+      key = key.substring(0, key.length - 1);
+      m[key] = values[i].val();
     }
 
     return m;
