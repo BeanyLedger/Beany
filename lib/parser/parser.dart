@@ -55,7 +55,7 @@ extension QuotedStringParsing on Quoted_stringContext {
 }
 
 extension AcountParsing on AccountContext {
-  Account val() => Account(WORDs().join(':'));
+  Account val() => Account(ACCOUNT()!.text!);
 }
 
 extension PriceStatementParsing on PriceStatementContext {
