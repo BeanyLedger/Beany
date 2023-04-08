@@ -85,10 +85,10 @@ metadata_value: quoted_string | TAG | NUMBER | amount | account;
 /*
  * Lexer Rules
  */
-DIGIT: [0-9];
-YEAR: DIGIT DIGIT DIGIT DIGIT;
-MONTH: DIGIT DIGIT;
-DAY: DIGIT DIGIT;
+fragment DIGIT: [0-9];
+fragment YEAR: DIGIT DIGIT DIGIT DIGIT;
+fragment MONTH: DIGIT DIGIT;
+fragment DAY: DIGIT DIGIT;
 DATE: YEAR [-] MONTH [-] DAY;
 
 NUMBER: [-]? DIGIT+ ([.] DIGIT+)?;
