@@ -25,6 +25,8 @@ BeancountParser parse(String text) {
   final lexer = BeancountLexer(inputStream);
   final tokens = CommonTokenStream(lexer);
   final parser = BeancountParser(tokens);
+
+  parser.errorHandler = BailErrorStrategy();
   parser.addErrorListener(DiagnosticErrorListener());
 
   return parser;

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:antlr4/antlr4.dart';
 import 'package:beany/parser/parser.dart';
 
 int main(List<String> args) {
@@ -9,7 +10,20 @@ int main(List<String> args) {
   }
 
   var input = File(args.first).readAsStringSync();
-  parse(input).all().val();
+
+  var parser = parse(input);
+  try {
+    parser.all().val();
+  } on ParseCancellationException catch (e) {
+    print(e);
+    print(e.stackTrace);
+    print(parser.currentToken);
+    exit(1);
+  } catch (e) {
+    print(e);
+    exit(1);
+  }
+
   /*if (pResult.isFailure) {
     print('Failure: $pResult');
     var remaining = pResult.buffer.substring(pResult.position);
