@@ -117,7 +117,7 @@ extension InlineCommentParsing on Inline_commentContext {
   String val() {
     var x = text;
     assert(x.startsWith(';'), "`$x` does not start with a ;");
-    return x.substring(1);
+    return x.substring(1).trim();
   }
 }
 
