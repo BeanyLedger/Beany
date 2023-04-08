@@ -1,10 +1,10 @@
+import 'package:beany/core/amount.dart';
 import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 
 import 'package:beany/core/account.dart';
-import 'package:beany/core/core.dart';
 import 'package:beany/core/posting.dart';
 import 'package:beany/core/transaction.dart';
 import 'package:beany/parser/parser.dart';

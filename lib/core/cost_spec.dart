@@ -1,17 +1,7 @@
-import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-@immutable
-class AmountSpec extends Equatable {
-  final Decimal? number;
-  final String? currency;
-
-  AmountSpec(this.number, this.currency);
-
-  @override
-  List<Object?> get props => [number, currency];
-}
+import 'amount.dart';
 
 @immutable
 class CostSpec extends Equatable {

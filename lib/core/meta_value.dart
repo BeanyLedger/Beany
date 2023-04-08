@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import 'account.dart';
-import 'core.dart';
+import 'amount.dart';
 
 @immutable
 class MetaValue extends Equatable {

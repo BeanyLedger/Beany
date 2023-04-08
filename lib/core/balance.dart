@@ -4,6 +4,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 import 'account.dart';
+import 'amount.dart';
 import 'core.dart';
 
 @immutable

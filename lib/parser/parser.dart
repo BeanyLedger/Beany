@@ -1,4 +1,5 @@
 import 'package:antlr4/antlr4.dart';
+import 'package:beany/core/amount.dart';
 import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:decimal/decimal.dart';
