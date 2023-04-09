@@ -1,7 +1,7 @@
 import 'package:antlr4/antlr4.dart';
 import 'package:beany/core/amount.dart';
-import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/meta_value.dart';
+import 'package:beany/core/price_spec.dart';
 import 'package:decimal/decimal.dart';
 
 import 'package:beany/core/account.dart';
@@ -132,26 +132,26 @@ extension PostingSpecAccountAmountParsing on PostingSpecAccountAmountContext {
   }
 }
 
-extension CostSpecParsing on CostSpecContext {
-  CostSpec val() {
-    if (costSpecPer() != null) return costSpecPer()!.val();
-    if (costSpecTotal() != null) return costSpecTotal()!.val();
+extension PriceSpecParsing on PriceSpecContext {
+  PriceSpec val() {
+    if (priceSpecPer() != null) return priceSpecPer()!.val();
+    if (priceSpecTotal() != null) return priceSpecTotal()!.val();
 
-    throw Exception("Unknown cost spec");
+    throw Exception("Unknown price spec");
   }
 }
 
-extension CostSpecPerParsing on CostSpecPerContext {
-  CostSpec val() {
-    return CostSpec(
+extension PriceSpecPerParsing on PriceSpecPerContext {
+  PriceSpec val() {
+    return PriceSpec(
       amountPer: amountSpec()!.val(),
     );
   }
 }
 
-extension CostSpecTotalParsing on CostSpecTotalContext {
-  CostSpec val() {
-    return CostSpec(
+extension PriceSpecTotalParsing on PriceSpecTotalContext {
+  PriceSpec val() {
+    return PriceSpec(
       amountTotal: amountSpec()!.val(),
     );
   }
@@ -174,12 +174,12 @@ extension AmountSpecParsing on AmountSpecContext {
   }
 }
 
-extension PostingSpecWithCostParsing on PostingSpecWithCostContext {
+extension PostingSpecWithCostParsing on PostingSpecWithPriceContext {
   Posting val() {
     return Posting(
       account()!.val(),
       amount()!.val(),
-      costSpec: costSpec()!.val(),
+      priceSpec: priceSpec()!.val(),
       comment: inlineComment()?.val(),
       tags: tags()?.val(),
     );
@@ -266,7 +266,7 @@ extension TransactionParsing on TrStatementContext {
           .map((c) {
             if (c is PostingSpecAccountOnlyContext) return c.val();
             if (c is PostingSpecAccountAmountContext) return c.val();
-            if (c is PostingSpecWithCostContext) return c.val();
+            if (c is PostingSpecWithPriceContext) return c.val();
 
             return null;
           })

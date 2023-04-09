@@ -1,6 +1,6 @@
 import 'package:beany/core/amount.dart';
-import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/meta_value.dart';
+import 'package:beany/core/price_spec.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 
@@ -175,7 +175,7 @@ void main() {
           Posting(
             Account('Assets:MyBank:Checking'),
             Amount(Decimal.parse("-400.00"), "USD"),
-            costSpec: CostSpec(
+            priceSpec: PriceSpec(
               amountPer: AmountSpec(Decimal.parse("1.09"), "CAD"),
             ),
           ),
@@ -206,7 +206,7 @@ void main() {
           Posting(
             Account('Assets:MyBank:Checking'),
             Amount(Decimal.parse("-400.00"), "USD"),
-            costSpec: CostSpec(
+            priceSpec: PriceSpec(
               amountTotal: AmountSpec(Decimal.parse("436.01"), "CAD"),
             ),
           ),
@@ -238,14 +238,14 @@ void main() {
           Posting(
             Account('Assets:A'),
             Amount(Decimal.parse("-19095.86"), "USD"),
-            costSpec: CostSpec(
+            priceSpec: PriceSpec(
               amountPer: AmountSpec(Decimal.parse("0.93205"), null),
             ),
           ),
           Posting(
             Account('Expenses:B'),
             Amount(Decimal.parse("89.33"), "USD"),
-            costSpec: CostSpec(
+            priceSpec: PriceSpec(
               amountTotal: AmountSpec(null, "EUR"),
             ),
           ),

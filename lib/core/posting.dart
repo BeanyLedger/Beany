@@ -1,3 +1,4 @@
+import 'package:beany/core/price_spec.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
@@ -13,6 +14,7 @@ class Posting extends Equatable {
   late final Account account;
   late final Amount? amount;
   late final String? comment;
+  late final PriceSpec? priceSpec;
   late final CostSpec? costSpec;
 
   late final IList<String> tags;
@@ -21,6 +23,7 @@ class Posting extends Equatable {
     this.account,
     this.amount, {
     this.comment = null,
+    this.priceSpec = null,
     this.costSpec = null,
     Iterable<String>? tags,
   }) : tags = IList(tags);
@@ -30,6 +33,7 @@ class Posting extends Equatable {
     String? number,
     String? currency, {
     this.comment = null,
+    this.priceSpec = null,
     this.costSpec = null,
     List<String>? tags,
   }) : tags = IList(tags) {
@@ -46,6 +50,9 @@ class Posting extends Equatable {
     sb.write(amount != null
         ? "  " + account.toString() + "  " + amount.toString()
         : "  " + account.toString());
+    if (priceSpec != null) {
+      sb.write(priceSpec.toString());
+    }
     if (costSpec != null) {
       sb.write(costSpec.toString());
     }
@@ -67,6 +74,7 @@ class Posting extends Equatable {
     Amount? amount,
     List<String>? tags,
     String? comment,
+    PriceSpec? priceSpec,
     CostSpec? costSpec,
   }) {
     return Posting(
@@ -74,6 +82,7 @@ class Posting extends Equatable {
       amount ?? this.amount,
       tags: tags ?? this.tags.toList(),
       comment: comment ?? this.comment,
+      priceSpec: priceSpec ?? this.priceSpec,
       costSpec: costSpec ?? this.costSpec,
     );
   }
@@ -83,6 +92,7 @@ class Posting extends Equatable {
         account,
         amount,
         comment,
+        priceSpec,
         costSpec,
         tags,
       ];

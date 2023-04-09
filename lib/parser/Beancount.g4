@@ -52,7 +52,7 @@ trStatement:
 		(
 			postingSpecAccountOnly
 			| postingSpecAccountAmount
-			| postingSpecWithCost
+			| postingSpecWithPrice
 		) NEWLINE
 	)+;
 trHeader:
@@ -64,12 +64,12 @@ inlineComment: ';' ~(NEWLINE)*;
 tr_comment: inlineComment;
 postingSpecAccountOnly: account tags? inlineComment?;
 postingSpecAccountAmount: account amount tags? inlineComment?;
-postingSpecWithCost:
-	account amount costSpec tags? inlineComment?;
+postingSpecWithPrice:
+	account amount priceSpec tags? inlineComment?;
 
-costSpec: costSpecPer | costSpecTotal;
-costSpecPer: '@' amountSpec;
-costSpecTotal: '@@' amountSpec;
+priceSpec: priceSpecPer | priceSpecTotal;
+priceSpecPer: '@' amountSpec;
+priceSpecTotal: '@@' amountSpec;
 amountSpec: NUMBER? currency?;
 
 date: DATE;

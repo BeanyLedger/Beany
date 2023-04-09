@@ -5,63 +5,37 @@ import 'amount.dart';
 
 @immutable
 class CostSpec extends Equatable {
-  final AmountSpec? amountPer;
-  final AmountSpec? amountTotal;
+  final Amount amount;
   final DateTime? date;
   final String? label;
 
   CostSpec({
-    this.amountPer,
-    this.amountTotal,
+    required this.amount,
     this.date,
     this.label,
   }) {
-    if (amountPer != null && amountTotal != null) {
-      throw ArgumentError('amountPer and amountTotal cannot both be defined');
+    if (date != null && label != null) {
+      throw ArgumentError('CostSpec: Both date and label cannot be specified');
     }
-    if (amountPer == null && amountTotal == null) {
-      throw ArgumentError('amountPer or amountTotal must be defined');
-    }
-  }
-
-  CostSpec copyWith({
-    AmountSpec? amountPer,
-    AmountSpec? amountTotal,
-    String? currency,
-    DateTime? date,
-    String? lable,
-  }) {
-    return CostSpec(
-      amountPer: amountPer ?? this.amountPer,
-      amountTotal: amountTotal ?? this.amountTotal,
-      date: date ?? this.date,
-      label: label ?? this.label,
-    );
   }
 
   @override
-  List<Object?> get props => [amountPer, amountTotal, date, label];
+  List<Object?> get props => [amount, date, label];
 
   @override
   String toString() {
     var sb = StringBuffer();
 
-    if (amountPer != null) {
-      sb.write(' @ $amountPer');
-    }
-    if (amountTotal != null) {
-      sb.write(' @@ $amountTotal');
-    }
-    /*
+    sb.write('{');
+    sb.write(amount);
     if (date != null) {
-      sb.write(' ');
-      sb.write(date);
+      sb.write(', ');
+      sb.write(date!.toIso8601String().substring(0, 10));
     }
     if (label != null) {
-      sb.write(' ');
-      sb.write(label);
+      sb.write(', ');
+      sb.write('"$label"');
     }
-    */
     return sb.toString();
   }
 }
