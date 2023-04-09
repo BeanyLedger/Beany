@@ -21,6 +21,6 @@ jobs:
     - name: Install Deps
       run: devenv shell dart pub get
     - name: Generate Code
-      run: devenv shell make antlr
+      run: devenv shell make parser
     - name: Tests
       run: devenv shell make test

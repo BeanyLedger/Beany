@@ -1,7 +1,7 @@
 test:
 	dart test
 
-antlr:
+parser:
 	cd lib/parser && antlr -Werror -Dlanguage=Dart Beancount.g4 -o .
 	dart format --fix lib/parser
 

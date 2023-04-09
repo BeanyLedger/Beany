@@ -3,7 +3,7 @@
     "commands": [
       {
         "match": "\\.g4$",
-        "cmd": "make antlr"
+        "cmd": "make parser"
       }
     ]
   }
