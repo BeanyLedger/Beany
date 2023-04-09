@@ -35,19 +35,20 @@ BeancountParser parse(String text) {
 
 extension DateParsing on DateContext {
   DateTime val() {
-    if (exception != null) {
-      print("WTF  $exception#");
-    }
-
     return DateTime.parse(DATE()!.text!);
+  }
+}
+
+extension NumberParsing on NumberContext {
+  Decimal val() {
+    return Decimal.parse(text.replaceAll(',', ''));
   }
 }
 
 extension AmountParsing on AmountContext {
   Amount val() {
     var c = currency()!.text;
-    var n = Decimal.parse(NUMBER()!.text!);
-    return Amount(n, c);
+    return Amount(number()!.val(), c);
   }
 }
 
@@ -159,18 +160,13 @@ extension PriceSpecTotalParsing on PriceSpecTotalContext {
 
 extension AmountSpecParsing on AmountSpecContext {
   AmountSpec val() {
-    var n = NUMBER();
+    var n = number();
     var c = currency();
 
     if (n == null && c == null) {
       throw Exception("AmountSpec has no number or currency");
     }
-
-    Decimal? number;
-    if (n != null) {
-      number = Decimal.parse(NUMBER()!.text!);
-    }
-    return AmountSpec(number, currency()?.val());
+    return AmountSpec(n?.val(), c?.val());
   }
 }
 
@@ -202,8 +198,8 @@ extension TrFlagParsing on TrFlagContext {
 
 extension Metadaata_valueParsing on MetadataValueContext {
   MetaValue val() {
-    if (NUMBER() != null) {
-      return MetaValue(numberValue: Decimal.parse(NUMBER()!.text!));
+    if (number() != null) {
+      return MetaValue(numberValue: number()!.val());
     }
     if (account() != null) {
       return MetaValue(accountValue: account()!.val());

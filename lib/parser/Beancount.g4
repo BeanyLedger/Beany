@@ -27,7 +27,7 @@ directive: (
 // FIXME: Make this more strict?
 currency: CURRENCY;
 
-amount: NUMBER currency;
+amount: number currency;
 account: ACCOUNT;
 
 includeStatement: 'include' quoted_string;
@@ -68,7 +68,7 @@ postingSpecWithPrice: account amount priceSpec tags? comment?;
 priceSpec: priceSpecPer | priceSpecTotal;
 priceSpecPer: '@' amountSpec;
 priceSpecTotal: '@@' amountSpec;
-amountSpec: NUMBER? currency?;
+amountSpec: number? currency?;
 
 date: DATE;
 // quoted_string: '"' (.)? '"';
@@ -77,7 +77,9 @@ tags: TAG+;
 
 metadata: (metadataKey metadataValue NEWLINE)*;
 metadataKey: METAKEY_WITH_COLON;
-metadataValue: quoted_string | TAG | NUMBER | amount | account;
+metadataValue: quoted_string | TAG | number | amount | account;
+
+number: MINUS? INTEGER (COMMA INTEGER)* (DECIMAL INTEGER)?;
 
 /*
  * Lexer Rules
@@ -88,7 +90,10 @@ fragment MONTH: DIGIT DIGIT;
 fragment DAY: DIGIT DIGIT;
 DATE: YEAR [-] MONTH [-] DAY;
 
-NUMBER: [-]? DIGIT+ ([.] DIGIT+)?;
+INTEGER: DIGIT+;
+DECIMAL: '.';
+COMMA: ',';
+MINUS: '-';
 
 fragment METAKEY: [a-z][A-Za-z0-9\\-_]*;
 METAKEY_WITH_COLON: METAKEY ':';
@@ -98,7 +103,6 @@ TAG: [#]WORD;
 
 CURRENCY: [A-Z][A-Z'.\\-_]+ [A-Z0-9]; // max 24
 
-// CURRENCY: [A-Z][A-Z'.\\-_]* [A-Z0-9]; // max 24 characters long CURRENCY: WORD; // max 24
 fragment WORD: [\p{Alnum}\-_]+;
 ACCOUNT: WORD (':' WORD)+;
 

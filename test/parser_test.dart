@@ -209,6 +209,6 @@ void main() {
 
     expect(a("1.23 EUR"), Amount(Decimal.parse("1.23"), "EUR"));
     expect(a("-331.223 EUR"), Amount(Decimal.parse("-331.223"), "EUR"));
-    // expect(a("155,225.77 INR"), Amount(Decimal.parse("155225.77"), "INR"));
+    expect(a("155,225.77 INR"), Amount(Decimal.parse("155225.77"), "INR"));
   });
 }
