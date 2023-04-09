@@ -104,7 +104,7 @@ ACCOUNT: WORD (':' WORD)+;
 
 // characters long
 WHITESPACE: (' ' | '\t')+ -> skip;
-NEWLINE: ('\r'? '\n' | '\r')+;
+NEWLINE: ('\r'? '\n') | '\r';
 // NOT_NEWLINE: ~('\r' | '\n' | '\r\n');
 
 TR_FLAG: 'txn' | '!' | '*';
