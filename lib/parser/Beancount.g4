@@ -24,7 +24,6 @@ directive: (
 		| trStatement
 	) NEWLINE;
 
-// FIXME: Make this more strict?
 currency: CURRENCY;
 
 amount: number currency;
@@ -71,8 +70,7 @@ priceSpecTotal: '@@' amountSpec;
 amountSpec: number? currency?;
 
 date: DATE;
-// quoted_string: '"' (.)? '"';
-quoted_string: STR;
+quoted_string: Q_STR;
 tags: TAG+;
 
 metadata: (metadataKey metadataValue NEWLINE)*;
@@ -106,10 +104,8 @@ CURRENCY: [A-Z][A-Z'.\\-_]+ [A-Z0-9]; // max 24
 fragment WORD: [\p{Alnum}\-_]+;
 ACCOUNT: WORD (':' WORD)+;
 
-// characters long
 WHITESPACE: (' ' | '\t')+ -> skip;
 NEWLINE: ('\r'? '\n') | '\r';
-// NOT_NEWLINE: ~('\r' | '\n' | '\r\n');
 
 TR_FLAG: 'txn' | '!' | '*';
-STR: '"' (~[\\"] | '\\' [\\"()])* '"';
+Q_STR: '"' (~[\\"] | '\\' [\\"()])* '"';
