@@ -17,4 +17,24 @@ void main() {
     }
     */
   });
+
+  test("Accounts", () async {
+    var filePath = 'test/testdata/root.beancount';
+    var engine = await Engine.loadRootFile(filePath);
+    var accounts = engine.accounts;
+
+    var info1 = AccountInfo(
+      Account('Assets:Personal:Coinbase'),
+      DateTime(2013, 01, 01),
+      DateTime(2023, 01, 01),
+    );
+    expect(accounts, contains(info1));
+
+    var info2 = AccountInfo(
+      Account('Assets:Work:N26'),
+      DateTime(2013, 01, 01),
+      null,
+    );
+    expect(accounts, contains(info2));
+  });
 }

@@ -1,9 +1,15 @@
 import 'dart:io';
 
+import 'package:beany/core/account.dart';
+import 'package:beany/core/close.dart';
 import 'package:beany/core/core.dart';
+import 'package:beany/core/open.dart';
 import 'package:beany/core/statements.dart';
 import 'package:beany/parser/parser.dart';
+import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
+
+import 'package:meta/meta.dart';
 
 class Engine {
   List<Statement> statements = [];
@@ -28,6 +34,43 @@ class Engine {
     }
     return Engine([...statements, ...extraStatements]);
   }
+
+  List<AccountInfo> get accounts {
+    var accountInfos = <AccountInfo>[];
+    for (var statement in statements) {
+      if (statement is Open) {
+        var open = statement;
+        accountInfos.add(AccountInfo(open.account, open.date, null));
+      } else if (statement is Close) {
+        var close = statement;
+        var i = accountInfos.indexWhere((a) => a.account == close.account);
+        if (i == -1) {
+          throw Exception(
+              'Account "${close.account}" was closed before it was opened');
+        }
+
+        accountInfos[i] =
+            AccountInfo(close.account, accountInfos[i].openDate, close.date);
+      }
+    }
+
+    return accountInfos;
+  }
 }
+
+@immutable
+class AccountInfo extends Equatable {
+  final Account account;
+  final DateTime openDate;
+  final DateTime? closeDate;
+
+  AccountInfo(this.account, this.openDate, this.closeDate);
+
+  @override
+  List<Object?> get props => [account, openDate, closeDate];
+}
+
+// Compute the balance per account, per day?
+// That way, I'll be easily able to verify any account balance statements
 
 // Maybe there should be 1 function to open a file, parse all the statements are return them?
