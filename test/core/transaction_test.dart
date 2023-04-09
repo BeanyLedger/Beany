@@ -174,14 +174,14 @@ void main() {
         postings: [
           Posting(
             Account('Assets:MyBank:Checking'),
-            Amount(Decimal.fromJson("-400.00"), "USD"),
+            Amount(Decimal.parse("-400.00"), "USD"),
             costSpec: CostSpec(
-              amountPer: AmountSpec(Decimal.fromJson("1.09"), "CAD"),
+              amountPer: AmountSpec(Decimal.parse("1.09"), "CAD"),
             ),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
-            Amount(Decimal.fromJson("436.01"), "CAD"),
+            Amount(Decimal.parse("436.01"), "CAD"),
           )
         ],
       ),
@@ -205,14 +205,14 @@ void main() {
         postings: [
           Posting(
             Account('Assets:MyBank:Checking'),
-            Amount(Decimal.fromJson("-400.00"), "USD"),
+            Amount(Decimal.parse("-400.00"), "USD"),
             costSpec: CostSpec(
-              amountTotal: AmountSpec(Decimal.fromJson("436.01"), "CAD"),
+              amountTotal: AmountSpec(Decimal.parse("436.01"), "CAD"),
             ),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
-            Amount(Decimal.fromJson("436.01"), "CAD"),
+            Amount(Decimal.parse("436.01"), "CAD"),
           )
         ],
       ),
@@ -237,21 +237,21 @@ void main() {
         postings: [
           Posting(
             Account('Assets:A'),
-            Amount(Decimal.fromJson("-19095.86"), "USD"),
+            Amount(Decimal.parse("-19095.86"), "USD"),
             costSpec: CostSpec(
               amountPer: AmountSpec(Decimal.parse("0.93205"), null),
             ),
           ),
           Posting(
             Account('Expenses:B'),
-            Amount(Decimal.fromJson("89.33"), "USD"),
+            Amount(Decimal.parse("89.33"), "USD"),
             costSpec: CostSpec(
               amountTotal: AmountSpec(null, "EUR"),
             ),
           ),
           Posting(
             Account('Assets:A'),
-            Amount(Decimal.fromJson("17715.04"), "EUR"),
+            Amount(Decimal.parse("17715.04"), "EUR"),
           )
         ],
       ),
