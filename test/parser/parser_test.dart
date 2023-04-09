@@ -23,8 +23,8 @@ void main() {
       expect(include.toString(), input);
       expect(include, Include('../path'));
 
-      var transactions = parse(input).all().val();
-      var actual = transactions.map((t) => t.toString()).join("\n");
+      var statements = parse(input).all().val();
+      var actual = statements.map((t) => t.toString()).join("\n");
       expect(actual, input);
     });
 
@@ -35,8 +35,8 @@ void main() {
       expect(option.toString(), input);
       expect(option, Option('title', "Ed’s Personal Ledger"));
 
-      var transactions = parse(input).all().val();
-      var actual = transactions.map((t) => t.toString()).join("\n");
+      var statements = parse(input).all().val();
+      var actual = statements.map((t) => t.toString()).join("\n");
       expect(actual, input);
     });
 
@@ -46,8 +46,8 @@ void main() {
 
       expect(comment.value, 'Hello');
 
-      var transactions = parse(input).all().val();
-      var actual = transactions.map((t) => t.toString()).join("\n");
+      var statements = parse(input).all().val();
+      var actual = statements.map((t) => t.toString()).join("\n");
       expect(actual, '; Hello');
     }, skip: true);
   });
@@ -74,8 +74,8 @@ void main() {
       ),
     );
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
@@ -86,8 +86,8 @@ void main() {
     expect(close.toString(), input);
     expect(close, Close(DateTime(2000, 11, 21), Account('Expenses:Personal')));
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
@@ -98,8 +98,8 @@ void main() {
     expect(c.toString(), input);
     expect(c, Commodity(DateTime(2000, 11, 21), 'INR'));
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
@@ -117,8 +117,8 @@ void main() {
       ),
     );
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
@@ -129,8 +129,8 @@ void main() {
     expect(event.toString(), input);
     expect(event, Event(DateTime(2013, 11, 03), "location", "Paris, France"));
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
@@ -148,8 +148,8 @@ void main() {
       ),
     );
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
@@ -160,8 +160,8 @@ void main() {
     expect(open.toString(), input);
     expect(open, Open(DateTime(2000, 11, 21), Account('Expenses:Personal')));
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
@@ -179,8 +179,8 @@ void main() {
       ),
     );
 
-    var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n");
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
     expect(actual, input);
   });
 
