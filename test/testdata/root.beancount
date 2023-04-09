@@ -1,0 +1,4 @@
+option "operating_currency" "EUR"
+
+
+include "accounts.beancount"
