@@ -29,8 +29,7 @@ class MetaValue extends Equatable {
 
   String toString() {
     if (stringValue != null) return '"$stringValue"';
-    // FIXME: This depends on the precission of the currency!
-    if (numberValue != null) return numberValue!.toStringAsFixed(2);
+    if (numberValue != null) return numberValue!.toString();
     if (amountValue != null) return amountValue.toString();
     if (dateValue != null) return dateValue!.toIso8601String();
     if (tagValue != null) return '#$tagValue';

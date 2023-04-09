@@ -46,23 +46,11 @@ class CostSpec extends Equatable {
   String toString() {
     var sb = StringBuffer();
 
-    AmountSpec? amount;
     if (amountPer != null) {
-      amount = amountPer!;
-      sb.write(' @ ');
+      sb.write(' @ $amountPer');
     }
     if (amountTotal != null) {
-      amount = amountTotal!;
-      sb.write(' @@ ');
-    }
-    if (amount != null) {
-      if (amount.number != null) {
-        sb.write(amount.number!.toStringAsFixed(2));
-      }
-      if (amount.currency != null) {
-        if (amount.number != null) sb.write(' ');
-        sb.write(amount.currency);
-      }
+      sb.write(' @@ $amountTotal');
     }
     /*
     if (date != null) {

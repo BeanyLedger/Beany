@@ -221,7 +221,7 @@ void main() {
 
   test('Posting with Cost Spec', () {
     var input = """2023-03-15 * "Blimey"
-  Assets:A  -19095.86 USD @ 0.93
+  Assets:A  -19095.86 USD @ 0.93205
   Expenses:B  89.33 USD @@ EUR
   Assets:A  17715.04 EUR
 """;
@@ -239,7 +239,7 @@ void main() {
             Account('Assets:A'),
             Amount(Decimal.fromJson("-19095.86"), "USD"),
             costSpec: CostSpec(
-              amountPer: AmountSpec(Decimal.fromJson("0.93"), null),
+              amountPer: AmountSpec(Decimal.parse("0.93205"), null),
             ),
           ),
           Posting(
