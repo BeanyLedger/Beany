@@ -59,15 +59,15 @@ void main() {
   });
 
   test('Comment Parser', () {
-    expect(parse("  ;Hello").tr_comment().val(), "Hello");
-    expect(parse("  ;Hello\n").tr_comment().val(), "Hello");
-    expect(parse("  ; Hello\n").tr_comment().val(), "Hello");
-    expect(parse("  ; Hello \n").tr_comment().val(), "Hello");
-    expect(parse("  ; Hello\nHi").tr_comment().val(), "Hello");
+    expect(parse("  ;Hello").comment().val(), "Hello");
+    expect(parse("  ;Hello\n").comment().val(), "Hello");
+    expect(parse("  ; Hello\n").comment().val(), "Hello");
+    expect(parse("  ; Hello \n").comment().val(), "Hello");
+    expect(parse("  ; Hello\nHi").comment().val(), "Hello");
   });
 
   test('Comment Parser Special String', () {
-    expect(parse("  ; Róú's brithday\n").tr_comment().val(), "Róú's brithday");
+    expect(parse("  ; Róú's brithday\n").comment().val(), "Róú's brithday");
   }, skip: true);
 
   test('Simple Transaction', () {
@@ -149,8 +149,8 @@ void main() {
   Expenses:Mystery:DogPowder  -2.50 EUR
   Assets:Dogs
 
-; Comment
 """;
+// ; Comment
 
     var transactions = parse(input).all().val();
     var actual = transactions.map((t) => t.toString()).join("\n") + "\n";

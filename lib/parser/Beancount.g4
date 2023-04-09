@@ -25,7 +25,7 @@ directive: (
 	) NEWLINE;
 
 // FIXME: Make this more strict?
-currency: WORD;
+currency: CURRENCY;
 
 amount: NUMBER currency;
 account: ACCOUNT;
@@ -33,7 +33,7 @@ account: ACCOUNT;
 includeStatement: 'include' quoted_string;
 optionStatement:
 	'option' key = quoted_string value = quoted_string;
-commentStatement: ('#' | ';') ~(NEWLINE)* NEWLINE;
+commentStatement: comment NEWLINE;
 
 balanceStatement: date 'balance' account amount;
 closeStatement: date 'close' account;
@@ -48,7 +48,7 @@ noteStatement: date 'note' account quoted_string;
 emptyLine: NEWLINE;
 
 trStatement:
-	trHeader NEWLINE (tr_comment NEWLINE)* metadata (
+	trHeader NEWLINE (comment NEWLINE)* metadata (
 		(
 			postingSpecAccountOnly
 			| postingSpecAccountAmount
@@ -59,13 +59,11 @@ trHeader:
 	date trFlag narration = quoted_string payee = quoted_string? tags?;
 
 trFlag: TR_FLAG;
-inlineComment: ';' ~(NEWLINE)*;
+comment: COMMENT;
 
-tr_comment: inlineComment;
-postingSpecAccountOnly: account tags? inlineComment?;
-postingSpecAccountAmount: account amount tags? inlineComment?;
-postingSpecWithPrice:
-	account amount priceSpec tags? inlineComment?;
+postingSpecAccountOnly: account tags? comment?;
+postingSpecAccountAmount: account amount tags? comment?;
+postingSpecWithPrice: account amount priceSpec tags? comment?;
 
 priceSpec: priceSpecPer | priceSpecTotal;
 priceSpecPer: '@' amountSpec;
@@ -95,9 +93,13 @@ NUMBER: [-]? DIGIT+ ([.] DIGIT+)?;
 fragment METAKEY: [a-z][A-Za-z0-9\\-_]*;
 METAKEY_WITH_COLON: METAKEY ':';
 
+COMMENT: ';' ~('\n')*;
 TAG: [#]WORD;
-WORD: [\p{Alnum}\-_]+;
+
+CURRENCY: [A-Z][A-Z'.\\-_]+ [A-Z0-9]; // max 24
+
 // CURRENCY: [A-Z][A-Z'.\\-_]* [A-Z0-9]; // max 24 characters long CURRENCY: WORD; // max 24
+fragment WORD: [\p{Alnum}\-_]+;
 ACCOUNT: WORD (':' WORD)+;
 
 // characters long

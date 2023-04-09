@@ -84,7 +84,7 @@ extension BalanceParsing on BalanceStatementContext {
 }
 
 extension CurrencyParsing on CurrencyContext {
-  String val() => WORD()!.text!;
+  String val() => CURRENCY()!.text!;
 }
 
 extension CommodityParsing on CommodityStatementContext {
@@ -107,13 +107,13 @@ extension PostingSpecAccountOnlyParsing on PostingSpecAccountOnlyContext {
     return Posting(
       account()!.val(),
       null,
-      comment: inlineComment()?.val(),
+      comment: comment()?.val(),
       tags: tags()?.val(),
     );
   }
 }
 
-extension InlineCommentParsing on InlineCommentContext {
+extension CommentParsing on CommentContext {
   String val() {
     var x = text;
     assert(x.startsWith(';'), "`$x` does not start with a ;");
@@ -126,7 +126,7 @@ extension PostingSpecAccountAmountParsing on PostingSpecAccountAmountContext {
     return Posting(
       account()!.val(),
       amount()!.val(),
-      comment: inlineComment()?.val(),
+      comment: comment()?.val(),
       tags: tags()?.val(),
     );
   }
@@ -180,14 +180,10 @@ extension PostingSpecWithCostParsing on PostingSpecWithPriceContext {
       account()!.val(),
       amount()!.val(),
       priceSpec: priceSpec()!.val(),
-      comment: inlineComment()?.val(),
+      comment: comment()?.val(),
       tags: tags()?.val(),
     );
   }
-}
-
-extension TrCommentParsing on Tr_commentContext {
-  String val() => inlineComment()!.val();
 }
 
 extension TrFlagParsing on TrFlagContext {
@@ -272,7 +268,7 @@ extension TransactionParsing on TrStatementContext {
           })
           .where((x) => x != null)
           .map((e) => e!),
-      comments: tr_comments().map((e) => e.val()),
+      comments: comments().map((e) => e.val()),
       meta: metadata()?.val(),
     );
   }
