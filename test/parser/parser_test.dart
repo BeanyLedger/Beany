@@ -3,6 +3,7 @@ import 'package:beany/core/amount.dart';
 import 'package:beany/core/balance.dart';
 import 'package:beany/core/close.dart';
 import 'package:beany/core/commodity.dart';
+import 'package:beany/core/custom_statement.dart';
 import 'package:beany/core/document.dart';
 import 'package:beany/core/event.dart';
 import 'package:beany/core/note.dart';
@@ -210,5 +211,23 @@ void main() {
     expect(a("1.23 EUR"), Amount(Decimal.parse("1.23"), "EUR"));
     expect(a("-331.223 EUR"), Amount(Decimal.parse("-331.223"), "EUR"));
     expect(a("155,225.77 INR"), Amount(Decimal.parse("155225.77"), "INR"));
+  });
+
+  test("Custom Parser", () {
+    var input = '2013-11-03 custom "location" "Paris, France"';
+    var custom = parse(input).customStatement().val();
+
+    expect(custom.toString(), input);
+    expect(
+      custom,
+      CustomStatement(
+        DateTime(2013, 11, 03),
+        ["location", "Paris, France"],
+      ),
+    );
+
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => t.toString()).join("\n");
+    expect(actual, input);
   });
 }

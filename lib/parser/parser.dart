@@ -1,5 +1,6 @@
 import 'package:antlr4/antlr4.dart';
 import 'package:beany/core/amount.dart';
+import 'package:beany/core/custom_statement.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:beany/core/price_spec.dart';
 import 'package:decimal/decimal.dart';
@@ -318,6 +319,14 @@ extension TransactionParsing on TrStatementContext {
   }
 }
 
+extension CustomStatementParsing on CustomStatementContext {
+  CustomStatement val() => CustomStatement(
+        date()!.val(),
+        quoted_strings().map((e) => e.val()).toList(),
+        parsingInfo: _buildParsingInfo(this),
+      );
+}
+
 extension DirectiveParsing on DirectiveContext {
   Directive val() {
     if (balanceStatement() != null) return balanceStatement()!.val();
@@ -329,6 +338,7 @@ extension DirectiveParsing on DirectiveContext {
     if (eventStatement() != null) return eventStatement()!.val();
     if (noteStatement() != null) return noteStatement()!.val();
     if (trStatement() != null) return trStatement()!.val();
+    if (customStatement() != null) return customStatement()!.val();
 
     throw Exception("Unknown Directive");
   }

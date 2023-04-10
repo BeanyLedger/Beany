@@ -21,6 +21,7 @@ directive: (
 		| eventStatement
 		| documentStatement
 		| noteStatement
+		| customStatement
 		| trStatement
 	) NEWLINE;
 
@@ -43,6 +44,7 @@ eventStatement:
 	date 'event' name = quoted_string value = quoted_string;
 documentStatement: date 'document' account quoted_string;
 noteStatement: date 'note' account quoted_string;
+customStatement: date 'custom' quoted_string+;
 
 emptyLine: NEWLINE;
 
