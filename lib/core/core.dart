@@ -1,6 +1,8 @@
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
+import 'amount.dart';
+
 class ParsingInfo {
   final String filePath;
 
@@ -29,3 +31,9 @@ abstract class Directive extends Statement {
 }
 
 Decimal D(String value) => Decimal.parse(value);
+DateTime DT(String value) => DateTime.parse(value);
+Amount AMT(String str) {
+  var parts = str.split(' ');
+  if (parts.length != 2) throw Exception('Invalid amount: $str');
+  return Amount(D(parts[0]), parts[1]);
+}
