@@ -1,3 +1,4 @@
+import 'package:beany/core/amount.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
@@ -100,9 +101,33 @@ class Transaction extends Equatable implements Directive {
     return sb.toString();
   }
 
+  IList<Posting> realizedPostings() {
+    var numUnrealized = postings.where((p) => p.amount == null).length;
+    if (numUnrealized > 1) {
+      throw Exception('Cannot realize transaction with more than one '
+          'unrealized posting');
+    }
+
+    var currency = postings
+        .where((p) => p.amount != null)
+        .map((p) => p.amount!.currency)
+        .first;
+
+    var num = D("0");
+    for (var p in postings) {
+      if (p.amount != null) {
+        num = p.amount!.number + num;
+      }
+    }
+
+    var unrealizedIndex = postings.indexWhere((e) => e.amount == null);
+    var unrealized = postings[unrealizedIndex];
+    var realized = unrealized.copyWith(amount: Amount(-num, currency));
+
+    return postings.replace(unrealizedIndex, realized);
+  }
+
   @override
   List<Object?> get props =>
       [date, meta, narration, payee, flag, comments, postings, tags];
 }
-
-// FIXME: Transaction MetaData

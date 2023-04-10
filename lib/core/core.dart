@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class ParsingInfo {
@@ -26,3 +27,5 @@ abstract class Directive extends Statement {
   IMap<String, dynamic> get meta;
   DateTime get date;
 }
+
+Decimal D(String value) => Decimal.parse(value);
