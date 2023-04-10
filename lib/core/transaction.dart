@@ -101,11 +101,11 @@ class Transaction extends Equatable implements Directive {
     return sb.toString();
   }
 
-  IList<Posting> realizedPostings() {
-    var numUnrealized = postings.where((p) => p.amount == null).length;
-    if (numUnrealized > 1) {
+  IList<Posting> resolvedPostings() {
+    var numUnresolved = postings.where((p) => p.amount == null).length;
+    if (numUnresolved > 1) {
       throw Exception('Cannot realize transaction with more than one '
-          'unrealized posting');
+          'unresolved posting');
     }
 
     var currency = postings
@@ -120,11 +120,11 @@ class Transaction extends Equatable implements Directive {
       }
     }
 
-    var unrealizedIndex = postings.indexWhere((e) => e.amount == null);
-    var unrealized = postings[unrealizedIndex];
-    var realized = unrealized.copyWith(amount: Amount(-num, currency));
+    var unresolvedIndex = postings.indexWhere((e) => e.amount == null);
+    var unresolved = postings[unresolvedIndex];
+    var resolved = unresolved.copyWith(amount: Amount(-num, currency));
 
-    return postings.replace(unrealizedIndex, realized);
+    return postings.replace(unresolvedIndex, resolved);
   }
 
   @override

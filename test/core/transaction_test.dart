@@ -20,7 +20,7 @@ void main() {
       ],
     );
 
-    var postings = tr.realizedPostings();
+    var postings = tr.resolvedPostings();
     expect(postings.length, 2);
     expect(postings[1].amount, Amount(D("37.45"), "EUR"));
   });
