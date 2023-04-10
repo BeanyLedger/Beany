@@ -3,6 +3,7 @@ import 'package:beany/core/amount.dart';
 import 'package:beany/core/balance_statement.dart';
 import 'package:beany/core/close_statement.dart';
 import 'package:beany/core/commodity_statement.dart';
+import 'package:beany/core/core.dart';
 import 'package:beany/core/custom_statement.dart';
 import 'package:beany/core/document_statement.dart';
 import 'package:beany/core/event_statement.dart';
@@ -10,7 +11,6 @@ import 'package:beany/core/note_statement.dart';
 import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/price_statement.dart';
 import 'package:beany/core/statements.dart';
-import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 
 import 'package:beany/parser/parser.dart';
@@ -71,7 +71,7 @@ void main() {
       BalanceStatement(
         DateTime(2002, 01, 15),
         Account('Assets:Personal:Transferwise'),
-        Amount(Decimal.parse("98.87"), "EUR"),
+        Amount(D("98.87"), "EUR"),
       ),
     );
 
@@ -179,7 +179,7 @@ void main() {
       PriceStatement(
         DateTime(2002, 01, 15),
         'INR',
-        Amount(Decimal.parse("98.87"), "EUR"),
+        Amount(D("98.87"), "EUR"),
       ),
     );
 
@@ -211,9 +211,9 @@ void main() {
   test("Amounts", () {
     Amount a(String str) => parse(str).amount().val();
 
-    expect(a("1.23 EUR"), Amount(Decimal.parse("1.23"), "EUR"));
-    expect(a("-331.223 EUR"), Amount(Decimal.parse("-331.223"), "EUR"));
-    expect(a("155,225.77 INR"), Amount(Decimal.parse("155225.77"), "INR"));
+    expect(a("1.23 EUR"), Amount(D("1.23"), "EUR"));
+    expect(a("-331.223 EUR"), Amount(D("-331.223"), "EUR"));
+    expect(a("155,225.77 INR"), Amount(D("155225.77"), "INR"));
   });
 
   test("Custom Parser", () {

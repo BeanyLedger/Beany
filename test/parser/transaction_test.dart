@@ -1,7 +1,7 @@
 import 'package:beany/core/amount.dart';
+import 'package:beany/core/core.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:beany/core/price_spec.dart';
-import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 
 import 'package:beany/core/account.dart';
@@ -120,9 +120,9 @@ void main() {
       ],
       meta: {
         "stringValue": MetaValue(stringValue: "foo"),
-        "numberValue": MetaValue(numberValue: Decimal.parse("1.5")),
+        "numberValue": MetaValue(numberValue: D("1.5")),
         "amountValue": MetaValue(
-          amountValue: Amount(Decimal.parse("4.4"), "EUR"),
+          amountValue: Amount(D("4.4"), "EUR"),
         ),
         // "datesVal1": MetaDataValue(dateValue: "2022-12-09"),
         // "datesVal2": "2022-12-09T14:05:00",
@@ -174,14 +174,14 @@ void main() {
         postings: [
           Posting(
             Account('Assets:MyBank:Checking'),
-            Amount(Decimal.parse("-400.00"), "USD"),
+            Amount(D("-400.00"), "USD"),
             priceSpec: PriceSpec(
-              amountPer: AmountSpec(Decimal.parse("1.09"), "CAD"),
+              amountPer: AmountSpec(D("1.09"), "CAD"),
             ),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
-            Amount(Decimal.parse("436.01"), "CAD"),
+            Amount(D("436.01"), "CAD"),
           )
         ],
       ),
@@ -205,14 +205,14 @@ void main() {
         postings: [
           Posting(
             Account('Assets:MyBank:Checking'),
-            Amount(Decimal.parse("-400.00"), "USD"),
+            Amount(D("-400.00"), "USD"),
             priceSpec: PriceSpec(
-              amountTotal: AmountSpec(Decimal.parse("436.01"), "CAD"),
+              amountTotal: AmountSpec(D("436.01"), "CAD"),
             ),
           ),
           Posting(
             Account('Assets:FR:SocGen:Checking'),
-            Amount(Decimal.parse("436.01"), "CAD"),
+            Amount(D("436.01"), "CAD"),
           )
         ],
       ),
@@ -237,21 +237,21 @@ void main() {
         postings: [
           Posting(
             Account('Assets:A'),
-            Amount(Decimal.parse("-19095.86"), "USD"),
+            Amount(D("-19095.86"), "USD"),
             priceSpec: PriceSpec(
-              amountPer: AmountSpec(Decimal.parse("0.93205"), null),
+              amountPer: AmountSpec(D("0.93205"), null),
             ),
           ),
           Posting(
             Account('Expenses:B'),
-            Amount(Decimal.parse("89.33"), "USD"),
+            Amount(D("89.33"), "USD"),
             priceSpec: PriceSpec(
               amountTotal: AmountSpec(null, "EUR"),
             ),
           ),
           Posting(
             Account('Assets:A'),
-            Amount(Decimal.parse("17715.04"), "EUR"),
+            Amount(D("17715.04"), "EUR"),
           )
         ],
       ),
