@@ -6,16 +6,16 @@ import 'package:beany/core/price_spec.dart';
 import 'package:decimal/decimal.dart';
 
 import 'package:beany/core/account.dart';
-import 'package:beany/core/balance.dart';
-import 'package:beany/core/close.dart';
-import 'package:beany/core/commodity.dart';
+import 'package:beany/core/balance_statement.dart';
+import 'package:beany/core/close_statement.dart';
+import 'package:beany/core/commodity_statement.dart';
 import 'package:beany/core/core.dart';
-import 'package:beany/core/document.dart';
-import 'package:beany/core/event.dart';
-import 'package:beany/core/note.dart';
-import 'package:beany/core/open.dart';
+import 'package:beany/core/document_statement.dart';
+import 'package:beany/core/event_statement.dart';
+import 'package:beany/core/note_statement.dart';
+import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/posting.dart';
-import 'package:beany/core/price.dart';
+import 'package:beany/core/price_statement.dart';
 import 'package:beany/core/statements.dart';
 import 'package:beany/core/transaction.dart';
 import 'package:beany/parser/BeancountLexer.dart';
@@ -72,7 +72,7 @@ extension AcountParsing on AccountContext {
 }
 
 extension PriceStatementParsing on PriceStatementContext {
-  Price val() => Price(
+  PriceStatement val() => PriceStatement(
         date()!.val(),
         currency()!.text,
         amount()!.val(),
@@ -81,7 +81,7 @@ extension PriceStatementParsing on PriceStatementContext {
 }
 
 extension OpenParsing on OpenStatementContext {
-  Open val() => Open(
+  OpenStatement val() => OpenStatement(
         date()!.val(),
         account()!.val(),
         parsingInfo: _buildParsingInfo(this),
@@ -89,7 +89,7 @@ extension OpenParsing on OpenStatementContext {
 }
 
 extension CloseParsing on CloseStatementContext {
-  Close val() => Close(
+  CloseStatement val() => CloseStatement(
         date()!.val(),
         account()!.val(),
         parsingInfo: _buildParsingInfo(this),
@@ -97,7 +97,7 @@ extension CloseParsing on CloseStatementContext {
 }
 
 extension NoteParsing on NoteStatementContext {
-  Note val() => Note(
+  NoteStatement val() => NoteStatement(
         date()!.val(),
         account()!.val(),
         quoted_string()!.val(),
@@ -106,7 +106,7 @@ extension NoteParsing on NoteStatementContext {
 }
 
 extension EventParsing on EventStatementContext {
-  Event val() => Event(
+  EventStatement val() => EventStatement(
         date()!.val(),
         name!.val(),
         value!.val(),
@@ -115,7 +115,7 @@ extension EventParsing on EventStatementContext {
 }
 
 extension BalanceParsing on BalanceStatementContext {
-  Balance val() => Balance(
+  BalanceStatement val() => BalanceStatement(
         date()!.val(),
         account()!.val(),
         amount()!.val(),
@@ -128,7 +128,7 @@ extension CurrencyParsing on CurrencyContext {
 }
 
 extension CommodityParsing on CommodityStatementContext {
-  Commodity val() => Commodity(
+  CommodityStatement val() => CommodityStatement(
         date()!.val(),
         currency()!.val(),
         parsingInfo: _buildParsingInfo(this),
@@ -136,7 +136,7 @@ extension CommodityParsing on CommodityStatementContext {
 }
 
 extension DocumentParsing on DocumentStatementContext {
-  Document val() => Document(
+  DocumentStatement val() => DocumentStatement(
         date()!.val(),
         account()!.val(),
         quoted_string()!.val(),
@@ -345,14 +345,14 @@ extension DirectiveParsing on DirectiveContext {
 }
 
 extension CommentStatementParsing on CommentStatementContext {
-  Comment val() {
+  CommentStatement val() {
     assert(childCount > 1);
-    return Comment(children![1].text!);
+    return CommentStatement(children![1].text!);
   }
 }
 
 extension OptionStatementParsing on OptionStatementContext {
-  Option val() => Option(
+  OptionStatement val() => OptionStatement(
         key!.val(),
         value!.val(),
         parsingInfo: _buildParsingInfo(this),
@@ -360,7 +360,7 @@ extension OptionStatementParsing on OptionStatementContext {
 }
 
 extension IncludeStatementParsing on IncludeStatementContext {
-  Include val() => Include(
+  IncludeStatement val() => IncludeStatement(
         quoted_string()!.val(),
         parsingInfo: _buildParsingInfo(this),
       );

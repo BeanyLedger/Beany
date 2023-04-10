@@ -1,14 +1,14 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/amount.dart';
-import 'package:beany/core/balance.dart';
-import 'package:beany/core/close.dart';
-import 'package:beany/core/commodity.dart';
+import 'package:beany/core/balance_statement.dart';
+import 'package:beany/core/close_statement.dart';
+import 'package:beany/core/commodity_statement.dart';
 import 'package:beany/core/custom_statement.dart';
-import 'package:beany/core/document.dart';
-import 'package:beany/core/event.dart';
-import 'package:beany/core/note.dart';
-import 'package:beany/core/open.dart';
-import 'package:beany/core/price.dart';
+import 'package:beany/core/document_statement.dart';
+import 'package:beany/core/event_statement.dart';
+import 'package:beany/core/note_statement.dart';
+import 'package:beany/core/open_statement.dart';
+import 'package:beany/core/price_statement.dart';
 import 'package:beany/core/statements.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
@@ -22,7 +22,7 @@ void main() {
       var include = parse(input).includeStatement().val();
 
       expect(include.toString(), input);
-      expect(include, Include('../path'));
+      expect(include, IncludeStatement('../path'));
 
       var statements = parse(input).all().val();
       var actual = statements.map((t) => t.toString()).join("\n");
@@ -34,7 +34,7 @@ void main() {
       var option = parse(input).optionStatement().val();
 
       expect(option.toString(), input);
-      expect(option, Option('title', "Ed’s Personal Ledger"));
+      expect(option, OptionStatement('title', "Ed’s Personal Ledger"));
 
       var statements = parse(input).all().val();
       var actual = statements.map((t) => t.toString()).join("\n");
@@ -68,7 +68,7 @@ void main() {
     expect(balance.toString(), input);
     expect(
       balance,
-      Balance(
+      BalanceStatement(
         DateTime(2002, 01, 15),
         Account('Assets:Personal:Transferwise'),
         Amount(Decimal.parse("98.87"), "EUR"),
@@ -85,7 +85,8 @@ void main() {
     var close = parse(input).closeStatement().val();
 
     expect(close.toString(), input);
-    expect(close, Close(DateTime(2000, 11, 21), Account('Expenses:Personal')));
+    expect(close,
+        CloseStatement(DateTime(2000, 11, 21), Account('Expenses:Personal')));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => t.toString()).join("\n");
@@ -97,7 +98,7 @@ void main() {
     var c = parse(input).commodityStatement().val();
 
     expect(c.toString(), input);
-    expect(c, Commodity(DateTime(2000, 11, 21), 'INR'));
+    expect(c, CommodityStatement(DateTime(2000, 11, 21), 'INR'));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => t.toString()).join("\n");
@@ -111,7 +112,7 @@ void main() {
     expect(doc.toString(), input);
     expect(
       doc,
-      Document(
+      DocumentStatement(
         DateTime(2013, 11, 03),
         Account('Assets:Card'),
         "/home/joe/apr-2014.pdf",
@@ -128,7 +129,8 @@ void main() {
     var event = parse(input).eventStatement().val();
 
     expect(event.toString(), input);
-    expect(event, Event(DateTime(2013, 11, 03), "location", "Paris, France"));
+    expect(event,
+        EventStatement(DateTime(2013, 11, 03), "location", "Paris, France"));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => t.toString()).join("\n");
@@ -142,7 +144,7 @@ void main() {
     expect(note.toString(), input);
     expect(
       note,
-      Note(
+      NoteStatement(
         DateTime(2013, 11, 03),
         Account('Assets:CreditCard'),
         "Called about fraud.",
@@ -159,7 +161,8 @@ void main() {
     var open = parse(input).openStatement().val();
 
     expect(open.toString(), input);
-    expect(open, Open(DateTime(2000, 11, 21), Account('Expenses:Personal')));
+    expect(open,
+        OpenStatement(DateTime(2000, 11, 21), Account('Expenses:Personal')));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => t.toString()).join("\n");
@@ -173,7 +176,7 @@ void main() {
     expect(price.toString(), input);
     expect(
       price,
-      Price(
+      PriceStatement(
         DateTime(2002, 01, 15),
         'INR',
         Amount(Decimal.parse("98.87"), "EUR"),

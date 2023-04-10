@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:beany/core/account.dart';
-import 'package:beany/core/close.dart';
+import 'package:beany/core/close_statement.dart';
 import 'package:beany/core/core.dart';
-import 'package:beany/core/open.dart';
+import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/statements.dart';
 import 'package:beany/parser/parser.dart';
 import 'package:equatable/equatable.dart';
@@ -24,7 +24,7 @@ class Engine {
     var statements = parse(text).all().val().toList();
     var extraStatements = <Statement>[];
     for (var statement in statements) {
-      if (statement is Include) {
+      if (statement is IncludeStatement) {
         var include = statement;
         var includeFile = File(p.join(rootDir, include.path));
         var includeText = await includeFile.readAsString();
@@ -38,10 +38,10 @@ class Engine {
   List<AccountInfo> get accounts {
     var accountInfos = <AccountInfo>[];
     for (var statement in statements) {
-      if (statement is Open) {
+      if (statement is OpenStatement) {
         var open = statement;
         accountInfos.add(AccountInfo(open.account, open.date, null));
-      } else if (statement is Close) {
+      } else if (statement is CloseStatement) {
         var close = statement;
         var i = accountInfos.indexWhere((a) => a.account == close.account);
         if (i == -1) {

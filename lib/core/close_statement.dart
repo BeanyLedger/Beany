@@ -2,22 +2,20 @@ import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
+import 'account.dart';
 import 'core.dart';
 
 @immutable
-class Event extends Equatable implements Directive {
+class CloseStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
 
-  final String type;
-  final String value;
-
+  final Account account;
   final ParsingInfo? parsingInfo;
 
-  Event(
+  CloseStatement(
     this.date,
-    this.type,
-    this.value, {
+    this.account, {
     Map<String, dynamic>? meta,
     this.parsingInfo,
   }) : meta = IMap(meta);
@@ -25,11 +23,12 @@ class Event extends Equatable implements Directive {
   String toString() {
     var sb = StringBuffer();
     sb.write(date.toIso8601String().substring(0, 10));
-    sb.write(' event "$type" "$value"');
+    sb.write(' close ');
+    sb.write(account);
 
     return sb.toString();
   }
 
   @override
-  List<Object?> get props => [date, meta, type, value];
+  List<Object?> get props => [date, meta, account];
 }

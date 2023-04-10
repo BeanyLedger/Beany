@@ -6,14 +6,14 @@ import 'account.dart';
 import 'core.dart';
 
 @immutable
-class Close extends Equatable implements Directive {
+class OpenStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
-
   final Account account;
+
   final ParsingInfo? parsingInfo;
 
-  Close(
+  OpenStatement(
     this.date,
     this.account, {
     Map<String, dynamic>? meta,
@@ -23,7 +23,7 @@ class Close extends Equatable implements Directive {
   String toString() {
     var sb = StringBuffer();
     sb.write(date.toIso8601String().substring(0, 10));
-    sb.write(' close ');
+    sb.write(' open ');
     sb.write(account);
 
     return sb.toString();

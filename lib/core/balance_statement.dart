@@ -1,21 +1,31 @@
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 import 'account.dart';
+import 'amount.dart';
 import 'core.dart';
 
 @immutable
-class Open extends Equatable implements Directive {
+class BalanceStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
+
   final Account account;
+  final Amount amount;
+
+  final Decimal? tolerance;
+  final Amount? diffAmount;
 
   final ParsingInfo? parsingInfo;
 
-  Open(
+  BalanceStatement(
     this.date,
-    this.account, {
+    this.account,
+    this.amount, {
+    this.tolerance,
+    this.diffAmount,
     Map<String, dynamic>? meta,
     this.parsingInfo,
   }) : meta = IMap(meta);
@@ -23,12 +33,15 @@ class Open extends Equatable implements Directive {
   String toString() {
     var sb = StringBuffer();
     sb.write(date.toIso8601String().substring(0, 10));
-    sb.write(' open ');
+    sb.write(' balance ');
     sb.write(account);
+    sb.write('  ');
+    sb.write(amount);
 
     return sb.toString();
   }
 
   @override
-  List<Object?> get props => [date, meta, account];
+  List<Object?> get props =>
+      [date, meta, account, amount, tolerance, diffAmount];
 }
