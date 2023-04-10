@@ -28,7 +28,7 @@ class Transaction extends Equatable implements Directive {
   final TransactionFlag flag;
 
   final IList<String> comments;
-  final IList<Posting> postings;
+  final IList<PostingSpec> postings;
   final IList<String> tags;
 
   final ParsingInfo? parsingInfo;
@@ -40,7 +40,7 @@ class Transaction extends Equatable implements Directive {
     this.payee,
     Iterable<String>? tags,
     Iterable<String>? comments,
-    Iterable<Posting>? postings,
+    Iterable<PostingSpec>? postings,
     Map<String, MetaValue>? meta,
     this.parsingInfo,
   })  : tags = IList(tags),
@@ -50,7 +50,7 @@ class Transaction extends Equatable implements Directive {
 
   Transaction copyWith({
     Iterable<String>? comments,
-    Iterable<Posting>? postings,
+    Iterable<PostingSpec>? postings,
     Iterable<String>? tags,
     Map<String, MetaValue>? meta,
     ParsingInfo? parsingInfo,
@@ -124,7 +124,9 @@ class Transaction extends Equatable implements Directive {
     var unresolved = postings[unresolvedIndex];
     var resolved = unresolved.copyWith(amount: Amount(-num, currency));
 
-    return postings.replace(unresolvedIndex, resolved);
+    return IList(postings
+        .replace(unresolvedIndex, resolved)
+        .map((ps) => ps.toPosting()));
   }
 
   @override

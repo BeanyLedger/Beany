@@ -7,18 +7,17 @@ import 'account.dart';
 import 'amount.dart';
 import 'cost_spec.dart';
 
-// Rename to PostingSpec
 @immutable
-class Posting extends Equatable {
-  late final Account account;
-  late final Amount? amount;
-  late final String? comment;
-  late final PriceSpec? priceSpec;
-  late final CostSpec? costSpec;
+class PostingSpec extends Equatable {
+  final Account account;
+  final Amount? amount;
+  final String? comment;
+  final PriceSpec? priceSpec;
+  final CostSpec? costSpec;
 
-  late final IList<String> tags;
+  final IList<String> tags;
 
-  Posting(
+  PostingSpec(
     this.account,
     this.amount, {
     this.comment = null,
@@ -51,7 +50,23 @@ class Posting extends Equatable {
     return sb.toString();
   }
 
-  Posting copyWith({
+  Posting toPosting({Amount? amount}) {
+    if (amount == null && this.amount == null) {
+      throw ArgumentError('PostingSpec: amount must be defined');
+    }
+
+    return Posting(
+      account,
+      amount ?? this.amount!,
+      comment: comment,
+      priceSpec: priceSpec,
+      costSpec: costSpec,
+      tags: tags,
+      spec: this,
+    );
+  }
+
+  PostingSpec copyWith({
     Account? account,
     Amount? amount,
     List<String>? tags,
@@ -59,7 +74,7 @@ class Posting extends Equatable {
     PriceSpec? priceSpec,
     CostSpec? costSpec,
   }) {
-    return Posting(
+    return PostingSpec(
       account ?? this.account,
       amount ?? this.amount,
       tags: tags ?? this.tags.toList(),
@@ -78,4 +93,80 @@ class Posting extends Equatable {
         costSpec,
         tags,
       ];
+}
+
+@immutable
+class Posting extends Equatable implements PostingSpec {
+  final Account account;
+  final Amount amount;
+  final String? comment;
+  final PriceSpec? priceSpec;
+  final CostSpec? costSpec;
+
+  final IList<String> tags;
+
+  final PostingSpec? spec;
+
+  Posting(
+    this.account,
+    this.amount, {
+    this.comment = null,
+    this.priceSpec = null,
+    this.costSpec = null,
+    Iterable<String>? tags,
+    this.spec,
+  }) : tags = IList(tags);
+
+  String toString() {
+    var sb = StringBuffer();
+    sb.write("$account $amount");
+    if (priceSpec != null) {
+      sb.write(priceSpec.toString());
+    }
+    if (costSpec != null) {
+      sb.write(costSpec.toString());
+    }
+    if (tags.isNotEmpty) {
+      for (var tag in tags) {
+        sb.write(' #');
+        sb.write(tag);
+      }
+    }
+    if (comment != null && comment!.isNotEmpty) {
+      sb.write(' ; ');
+      sb.write(comment);
+    }
+    return sb.toString();
+  }
+
+  PostingSpec copyWith({
+    Account? account,
+    Amount? amount,
+    List<String>? tags,
+    String? comment,
+    PriceSpec? priceSpec,
+    CostSpec? costSpec,
+  }) {
+    return PostingSpec(
+      account ?? this.account,
+      amount ?? this.amount,
+      tags: tags ?? this.tags.toList(),
+      comment: comment ?? this.comment,
+      priceSpec: priceSpec ?? this.priceSpec,
+      costSpec: costSpec ?? this.costSpec,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        account,
+        amount,
+        comment,
+        priceSpec,
+        costSpec,
+        tags,
+      ];
+
+  @override
+  Posting toPosting({Amount? amount}) => this;
 }

@@ -84,8 +84,8 @@ void main() {
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [
-        Posting(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR")),
-        Posting(A("Assets:Savings"), null),
+        PostingSpec(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR")),
+        PostingSpec(A("Assets:Savings"), null),
       ],
       comments: ["Help"],
     );
@@ -117,8 +117,8 @@ void main() {
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [
-        Posting(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR")),
-        Posting(A("Assets:Savings"), null),
+        PostingSpec(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR")),
+        PostingSpec(A("Assets:Savings"), null),
       ],
       meta: {
         "stringValue": MetaValue(stringValue: "foo"),
@@ -174,14 +174,14 @@ void main() {
         TransactionFlag.Okay,
         "Transfer to account in Canada",
         postings: [
-          Posting(
+          PostingSpec(
             Account('Assets:MyBank:Checking'),
             Amount(D("-400.00"), "USD"),
             priceSpec: PriceSpec(
               amountPer: AmountSpec(D("1.09"), "CAD"),
             ),
           ),
-          Posting(
+          PostingSpec(
             Account('Assets:FR:SocGen:Checking'),
             Amount(D("436.01"), "CAD"),
           )
@@ -205,14 +205,14 @@ void main() {
         TransactionFlag.Okay,
         "Transfer to account in Canada",
         postings: [
-          Posting(
+          PostingSpec(
             Account('Assets:MyBank:Checking'),
             Amount(D("-400.00"), "USD"),
             priceSpec: PriceSpec(
               amountTotal: AmountSpec(D("436.01"), "CAD"),
             ),
           ),
-          Posting(
+          PostingSpec(
             Account('Assets:FR:SocGen:Checking'),
             Amount(D("436.01"), "CAD"),
           )
@@ -237,21 +237,21 @@ void main() {
         TransactionFlag.Okay,
         "Blimey",
         postings: [
-          Posting(
+          PostingSpec(
             Account('Assets:A'),
             Amount(D("-19095.86"), "USD"),
             priceSpec: PriceSpec(
               amountPer: AmountSpec(D("0.93205"), null),
             ),
           ),
-          Posting(
+          PostingSpec(
             Account('Expenses:B'),
             Amount(D("89.33"), "USD"),
             priceSpec: PriceSpec(
               amountTotal: AmountSpec(null, "EUR"),
             ),
           ),
-          Posting(
+          PostingSpec(
             Account('Assets:A'),
             Amount(D("17715.04"), "EUR"),
           )

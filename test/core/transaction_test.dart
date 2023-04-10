@@ -11,8 +11,8 @@ void main() {
       TransactionFlag.Okay,
       "Cofee",
       postings: [
-        Posting(Account("Liabilities:CreditCard"), AMT("-37.45 EUR")),
-        Posting(Account("Expenses:Restaurant"), null),
+        PostingSpec(Account("Liabilities:CreditCard"), AMT("-37.45 EUR")),
+        PostingSpec(Account("Expenses:Restaurant"), null),
       ],
     );
 

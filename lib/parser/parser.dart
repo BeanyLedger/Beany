@@ -151,8 +151,8 @@ extension TagParsing on TagsContext {
 }
 
 extension PostingSpecAccountOnlyParsing on PostingSpecAccountOnlyContext {
-  Posting val() {
-    return Posting(
+  PostingSpec val() {
+    return PostingSpec(
       account()!.val(),
       null,
       comment: comment()?.val(),
@@ -170,8 +170,8 @@ extension CommentParsing on CommentContext {
 }
 
 extension PostingSpecAccountAmountParsing on PostingSpecAccountAmountContext {
-  Posting val() {
-    return Posting(
+  PostingSpec val() {
+    return PostingSpec(
       account()!.val(),
       amount()!.val(),
       comment: comment()?.val(),
@@ -218,8 +218,8 @@ extension AmountSpecParsing on AmountSpecContext {
 }
 
 extension PostingSpecWithCostParsing on PostingSpecWithPriceContext {
-  Posting val() {
-    return Posting(
+  PostingSpec val() {
+    return PostingSpec(
       account()!.val(),
       amount()!.val(),
       priceSpec: priceSpec()!.val(),
