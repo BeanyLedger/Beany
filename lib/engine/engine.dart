@@ -32,7 +32,10 @@ class Engine {
         extraStatements.addAll(includeStatements);
       }
     }
-    return Engine([...statements, ...extraStatements]);
+
+    var statementsWithoutIncludes =
+        statements.where((s) => s is! IncludeStatement);
+    return Engine([...statementsWithoutIncludes, ...extraStatements]);
   }
 
   List<AccountInfo> get accounts {

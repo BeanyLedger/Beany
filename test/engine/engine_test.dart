@@ -1,5 +1,6 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/open_statement.dart';
+import 'package:beany/core/statements.dart';
 import 'package:beany/engine/engine.dart';
 import 'package:test/test.dart';
 
@@ -12,11 +13,9 @@ void main() {
         OpenStatement(DateTime(2013, 01, 01), Account('Assets:Work:N26'));
     expect(engine.statements, contains(accountOpen));
 
-    /*
     for (var statement in engine.statements) {
-      print(statement);
+      expect(statement is IncludeStatement, false);
     }
-    */
   });
 
   test("Accounts", () async {
