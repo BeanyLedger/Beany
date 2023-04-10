@@ -9,6 +9,8 @@ import 'package:beany/core/posting.dart';
 import 'package:beany/core/transaction.dart';
 import 'package:beany/parser/parser.dart';
 
+typedef A = Account;
+
 void main() {
   test('Transaction Header', () {
     expect(
@@ -82,8 +84,8 @@ void main() {
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [
-        Posting.simple("Expenses:Mystery:CatPowder", "1.5", "EUR"),
-        Posting.simple("Assets:Savings", null, null),
+        Posting(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR")),
+        Posting(A("Assets:Savings"), null),
       ],
       comments: ["Help"],
     );
@@ -115,8 +117,8 @@ void main() {
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [
-        Posting.simple("Expenses:Mystery:CatPowder", "1.5", "EUR"),
-        Posting.simple("Assets:Savings", null, null),
+        Posting(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR")),
+        Posting(A("Assets:Savings"), null),
       ],
       meta: {
         "stringValue": MetaValue(stringValue: "foo"),

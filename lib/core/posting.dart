@@ -1,5 +1,4 @@
 import 'package:beany/core/price_spec.dart';
-import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
@@ -27,23 +26,6 @@ class Posting extends Equatable {
     this.costSpec = null,
     Iterable<String>? tags,
   }) : tags = IList(tags);
-
-  Posting.simple(
-    String account,
-    String? number,
-    String? currency, {
-    this.comment = null,
-    this.priceSpec = null,
-    this.costSpec = null,
-    List<String>? tags,
-  }) : tags = IList(tags) {
-    this.account = Account(account);
-    if (number != null && currency != null) {
-      this.amount = Amount(Decimal.parse(number), currency);
-    } else {
-      this.amount = null;
-    }
-  }
 
   String toString() {
     var sb = StringBuffer();
