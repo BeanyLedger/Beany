@@ -10,11 +10,13 @@ class Commodity extends Equatable implements Directive {
   final IMap<String, dynamic> meta;
 
   final String commodity;
+  final ParsingInfo? parsingInfo;
 
   Commodity(
     this.date,
     this.commodity, {
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

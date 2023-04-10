@@ -13,11 +13,14 @@ class Document extends Equatable implements Directive {
   final Account account;
   final String path;
 
+  final ParsingInfo? parsingInfo;
+
   Document(
     this.date,
     this.account,
     this.path, {
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

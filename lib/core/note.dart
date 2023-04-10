@@ -13,11 +13,14 @@ class Note extends Equatable implements Directive {
   final Account account;
   final String comment;
 
+  final ParsingInfo? parsingInfo;
+
   Note(
     this.date,
     this.account,
     this.comment, {
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

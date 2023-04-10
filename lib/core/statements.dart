@@ -6,8 +6,9 @@ import 'core.dart';
 @immutable
 class Include extends Equatable implements Statement {
   final String path;
+  final ParsingInfo? parsingInfo;
 
-  Include(this.path);
+  Include(this.path, {this.parsingInfo});
 
   String toString() => 'include "$path"';
 
@@ -19,8 +20,9 @@ class Include extends Equatable implements Statement {
 class Option extends Equatable implements Statement {
   final String key;
   final String value;
+  final ParsingInfo? parsingInfo;
 
-  Option(this.key, this.value);
+  Option(this.key, this.value, {this.parsingInfo});
 
   String toString() => 'option "$key" "$value"';
 
@@ -31,8 +33,9 @@ class Option extends Equatable implements Statement {
 @immutable
 class Comment extends Equatable implements Statement {
   final String value;
+  final ParsingInfo? parsingInfo;
 
-  Comment(this.value);
+  Comment(this.value, {this.parsingInfo});
 
   String toString() => '; $value';
 

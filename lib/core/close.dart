@@ -11,11 +11,13 @@ class Close extends Equatable implements Directive {
   final IMap<String, dynamic> meta;
 
   final Account account;
+  final ParsingInfo? parsingInfo;
 
   Close(
     this.date,
     this.account, {
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

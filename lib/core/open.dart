@@ -9,13 +9,15 @@ import 'core.dart';
 class Open extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
-
   final Account account;
+
+  final ParsingInfo? parsingInfo;
 
   Open(
     this.date,
     this.account, {
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

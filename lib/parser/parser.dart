@@ -33,6 +33,16 @@ BeancountParser parse(String text) {
   return parser;
 }
 
+ParsingInfo _buildParsingInfo(ParserRuleContext ctx) {
+  return ParsingInfo(
+    filePath: ctx.start!.inputStream!.sourceName,
+    startLine: ctx.start!.line!,
+    endLine: ctx.stop!.line!,
+    startCol: ctx.start!.charPositionInLine,
+    endCold: ctx.stop!.charPositionInLine,
+  );
+}
+
 extension DateParsing on DateContext {
   DateTime val() {
     return DateTime.parse(DATE()!.text!);
@@ -61,27 +71,55 @@ extension AcountParsing on AccountContext {
 }
 
 extension PriceStatementParsing on PriceStatementContext {
-  Price val() => Price(date()!.val(), currency()!.text, amount()!.val());
+  Price val() => Price(
+        date()!.val(),
+        currency()!.text,
+        amount()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension OpenParsing on OpenStatementContext {
-  Open val() => Open(date()!.val(), account()!.val());
+  Open val() => Open(
+        date()!.val(),
+        account()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension CloseParsing on CloseStatementContext {
-  Close val() => Close(date()!.val(), account()!.val());
+  Close val() => Close(
+        date()!.val(),
+        account()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension NoteParsing on NoteStatementContext {
-  Note val() => Note(date()!.val(), account()!.val(), quoted_string()!.val());
+  Note val() => Note(
+        date()!.val(),
+        account()!.val(),
+        quoted_string()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension EventParsing on EventStatementContext {
-  Event val() => Event(date()!.val(), name!.val(), value!.val());
+  Event val() => Event(
+        date()!.val(),
+        name!.val(),
+        value!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension BalanceParsing on BalanceStatementContext {
-  Balance val() => Balance(date()!.val(), account()!.val(), amount()!.val());
+  Balance val() => Balance(
+        date()!.val(),
+        account()!.val(),
+        amount()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension CurrencyParsing on CurrencyContext {
@@ -89,12 +127,20 @@ extension CurrencyParsing on CurrencyContext {
 }
 
 extension CommodityParsing on CommodityStatementContext {
-  Commodity val() => Commodity(date()!.val(), currency()!.val());
+  Commodity val() => Commodity(
+        date()!.val(),
+        currency()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension DocumentParsing on DocumentStatementContext {
-  Document val() =>
-      Document(date()!.val(), account()!.val(), quoted_string()!.val());
+  Document val() => Document(
+        date()!.val(),
+        account()!.val(),
+        quoted_string()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension TagParsing on TagsContext {
@@ -245,6 +291,7 @@ extension TransactionHeaderParsing on TrHeaderContext {
       narration!.val(),
       payee: payee?.val(),
       tags: tags()?.val(),
+      parsingInfo: _buildParsingInfo(this),
     );
   }
 }
@@ -266,6 +313,7 @@ extension TransactionParsing on TrStatementContext {
           .map((e) => e!),
       comments: comments().map((e) => e.val()),
       meta: metadata()?.val(),
+      parsingInfo: _buildParsingInfo(this),
     );
   }
 }
@@ -294,11 +342,18 @@ extension CommentStatementParsing on CommentStatementContext {
 }
 
 extension OptionStatementParsing on OptionStatementContext {
-  Option val() => Option(key!.val(), value!.val());
+  Option val() => Option(
+        key!.val(),
+        value!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension IncludeStatementParsing on IncludeStatementContext {
-  Include val() => Include(quoted_string()!.val());
+  Include val() => Include(
+        quoted_string()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
 }
 
 extension StatementParsing on StatementContext {

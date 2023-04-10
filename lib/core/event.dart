@@ -12,11 +12,14 @@ class Event extends Equatable implements Directive {
   final String type;
   final String value;
 
+  final ParsingInfo? parsingInfo;
+
   Event(
     this.date,
     this.type,
     this.value, {
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

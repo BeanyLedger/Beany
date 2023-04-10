@@ -18,6 +18,8 @@ class Balance extends Equatable implements Directive {
   final Decimal? tolerance;
   final Amount? diffAmount;
 
+  final ParsingInfo? parsingInfo;
+
   Balance(
     this.date,
     this.account,
@@ -25,6 +27,7 @@ class Balance extends Equatable implements Directive {
     this.tolerance,
     this.diffAmount,
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

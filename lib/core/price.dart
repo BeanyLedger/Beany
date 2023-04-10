@@ -13,11 +13,14 @@ class Price extends Equatable implements Directive {
   final String currency;
   final Amount amount;
 
+  final ParsingInfo? parsingInfo;
+
   Price(
     this.date,
     this.currency,
     this.amount, {
     Map<String, dynamic>? meta,
+    this.parsingInfo,
   }) : meta = IMap(meta);
 
   String toString() {

@@ -30,6 +30,8 @@ class Transaction extends Equatable implements Directive {
   final IList<Posting> postings;
   final IList<String> tags;
 
+  final ParsingInfo? parsingInfo;
+
   Transaction(
     this.date,
     this.flag,
@@ -39,6 +41,7 @@ class Transaction extends Equatable implements Directive {
     Iterable<String>? comments,
     Iterable<Posting>? postings,
     Map<String, MetaValue>? meta,
+    this.parsingInfo,
   })  : tags = IList(tags),
         comments = IList(comments),
         postings = IList(postings),
@@ -49,6 +52,7 @@ class Transaction extends Equatable implements Directive {
     Iterable<Posting>? postings,
     Iterable<String>? tags,
     Map<String, MetaValue>? meta,
+    ParsingInfo? parsingInfo,
   }) {
     return Transaction(
       date,
@@ -59,6 +63,7 @@ class Transaction extends Equatable implements Directive {
       comments: IList.orNull(comments) ?? this.comments,
       postings: IList.orNull(postings) ?? this.postings,
       meta: meta ?? this.meta.unlockView,
+      parsingInfo: parsingInfo ?? this.parsingInfo,
     );
   }
 
