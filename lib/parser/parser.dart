@@ -299,15 +299,28 @@ extension TransactionHeaderParsing on TrHeaderContext {
   }
 }
 
+extension PostingSpecParsing on PostingSpecContext {
+  PostingSpec val() {
+    var p0 = postingSpecAccountAmount();
+    if (p0 != null) return p0.val();
+
+    var p1 = postingSpecAccountOnly();
+    if (p1 != null) return p1.val();
+
+    var p2 = postingSpecWithPrice();
+    if (p2 != null) return p2.val();
+
+    throw Exception("Unknown posting spec");
+  }
+}
+
 extension TransactionParsing on TrStatementContext {
   Transaction val() {
     var tr = trHeader()!.val();
 
     return tr.copyWith(
       postings: children!.map((c) {
-        if (c is PostingSpecAccountOnlyContext) return c.val();
-        if (c is PostingSpecAccountAmountContext) return c.val();
-        if (c is PostingSpecWithPriceContext) return c.val();
+        if (c is PostingSpecContext) return c.val();
 
         return null;
       }).whereNotNull(),

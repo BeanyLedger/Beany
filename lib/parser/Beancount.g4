@@ -50,11 +50,7 @@ emptyLine: NEWLINE;
 
 trStatement:
 	trHeader NEWLINE (comment NEWLINE)* metadata (
-		(
-			postingSpecAccountOnly
-			| postingSpecAccountAmount
-			| postingSpecWithPrice
-		) NEWLINE
+		postingSpec NEWLINE
 	)+;
 trHeader:
 	date trFlag narration = quoted_string payee = quoted_string? tags?;
@@ -62,6 +58,10 @@ trHeader:
 trFlag: TR_FLAG;
 comment: COMMENT;
 
+postingSpec:
+	postingSpecAccountOnly
+	| postingSpecAccountAmount
+	| postingSpecWithPrice;
 postingSpecAccountOnly: account tags? comment?;
 postingSpecAccountAmount: account amount tags? comment?;
 postingSpecWithPrice: account amount priceSpec tags? comment?;
