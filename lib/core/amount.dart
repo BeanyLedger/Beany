@@ -36,6 +36,16 @@ class AmountSpec extends Equatable {
 
   @override
   List<Object?> get props => [number, currency];
+
+  Amount toAmount() {
+    if (number == null) {
+      throw ArgumentError('AmountSpec.number is null');
+    }
+    if (currency == null) {
+      throw ArgumentError('AmountSpec.currency is null');
+    }
+    return Amount(number!, currency!);
+  }
 }
 
 @immutable
@@ -51,6 +61,9 @@ class Amount extends Equatable implements AmountSpec {
 
   @override
   List<Object?> get props => [number, currency];
+
+  @override
+  Amount toAmount() => this;
 }
 
 String renderNumber(Decimal d) {

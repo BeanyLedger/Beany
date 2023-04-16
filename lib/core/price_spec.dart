@@ -43,3 +43,44 @@ class PriceSpec extends Equatable {
     return sb.toString();
   }
 }
+
+@immutable
+class Price extends Equatable implements PriceSpec {
+  final Amount? amountPer;
+  final Amount? amountTotal;
+
+  Price({
+    this.amountPer,
+    this.amountTotal,
+  }) {
+    if (amountPer != null && amountTotal != null) {
+      throw ArgumentError('amountPer and amountTotal cannot both be defined');
+    }
+    if (amountPer == null && amountTotal == null) {
+      throw ArgumentError('amountPer or amountTotal must be defined');
+    }
+  }
+
+  Price copyWith({
+    AmountSpec? amountPer,
+    AmountSpec? amountTotal,
+  }) {
+    return Price(
+      amountPer: (amountPer ?? this.amountPer)?.toAmount(),
+      amountTotal: (amountTotal ?? this.amountTotal)?.toAmount(),
+    );
+  }
+
+  @override
+  List<Object?> get props => [amountPer, amountTotal];
+
+  @override
+  String toString() {
+    var sb = StringBuffer();
+
+    if (amountPer != null) sb.write(' @ $amountPer');
+    if (amountTotal != null) sb.write(' @@ $amountTotal');
+
+    return sb.toString();
+  }
+}

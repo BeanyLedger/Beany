@@ -55,11 +55,19 @@ class PostingSpec extends Equatable {
       throw ArgumentError('PostingSpec: amount must be defined');
     }
 
+    Price? price;
+    if (priceSpec != null) {
+      price = Price(
+        amountPer: priceSpec?.amountPer?.toAmount(),
+        amountTotal: priceSpec?.amountTotal?.toAmount(),
+      );
+    }
+
     return Posting(
       account,
       amount ?? this.amount!,
       comment: comment,
-      priceSpec: priceSpec,
+      priceSpec: price,
       costSpec: costSpec,
       tags: tags,
       spec: this,
@@ -100,7 +108,7 @@ class Posting extends Equatable implements PostingSpec {
   final Account account;
   final Amount amount;
   final String? comment;
-  final PriceSpec? priceSpec;
+  final Price? priceSpec;
   final CostSpec? costSpec;
 
   final IList<String> tags;
