@@ -286,6 +286,33 @@ void main() {
       ),
     );
   });
+
+  test("Transaction with Cost Spec and price", () {
+    var input = """2023-03-15 * "Blimey"
+  Assets:A  10.00 SOME {2.02 USD} @ 1.00 USD
+  Assets:B
+""";
+
+    var tr = parse(input).trStatement().val();
+    expect(tr.toString(), input);
+    expect(
+      tr,
+      Transaction(
+        DateTime(2023, 3, 15),
+        TransactionFlag.Okay,
+        "Blimey",
+        postings: [
+          PostingSpec(
+            Account('Assets:A'),
+            AMT("10 SOME"),
+            costSpec: CostSpec(AMT("2.02 USD")),
+            priceSpec: PriceSpec(amountPer: AmountSpec(D("1.00"), "USD")),
+          ),
+          PostingSpec(Account('Assets:B'), null)
+        ],
+      ),
+    );
+  });
 }
 
 

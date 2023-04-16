@@ -62,12 +62,15 @@ postingSpec:
 	postingSpecAccountOnly
 	| postingSpecAccountAmount
 	| postingSpecWithPrice
-	| postingSpecWithCost;
+	| postingSpecWithCost
+	| postingSpecWithCostAndPrice;
 
 postingSpecAccountOnly: account tags? comment?;
 postingSpecAccountAmount: account amount tags? comment?;
 postingSpecWithPrice: account amount priceSpec tags? comment?;
 postingSpecWithCost: account amount costSpec tags? comment?;
+postingSpecWithCostAndPrice:
+	account amount costSpec priceSpec tags? comment?;
 
 priceSpec: priceSpecPer | priceSpecTotal;
 priceSpecPer: '@' amountSpec;

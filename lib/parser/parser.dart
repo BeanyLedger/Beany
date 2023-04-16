@@ -244,6 +244,20 @@ extension PostingSpecWithCostParsing on PostingSpecWithCostContext {
   }
 }
 
+extension PostingSpecWithCostAndPriceParsing
+    on PostingSpecWithCostAndPriceContext {
+  PostingSpec val() {
+    return PostingSpec(
+      account()!.val(),
+      amount()!.val(),
+      costSpec: costSpec()!.val(),
+      priceSpec: priceSpec()!.val(),
+      comment: comment()?.val(),
+      tags: tags()?.val(),
+    );
+  }
+}
+
 extension CostSpecParsing on CostSpecContext {
   CostSpec val() {
     return CostSpec(amount()!.val());
@@ -331,6 +345,9 @@ extension PostingSpecParsing on PostingSpecContext {
 
     var p3 = postingSpecWithCost();
     if (p3 != null) return p3.val();
+
+    var p4 = postingSpecWithCostAndPrice();
+    if (p4 != null) return p4.val();
 
     throw Exception("Unknown posting spec");
   }

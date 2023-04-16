@@ -32,12 +32,13 @@ class PostingSpec extends Equatable {
     sb.write(amount != null
         ? "  " + account.toString() + "  " + amount.toString()
         : "  " + account.toString());
-    if (priceSpec != null) {
-      sb.write(priceSpec.toString());
-    }
+
     if (costSpec != null) {
       sb.write(' ');
       sb.write(costSpec.toString());
+    }
+    if (priceSpec != null) {
+      sb.write(priceSpec.toString());
     }
     if (tags.isNotEmpty) {
       for (var tag in tags) {
@@ -130,12 +131,12 @@ class Posting extends Equatable implements PostingSpec {
   String toString() {
     var sb = StringBuffer();
     sb.write("$account $amount");
-    if (priceSpec != null) {
-      sb.write(priceSpec.toString());
-    }
     if (costSpec != null) {
       sb.write(' ');
       sb.write(costSpec.toString());
+    }
+    if (priceSpec != null) {
+      sb.write(priceSpec.toString());
     }
     if (tags.isNotEmpty) {
       for (var tag in tags) {
