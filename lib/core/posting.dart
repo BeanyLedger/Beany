@@ -186,6 +186,12 @@ class Posting extends Equatable implements PostingSpec {
     var baseAmount = amount.number;
     var baseAmountSign = Decimal.fromInt(baseAmount.signum);
 
+    var costSpec = this.costSpec;
+    if (costSpec != null) {
+      var csa = costSpec.amount;
+      return Amount(csa.number * baseAmount, csa.currency);
+    }
+
     var priceSpec = this.priceSpec;
     if (priceSpec != null) {
       var amountTotal = priceSpec.amountTotal;
@@ -201,12 +207,6 @@ class Posting extends Equatable implements PostingSpec {
       }
 
       throw ArgumentError('Posting Weight: priceSpec is invalid');
-    }
-
-    var costSpec = this.costSpec;
-    if (costSpec != null) {
-      var csa = costSpec.amount;
-      return Amount(csa.number * baseAmount, csa.currency);
     }
 
     return amount;
