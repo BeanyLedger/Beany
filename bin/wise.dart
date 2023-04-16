@@ -8,7 +8,7 @@ import 'package:path/path.dart' as p;
 
 void main(List<String> argv) async {
   if (argv.isEmpty) {
-    print("Usage: transferwise <token> <optional-output-dir>");
+    print("Usage: wise <token> <optional-output-dir>");
     exit(1);
   }
   final token = argv[0];
@@ -16,7 +16,7 @@ void main(List<String> argv) async {
 
   final privateKeyPem = File('private.pem').readAsStringSync();
 
-  var importer = TransferWiseImporter(
+  var importer = WiseImporter(
     token: token,
     certificatePEM: privateKeyPem,
   );
@@ -59,12 +59,12 @@ class _BalanceAccountInfo {
   }
 }
 
-class TransferWiseImporter {
+class WiseImporter {
   final String token;
   final String certificatePEM;
   final bool useProduction = true;
 
-  TransferWiseImporter({required this.token, required this.certificatePEM});
+  WiseImporter({required this.token, required this.certificatePEM});
 
   Future<String> profile() async {
     var url = "/v2/profiles";
@@ -78,7 +78,7 @@ class TransferWiseImporter {
       orElse: () => null,
     );
     if (d == null) {
-      throw new Exception("Transferwise Personal Account not found");
+      throw new Exception("Wise Personal Account not found");
     }
     final id = d["id"];
     if (id == null) {
@@ -120,7 +120,7 @@ class TransferWiseImporter {
 
     final duration = endDate.difference(startDate);
     if (duration.inDays > 300) {
-      throw Exception("Transferwise Duration's must be less than 300 days");
+      throw Exception("Wise Duration's must be less than 300 days");
     }
 
     final sd = startDate.toUtc().toIso8601String();
