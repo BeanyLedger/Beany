@@ -1,5 +1,6 @@
 import 'package:beany/core/amount.dart';
 import 'package:beany/core/core.dart';
+import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:beany/core/price_spec.dart';
 import 'package:test/test.dart';
@@ -221,7 +222,7 @@ void main() {
     );
   });
 
-  test('Posting with Cost Spec', () {
+  test('Posting with Prce Spec', () {
     var input = """2023-03-15 * "Blimey"
   Assets:A  -19095.86 USD @ 0.93205
   Expenses:B  89.33 USD @@ EUR
@@ -255,6 +256,32 @@ void main() {
             Account('Assets:A'),
             Amount(D("17715.04"), "EUR"),
           )
+        ],
+      ),
+    );
+  });
+
+  test("Transaction with Cost Spec", () {
+    var input = """2023-03-15 * "Blimey"
+  Assets:A  10.00 SOME {2.02 USD}
+  Assets:B
+""";
+
+    var tr = parse(input).trStatement().val();
+    expect(tr.toString(), input);
+    expect(
+      tr,
+      Transaction(
+        DateTime(2023, 3, 15),
+        TransactionFlag.Okay,
+        "Blimey",
+        postings: [
+          PostingSpec(
+            Account('Assets:A'),
+            AMT("10 SOME"),
+            costSpec: CostSpec(AMT("2.02 USD")),
+          ),
+          PostingSpec(Account('Assets:B'), null)
         ],
       ),
     );

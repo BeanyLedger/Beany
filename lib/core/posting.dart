@@ -36,6 +36,7 @@ class PostingSpec extends Equatable {
       sb.write(priceSpec.toString());
     }
     if (costSpec != null) {
+      sb.write(' ');
       sb.write(costSpec.toString());
     }
     if (tags.isNotEmpty) {
@@ -133,6 +134,7 @@ class Posting extends Equatable implements PostingSpec {
       sb.write(priceSpec.toString());
     }
     if (costSpec != null) {
+      sb.write(' ');
       sb.write(costSpec.toString());
     }
     if (tags.isNotEmpty) {

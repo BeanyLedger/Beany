@@ -61,15 +61,20 @@ comment: COMMENT;
 postingSpec:
 	postingSpecAccountOnly
 	| postingSpecAccountAmount
-	| postingSpecWithPrice;
+	| postingSpecWithPrice
+	| postingSpecWithCost;
+
 postingSpecAccountOnly: account tags? comment?;
 postingSpecAccountAmount: account amount tags? comment?;
 postingSpecWithPrice: account amount priceSpec tags? comment?;
+postingSpecWithCost: account amount costSpec tags? comment?;
 
 priceSpec: priceSpecPer | priceSpecTotal;
 priceSpecPer: '@' amountSpec;
 priceSpecTotal: '@@' amountSpec;
 amountSpec: number? currency?;
+
+costSpec: '{' amount '}';
 
 date: DATE;
 quoted_string: Q_STR;

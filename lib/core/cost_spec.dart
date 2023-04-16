@@ -36,6 +36,7 @@ class CostSpec extends Equatable {
       sb.write(', ');
       sb.write('"$label"');
     }
+    sb.write('}');
     return sb.toString();
   }
 }

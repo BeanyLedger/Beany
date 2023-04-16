@@ -1,5 +1,6 @@
 import 'package:antlr4/antlr4.dart';
 import 'package:beany/core/amount.dart';
+import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/custom_statement.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:beany/core/price_spec.dart';
@@ -219,7 +220,7 @@ extension AmountSpecParsing on AmountSpecContext {
   }
 }
 
-extension PostingSpecWithCostParsing on PostingSpecWithPriceContext {
+extension PostingSpecWithPriceParsing on PostingSpecWithPriceContext {
   PostingSpec val() {
     return PostingSpec(
       account()!.val(),
@@ -228,6 +229,24 @@ extension PostingSpecWithCostParsing on PostingSpecWithPriceContext {
       comment: comment()?.val(),
       tags: tags()?.val(),
     );
+  }
+}
+
+extension PostingSpecWithCostParsing on PostingSpecWithCostContext {
+  PostingSpec val() {
+    return PostingSpec(
+      account()!.val(),
+      amount()!.val(),
+      costSpec: costSpec()!.val(),
+      comment: comment()?.val(),
+      tags: tags()?.val(),
+    );
+  }
+}
+
+extension CostSpecParsing on CostSpecContext {
+  CostSpec val() {
+    return CostSpec(amount()!.val());
   }
 }
 
@@ -309,6 +328,9 @@ extension PostingSpecParsing on PostingSpecContext {
 
     var p2 = postingSpecWithPrice();
     if (p2 != null) return p2.val();
+
+    var p3 = postingSpecWithCost();
+    if (p3 != null) return p3.val();
 
     throw Exception("Unknown posting spec");
   }
