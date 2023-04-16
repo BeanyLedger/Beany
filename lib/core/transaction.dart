@@ -3,6 +3,7 @@ import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 import 'posting.dart';
 import 'core.dart';
@@ -109,20 +110,17 @@ class Transaction extends Equatable implements Directive {
           'unresolved posting');
     }
 
-    var currencies = postings
-        .map((p) {
-          var priceSpec = p.priceSpec;
-          if (priceSpec?.amountTotal != null) {
-            return priceSpec!.amountTotal!.currency;
-          }
-          if (priceSpec?.amountPer != null) {
-            return priceSpec!.amountTotal!.currency;
-          }
+    var currencies = postings.map((p) {
+      var priceSpec = p.priceSpec;
+      if (priceSpec?.amountTotal != null) {
+        return priceSpec!.amountTotal!.currency;
+      }
+      if (priceSpec?.amountPer != null) {
+        return priceSpec!.amountTotal!.currency;
+      }
 
-          return p.amount?.currency;
-        })
-        .where((c) => c != null)
-        .map((c) => c as String);
+      return p.amount?.currency;
+    }).whereNotNull();
 
     if (currencies.toSet().length != 1) {
       throw Exception('Cannot realize transaction with multiple currencies');

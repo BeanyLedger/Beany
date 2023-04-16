@@ -21,6 +21,8 @@ import 'package:beany/core/transaction.dart';
 import 'package:beany/parser/BeancountLexer.dart';
 import 'package:beany/parser/BeancountParser.dart';
 
+import 'package:collection/collection.dart';
+
 BeancountParser parse(String text) {
   if (!text.endsWith('\n')) text += '\n';
   final inputStream = InputStream.fromString(text);
@@ -302,16 +304,13 @@ extension TransactionParsing on TrStatementContext {
     var tr = trHeader()!.val();
 
     return tr.copyWith(
-      postings: children!
-          .map((c) {
-            if (c is PostingSpecAccountOnlyContext) return c.val();
-            if (c is PostingSpecAccountAmountContext) return c.val();
-            if (c is PostingSpecWithPriceContext) return c.val();
+      postings: children!.map((c) {
+        if (c is PostingSpecAccountOnlyContext) return c.val();
+        if (c is PostingSpecAccountAmountContext) return c.val();
+        if (c is PostingSpecWithPriceContext) return c.val();
 
-            return null;
-          })
-          .where((x) => x != null)
-          .map((e) => e!),
+        return null;
+      }).whereNotNull(),
       comments: comments().map((e) => e.val()),
       meta: metadata()?.val(),
       parsingInfo: _buildParsingInfo(this),
