@@ -7,10 +7,17 @@ import 'package:ninja/ninja.dart';
 import 'package:path/path.dart' as p;
 
 void main(List<String> argv) async {
+  if (argv.isEmpty) {
+    print("Usage: transferwise <token> <optional-output-dir>");
+    exit(1);
+  }
+  final token = argv[0];
+  final outputDir = argv.length == 2 ? argv[1] : null;
+
   final privateKeyPem = File('private.pem').readAsStringSync();
 
   var importer = TransferWiseImporter(
-    token: "d492ee04-007a-4796-99b4-ed2e8b9a4705",
+    token: token,
     certificatePEM: privateKeyPem,
   );
 
@@ -28,8 +35,8 @@ void main(List<String> argv) async {
     var endDateOnly = endDate.toIso8601String().substring(0, 10);
     var fileName = "$startDateOnly.$endDateOnly.${ac.currency}.json";
     var outputPath = fileName;
-    if (argv.isNotEmpty) {
-      outputPath = p.join(argv.first, fileName);
+    if (outputDir != null) {
+      outputPath = p.join(outputDir, fileName);
     }
 
     File(outputPath).writeAsStringSync(body);
