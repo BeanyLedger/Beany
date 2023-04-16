@@ -1,4 +1,5 @@
 import 'package:beany/core/amount.dart';
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
@@ -108,13 +109,46 @@ class Transaction extends Equatable implements Directive {
           'unresolved posting');
     }
 
-    var currency = postings
-        .where((p) => p.amount != null)
-        .map((p) => p.amount!.currency)
-        .first;
+    var currencies = postings
+        .map((p) {
+          var priceSpec = p.priceSpec;
+          if (priceSpec?.amountTotal != null) {
+            return priceSpec!.amountTotal!.currency;
+          }
+          if (priceSpec?.amountPer != null) {
+            return priceSpec!.amountTotal!.currency;
+          }
+
+          return p.amount?.currency;
+        })
+        .where((c) => c != null)
+        .map((c) => c as String);
+
+    if (currencies.toSet().length != 1) {
+      throw Exception('Cannot realize transaction with multiple currencies');
+    }
+    var currency = currencies.first;
 
     var num = D("0");
     for (var p in postings) {
+      if (p.amount == null && p.priceSpec == null) {
+        continue;
+      }
+
+      var baseAmount = p.amount!.number;
+
+      var priceSpec = p.priceSpec;
+      if (priceSpec != null) {
+        var amountTotalSpec = priceSpec.amountTotal;
+        if (amountTotalSpec != null && amountTotalSpec.number != null) {
+          var n = amountTotalSpec.number! * Decimal.fromInt(baseAmount.signum);
+          num = num + n;
+          continue;
+        }
+
+        // FIXME: Handle priceSpec.amountPer
+      }
+
       if (p.amount != null) {
         num = p.amount!.number + num;
       }

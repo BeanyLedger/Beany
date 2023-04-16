@@ -7,7 +7,20 @@ class AmountSpec extends Equatable {
   final Decimal? number;
   final String? currency;
 
-  AmountSpec(this.number, this.currency);
+  AmountSpec(this.number, this.currency) {
+    if (number != null) {
+      var d = number!.toDouble();
+      if (d.isNegative) {
+        throw ArgumentError('AmountSpec cannot be negative');
+      }
+      if (d.isInfinite) {
+        throw ArgumentError('AmountSpec cannot be infinite');
+      }
+      if (d.isNaN) {
+        throw ArgumentError('AmountSpec cannot be NaN');
+      }
+    }
+  }
 
   String toString() {
     var sb = StringBuffer();
