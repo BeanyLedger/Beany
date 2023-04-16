@@ -9,8 +9,8 @@ class CostSpec extends Equatable {
   final DateTime? date;
   final String? label;
 
-  CostSpec({
-    required this.amount,
+  CostSpec(
+    this.amount, {
     this.date,
     this.label,
   }) {

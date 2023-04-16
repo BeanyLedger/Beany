@@ -1,4 +1,5 @@
 import 'package:beany/core/price_spec.dart';
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
@@ -177,4 +178,28 @@ class Posting extends Equatable implements PostingSpec {
 
   @override
   Posting toPosting({Amount? amount}) => this;
+
+  Amount weight() {
+    var baseAmount = amount.number;
+    var baseAmountSign = Decimal.fromInt(baseAmount.signum);
+
+    var priceSpec = this.priceSpec;
+    if (priceSpec != null) {
+      var amountTotal = priceSpec.amountTotal;
+      if (amountTotal != null) {
+        var n = amountTotal.number * baseAmountSign;
+        return Amount(n, amountTotal.currency);
+      }
+
+      var amountPer = priceSpec.amountPer;
+      if (amountPer != null) {
+        var n = amountPer.number * baseAmount;
+        return Amount(n, amountPer.currency);
+      }
+
+      throw ArgumentError('Posting Weight: priceSpec is invalid');
+    }
+
+    return amount;
+  }
 }

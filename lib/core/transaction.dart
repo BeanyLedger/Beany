@@ -1,5 +1,4 @@
 import 'package:beany/core/amount.dart';
-import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
@@ -133,23 +132,7 @@ class Transaction extends Equatable implements Directive {
         continue;
       }
 
-      var baseAmount = p.amount!.number;
-
-      var priceSpec = p.priceSpec;
-      if (priceSpec != null) {
-        var amountTotalSpec = priceSpec.amountTotal;
-        if (amountTotalSpec != null && amountTotalSpec.number != null) {
-          var n = amountTotalSpec.number! * Decimal.fromInt(baseAmount.signum);
-          num = num + n;
-          continue;
-        }
-
-        // FIXME: Handle priceSpec.amountPer
-      }
-
-      if (p.amount != null) {
-        num = p.amount!.number + num;
-      }
+      num += p.toPosting().weight().number;
     }
 
     var unresolvedIndex = postings.indexWhere((e) => e.amount == null);
