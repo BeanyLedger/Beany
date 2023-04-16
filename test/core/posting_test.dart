@@ -20,11 +20,11 @@ void main() {
     p = parse(text).postingSpec().val().toPosting();
     expect(p.weight(), AMT("-31.01 USD"));
 
-    /*
     text = "Assets:A  10 SOME {2.02 USD}";
     p = parse(text).postingSpec().val().toPosting();
     expect(p.weight(), AMT("20.20 USD"));
 
+    /*
     text = "Assets:A  10 SOME {2.02 USD} @ 2.50 USD";
     p = parse(text).postingSpec().val().toPosting();
     expect(p.weight(), AMT("20.20 USD"));

@@ -202,6 +202,12 @@ class Posting extends Equatable implements PostingSpec {
       throw ArgumentError('Posting Weight: priceSpec is invalid');
     }
 
+    var costSpec = this.costSpec;
+    if (costSpec != null) {
+      var csa = costSpec.amount;
+      return Amount(csa.number * baseAmount, csa.currency);
+    }
+
     return amount;
   }
 }
