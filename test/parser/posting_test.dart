@@ -1,5 +1,8 @@
 import 'package:beany/core/account.dart';
+import 'package:beany/core/amount.dart';
 import 'package:beany/core/core.dart';
+import 'package:beany/core/cost_spec.dart';
+import 'package:beany/core/price_spec.dart';
 import 'package:test/test.dart';
 
 import 'package:beany/core/posting.dart';
@@ -51,6 +54,68 @@ void main() {
           .val(),
       PostingSpec(A("Expenses:M"), AMT("1.5 EUR"), tags: ["ele-ment", "gogo"]),
     );
+  });
+
+  test('Posting with Per Price', () {
+    var p = parse("Assets:MyBank:Checking  -400.00 USD @ 1.09 CAD")
+        .postingSpec()
+        .val();
+    var actual = PostingSpec(
+      Account('Assets:MyBank:Checking'),
+      Amount(D("-400.00"), "USD"),
+      priceSpec: PriceSpec(
+        amountPer: AmountSpec(D("1.09"), "CAD"),
+      ),
+    );
+    expect(p, actual);
+  });
+
+  test('Posting with Total Price', () {
+    var p = parse("Assets:MyBank:Checking  -400.00 USD @@ 436.01 CAD")
+        .postingSpec()
+        .val();
+    var actual = PostingSpec(
+      Account('Assets:MyBank:Checking'),
+      Amount(D("-400.00"), "USD"),
+      priceSpec: PriceSpec(
+        amountTotal: AmountSpec(D("436.01"), "CAD"),
+      ),
+    );
+    expect(p, actual);
+  });
+
+  test('Posting with Price Spec', () {
+    var p = parse("Expenses:B  89.33 USD @@ EUR").postingSpec().val();
+    var actual = PostingSpec(
+      Account('Expenses:B'),
+      Amount(D("89.33"), "USD"),
+      priceSpec: PriceSpec(
+        amountTotal: AmountSpec(null, "EUR"),
+      ),
+    );
+    expect(p, actual);
+  });
+
+  test("Posting with Cost", () {
+    var p = parse("Assets:A  10.00 SOME {2.02 USD}").postingSpec().val();
+    var expected = PostingSpec(
+      Account('Assets:A'),
+      AMT("10 SOME"),
+      costSpec: CostSpec(AMT("2.02 USD")),
+    );
+    expect(p, expected);
+  });
+
+  test("Posting with Cost and Price", () {
+    var p =
+        parse("Assets:A  10.00 SOME {2.02 USD} @ 1.00 USD").postingSpec().val();
+    var expected = PostingSpec(
+      Account('Assets:A'),
+      AMT("10 SOME"),
+      costSpec: CostSpec(AMT("2.02 USD")),
+      priceSpec: PriceSpec(amountPer: AmountSpec(D("1.00"), "USD")),
+    );
+    expect(p, expected);
   });
 
   // Posting with a cost spec per unit
