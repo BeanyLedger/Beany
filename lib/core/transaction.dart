@@ -1,4 +1,5 @@
 import 'package:beany/core/amount.dart';
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
@@ -154,9 +155,18 @@ class Transaction extends Equatable implements Directive {
         priceSpec = priceSpec.copyWith(amountTotal: pTotal);
         unresolved = unresolved.copyWith(priceSpec: priceSpec);
       } else if (priceSpec.amountPer != null) {
-        throw UnimplementedError();
-      } else {
-        throw UnimplementedError();
+        var pPer = priceSpec.amountPer!;
+        if (pPer.currency == null) {
+          throw Exception(
+              'PriceSpec is missing a currency. Should this be allowed?');
+        }
+
+        var currency = pPer.currency!;
+        var per = (num.abs() / unresolved.amount!.number).toDecimal(
+            scaleOnInfinitePrecision: 10); // FIXME: What about the precision?
+        pPer = Amount(per, currency);
+        priceSpec = priceSpec.copyWith(amountPer: pPer);
+        unresolved = unresolved.copyWith(priceSpec: priceSpec);
       }
     }
 

@@ -50,4 +50,21 @@ void main() {
     expect(postings[1].weight(), AMT("44.44975 EUR"));
     expect(postings[2].weight(), AMT("9457.80 EUR"));
   });
+
+  test("Calculates the per price", () {
+    var input = """
+2015-02-05 * "Transfer"
+  id: "44985043"
+  Assets:Personal:Transferwise  -100 EUR
+  Assets:Personal:India:YesBank:NRE  6,988.97 INR @ EUR
+  Expenses:Personal:BankCharges:Transferwise  1 EUR
+""";
+
+    var tr = parse(input).trStatement().val();
+    var postings = tr.resolvedPostings();
+    expect(postings.length, 3);
+    expect(postings[0].weight(), AMT("-100 EUR"));
+    expect(postings[1].weight(), AMT("98.999999893278 EUR"));
+    expect(postings[2].weight(), AMT("1 EUR"));
+  });
 }
