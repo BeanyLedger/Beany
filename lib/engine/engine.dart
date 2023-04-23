@@ -19,7 +19,21 @@ import 'package:collection/collection.dart';
 class Engine {
   List<Statement> statements = [];
 
-  Engine(this.statements);
+  Engine(this.statements) {
+    statements.sort((a, b) {
+      if (a is Directive && b is! Directive) {
+        return -1;
+      }
+      if (a is! Directive && b is Directive) {
+        return 1;
+      }
+      if (a is Directive && b is Directive) {
+        return a.date.compareTo(b.date);
+      }
+
+      return 0;
+    });
+  }
 
   static Engine loadString(String fileContent) {
     var statements = parse(fileContent).all().val().toList();

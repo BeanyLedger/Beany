@@ -38,8 +38,8 @@ void main() {
 
   test("Account cannot be closed before it is opened", () {
     var contents = """
-2023-01-01 close Assets:Cash
 2023-01-02 open Assets:Cash
+2023-01-01 close Assets:Cash
 """;
 
     expect(() => Engine.loadString(contents), throwsException);
