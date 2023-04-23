@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:beany/core/account.dart';
 import 'package:beany/core/amount.dart';
+import 'package:beany/core/balance_statement.dart';
 import 'package:beany/core/close_statement.dart';
 import 'package:beany/core/core.dart';
 import 'package:beany/core/open_statement.dart';
@@ -73,6 +74,11 @@ class Engine {
   Engine compute() {
     for (var statement in statements) {
       if (statement is OpenStatement) {
+        // Make sure the account is not already open
+        if (_accountInfo.any((a) => a.account == statement.account)) {
+          throw Exception('Account "${statement.account}" is already open');
+        }
+
         var open = statement;
         _accountInfo.add(AccountInfo(open.account, open.date, null));
       } else if (statement is CloseStatement) {
@@ -121,6 +127,43 @@ class Engine {
         }
 
         _accountBalances[date] = ab;
+      } else if (statement is BalanceStatement) {
+        var balance = statement;
+        var date = Date.from(balance.date);
+        var ab = _accountBalances[date] ?? AccountBalances(date);
+
+        var account = balance.account;
+        var accountInfo = _accountInfo.firstWhereOrNull(
+          (a) => a.account == account,
+        );
+
+        if (accountInfo == null) {
+          throw Exception('Account "$account" was not opened');
+        }
+        if (accountInfo.closeDate != null) {
+          if (accountInfo.closeDate!.isBefore(balance.date)) {
+            throw Exception(
+                'Account "$account" was closed before balance "${balance.date}"');
+          }
+        }
+
+        var prevDate = date.add(Duration(days: -1));
+        var prevAb = _accountBalances[prevDate];
+        if (prevAb == null) {
+          throw Exception(
+              'Balance for account "$account" on date "$date" is 0 because there are no transactions for it');
+        }
+
+        var prevAmount = prevAb.balances[account]
+            .firstWhereOrNull((amt) => amt.currency == balance.amount.currency);
+        if (prevAmount == null) {
+          throw Exception(
+              'Balance for account "$account" on date "$date" is invalid because there is no previous balance for it in the same currency');
+        }
+        if (prevAmount.number != balance.amount.number) {
+          throw Exception(
+              'Balance for account "$account" on date "$date" is invalid. Expected ${balance.amount.number} but got ${prevAmount.number}');
+        }
       }
     }
 

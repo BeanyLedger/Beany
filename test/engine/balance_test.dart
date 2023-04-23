@@ -68,4 +68,19 @@ void main() {
 
     expect(() => Engine.loadString(contents), throwsException);
   });
+
+  test('Validate Balance Statement', () {
+    var contents = """
+
+2023-01-01 open Assets:Work:N26
+2023-01-01 open Assets:Cash
+2023-01-02 * "Salary"
+  Assets:Work:N26  1000.00 EUR
+  Assets:Cash
+
+2023-01-03 balance Assets:Work:N26  2000.00 EUR
+""";
+
+    expect(() => Engine.loadString(contents), throwsException);
+  });
 }
