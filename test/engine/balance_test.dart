@@ -82,7 +82,10 @@ void main() {
   Assets:Cash
 """;
 
-    expect(() => Engine.loadString(contents), throwsException);
+    expect(
+      () => Engine.loadString(contents),
+      throwsA(isA<AccountAlreadyClosed>()),
+    );
   });
 
   test('Validate Balance Statement', () {

@@ -112,8 +112,7 @@ class Engine {
           }
           if (accountInfo.closeDate != null) {
             if (accountInfo.closeDate!.isBefore(transaction.date)) {
-              throw Exception(
-                  'Account "$account" was closed before transaction "${transaction.date}"');
+              throw AccountAlreadyClosed(accountInfo);
             }
           }
           var amount = posting.amount;
@@ -134,7 +133,6 @@ class Engine {
       } else if (statement is BalanceStatement) {
         var balance = statement;
         var date = Date.from(balance.date);
-        var ab = _accountBalances[date] ?? AccountBalances(date);
 
         var account = balance.account;
         var accountInfo = _accountInfo.firstWhereOrNull(
@@ -146,8 +144,7 @@ class Engine {
         }
         if (accountInfo.closeDate != null) {
           if (accountInfo.closeDate!.isBefore(balance.date)) {
-            throw Exception(
-                'Account "$account" was closed before balance "${balance.date}"');
+            throw AccountAlreadyClosed(accountInfo);
           }
         }
 
