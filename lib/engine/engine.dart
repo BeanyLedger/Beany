@@ -21,7 +21,7 @@ class Engine {
 
   Engine(this.statements);
 
-  static Future<Engine> loadString(String fileContent) async {
+  static Engine loadString(String fileContent) {
     var statements = parse(fileContent).all().val().toList();
     var engine = Engine(statements);
     return engine.compute();
@@ -79,8 +79,18 @@ class Engine {
         var resolvedPostings = transaction.resolvedPostings();
         for (var posting in resolvedPostings) {
           var account = posting.account;
-          if (_accountInfo.where((e) => e.account == account).isEmpty) {
+          var accountInfo = _accountInfo.firstWhereOrNull(
+            (a) => a.account == account,
+          );
+
+          if (accountInfo == null) {
             throw Exception('Account "$account" was not opened');
+          }
+          if (accountInfo.closeDate != null) {
+            if (accountInfo.closeDate!.isBefore(transaction.date)) {
+              throw Exception(
+                  'Account "$account" was closed before transaction "${transaction.date}"');
+            }
           }
           var amount = posting.amount;
 

@@ -25,7 +25,7 @@ import 'package:beany/parser/BeancountParser.dart';
 import 'package:collection/collection.dart';
 
 BeancountParser parse(String text) {
-  if (!text.endsWith('\n')) text += '\n';
+  if (!text.endsWith('\n\n')) text += '\n\n';
   final inputStream = InputStream.fromString(text);
   final lexer = BeancountLexer(inputStream);
   final tokens = CommonTokenStream(lexer);
