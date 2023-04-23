@@ -94,12 +94,12 @@ class Engine {
 
         _accountInfo[i] =
             AccountInfo(close.account, _accountInfo[i].openDate, close.date);
-      } else if (statement is Transaction) {
+      } else if (statement is TransactionSpec) {
         var transaction = statement;
         var date = Date.from(transaction.date);
         var ab = _accountBalances[date] ?? AccountBalances(date);
 
-        var resolvedPostings = transaction.resolvedPostings();
+        var resolvedPostings = transaction.resolve().postings;
         for (var posting in resolvedPostings) {
           var account = posting.account;
           var accountInfo = _accountInfo.firstWhereOrNull(

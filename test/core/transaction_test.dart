@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 void main() {
   test("Calculates the Postings properly", () {
-    var tr = Transaction(
+    var tr = TransactionSpec(
       DT("2014-05-05"),
       TransactionFlag.Okay,
       "Cofee",
@@ -17,7 +17,7 @@ void main() {
       ],
     );
 
-    var postings = tr.resolvedPostings();
+    var postings = tr.resolve().postings;
     expect(postings.length, 2);
     expect(postings[1].amount, AMT("37.45 EUR"));
   });
@@ -29,7 +29,7 @@ void main() {
 """;
 
     var tr = parse(input).trStatement().val();
-    var postings = tr.resolvedPostings();
+    var postings = tr.resolve().postings;
     expect(postings.length, 2);
     expect(postings[1].amount, AMT("436.01 CAD"));
   });
@@ -44,7 +44,7 @@ void main() {
 """;
 
     var tr = parse(input).trStatement().val();
-    var postings = tr.resolvedPostings();
+    var postings = tr.resolve().postings;
     expect(postings.length, 3);
     expect(postings[0].weight(), AMT("-9502.24975 EUR"));
     expect(postings[1].weight(), AMT("44.44975 EUR"));
@@ -61,7 +61,7 @@ void main() {
 """;
 
     var tr = parse(input).trStatement().val();
-    var postings = tr.resolvedPostings();
+    var postings = tr.resolve().postings;
     expect(postings.length, 3);
     expect(postings[0].weight(), AMT("-100 EUR"));
     expect(postings[1].weight(), AMT("98.999999893278 EUR"));

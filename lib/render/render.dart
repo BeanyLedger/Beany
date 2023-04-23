@@ -24,7 +24,7 @@ abstract class RendererInterface {
   void renderCostSpec(StringSink sink, CostSpec costSpec);
   void renderPriceSpec(StringSink sink, PriceSpec priceSpec);
   void renderPostingSpec(StringSink sink, PostingSpec posting);
-  void renderTransactionSpec(StringSink sink, Transaction transaction);
+  void renderTransactionSpec(StringSink sink, TransactionSpec transaction);
 
   void renderPriceDirective(StringSink sink, PriceStatement price);
   void renderOpenDirective(StringSink sink, OpenStatement open);
@@ -79,7 +79,7 @@ class BeancountRenderer implements RendererInterface {
       renderCustomDirective(sink, st);
     } else if (st is PriceStatement) {
       renderPriceDirective(sink, st);
-    } else if (st is Transaction) {
+    } else if (st is TransactionSpec) {
       renderTransactionSpec(sink, st);
     } else if (st is IncludeStatement) {
       renderIncludeStatement(sink, st);
@@ -164,7 +164,7 @@ class BeancountRenderer implements RendererInterface {
   }
 
   @override
-  void renderTransactionSpec(StringSink sink, Transaction tr) {
+  void renderTransactionSpec(StringSink sink, TransactionSpec tr) {
     sink.write(tr.date.toIso8601String().substring(0, 10));
     sink.write(' ${tr.flag} ');
     sink.write('"${tr.narration}"');

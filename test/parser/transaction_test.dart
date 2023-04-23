@@ -15,7 +15,8 @@ void main() {
   test('Transaction Header', () {
     expect(
       parse('2019-04-14 * "Cat Powder"\n').trHeader().val(),
-      Transaction(DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
+      TransactionSpec(
+          DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
     expect(
       render(parse('2019-04-14 * "Cat Powder"\n').trHeader().val()),
@@ -23,7 +24,8 @@ void main() {
     );
     expect(
       parse('2019-04-14 ! "Cat Powder"\n').trHeader().val(),
-      Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
+      TransactionSpec(
+          DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
     );
     expect(
       render(parse('2019-04-14 ! "Cat Powder"\n').trHeader().val()),
@@ -35,7 +37,7 @@ void main() {
     );
     expect(
       parse('2019-04-14 ! "Cat" "Payee"\n').trHeader().val(),
-      Transaction(
+      TransactionSpec(
         DateTime(2019, 4, 14),
         TransactionFlag.Warning,
         'Cat',
@@ -48,7 +50,7 @@ void main() {
     );
     expect(
       parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').trHeader().val(),
-      Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
+      TransactionSpec(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
           tags: ["hello", "berlin-2014"]),
     );
     expect(
@@ -78,7 +80,7 @@ void main() {
   Assets:Savings
 """;
 
-    var tr = Transaction(
+    var tr = TransactionSpec(
       DateTime(2019, 4, 14),
       TransactionFlag.Okay,
       'Cat Powder',
@@ -111,7 +113,7 @@ void main() {
   currencyValue: EUR
   */
 
-    var tr = Transaction(
+    var tr = TransactionSpec(
       DateTime(2019, 4, 14),
       TransactionFlag.Okay,
       'Cat Powder',

@@ -320,8 +320,8 @@ extension MetadaataParsing on MetadataContext {
 }
 
 extension TransactionHeaderParsing on TrHeaderContext {
-  Transaction val() {
-    return Transaction(
+  TransactionSpec val() {
+    return TransactionSpec(
       date()!.val(),
       trFlag()!.val(),
       narration!.val(),
@@ -354,7 +354,7 @@ extension PostingSpecParsing on PostingSpecContext {
 }
 
 extension TransactionParsing on TrStatementContext {
-  Transaction val() {
+  TransactionSpec val() {
     var tr = trHeader()!.val();
 
     return tr.copyWith(
