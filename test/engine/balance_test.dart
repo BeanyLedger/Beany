@@ -103,6 +103,9 @@ void main() {
 2023-01-03 balance Assets:Work:N26  2000.00 EUR
 """;
 
-    expect(() => Engine.loadString(contents), throwsException);
+    expect(
+      () => Engine.loadString(contents),
+      throwsA(isA<BalanceFailure>()),
+    );
   });
 }

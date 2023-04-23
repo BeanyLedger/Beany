@@ -150,19 +150,15 @@ class Engine {
         var prevDate = date.add(Duration(days: -1));
         var prevAb = _accountBalances[prevDate];
         if (prevAb == null) {
-          throw Exception(
-              'Balance for account "$account" on date "$date" is 0 because there are no transactions for it');
+          throw BalanceFailure(account, date,
+              expected: balance.amount, actual: null);
         }
 
         var prevAmount = prevAb.balances[account]
             .firstWhereOrNull((amt) => amt.currency == balance.amount.currency);
-        if (prevAmount == null) {
-          throw Exception(
-              'Balance for account "$account" on date "$date" is invalid because there is no previous balance for it in the same currency');
-        }
-        if (prevAmount.number != balance.amount.number) {
-          throw Exception(
-              'Balance for account "$account" on date "$date" is invalid. Expected ${balance.amount.number} but got ${prevAmount.number}');
+        if (prevAmount?.number != balance.amount.number) {
+          throw BalanceFailure(account, date,
+              expected: balance.amount, actual: prevAmount);
         }
       }
     }
