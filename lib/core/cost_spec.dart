@@ -22,23 +22,5 @@ class CostSpec extends Equatable {
   @override
   List<Object?> get props => [amount, date, label];
 
-  @override
-  String toString() {
-    var sb = StringBuffer();
-
-    sb.write('{');
-    sb.write(amount);
-    if (date != null) {
-      sb.write(', ');
-      sb.write(date!.toIso8601String().substring(0, 10));
-    }
-    if (label != null) {
-      sb.write(', ');
-      sb.write('"$label"');
-    }
-    sb.write('}');
-    return sb.toString();
-  }
-
   bool get canResolve => date != null;
 }

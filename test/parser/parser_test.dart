@@ -11,6 +11,7 @@ import 'package:beany/core/note_statement.dart';
 import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/price_statement.dart';
 import 'package:beany/core/statements.dart';
+import 'package:beany/render/render.dart';
 import 'package:test/test.dart';
 
 import 'package:beany/parser/parser.dart';
@@ -21,11 +22,11 @@ void main() {
       var input = 'include "../path"';
       var include = parse(input).includeStatement().val();
 
-      expect(include.toString(), input);
+      expect(render(include), input);
       expect(include, IncludeStatement('../path'));
 
       var statements = parse(input).all().val();
-      var actual = statements.map((t) => t.toString()).join("\n");
+      var actual = statements.map((t) => render(t)).join("\n");
       expect(actual, input);
     });
 
@@ -33,11 +34,11 @@ void main() {
       var input = 'option "title" "Ed’s Personal Ledger"';
       var option = parse(input).optionStatement().val();
 
-      expect(option.toString(), input);
+      expect(render(option), input);
       expect(option, OptionStatement('title', "Ed’s Personal Ledger"));
 
       var statements = parse(input).all().val();
-      var actual = statements.map((t) => t.toString()).join("\n");
+      var actual = statements.map((t) => render(t)).join("\n");
       expect(actual, input);
     });
 
@@ -48,7 +49,7 @@ void main() {
       expect(comment.value, 'Hello');
 
       var statements = parse(input).all().val();
-      var actual = statements.map((t) => t.toString()).join("\n");
+      var actual = statements.map((t) => render(t)).join("\n");
       expect(actual, '; Hello');
     }, skip: true);
   });
@@ -57,7 +58,6 @@ void main() {
     var input = 'Hello:A:B';
     var account = parse(input).account().val();
 
-    expect(account.toString(), input);
     expect(account, Account('Hello:A:B'));
   });
 
@@ -65,7 +65,7 @@ void main() {
     var input = "2002-01-15 balance Assets:Personal:Transferwise  98.87 EUR";
     var balance = parse(input).balanceStatement().val();
 
-    expect(balance.toString(), input);
+    expect(render(balance), input);
     expect(
       balance,
       BalanceStatement(
@@ -76,7 +76,7 @@ void main() {
     );
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -84,12 +84,12 @@ void main() {
     var input = "2000-11-21 close Expenses:Personal";
     var close = parse(input).closeStatement().val();
 
-    expect(close.toString(), input);
+    expect(render(close), input);
     expect(close,
         CloseStatement(DateTime(2000, 11, 21), Account('Expenses:Personal')));
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -97,11 +97,11 @@ void main() {
     var input = "2000-11-21 commodity INR";
     var c = parse(input).commodityStatement().val();
 
-    expect(c.toString(), input);
+    expect(render(c), input);
     expect(c, CommodityStatement(DateTime(2000, 11, 21), 'INR'));
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -109,7 +109,7 @@ void main() {
     var input = '2013-11-03 document Assets:Card "/home/joe/apr-2014.pdf"';
     var doc = parse(input).documentStatement().val();
 
-    expect(doc.toString(), input);
+    expect(render(doc), input);
     expect(
       doc,
       DocumentStatement(
@@ -120,7 +120,7 @@ void main() {
     );
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -128,12 +128,12 @@ void main() {
     var input = '2013-11-03 event "location" "Paris, France"';
     var event = parse(input).eventStatement().val();
 
-    expect(event.toString(), input);
+    expect(render(event), input);
     expect(event,
         EventStatement(DateTime(2013, 11, 03), "location", "Paris, France"));
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -141,7 +141,7 @@ void main() {
     var input = '2013-11-03 note Assets:CreditCard "Called about fraud."';
     var note = parse(input).noteStatement().val();
 
-    expect(note.toString(), input);
+    expect(render(note), input);
     expect(
       note,
       NoteStatement(
@@ -152,7 +152,7 @@ void main() {
     );
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -160,12 +160,12 @@ void main() {
     var input = "2000-11-21 open Expenses:Personal";
     var open = parse(input).openStatement().val();
 
-    expect(open.toString(), input);
+    expect(render(open), input);
     expect(open,
         OpenStatement(DateTime(2000, 11, 21), Account('Expenses:Personal')));
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -173,7 +173,7 @@ void main() {
     var input = "2002-01-15 price INR  98.87 EUR";
     var price = parse(input).priceStatement().val();
 
-    expect(price.toString(), input);
+    expect(render(price), input);
     expect(
       price,
       PriceStatement(
@@ -184,7 +184,7 @@ void main() {
     );
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 
@@ -220,7 +220,7 @@ void main() {
     var input = '2013-11-03 custom "location" "Paris, France"';
     var custom = parse(input).customStatement().val();
 
-    expect(custom.toString(), input);
+    expect(render(custom), input);
     expect(
       custom,
       CustomStatement(
@@ -230,7 +230,7 @@ void main() {
     );
 
     var statements = parse(input).all().val();
-    var actual = statements.map((t) => t.toString()).join("\n");
+    var actual = statements.map((t) => render(t)).join("\n");
     expect(actual, input);
   });
 }

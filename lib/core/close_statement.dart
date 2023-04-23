@@ -20,15 +20,6 @@ class CloseStatement extends Equatable implements Directive {
     this.parsingInfo,
   }) : meta = IMap(meta);
 
-  String toString() {
-    var sb = StringBuffer();
-    sb.write(date.toIso8601String().substring(0, 10));
-    sb.write(' close ');
-    sb.write(account);
-
-    return sb.toString();
-  }
-
   @override
   List<Object?> get props => [date, meta, account];
 }

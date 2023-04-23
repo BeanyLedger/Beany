@@ -33,16 +33,6 @@ class PriceSpec extends Equatable {
   @override
   List<Object?> get props => [amountPer, amountTotal];
 
-  @override
-  String toString() {
-    var sb = StringBuffer();
-
-    if (amountPer != null) sb.write(' @ $amountPer');
-    if (amountTotal != null) sb.write(' @@ $amountTotal');
-
-    return sb.toString();
-  }
-
   bool get canResolve {
     if (amountPer != null) {
       return amountPer!.canResolve;
@@ -83,16 +73,6 @@ class Price extends Equatable implements PriceSpec {
 
   @override
   List<Object?> get props => [amountPer, amountTotal];
-
-  @override
-  String toString() {
-    var sb = StringBuffer();
-
-    if (amountPer != null) sb.write(' @ $amountPer');
-    if (amountTotal != null) sb.write(' @@ $amountTotal');
-
-    return sb.toString();
-  }
 
   @override
   bool get canResolve => true;

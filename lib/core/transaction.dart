@@ -70,39 +70,6 @@ class Transaction extends Equatable implements Directive {
     );
   }
 
-  @override
-  String toString() {
-    var sb = StringBuffer();
-    sb.write(date.toIso8601String().substring(0, 10));
-    sb.write(' $flag ');
-    sb.write('"$narration"');
-    if (payee != null) {
-      sb.write(' "$payee"');
-    }
-    if (tags.isNotEmpty) {
-      sb.write(' ');
-      sb.write(tags.map((t) => '#$t').join(' '));
-    }
-    sb.writeln();
-
-    if (meta.isNotEmpty) {
-      for (var m in meta.entries) {
-        sb.writeln('  ${m.key}: ${m.value}');
-      }
-    }
-
-    if (comments.isNotEmpty) {
-      var s = comments.map((c) => '  ; ' + c).join('\n');
-      sb.writeln(s);
-    }
-
-    if (postings.isNotEmpty) {
-      var s = postings.map((p) => p.toString()).join('\n');
-      sb.writeln(s);
-    }
-    return sb.toString();
-  }
-
   IList<Posting> resolvedPostings() {
     var numUnresolved = postings.where((p) => !p.canResolve).length;
     if (numUnresolved > 1) {

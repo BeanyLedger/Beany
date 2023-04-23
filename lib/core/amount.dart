@@ -22,16 +22,6 @@ class AmountSpec extends Equatable {
     }
   }
 
-  String toString() {
-    var sb = StringBuffer();
-    if (number != null) {
-      sb.write(renderNumber(number!));
-    }
-    if (number != null) sb.write(' ');
-    sb.write(currency);
-    return sb.toString();
-  }
-
   @override
   List<Object?> get props => [number, currency];
 
@@ -52,10 +42,6 @@ class Amount extends Equatable implements AmountSpec {
 
   Amount(this.number, this.currency);
   Amount.zero(this.currency) : number = Decimal.zero;
-
-  String toString() {
-    return '${renderNumber(number)} $currency';
-  }
 
   @override
   List<Object?> get props => [number, currency];
@@ -79,9 +65,4 @@ class Amount extends Equatable implements AmountSpec {
 
   @override
   bool get canResolve => true;
-}
-
-String renderNumber(Decimal d) {
-  if (d.scale < 2) return d.toStringAsFixed(2);
-  return d.toString();
 }

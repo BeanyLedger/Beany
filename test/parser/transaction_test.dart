@@ -1,6 +1,7 @@
 import 'package:beany/core/amount.dart';
 import 'package:beany/core/core.dart';
 import 'package:beany/core/meta_value.dart';
+import 'package:beany/render/render.dart';
 import 'package:test/test.dart';
 
 import 'package:beany/core/account.dart';
@@ -17,7 +18,7 @@ void main() {
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
     expect(
-      parse('2019-04-14 * "Cat Powder"\n').trHeader().val().toString(),
+      render(parse('2019-04-14 * "Cat Powder"\n').trHeader().val()),
       '2019-04-14 * "Cat Powder"\n',
     );
     expect(
@@ -25,11 +26,11 @@ void main() {
       Transaction(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
     );
     expect(
-      parse('2019-04-14 ! "Cat Powder"\n').trHeader().val().toString(),
+      render(parse('2019-04-14 ! "Cat Powder"\n').trHeader().val()),
       '2019-04-14 ! "Cat Powder"\n',
     );
     expect(
-      parse('2019-04-14 txn "Cat Powder"\n').trHeader().val().toString(),
+      render(parse('2019-04-14 txn "Cat Powder"\n').trHeader().val()),
       '2019-04-14 * "Cat Powder"\n',
     );
     expect(
@@ -42,7 +43,7 @@ void main() {
       ),
     );
     expect(
-      parse('2019-04-14 ! "Cat" "Payee"\n').trHeader().val().toString(),
+      render(parse('2019-04-14 ! "Cat" "Payee"\n').trHeader().val()),
       '2019-04-14 ! "Cat" "Payee"\n',
     );
     expect(
@@ -51,10 +52,9 @@ void main() {
           tags: ["hello", "berlin-2014"]),
     );
     expect(
-      parse('2019-04-14 ! "Cat" #hello #berlin-2014\n')
-          .trHeader()
-          .val()
-          .toString(),
+      render(
+        parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').trHeader().val(),
+      ),
       '2019-04-14 ! "Cat" #hello #berlin-2014\n',
     );
   });
@@ -134,8 +134,9 @@ void main() {
       },
     );
 
-    expect(parse(input).trStatement().val(), tr);
-    expect(parse(input).trStatement().val().toString(), tr.toString());
+    var actual = parse(input).trStatement().val();
+    expect(actual, tr);
+    expect(render(actual), render(tr));
   });
 
   test('Multiple Transactions', () {
@@ -154,7 +155,7 @@ void main() {
 // ; Comment
 
     var transactions = parse(input).all().val();
-    var actual = transactions.map((t) => t.toString()).join("\n") + "\n";
+    var actual = transactions.map((t) => render(t)).join("\n") + "\n";
     expect(actual.trim(), input.trim());
   });
 }

@@ -20,17 +20,6 @@ class CustomStatement extends Equatable implements Directive {
     this.parsingInfo,
   }) : meta = IMap(meta);
 
-  String toString() {
-    var sb = StringBuffer();
-    sb.write(date.toIso8601String().substring(0, 10));
-    sb.write(' custom ');
-    for (var value in values) {
-      sb.write('"$value" ');
-    }
-
-    return sb.toString().trimRight();
-  }
-
   @override
   List<Object?> get props => [date, meta, values];
 }

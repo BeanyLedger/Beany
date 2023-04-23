@@ -27,32 +27,6 @@ class PostingSpec extends Equatable {
     Iterable<String>? tags,
   }) : tags = IList(tags);
 
-  String toString() {
-    var sb = StringBuffer();
-    sb.write(amount != null
-        ? "  " + account.toString() + "  " + amount.toString()
-        : "  " + account.toString());
-
-    if (costSpec != null) {
-      sb.write(' ');
-      sb.write(costSpec.toString());
-    }
-    if (priceSpec != null) {
-      sb.write(priceSpec.toString());
-    }
-    if (tags.isNotEmpty) {
-      for (var tag in tags) {
-        sb.write(' #');
-        sb.write(tag);
-      }
-    }
-    if (comment != null && comment!.isNotEmpty) {
-      sb.write(' ; ');
-      sb.write(comment);
-    }
-    return sb.toString();
-  }
-
   bool get canResolve {
     var can = amount != null;
     if (priceSpec != null) {
@@ -147,29 +121,6 @@ class Posting extends Equatable implements PostingSpec {
     Iterable<String>? tags,
     this.spec,
   }) : tags = IList(tags);
-
-  String toString() {
-    var sb = StringBuffer();
-    sb.write("$account $amount");
-    if (costSpec != null) {
-      sb.write(' ');
-      sb.write(costSpec.toString());
-    }
-    if (priceSpec != null) {
-      sb.write(priceSpec.toString());
-    }
-    if (tags.isNotEmpty) {
-      for (var tag in tags) {
-        sb.write(' #');
-        sb.write(tag);
-      }
-    }
-    if (comment != null && comment!.isNotEmpty) {
-      sb.write(' ; ');
-      sb.write(comment);
-    }
-    return sb.toString();
-  }
 
   PostingSpec copyWith({
     Account? account,

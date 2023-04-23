@@ -10,8 +10,6 @@ class IncludeStatement extends Equatable implements Statement {
 
   IncludeStatement(this.path, {this.parsingInfo});
 
-  String toString() => 'include "$path"';
-
   @override
   List<Object?> get props => [path];
 }
@@ -24,8 +22,6 @@ class OptionStatement extends Equatable implements Statement {
 
   OptionStatement(this.key, this.value, {this.parsingInfo});
 
-  String toString() => 'option "$key" "$value"';
-
   @override
   List<Object?> get props => [key, value];
 }
@@ -36,8 +32,6 @@ class CommentStatement extends Equatable implements Statement {
   final ParsingInfo? parsingInfo;
 
   CommentStatement(this.value, {this.parsingInfo});
-
-  String toString() => '; $value';
 
   @override
   List<Object?> get props => [value];
