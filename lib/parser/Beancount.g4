@@ -75,7 +75,7 @@ postingSpecWithCostAndPrice:
 priceSpec: priceSpecPer | priceSpecTotal;
 priceSpecPer: '@' amountSpec;
 priceSpecTotal: '@@' amountSpec;
-amountSpec: number? currency?;
+amountSpec: number? currency;
 
 costSpec: '{' amount '}';
 

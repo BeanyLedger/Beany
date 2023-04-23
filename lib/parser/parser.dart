@@ -216,7 +216,7 @@ extension AmountSpecParsing on AmountSpecContext {
     if (n == null && c == null) {
       throw Exception("AmountSpec has no number or currency");
     }
-    return AmountSpec(n?.val(), c?.val());
+    return AmountSpec(n?.val(), c!.val());
   }
 }
 

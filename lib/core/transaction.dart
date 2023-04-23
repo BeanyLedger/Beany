@@ -145,26 +145,14 @@ class Transaction extends Equatable implements Directive {
       var priceSpec = unresolved.priceSpec!;
       if (priceSpec.amountTotal != null) {
         var pTotal = priceSpec.amountTotal!;
-        if (pTotal.currency == null) {
-          throw Exception(
-              'PriceSpec is missing a currency. Should this be allowed?');
-        }
-
-        var currency = pTotal.currency!;
-        pTotal = Amount(num.abs(), currency);
+        pTotal = Amount(num.abs(), pTotal.currency);
         priceSpec = priceSpec.copyWith(amountTotal: pTotal);
         unresolved = unresolved.copyWith(priceSpec: priceSpec);
       } else if (priceSpec.amountPer != null) {
         var pPer = priceSpec.amountPer!;
-        if (pPer.currency == null) {
-          throw Exception(
-              'PriceSpec is missing a currency. Should this be allowed?');
-        }
-
-        var currency = pPer.currency!;
         var per = (num.abs() / unresolved.amount!.number).toDecimal(
             scaleOnInfinitePrecision: 10); // FIXME: What about the precision?
-        pPer = Amount(per, currency);
+        pPer = Amount(per, pPer.currency);
         priceSpec = priceSpec.copyWith(amountPer: pPer);
         unresolved = unresolved.copyWith(priceSpec: priceSpec);
       }

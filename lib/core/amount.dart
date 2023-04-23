@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 @immutable
 class AmountSpec extends Equatable {
   final Decimal? number;
-  final String? currency;
+  final String currency;
 
   AmountSpec(this.number, this.currency) {
     if (number != null) {
@@ -27,10 +27,8 @@ class AmountSpec extends Equatable {
     if (number != null) {
       sb.write(renderNumber(number!));
     }
-    if (currency != null) {
-      if (number != null) sb.write(' ');
-      sb.write(currency);
-    }
+    if (number != null) sb.write(' ');
+    sb.write(currency);
     return sb.toString();
   }
 
@@ -41,13 +39,10 @@ class AmountSpec extends Equatable {
     if (number == null) {
       throw ArgumentError('AmountSpec.number is null');
     }
-    if (currency == null) {
-      throw ArgumentError('AmountSpec.currency is null');
-    }
-    return Amount(number!, currency!);
+    return Amount(number!, currency);
   }
 
-  bool get canResolve => number != null && currency != null;
+  bool get canResolve => number != null;
 }
 
 @immutable
