@@ -43,7 +43,10 @@ void main() {
 2023-01-01 close Assets:Cash
 """;
 
-    expect(() => Engine.loadString(contents), throwsException);
+    expect(
+      () => Engine.loadString(contents),
+      throwsA(isA<AccountNotOpenException>()),
+    );
   });
 
   test("Account must be opened before use", () {

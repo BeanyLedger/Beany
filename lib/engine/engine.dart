@@ -89,8 +89,7 @@ class Engine {
         var close = statement;
         var i = _accountInfo.indexWhere((a) => a.account == close.account);
         if (i == -1) {
-          throw Exception(
-              'Account "${close.account}" was closed before it was opened');
+          throw AccountNotOpenException(close.account);
         }
 
         _accountInfo[i] =
