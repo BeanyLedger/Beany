@@ -17,6 +17,8 @@ import 'package:meta/meta.dart';
 import 'package:quiver/collection.dart';
 import 'package:collection/collection.dart';
 
+import 'exceptions.dart';
+
 class Engine {
   List<Statement> statements = [];
 
@@ -75,8 +77,10 @@ class Engine {
     for (var statement in statements) {
       if (statement is OpenStatement) {
         // Make sure the account is not already open
-        if (_accountInfo.any((a) => a.account == statement.account)) {
-          throw Exception('Account "${statement.account}" is already open');
+        var actInfo = _accountInfo
+            .firstWhereOrNull((a) => a.account == statement.account);
+        if (actInfo != null) {
+          throw AccountAlreadyOpenException(actInfo.account, actInfo.openDate);
         }
 
         var open = statement;
@@ -104,7 +108,7 @@ class Engine {
           );
 
           if (accountInfo == null) {
-            throw Exception('Account "$account" was not opened');
+            throw AccountNotOpenException(account);
           }
           if (accountInfo.closeDate != null) {
             if (accountInfo.closeDate!.isBefore(transaction.date)) {
@@ -138,7 +142,7 @@ class Engine {
         );
 
         if (accountInfo == null) {
-          throw Exception('Account "$account" was not opened');
+          throw AccountNotOpenException(account);
         }
         if (accountInfo.closeDate != null) {
           if (accountInfo.closeDate!.isBefore(balance.date)) {

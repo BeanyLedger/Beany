@@ -1,5 +1,6 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/engine/engine.dart';
+import 'package:beany/engine/exceptions.dart';
 import 'package:beany/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
@@ -52,7 +53,22 @@ void main() {
   Assets:Cash
 """;
 
-    expect(() => Engine.loadString(contents), throwsException);
+    expect(
+      () => Engine.loadString(contents),
+      throwsA(isA<AccountNotOpenException>()),
+    );
+  });
+
+  test("Account must be opened twice", () {
+    var contents = """
+2023-01-02 open Assets:Cash
+2023-01-01 open Assets:Cash
+""";
+
+    expect(
+      () => Engine.loadString(contents),
+      throwsA(isA<AccountAlreadyOpenException>()),
+    );
   });
 
   test("Account must not be closed before use", () {
