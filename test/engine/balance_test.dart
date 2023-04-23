@@ -9,6 +9,7 @@ void main() {
     var contents = """
 
 2023-01-01 open Assets:Work:N26
+2023-01-01 open Assets:Cash
 2023-01-02 * "Salary"
   Assets:Work:N26  1000.00 EUR
   Assets:Cash

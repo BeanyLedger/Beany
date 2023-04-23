@@ -79,6 +79,9 @@ class Engine {
         var resolvedPostings = transaction.resolvedPostings();
         for (var posting in resolvedPostings) {
           var account = posting.account;
+          if (_accountInfo.where((e) => e.account == account).isEmpty) {
+            throw Exception('Account "$account" was not opened');
+          }
           var amount = posting.amount;
 
           var val = ab.balances[account]
