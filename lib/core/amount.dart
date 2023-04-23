@@ -54,6 +54,7 @@ class Amount extends Equatable implements AmountSpec {
   final String currency;
 
   Amount(this.number, this.currency);
+  Amount.zero(this.currency) : number = Decimal.zero;
 
   String toString() {
     return '${renderNumber(number)} $currency';
@@ -64,6 +65,20 @@ class Amount extends Equatable implements AmountSpec {
 
   @override
   Amount toAmount() => this;
+
+  Amount operator +(Amount other) {
+    if (currency != other.currency) {
+      throw ArgumentError('Cannot add amounts with different currencies');
+    }
+    return Amount(number + other.number, currency);
+  }
+
+  Amount operator -(Amount other) {
+    if (currency != other.currency) {
+      throw ArgumentError('Cannot subtract amounts with different currencies');
+    }
+    return Amount(number - other.number, currency);
+  }
 }
 
 String renderNumber(Decimal d) {

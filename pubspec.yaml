@@ -13,6 +13,7 @@ dependencies:
   ninja: ^3.0.7
   rsa_pkcs: ^2.0.1
   equatable: ^2.0.5
+  quiver: ^3.2.1
 
 dev_dependencies:
   test: ^1.19.5

@@ -1,20 +1,31 @@
 import 'dart:io';
 
 import 'package:beany/core/account.dart';
+import 'package:beany/core/amount.dart';
 import 'package:beany/core/close_statement.dart';
 import 'package:beany/core/core.dart';
 import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/statements.dart';
+import 'package:beany/core/transaction.dart';
+import 'package:beany/misc/date.dart';
 import 'package:beany/parser/parser.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:meta/meta.dart';
+import 'package:quiver/collection.dart';
+import 'package:collection/collection.dart';
 
 class Engine {
   List<Statement> statements = [];
 
   Engine(this.statements);
+
+  static Future<Engine> loadString(String fileContent) async {
+    var statements = parse(fileContent).all().val().toList();
+    var engine = Engine(statements);
+    return engine.compute();
+  }
 
   static Future<Engine> loadRootFile(String filePath) async {
     var rootDir = p.dirname(filePath);
@@ -35,29 +46,58 @@ class Engine {
 
     var statementsWithoutIncludes =
         statements.where((s) => s is! IncludeStatement);
-    return Engine([...statementsWithoutIncludes, ...extraStatements]);
+    var engine = Engine([...statementsWithoutIncludes, ...extraStatements]);
+    return engine.compute();
   }
 
-  List<AccountInfo> get accounts {
-    var accountInfos = <AccountInfo>[];
+  final _accountInfo = <AccountInfo>[];
+  List<AccountInfo> get accounts => _accountInfo;
+
+  final _accountBalances = <Date, AccountBalances>{};
+  Map<Date, AccountBalances> get accountBalances => _accountBalances;
+
+  Engine compute() {
     for (var statement in statements) {
       if (statement is OpenStatement) {
         var open = statement;
-        accountInfos.add(AccountInfo(open.account, open.date, null));
+        _accountInfo.add(AccountInfo(open.account, open.date, null));
       } else if (statement is CloseStatement) {
         var close = statement;
-        var i = accountInfos.indexWhere((a) => a.account == close.account);
+        var i = _accountInfo.indexWhere((a) => a.account == close.account);
         if (i == -1) {
           throw Exception(
               'Account "${close.account}" was closed before it was opened');
         }
 
-        accountInfos[i] =
-            AccountInfo(close.account, accountInfos[i].openDate, close.date);
+        _accountInfo[i] =
+            AccountInfo(close.account, _accountInfo[i].openDate, close.date);
+      } else if (statement is Transaction) {
+        var transaction = statement;
+        var date = Date.from(transaction.date);
+        var ab = _accountBalances[date] ?? AccountBalances(date);
+
+        var resolvedPostings = transaction.resolvedPostings();
+        for (var posting in resolvedPostings) {
+          var account = posting.account;
+          var amount = posting.amount;
+
+          var val = ab.balances[account]
+              .firstWhereOrNull((a) => a.currency == amount.currency);
+          if (val == null) {
+            ab.balances.add(account, amount);
+            continue;
+          }
+
+          var sum = val + amount;
+          ab.balances.remove(account, val);
+          ab.balances.add(account, sum);
+        }
+
+        _accountBalances[date] = ab;
       }
     }
 
-    return accountInfos;
+    return this;
   }
 }
 
@@ -73,7 +113,13 @@ class AccountInfo extends Equatable {
   List<Object?> get props => [account, openDate, closeDate];
 }
 
-// Compute the balance per account, per day?
-// That way, I'll be easily able to verify any account balance statements
+@immutable
+class AccountBalances extends Equatable {
+  final Date date;
+  final Multimap<Account, Amount> balances = Multimap();
 
-// Maybe there should be 1 function to open a file, parse all the statements are return them?
+  AccountBalances(this.date);
+
+  @override
+  List<Object?> get props => [date, balances];
+}
