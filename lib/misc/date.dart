@@ -3,7 +3,15 @@ class Date implements DateTime {
 
   Date(int year, int month, int day) : _native = DateTime.utc(year, month, day);
 
-  Date.from(DateTime dt) : _native = DateTime.utc(dt.year, dt.month, dt.day);
+  Date.from(DateTime dt) : _native = DateTime.utc(dt.year, dt.month, dt.day) {
+    if (dt.hour != 0 ||
+        dt.minute != 0 ||
+        dt.second != 0 ||
+        dt.millisecond != 0 ||
+        dt.microsecond != 0) {
+      throw ArgumentError('Date.from() only accepts dates with time 00:00:00');
+    }
+  }
 
   @override
   DateTime add(Duration duration) => _native.add(duration);
