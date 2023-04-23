@@ -93,4 +93,9 @@ class Date implements DateTime {
 
   @override
   int get hashCode => _native.hashCode;
+
+  static Date today() {
+    final dt = DateTime.now();
+    return Date(dt.year, dt.month, dt.day);
+  }
 }

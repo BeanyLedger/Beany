@@ -40,6 +40,5 @@ class CostSpec extends Equatable {
     return sb.toString();
   }
 
-  // FIXME: Properly implement this
-  bool get canResolve => true;
+  bool get canResolve => date != null;
 }
