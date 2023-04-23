@@ -136,7 +136,7 @@ class Transaction extends Equatable implements Directive {
       num += p.toPosting().weight().number;
     }
 
-    var unresolvedIndex = postings.indexWhere((e) => e.amount == null);
+    var unresolvedIndex = postings.indexWhere((e) => !e.canResolve);
     var unresolved = postings[unresolvedIndex];
     late PostingSpec resolved;
     if (unresolved.amount == null) {
@@ -151,7 +151,7 @@ class Transaction extends Equatable implements Directive {
         }
 
         var currency = pTotal.currency!;
-        pTotal = Amount(num, currency);
+        pTotal = Amount(num.abs(), currency);
         priceSpec = priceSpec.copyWith(amountTotal: pTotal);
         resolved = unresolved.copyWith(priceSpec: priceSpec);
       } else if (priceSpec.amountPer != null) {

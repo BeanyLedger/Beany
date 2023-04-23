@@ -33,4 +33,21 @@ void main() {
     expect(postings.length, 2);
     expect(postings[1].amount, AMT("436.01 CAD"));
   });
+
+  test("Calculates the total price", () {
+    var input = """
+2023-03-15 * "Converted 10195.00 USD to 9457.80 EUR"
+  id: "BALANCE-908717197"
+  Assets:Personal:Transferwise  -10195.00 USD @ 0.932050 EUR
+  Expenses:Work:BankCharges:Transferwise  47.69 USD @@ EUR
+  Assets:Personal:Transferwise   9457.80 EUR
+""";
+
+    var tr = parse(input).trStatement().val();
+    var postings = tr.resolvedPostings();
+    expect(postings.length, 3);
+    expect(postings[0].weight(), AMT("-9502.24975 EUR"));
+    expect(postings[1].weight(), AMT("44.44975 EUR"));
+    expect(postings[2].weight(), AMT("9457.80 EUR"));
+  });
 }
