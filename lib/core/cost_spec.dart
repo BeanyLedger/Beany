@@ -39,4 +39,7 @@ class CostSpec extends Equatable {
     sb.write('}');
     return sb.toString();
   }
+
+  // FIXME: Properly implement this
+  bool get canResolve => true;
 }

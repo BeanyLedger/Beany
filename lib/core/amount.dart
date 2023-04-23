@@ -46,6 +46,8 @@ class AmountSpec extends Equatable {
     }
     return Amount(number!, currency!);
   }
+
+  bool get canResolve => number != null && currency != null;
 }
 
 @immutable
@@ -79,6 +81,9 @@ class Amount extends Equatable implements AmountSpec {
     }
     return Amount(number - other.number, currency);
   }
+
+  @override
+  bool get canResolve => true;
 }
 
 String renderNumber(Decimal d) {

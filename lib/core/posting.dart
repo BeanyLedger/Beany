@@ -53,9 +53,20 @@ class PostingSpec extends Equatable {
     return sb.toString();
   }
 
-  Posting toPosting({Amount? amount}) {
-    if (amount == null && this.amount == null) {
-      throw ArgumentError('PostingSpec: amount must be defined');
+  bool get canResolve {
+    var can = amount != null;
+    if (priceSpec != null) {
+      can = can && priceSpec!.canResolve;
+    }
+    if (costSpec != null) {
+      can = can && costSpec!.canResolve;
+    }
+    return can;
+  }
+
+  Posting toPosting() {
+    if (!canResolve) {
+      throw ArgumentError('PostingSpec: cannot resolve');
     }
 
     Price? price;
@@ -211,4 +222,7 @@ class Posting extends Equatable implements PostingSpec {
 
     return amount;
   }
+
+  @override
+  bool get canResolve => true;
 }

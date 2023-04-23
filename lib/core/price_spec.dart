@@ -42,6 +42,16 @@ class PriceSpec extends Equatable {
 
     return sb.toString();
   }
+
+  bool get canResolve {
+    if (amountPer != null) {
+      return amountPer!.canResolve;
+    }
+    if (amountTotal != null) {
+      return amountTotal!.canResolve;
+    }
+    return false;
+  }
 }
 
 @immutable
@@ -83,4 +93,7 @@ class Price extends Equatable implements PriceSpec {
 
     return sb.toString();
   }
+
+  @override
+  bool get canResolve => true;
 }

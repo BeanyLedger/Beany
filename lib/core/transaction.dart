@@ -103,10 +103,13 @@ class Transaction extends Equatable implements Directive {
   }
 
   IList<Posting> resolvedPostings() {
-    var numUnresolved = postings.where((p) => p.amount == null).length;
+    var numUnresolved = postings.where((p) => !p.canResolve).length;
     if (numUnresolved > 1) {
       throw Exception('Cannot realize transaction with more than one '
           'unresolved posting');
+    }
+    if (numUnresolved == 0) {
+      return postings.map((p) => p.toPosting()).toIList();
     }
 
     var currencies = postings.map((p) {
@@ -115,7 +118,7 @@ class Transaction extends Equatable implements Directive {
         return priceSpec!.amountTotal!.currency;
       }
       if (priceSpec?.amountPer != null) {
-        return priceSpec!.amountTotal!.currency;
+        return priceSpec!.amountPer!.currency;
       }
 
       return p.amount?.currency;
@@ -128,16 +131,37 @@ class Transaction extends Equatable implements Directive {
 
     var num = D("0");
     for (var p in postings) {
-      if (p.amount == null && p.priceSpec == null) {
-        continue;
-      }
+      if (!p.canResolve) continue;
 
       num += p.toPosting().weight().number;
     }
 
     var unresolvedIndex = postings.indexWhere((e) => e.amount == null);
     var unresolved = postings[unresolvedIndex];
-    var resolved = unresolved.copyWith(amount: Amount(-num, currency));
+    late PostingSpec resolved;
+    if (unresolved.amount == null) {
+      resolved = unresolved.copyWith(amount: Amount(-num, currency));
+    } else if (unresolved.priceSpec?.canResolve == false) {
+      var priceSpec = unresolved.priceSpec!;
+      if (priceSpec.amountTotal != null) {
+        var pTotal = priceSpec.amountTotal!;
+        if (pTotal.currency == null) {
+          throw Exception(
+              'PriceSpec is missing a currency. Should this be allowed?');
+        }
+
+        var currency = pTotal.currency!;
+        pTotal = Amount(num, currency);
+        priceSpec = priceSpec.copyWith(amountTotal: pTotal);
+        resolved = unresolved.copyWith(priceSpec: priceSpec);
+      } else if (priceSpec.amountPer != null) {
+        throw UnimplementedError();
+      } else {
+        throw UnimplementedError();
+      }
+    } else {
+      throw UnimplementedError();
+    }
 
     return IList(postings
         .replace(unresolvedIndex, resolved)
