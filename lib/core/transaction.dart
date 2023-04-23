@@ -138,9 +138,8 @@ class Transaction extends Equatable implements Directive {
 
     var unresolvedIndex = postings.indexWhere((e) => !e.canResolve);
     var unresolved = postings[unresolvedIndex];
-    late PostingSpec resolved;
     if (unresolved.amount == null) {
-      resolved = unresolved.copyWith(amount: Amount(-num, currency));
+      unresolved = unresolved.copyWith(amount: Amount(-num, currency));
     } else if (unresolved.priceSpec?.canResolve == false) {
       var priceSpec = unresolved.priceSpec!;
       if (priceSpec.amountTotal != null) {
@@ -153,18 +152,16 @@ class Transaction extends Equatable implements Directive {
         var currency = pTotal.currency!;
         pTotal = Amount(num.abs(), currency);
         priceSpec = priceSpec.copyWith(amountTotal: pTotal);
-        resolved = unresolved.copyWith(priceSpec: priceSpec);
+        unresolved = unresolved.copyWith(priceSpec: priceSpec);
       } else if (priceSpec.amountPer != null) {
         throw UnimplementedError();
       } else {
         throw UnimplementedError();
       }
-    } else {
-      throw UnimplementedError();
     }
 
     return IList(postings
-        .replace(unresolvedIndex, resolved)
+        .replace(unresolvedIndex, unresolved)
         .map((ps) => ps.toPosting()));
   }
 
