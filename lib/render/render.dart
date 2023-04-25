@@ -101,9 +101,11 @@ class BeancountRenderer implements RendererInterface {
   void renderAmountSpec(StringSink sink, AmountSpec amountSpec) {
     if (amountSpec.number != null) {
       sink.write(renderNumber(amountSpec.number!));
-      sink.write(' ');
     }
-    sink.write(amountSpec.currency);
+    if (amountSpec.currency != null) {
+      if (amountSpec.number != null) sink.write(' ');
+      sink.write(amountSpec.currency);
+    }
   }
 
   @override

@@ -206,14 +206,22 @@ IList<Posting> resolvedPostings(IList<PostingSpec> postings) {
     var priceSpec = unresolved.priceSpec!;
     if (priceSpec.amountTotal != null) {
       var pTotal = priceSpec.amountTotal!;
-      pTotal = Amount(num.abs(), pTotal.currency);
+      if (pTotal.currency == null) {
+        throw new Exception('Cannot resolve transaction with unspecified '
+            'currency');
+      }
+      pTotal = Amount(num.abs(), pTotal.currency!);
       priceSpec = priceSpec.copyWith(amountTotal: pTotal);
       unresolved = unresolved.copyWith(priceSpec: priceSpec);
     } else if (priceSpec.amountPer != null) {
       var pPer = priceSpec.amountPer!;
       var per = (num.abs() / unresolved.amount!.number).toDecimal(
           scaleOnInfinitePrecision: 10); // FIXME: What about the precision?
-      pPer = Amount(per, pPer.currency);
+      if (pPer.currency == null) {
+        throw new Exception('Cannot resolve transaction with unspecified '
+            'currency');
+      }
+      pPer = Amount(per, pPer.currency!);
       priceSpec = priceSpec.copyWith(amountPer: pPer);
       unresolved = unresolved.copyWith(priceSpec: priceSpec);
     }
