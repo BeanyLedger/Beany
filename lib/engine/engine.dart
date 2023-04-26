@@ -49,7 +49,7 @@ class Engine {
 
     var file = File(filePath);
     var text = await file.readAsString();
-    var statements = parse(text).all().val().toList();
+    var statements = parse(text).all().val();
     var extraStatements = <Statement>[];
     for (var statement in statements) {
       if (statement is IncludeStatement) {
