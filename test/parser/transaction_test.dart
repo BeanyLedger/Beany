@@ -187,34 +187,3 @@ void main() {
     expect(render(tr), input);
   });
 }
-
-
-// Query directive
-// Custom
-
-/*
-Links
-
-2014-02-05 * "Invoice for January" ^invoice-pepe-studios-jan14
-  Income:Clients:PepeStudios           -8450.00 USD
-  Assets:AccountsReceivable
-
-2014-02-20 * "Check deposit - payment from Pepe" ^invoice-pepe-studios-jan14
-  Assets:BofA:Checking                  8450.00 USD
-  Assets:AccountsReceivable
-
-  */
-
-/*
-2013-03-14 open Assets:BTrade:HOOLI
-  category: "taxable"
-
-Metadata values -
-    Strings
-    Accounts
-    Currency
-    Dates (datetime.date)
-    Tags
-    Numbers (Decimal)
-    Amount (beancount.core.amount.Amount)
-*/
