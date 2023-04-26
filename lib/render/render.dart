@@ -136,8 +136,13 @@ class BeancountRenderer implements RendererInterface {
 
   @override
   void renderPostingSpec(StringSink sink, PostingSpec posting) {
-    sink.write(_tab);
+    for (var comment in posting.preComments) {
+      sink.write(_tab);
+      sink.write('; ');
+      sink.writeln(comment);
+    }
 
+    sink.write(_tab);
     if (posting.amount == null) {
       renderAccount(sink, posting.account);
     } else {
@@ -184,11 +189,6 @@ class BeancountRenderer implements RendererInterface {
         sink.write(_tab);
         sink.writeln('${m.key}: ${m.value}');
       }
-    }
-
-    if (tr.comments.isNotEmpty) {
-      var s = tr.comments.map((c) => '  ; ' + c).join('\n');
-      sink.writeln(s);
     }
 
     if (tr.postings.isNotEmpty) {

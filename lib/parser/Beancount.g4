@@ -48,16 +48,14 @@ customStatement: date 'custom' quoted_string+;
 
 emptyLine: NEWLINE;
 
-trStatement:
-	trHeader NEWLINE (comment NEWLINE)* metadata (
-		postingSpec NEWLINE
-	)+;
+trStatement: trHeader NEWLINE metadata postingSpecWithComments+;
 trHeader:
 	date trFlag narration = quoted_string payee = quoted_string? tags?;
 
 trFlag: TR_FLAG;
 comment: COMMENT;
 
+postingSpecWithComments: (comment NEWLINE)* postingSpec NEWLINE;
 postingSpec:
 	postingSpecAccountOnly
 	| postingSpecAccountAmount

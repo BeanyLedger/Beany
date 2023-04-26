@@ -85,10 +85,13 @@ void main() {
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [
-        PostingSpec(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR")),
+        PostingSpec(
+          A("Expenses:Mystery:CatPowder"),
+          AMT("1.5 EUR"),
+          preComments: ["Help"],
+        ),
         PostingSpec(A("Assets:Savings"), null),
       ],
-      comments: ["Help"],
     );
 
     expect(parse(input).trStatement().val(), tr);
@@ -159,6 +162,29 @@ void main() {
     var transactions = parse(input).all().val();
     var actual = transactions.map((t) => render(t)).join("\n") + "\n";
     expect(actual.trim(), input.trim());
+  });
+
+  test('Transaction with Posting Comments', () {
+    var input = """2019-04-14 * "Cat Powder"
+  ; Help
+  Expenses:Mystery:CatPowder  1.50 EUR
+  ; Booty
+  Assets:Savings
+""";
+
+    var tr = TransactionSpec(
+      DateTime(2019, 4, 14),
+      TransactionFlag.Okay,
+      'Cat Powder',
+      postings: [
+        PostingSpec(A("Expenses:Mystery:CatPowder"), AMT("1.5 EUR"),
+            preComments: ["Help"]),
+        PostingSpec(A("Assets:Savings"), null, preComments: ["Booty"]),
+      ],
+    );
+
+    expect(parse(input).trStatement().val(), tr);
+    expect(render(tr), input);
   });
 }
 

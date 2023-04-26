@@ -13,6 +13,7 @@ class PostingSpec extends Equatable {
   final Account account;
   final Amount? amount;
   final String? comment;
+  final IList<String> preComments;
   final PriceSpec? priceSpec;
   final CostSpec? costSpec;
 
@@ -25,7 +26,9 @@ class PostingSpec extends Equatable {
     this.priceSpec = null,
     this.costSpec = null,
     Iterable<String>? tags,
-  }) : tags = IList(tags);
+    Iterable<String>? preComments,
+  })  : tags = IList(tags),
+        preComments = IList(preComments);
 
   bool get canResolve {
     var can = amount != null;
@@ -64,6 +67,7 @@ class PostingSpec extends Equatable {
       account,
       amount ?? this.amount!,
       comment: comment,
+      preComments: preComments,
       priceSpec: price,
       costSpec: costSpec,
       tags: tags,
@@ -76,14 +80,16 @@ class PostingSpec extends Equatable {
     Amount? amount,
     List<String>? tags,
     String? comment,
+    Iterable<String>? preComments,
     PriceSpec? priceSpec,
     CostSpec? costSpec,
   }) {
     return PostingSpec(
       account ?? this.account,
       amount ?? this.amount,
-      tags: tags ?? this.tags.toList(),
+      tags: tags ?? this.tags,
       comment: comment ?? this.comment,
+      preComments: preComments ?? this.preComments,
       priceSpec: priceSpec ?? this.priceSpec,
       costSpec: costSpec ?? this.costSpec,
     );
@@ -94,6 +100,7 @@ class PostingSpec extends Equatable {
         account,
         amount,
         comment,
+        preComments,
         priceSpec,
         costSpec,
         tags,
@@ -105,6 +112,7 @@ class Posting extends Equatable implements PostingSpec {
   final Account account;
   final Amount amount;
   final String? comment;
+  final IList<String> preComments;
   final Price? priceSpec;
   final CostSpec? costSpec;
 
@@ -119,22 +127,26 @@ class Posting extends Equatable implements PostingSpec {
     this.priceSpec = null,
     this.costSpec = null,
     Iterable<String>? tags,
+    Iterable<String>? preComments,
     this.spec,
-  }) : tags = IList(tags);
+  })  : tags = IList(tags),
+        preComments = IList(preComments);
 
   PostingSpec copyWith({
     Account? account,
     Amount? amount,
     List<String>? tags,
     String? comment,
+    Iterable<String>? preComments,
     PriceSpec? priceSpec,
     CostSpec? costSpec,
   }) {
     return PostingSpec(
       account ?? this.account,
       amount ?? this.amount,
-      tags: tags ?? this.tags.toList(),
+      tags: tags ?? this.tags,
       comment: comment ?? this.comment,
+      preComments: preComments ?? this.preComments,
       priceSpec: priceSpec ?? this.priceSpec,
       costSpec: costSpec ?? this.costSpec,
     );
@@ -145,6 +157,7 @@ class Posting extends Equatable implements PostingSpec {
         account,
         amount,
         comment,
+        preComments,
         priceSpec,
         costSpec,
         tags,

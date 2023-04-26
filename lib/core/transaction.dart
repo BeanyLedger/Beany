@@ -29,7 +29,6 @@ class TransactionSpec extends Equatable implements Directive {
   final String? payee;
   final TransactionFlag flag;
 
-  final IList<String> comments;
   final IList<PostingSpec> postings;
   final IList<String> tags;
 
@@ -41,17 +40,14 @@ class TransactionSpec extends Equatable implements Directive {
     this.narration, {
     this.payee,
     Iterable<String>? tags,
-    Iterable<String>? comments,
     Iterable<PostingSpec>? postings,
     Map<String, MetaValue>? meta,
     this.parsingInfo,
   })  : tags = IList(tags),
-        comments = IList(comments),
         postings = IList(postings),
         meta = IMap(meta);
 
   TransactionSpec copyWith({
-    Iterable<String>? comments,
     Iterable<PostingSpec>? postings,
     Iterable<String>? tags,
     Map<String, MetaValue>? meta,
@@ -63,7 +59,6 @@ class TransactionSpec extends Equatable implements Directive {
       narration,
       payee: payee,
       tags: IList.orNull(tags) ?? this.tags,
-      comments: IList.orNull(comments) ?? this.comments,
       postings: IList.orNull(postings) ?? this.postings,
       meta: meta ?? this.meta.unlockView,
       parsingInfo: parsingInfo ?? this.parsingInfo,
@@ -77,7 +72,6 @@ class TransactionSpec extends Equatable implements Directive {
         narration,
         payee,
         flag,
-        comments,
         postings,
         tags,
       ];
@@ -89,7 +83,6 @@ class TransactionSpec extends Equatable implements Directive {
       narration,
       payee: payee,
       tags: tags,
-      comments: comments,
       postings: resolvedPostings(postings),
       meta: meta.unlockView,
       parsingInfo: parsingInfo,

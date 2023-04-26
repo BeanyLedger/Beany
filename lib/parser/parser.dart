@@ -22,8 +22,6 @@ import 'package:beany/core/transaction.dart';
 import 'package:beany/parser/BeancountLexer.dart';
 import 'package:beany/parser/BeancountParser.dart';
 
-import 'package:collection/collection.dart';
-
 BeancountParser parse(String text) {
   if (!text.endsWith('\n\n')) text += '\n\n';
   final inputStream = InputStream.fromString(text);
@@ -332,6 +330,13 @@ extension TransactionHeaderParsing on TrHeaderContext {
   }
 }
 
+extension PostingSpecWithCommentsParsing on PostingSpecWithCommentsContext {
+  PostingSpec val() {
+    var preComments = comments().map((c) => c.val());
+    return postingSpec()!.val().copyWith(preComments: preComments);
+  }
+}
+
 extension PostingSpecParsing on PostingSpecContext {
   PostingSpec val() {
     var p0 = postingSpecAccountAmount();
@@ -358,12 +363,7 @@ extension TransactionParsing on TrStatementContext {
     var tr = trHeader()!.val();
 
     return tr.copyWith(
-      postings: children!.map((c) {
-        if (c is PostingSpecContext) return c.val();
-
-        return null;
-      }).whereNotNull(),
-      comments: comments().map((e) => e.val()),
+      postings: postingSpecWithCommentss().map((p) => p.val()),
       meta: metadata()?.val(),
       parsingInfo: _buildParsingInfo(this),
     );
