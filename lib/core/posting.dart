@@ -1,6 +1,7 @@
 import 'package:beany/core/price_spec.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable/src/equatable_utils.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
@@ -105,6 +106,14 @@ class PostingSpec extends Equatable {
         costSpec,
         tags,
       ];
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Posting && other is! PostingSpec) return false;
+
+    return identical(this, other) ||
+        other is Equatable && equals(props, other.props);
+  }
 }
 
 @immutable
@@ -198,4 +207,12 @@ class Posting extends Equatable implements PostingSpec {
 
   @override
   bool get canResolve => true;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Posting && other is! PostingSpec) return false;
+
+    return identical(this, other) ||
+        other is Equatable && equals(props, other.props);
+  }
 }

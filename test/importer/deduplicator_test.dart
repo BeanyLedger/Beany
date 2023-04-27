@@ -20,7 +20,7 @@ void main() {
       DT("2023-03-26"),
       TransactionFlag.Okay,
       "Audible",
-      postings: [PostingSpec(Account("Assets:Wise"), AMT("-14.94 USD"))],
+      postings: [Posting(Account("Assets:Wise"), AMT("-14.94 USD"))],
       meta: {"id": MetaValue(stringValue: "CARD-649346528")},
     );
 
