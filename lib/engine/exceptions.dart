@@ -1,6 +1,8 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/amount.dart';
+import 'package:beany/core/transaction.dart';
 import 'package:beany/engine/engine.dart';
+import 'package:beany/render/render.dart';
 
 class AccountAlreadyOpenException implements Exception {
   final Account account;
@@ -38,4 +40,16 @@ class BalanceFailure implements Exception {
     required this.expected,
     required this.actual,
   });
+}
+
+class PostingResolutinFailure implements Exception {
+  final TransactionSpec transaction;
+  final String message;
+
+  PostingResolutinFailure(this.transaction, this.message);
+
+  @override
+  String toString() {
+    return 'PostingResolutinFailure{transaction: ${render(transaction)}, message: $message}';
+  }
 }

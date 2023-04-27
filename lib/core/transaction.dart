@@ -1,8 +1,10 @@
 import 'package:beany/core/amount.dart';
+import 'package:beany/engine/exceptions.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
+
 import 'package:collection/collection.dart';
 
 import 'posting.dart';
@@ -83,7 +85,7 @@ class TransactionSpec extends Equatable implements Directive {
       narration,
       payee: payee,
       tags: tags,
-      postings: resolvedPostings(postings),
+      postings: resolvedPostings(this),
       meta: meta.unlockView,
       parsingInfo: parsingInfo,
     );
@@ -157,11 +159,12 @@ class Transaction extends Equatable implements TransactionSpec {
   Transaction resolve() => this;
 }
 
-IList<Posting> resolvedPostings(IList<PostingSpec> postings) {
+IList<Posting> resolvedPostings(TransactionSpec trSpec) {
+  var postings = trSpec.postings;
   var numUnresolved = postings.where((p) => !p.canResolve).length;
   if (numUnresolved > 1) {
-    throw Exception('Cannot realize transaction with more than one '
-        'unresolved posting');
+    throw PostingResolutinFailure(trSpec,
+        'Cannot realize transaction with more than one unresolved posting');
   }
   if (numUnresolved == 0) {
     return postings.map((p) => p.toPosting()).toIList();
@@ -180,7 +183,8 @@ IList<Posting> resolvedPostings(IList<PostingSpec> postings) {
   }).whereNotNull();
 
   if (currencies.toSet().length != 1) {
-    throw Exception('Cannot realize transaction with multiple currencies');
+    throw PostingResolutinFailure(
+        trSpec, 'Cannot realize transaction with multiple currencies');
   }
   var currency = currencies.first;
 
@@ -200,8 +204,10 @@ IList<Posting> resolvedPostings(IList<PostingSpec> postings) {
     if (priceSpec.amountTotal != null) {
       var pTotal = priceSpec.amountTotal!;
       if (pTotal.currency == null) {
-        throw new Exception('Cannot resolve transaction with unspecified '
-            'currency');
+        throw new PostingResolutinFailure(
+          trSpec,
+          'Cannot resolve transaction with unspecified currency',
+        );
       }
       pTotal = Amount(num.abs(), pTotal.currency!);
       priceSpec = priceSpec.copyWith(amountTotal: pTotal);
@@ -211,8 +217,10 @@ IList<Posting> resolvedPostings(IList<PostingSpec> postings) {
       var per = (num.abs() / unresolved.amount!.number).toDecimal(
           scaleOnInfinitePrecision: 10); // FIXME: What about the precision?
       if (pPer.currency == null) {
-        throw new Exception('Cannot resolve transaction with unspecified '
-            'currency');
+        throw new PostingResolutinFailure(
+          trSpec,
+          'Cannot resolve transaction with unspecified currency',
+        );
       }
       pPer = Amount(per, pPer.currency!);
       priceSpec = priceSpec.copyWith(amountPer: pPer);
