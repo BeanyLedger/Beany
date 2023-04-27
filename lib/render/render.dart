@@ -125,11 +125,11 @@ class BeancountRenderer implements RendererInterface {
   @override
   void renderPriceSpec(StringSink sink, PriceSpec priceSpec) {
     if (priceSpec.amountPer != null) {
-      sink.write(' @ ');
+      sink.write('@ ');
       renderAmountSpec(sink, priceSpec.amountPer!);
     }
     if (priceSpec.amountTotal != null) {
-      sink.write(' @@ ');
+      sink.write('@@ ');
       renderAmountSpec(sink, priceSpec.amountTotal!);
     }
   }
