@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:antlr4/antlr4.dart';
+import 'package:beany/core/transaction.dart';
 import 'package:beany/parser/parser.dart';
 
 int main(List<String> args) {
@@ -13,7 +14,17 @@ int main(List<String> args) {
 
   var parser = parse(input);
   try {
-    parser.all().val();
+    var statements = parser.all().val();
+    for (var st in statements) {
+      if (st is TransactionSpec) {
+        try {
+          st.resolve();
+        } catch (ex) {
+          print(ex);
+          exit(1);
+        }
+      }
+    }
   } on ParseCancellationException catch (e) {
     print(e);
     print(e.stackTrace);
