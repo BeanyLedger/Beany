@@ -1,0 +1,47 @@
+2023-04-04 * "Balance cashback"
+  id: "BALANCE_CASHBACK-1d1d187b-b6e3-40d6-7e7f-58ca00b37d99"
+  Assets:Wise  55.59 USD
+
+2023-03-26 * "Audible"
+  id: "CARD-649346528"
+  Assets:Wise  -14.94 USD
+
+2023-03-15 * "Converted 35000.00 USD to 33106.65 EUR"
+  id: "CONVERSION_ORDER-494475"
+  Assets:Wise  -35000.00 USD @ 0.95035 EUR
+  Expenses:BankCharges  163.73 USD @@ EUR
+  Assets:Wise  33106.65 EUR
+
+2023-03-15 * "Converted 19095.86 USD to 17715.04 EUR"
+  id: "BALANCE-908718801"
+  Assets:Wise  -19095.86 USD @ 0.93205 EUR
+  Expenses:BankCharges  89.33 USD @@ EUR
+  Assets:Wise  17715.04 EUR
+
+2023-03-15 * "Converted 10195.00 USD to 9457.80 EUR"
+  id: "BALANCE-908717197"
+  Assets:Wise  -10195.00 USD @ 0.93205 EUR
+  Expenses:BankCharges  47.69 USD @@ EUR
+  Assets:Wise  9457.80 EUR
+
+2023-03-14 * "Received money from Someone"
+  id: "TRANSFER-633260980"
+  Assets:Wise  10195.86 USD
+
+2023-03-14 * "Received money from Someone"
+  id: "TRANSFER-633169801"
+  Assets:Wise  19095.86 USD
+
+2023-03-12 * "Converted 20000.00 USD to 18709.07 EUR"
+  id: "BALANCE-903440009"
+  Assets:Wise  -20000.00 USD @ 0.93985 EUR
+  Expenses:BankCharges  93.56 USD @@ EUR
+  Assets:Wise  18709.07 EUR
+
+2023-03-04 * "Audible"
+  id: "CARD-620593719"
+  Assets:Wise  -35.88 USD
+
+2023-03-02 * "Balance cashback"
+  id: "BALANCE_CASHBACK-1a875868-eb6c-4eeb-48ae-a7fe6010ddd2"
+  Assets:Wise  107.60 USD
