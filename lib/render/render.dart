@@ -16,6 +16,8 @@ import 'package:beany/core/price_statement.dart';
 import 'package:beany/core/statements.dart';
 import 'package:beany/core/transaction.dart';
 import 'package:decimal/decimal.dart';
+import 'package:quiver/iterables.dart';
+import 'package:collection/collection.dart';
 
 abstract class RendererInterface {
   void renderAmountSpec(StringSink sink, AmountSpec amountSpec);
@@ -23,7 +25,8 @@ abstract class RendererInterface {
 
   void renderCostSpec(StringSink sink, CostSpec costSpec);
   void renderPriceSpec(StringSink sink, PriceSpec priceSpec);
-  void renderPostingSpec(StringSink sink, PostingSpec posting);
+  void renderPostingSpec(
+      StringSink sink, PostingSpec posting, TransactionSpec? tr);
   void renderTransactionSpec(StringSink sink, TransactionSpec transaction);
 
   void renderPriceDirective(StringSink sink, PriceStatement price);
@@ -135,7 +138,11 @@ class BeancountRenderer implements RendererInterface {
   }
 
   @override
-  void renderPostingSpec(StringSink sink, PostingSpec posting) {
+  void renderPostingSpec(
+    StringSink sink,
+    PostingSpec posting,
+    TransactionSpec? tr,
+  ) {
     for (var comment in posting.preComments) {
       sink.write(_tab);
       sink.write('; ');
@@ -147,7 +154,8 @@ class BeancountRenderer implements RendererInterface {
       renderAccount(sink, posting.account);
     } else {
       renderAccount(sink, posting.account);
-      sink.write('  ');
+      sink.write(_accountPadRight(tr, posting));
+      sink.write(_amountPadLeft(tr, posting.amount!));
       renderAmountSpec(sink, posting.amount!);
     }
 
@@ -193,7 +201,7 @@ class BeancountRenderer implements RendererInterface {
 
     if (tr.postings.isNotEmpty) {
       for (var posting in tr.postings) {
-        renderPostingSpec(sink, posting);
+        renderPostingSpec(sink, posting, tr);
         sink.writeln();
       }
     }
@@ -283,4 +291,37 @@ class BeancountRenderer implements RendererInterface {
   void renderOptionStatement(StringSink sink, OptionStatement option) {
     sink.write('option "${option.key}" "${option.value}"');
   }
+}
+
+String _accountPadRight(TransactionSpec? tr, PostingSpec posting) {
+  var minSpacing = 2;
+  if (tr == null) return "".padRight(minSpacing);
+
+  var accountLengths = (tr.postings.map((e) => e.account.value.length));
+  var maxAccountLength = max<int>(accountLengths) ?? 0;
+
+  if (maxAccountLength == 0) {
+    return "".padRight(minSpacing);
+  }
+
+  var accountDiff = maxAccountLength - posting.account.value.length;
+  return "".padRight(accountDiff + minSpacing);
+}
+
+String _amountPadLeft(TransactionSpec? tr, AmountSpec amount) {
+  if (tr == null) return "";
+
+  var num = amount.number;
+  if (num == null) return "";
+
+  var numbers = tr.postings.map((e) => e.amount?.number).whereNotNull();
+  var numberLengths = numbers.map((n) => renderNumber(n).length);
+  var maxNumberLength = max<int>(numberLengths) ?? 0;
+
+  var isPositive = num.signum >= 0;
+  var allPositive = numbers.every((n) => n.signum >= 0);
+  var spacingForMinusSign = allPositive ? 0 : 1;
+
+  var diff = maxNumberLength - (renderNumber(num).length + 1);
+  return isPositive ? "".padLeft(diff + spacingForMinusSign) : "".padLeft(diff);
 }
