@@ -4,6 +4,7 @@ import 'package:beany/core/cost_spec.dart';
 import 'package:beany/core/custom_statement.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:beany/core/price_spec.dart';
+import 'package:beany/misc/date.dart';
 import 'package:decimal/decimal.dart';
 
 import 'package:beany/core/account.dart';
@@ -47,7 +48,7 @@ ParsingInfo _buildParsingInfo(ParserRuleContext ctx) {
 
 extension DateParsing on DateContext {
   DateTime val() {
-    return DateTime.parse(DATE()!.text!);
+    return Date.from(DateTime.parse(DATE()!.text!));
   }
 }
 
@@ -292,6 +293,9 @@ extension MetadataValueParsing on MetadataValueContext {
     }
     if (TAG() != null) {
       return MetaValue(tagValue: TAG()!.text!.substring(1));
+    }
+    if (date() != null) {
+      return MetaValue(dateValue: date()!.val());
     }
 
     throw Exception("Couldn't parse metadata value");

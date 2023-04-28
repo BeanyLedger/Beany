@@ -1,6 +1,7 @@
 import 'package:beany/core/amount.dart';
 import 'package:beany/core/core.dart';
 import 'package:beany/core/meta_value.dart';
+import 'package:beany/misc/date.dart';
 import 'package:beany/render/render.dart';
 import 'package:test/test.dart';
 
@@ -15,8 +16,7 @@ void main() {
   test('Transaction Header', () {
     expect(
       parse('2019-04-14 * "Cat Powder"\n').trHeader().val(),
-      TransactionSpec(
-          DateTime(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
+      TransactionSpec(Date(2019, 4, 14), TransactionFlag.Okay, 'Cat Powder'),
     );
     expect(
       render(parse('2019-04-14 * "Cat Powder"\n').trHeader().val()),
@@ -24,8 +24,7 @@ void main() {
     );
     expect(
       parse('2019-04-14 ! "Cat Powder"\n').trHeader().val(),
-      TransactionSpec(
-          DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
+      TransactionSpec(Date(2019, 4, 14), TransactionFlag.Warning, 'Cat Powder'),
     );
     expect(
       render(parse('2019-04-14 ! "Cat Powder"\n').trHeader().val()),
@@ -38,7 +37,7 @@ void main() {
     expect(
       parse('2019-04-14 ! "Cat" "Payee"\n').trHeader().val(),
       TransactionSpec(
-        DateTime(2019, 4, 14),
+        Date(2019, 4, 14),
         TransactionFlag.Warning,
         'Cat',
         payee: "Payee",
@@ -50,7 +49,7 @@ void main() {
     );
     expect(
       parse('2019-04-14 ! "Cat" #hello #berlin-2014\n').trHeader().val(),
-      TransactionSpec(DateTime(2019, 4, 14), TransactionFlag.Warning, 'Cat',
+      TransactionSpec(Date(2019, 4, 14), TransactionFlag.Warning, 'Cat',
           tags: ["hello", "berlin-2014"]),
     );
     expect(
@@ -81,7 +80,7 @@ void main() {
 """;
 
     var tr = TransactionSpec(
-      DateTime(2019, 4, 14),
+      Date(2019, 4, 14),
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [
@@ -102,6 +101,7 @@ void main() {
   stringValue: "foo"
   numberValue: 1.5
   amountValue: 4.4 EUR
+  datesVal1: 2022-12-09
   tagValue: #berlin-wall
   accountValue: Assets:Fire
   Expenses:Mystery:CatPowder  1.5 EUR
@@ -110,14 +110,13 @@ void main() {
 
 /*
 
-  datesVal1: 2022-12-09
   datesVal2: 2022-12-09T14:05:00
   datesVal3: 2022-12-09 14:05:00
   currencyValue: EUR
   */
 
     var tr = TransactionSpec(
-      DateTime(2019, 4, 14),
+      Date(2019, 4, 14),
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [
@@ -130,7 +129,7 @@ void main() {
         "amountValue": MetaValue(
           amountValue: Amount(D("4.4"), "EUR"),
         ),
-        // "datesVal1": MetaDataValue(dateValue: "2022-12-09"),
+        "datesVal1": MetaValue(dateValue: DT("2022-12-09")),
         // "datesVal2": "2022-12-09T14:05:00",
         // "datesVal3": "2022-12-09 14:05:00",
         "tagValue": MetaValue(tagValue: 'berlin-wall'),
@@ -173,7 +172,7 @@ void main() {
 """;
 
     var tr = TransactionSpec(
-      DateTime(2019, 4, 14),
+      Date(2019, 4, 14),
       TransactionFlag.Okay,
       'Cat Powder',
       postings: [

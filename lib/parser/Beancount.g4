@@ -83,7 +83,13 @@ tags: TAG+;
 
 metadata: (metadataKey metadataValue NEWLINE)*;
 metadataKey: METAKEY_WITH_COLON;
-metadataValue: quoted_string | TAG | number | amount | account;
+metadataValue:
+	quoted_string
+	| TAG
+	| number
+	| amount
+	| account
+	| date;
 
 number: MINUS? INTEGER (COMMA INTEGER)* (DECIMAL INTEGER)?;
 

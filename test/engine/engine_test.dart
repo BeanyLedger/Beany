@@ -2,6 +2,7 @@ import 'package:beany/core/account.dart';
 import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/statements.dart';
 import 'package:beany/engine/engine.dart';
+import 'package:beany/misc/date.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -10,7 +11,7 @@ void main() {
     var engine = await Engine.loadRootFile(filePath);
 
     var accountOpen =
-        OpenStatement(DateTime(2013, 01, 01), Account('Assets:Work:N26'));
+        OpenStatement(Date(2013, 01, 01), Account('Assets:Work:N26'));
     expect(engine.statements, contains(accountOpen));
 
     for (var statement in engine.statements) {
@@ -25,14 +26,14 @@ void main() {
 
     var info1 = AccountInfo(
       Account('Assets:Personal:Coinbase'),
-      DateTime(2013, 01, 01),
-      DateTime(2023, 01, 01),
+      Date(2013, 01, 01),
+      Date(2023, 01, 01),
     );
     expect(accounts, contains(info1));
 
     var info2 = AccountInfo(
       Account('Assets:Work:N26'),
-      DateTime(2013, 01, 01),
+      Date(2013, 01, 01),
       null,
     );
     expect(accounts, contains(info2));

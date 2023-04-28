@@ -11,6 +11,7 @@ import 'package:beany/core/note_statement.dart';
 import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/price_statement.dart';
 import 'package:beany/core/statements.dart';
+import 'package:beany/misc/date.dart';
 import 'package:beany/render/render.dart';
 import 'package:test/test.dart';
 
@@ -69,7 +70,7 @@ void main() {
     expect(
       balance,
       BalanceStatement(
-        DateTime(2002, 01, 15),
+        Date(2002, 01, 15),
         Account('Assets:Personal:Transferwise'),
         Amount(D("98.87"), "EUR"),
       ),
@@ -86,7 +87,7 @@ void main() {
 
     expect(render(close), input);
     expect(close,
-        CloseStatement(DateTime(2000, 11, 21), Account('Expenses:Personal')));
+        CloseStatement(Date(2000, 11, 21), Account('Expenses:Personal')));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => render(t)).join("\n");
@@ -98,7 +99,7 @@ void main() {
     var c = parse(input).commodityStatement().val();
 
     expect(render(c), input);
-    expect(c, CommodityStatement(DateTime(2000, 11, 21), 'INR'));
+    expect(c, CommodityStatement(Date(2000, 11, 21), 'INR'));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => render(t)).join("\n");
@@ -113,7 +114,7 @@ void main() {
     expect(
       doc,
       DocumentStatement(
-        DateTime(2013, 11, 03),
+        Date(2013, 11, 03),
         Account('Assets:Card'),
         "/home/joe/apr-2014.pdf",
       ),
@@ -129,8 +130,8 @@ void main() {
     var event = parse(input).eventStatement().val();
 
     expect(render(event), input);
-    expect(event,
-        EventStatement(DateTime(2013, 11, 03), "location", "Paris, France"));
+    expect(
+        event, EventStatement(Date(2013, 11, 03), "location", "Paris, France"));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => render(t)).join("\n");
@@ -145,7 +146,7 @@ void main() {
     expect(
       note,
       NoteStatement(
-        DateTime(2013, 11, 03),
+        Date(2013, 11, 03),
         Account('Assets:CreditCard'),
         "Called about fraud.",
       ),
@@ -161,8 +162,8 @@ void main() {
     var open = parse(input).openStatement().val();
 
     expect(render(open), input);
-    expect(open,
-        OpenStatement(DateTime(2000, 11, 21), Account('Expenses:Personal')));
+    expect(
+        open, OpenStatement(Date(2000, 11, 21), Account('Expenses:Personal')));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => render(t)).join("\n");
@@ -177,7 +178,7 @@ void main() {
     expect(
       price,
       PriceStatement(
-        DateTime(2002, 01, 15),
+        Date(2002, 01, 15),
         'INR',
         Amount(D("98.87"), "EUR"),
       ),
@@ -224,7 +225,7 @@ void main() {
     expect(
       custom,
       CustomStatement(
-        DateTime(2013, 11, 03),
+        Date(2013, 11, 03),
         ["location", "Paris, France"],
       ),
     );

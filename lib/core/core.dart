@@ -1,3 +1,4 @@
+import 'package:beany/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
@@ -31,7 +32,7 @@ abstract class Directive extends Statement {
 }
 
 Decimal D(String value) => Decimal.parse(value);
-DateTime DT(String value) => DateTime.parse(value);
+Date DT(String value) => Date.from(DateTime.parse(value));
 Amount AMT(String str) {
   var parts = str.split(' ');
   if (parts.length != 2) throw Exception('Invalid amount: $str');
