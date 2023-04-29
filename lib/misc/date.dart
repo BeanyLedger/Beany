@@ -1,9 +1,9 @@
 class Date implements DateTime {
   final DateTime _native;
 
-  Date(int year, int month, int day) : _native = DateTime.utc(year, month, day);
+  Date(int year, int month, int day) : _native = DateTime(year, month, day);
 
-  Date.from(DateTime dt) : _native = DateTime.utc(dt.year, dt.month, dt.day) {
+  Date.from(DateTime dt) : _native = DateTime(dt.year, dt.month, dt.day) {
     if (dt.hour != 0 ||
         dt.minute != 0 ||
         dt.second != 0 ||
@@ -89,7 +89,25 @@ class Date implements DateTime {
   String toString() => toIso8601String();
 
   @override
-  bool operator ==(Object other) => _native == other;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is Date) {
+      return _native.year == other.year &&
+          _native.month == other.month &&
+          _native.day == other.day;
+    }
+    if (other is DateTime) {
+      return _native.year == other.year &&
+          _native.month == other.month &&
+          _native.day == other.day &&
+          other.hour == 0 &&
+          other.minute == 0 &&
+          other.second == 0 &&
+          other.millisecond == 0 &&
+          other.microsecond == 0;
+    }
+    return _native == other;
+  }
 
   @override
   int get hashCode => _native.hashCode;
