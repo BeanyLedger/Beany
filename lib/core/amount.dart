@@ -39,7 +39,7 @@ class AmountSpec extends Equatable {
 }
 
 @immutable
-class Amount extends Equatable implements AmountSpec {
+class Amount extends Equatable implements AmountSpec, Comparable<Amount> {
   final Decimal number;
   final String currency;
 
@@ -68,4 +68,12 @@ class Amount extends Equatable implements AmountSpec {
 
   @override
   bool get canResolve => true;
+
+  @override
+  int compareTo(Amount other) {
+    if (other.currency != currency) {
+      throw ArgumentError('Cannot compare amounts with different currencies');
+    }
+    return number.compareTo(other.number);
+  }
 }
