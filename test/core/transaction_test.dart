@@ -67,4 +67,18 @@ void main() {
     expect(postings[1].weight(), AMT("98.999999893278 EUR"));
     expect(postings[2].weight(), AMT("1 EUR"));
   });
+
+  test("Calculates the missing currency", () {
+    var input = """
+2023-03-15 * "Converted Money"
+  Assets:A   -35000.00 USD @ 0.950350
+  Expenses:B    163.73 USD @@ EUR
+  Assets:A    33106.65 EUR
+""";
+
+    var tr = parse(input).trStatement().val();
+    var postings = tr.resolve().postings;
+    expect(postings.length, 3);
+    expect(postings[0].priceSpec!.amountPer!.currency, "EUR");
+  }, skip: true);
 }
