@@ -52,7 +52,7 @@ void main() {
       var statements = parse(input).all().val();
       var actual = statements.map((t) => render(t)).join("\n");
       expect(actual, '; Hello');
-    }, skip: true);
+    });
   });
 
   test('Account Parser', () {

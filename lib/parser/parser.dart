@@ -401,8 +401,8 @@ extension DirectiveParsing on DirectiveContext {
 
 extension CommentStatementParsing on CommentStatementContext {
   CommentStatement val() {
-    assert(childCount > 1);
-    return CommentStatement(children![1].text!);
+    var c = comment()!.val();
+    return CommentStatement(c);
   }
 }
 
