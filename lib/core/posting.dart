@@ -180,9 +180,17 @@ class Posting extends Equatable implements PostingSpec {
 
     var costSpec = this.costSpec;
     if (costSpec != null) {
-      // FIXME: Add a test for both amountPer and amountTotal
-      var csa = costSpec.amountPer!;
-      return Amount(csa.number * baseAmount, csa.currency);
+      var per = costSpec.amountPer;
+      if (per != null) {
+        return Amount(per.number * baseAmount, per.currency);
+      }
+
+      var total = costSpec.amountTotal;
+      if (total != null) {
+        return total;
+      }
+
+      throw new Exception("Posting Weight: costSpec is invalid");
     }
 
     var priceSpec = this.priceSpec;
