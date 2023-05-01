@@ -68,6 +68,19 @@ void main() {
     expect(postings[2].weight(), AMT("1 EUR"));
   });
 
+  test("Resolves a posting with cost", () {
+    var input = """
+2019-01-28 * "Arras Penitencial"
+  Assets:Personal:Spain:Apartment  0.02 APT {{ 2000.00 EUR }}
+  Assets:Personal:Spain:LaCaixa
+""";
+
+    var tr = parse(input).trStatement().val();
+    var postings = tr.resolve().postings;
+    expect(postings.length, 2);
+    expect(postings[1].amount, AMT("-2000 EUR"));
+  });
+
   test("Calculates the missing currency", () {
     var input = """
 2023-03-15 * "Converted Money"

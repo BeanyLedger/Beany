@@ -160,7 +160,14 @@ class Transaction extends Equatable implements TransactionSpec {
 }
 
 IList<Posting> resolvedPostings(TransactionSpec trSpec) {
-  var postings = trSpec.postings;
+  var postings = trSpec.postings.map((p) {
+    var costSpec = p.costSpec;
+    if (costSpec != null) {
+      p = p.copyWith(costSpec: costSpec.copyWith(date: trSpec.date));
+    }
+    return p;
+  }).toIList();
+
   var numUnresolved = postings.where((p) => !p.canResolve).length;
   if (numUnresolved > 1) {
     throw PostingResolutinFailure(trSpec,
@@ -177,6 +184,14 @@ IList<Posting> resolvedPostings(TransactionSpec trSpec) {
     }
     if (priceSpec?.amountPer != null) {
       return priceSpec!.amountPer!.currency;
+    }
+
+    var costSpec = p.costSpec;
+    if (costSpec?.amountPer != null) {
+      return costSpec!.amountPer!.currency;
+    }
+    if (costSpec?.amountTotal != null) {
+      return costSpec!.amountTotal!.currency;
     }
 
     return p.amount?.currency;
