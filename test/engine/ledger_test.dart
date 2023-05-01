@@ -1,6 +1,7 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/statements.dart';
+import 'package:beany/core/transaction.dart';
 import 'package:beany/engine/ledger.dart';
 import 'package:beany/misc/date.dart';
 import 'package:test/test.dart';
@@ -37,5 +38,21 @@ void main() {
       null,
     );
     expect(accounts, contains(info2));
+  });
+
+  test("Account statements before Transactions", () {
+    var input = """
+2013-01-01 * "Coinbase" "Coinbase"
+  Assets:Personal:Coinbase  1.00 BTC
+  Income:Personal:Coinbase
+
+2013-01-01 open Assets:Personal:Coinbase
+2013-01-01 open Income:Personal:Coinbase
+""";
+    var engine = Ledger.loadString(input);
+    var statements = engine.statements;
+    expect(statements[0], isA<OpenStatement>());
+    expect(statements[1], isA<OpenStatement>());
+    expect(statements[2], isA<TransactionSpec>());
   });
 }

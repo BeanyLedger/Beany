@@ -31,7 +31,15 @@ class Ledger {
         return 1;
       }
       if (a is Directive && b is Directive) {
-        return a.date.compareTo(b.date);
+        var ct = a.date.compareTo(b.date);
+        if (ct != 0) return ct;
+
+        if (a is Transaction || a is TransactionSpec) {
+          return 1;
+        }
+        if (b is Transaction || b is TransactionSpec) {
+          return -1;
+        }
       }
 
       return 0;
