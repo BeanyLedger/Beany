@@ -62,6 +62,20 @@ void main() {
     );
   });
 
+  test("Account must be opened before use date", () {
+    var contents = """
+2023-01-03 open Assets:Cash
+2023-01-02 * "Salary"
+  Assets:Work:N26  1000.00 EUR
+  Assets:Cash
+""";
+
+    expect(
+      () => Ledger.loadString(contents),
+      throwsA(isA<AccountNotOpenException>()),
+    );
+  });
+
   test("Account must be opened twice", () {
     var contents = """
 2023-01-02 open Assets:Cash
