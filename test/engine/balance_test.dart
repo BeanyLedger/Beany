@@ -1,5 +1,5 @@
 import 'package:beany/core/account.dart';
-import 'package:beany/engine/engine.dart';
+import 'package:beany/engine/ledger.dart';
 import 'package:beany/engine/exceptions.dart';
 import 'package:beany/misc/date.dart';
 import 'package:decimal/decimal.dart';
@@ -18,7 +18,7 @@ void main() {
 2023-01-03 balance Assets:Work:N26  1000.00 EUR
 """;
 
-    var engine = Engine.loadString(contents);
+    var engine = Ledger.loadString(contents);
     var balances = engine.accountBalances;
     expect(balances, hasLength(1));
     expect(balances[Date(2023, 01, 02)], isNotNull);
@@ -44,7 +44,7 @@ void main() {
 """;
 
     expect(
-      () => Engine.loadString(contents),
+      () => Ledger.loadString(contents),
       throwsA(isA<AccountNotOpenException>()),
     );
   });
@@ -57,7 +57,7 @@ void main() {
 """;
 
     expect(
-      () => Engine.loadString(contents),
+      () => Ledger.loadString(contents),
       throwsA(isA<AccountNotOpenException>()),
     );
   });
@@ -69,7 +69,7 @@ void main() {
 """;
 
     expect(
-      () => Engine.loadString(contents),
+      () => Ledger.loadString(contents),
       throwsA(isA<AccountAlreadyOpenException>()),
     );
   });
@@ -86,7 +86,7 @@ void main() {
 """;
 
     expect(
-      () => Engine.loadString(contents),
+      () => Ledger.loadString(contents),
       throwsA(isA<AccountAlreadyClosed>()),
     );
   });
@@ -104,7 +104,7 @@ void main() {
 """;
 
     expect(
-      () => Engine.loadString(contents),
+      () => Ledger.loadString(contents),
       throwsA(isA<BalanceFailure>()),
     );
   });

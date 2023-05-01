@@ -1,14 +1,14 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/open_statement.dart';
 import 'package:beany/core/statements.dart';
-import 'package:beany/engine/engine.dart';
+import 'package:beany/engine/ledger.dart';
 import 'package:beany/misc/date.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('Include Files', () async {
     var filePath = 'test/testdata/root.beancount';
-    var engine = await Engine.loadRootFile(filePath);
+    var engine = await Ledger.loadRootFile(filePath);
 
     var accountOpen =
         OpenStatement(Date(2013, 01, 01), Account('Assets:Work:N26'));
@@ -21,7 +21,7 @@ void main() {
 
   test("Accounts", () async {
     var filePath = 'test/testdata/root.beancount';
-    var engine = await Engine.loadRootFile(filePath);
+    var engine = await Ledger.loadRootFile(filePath);
     var accounts = engine.accounts;
 
     var info1 = AccountInfo(

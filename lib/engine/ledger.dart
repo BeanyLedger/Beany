@@ -19,10 +19,10 @@ import 'package:collection/collection.dart';
 
 import 'exceptions.dart';
 
-class Engine {
+class Ledger {
   List<Statement> statements = [];
 
-  Engine(this.statements) {
+  Ledger(this.statements) {
     statements.sort((a, b) {
       if (a is Directive && b is! Directive) {
         return -1;
@@ -38,13 +38,13 @@ class Engine {
     });
   }
 
-  static Engine loadString(String fileContent) {
+  static Ledger loadString(String fileContent) {
     var statements = parse(fileContent).all().val().toList();
-    var engine = Engine(statements);
+    var engine = Ledger(statements);
     return engine.compute();
   }
 
-  static Future<Engine> loadRootFile(String filePath) async {
+  static Future<Ledger> loadRootFile(String filePath) async {
     var rootDir = p.dirname(filePath);
 
     var file = File(filePath);
@@ -63,7 +63,7 @@ class Engine {
 
     var statementsWithoutIncludes =
         statements.where((s) => s is! IncludeStatement);
-    var engine = Engine([...statementsWithoutIncludes, ...extraStatements]);
+    var engine = Ledger([...statementsWithoutIncludes, ...extraStatements]);
     return engine.compute();
   }
 
@@ -73,7 +73,7 @@ class Engine {
   final _accountBalances = <Date, AccountBalances>{};
   Map<Date, AccountBalances> get accountBalances => _accountBalances;
 
-  Engine compute() {
+  Ledger compute() {
     for (var statement in statements) {
       if (statement is OpenStatement) {
         // Make sure the account is not already open

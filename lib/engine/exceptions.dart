@@ -1,7 +1,7 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/amount.dart';
 import 'package:beany/core/transaction.dart';
-import 'package:beany/engine/engine.dart';
+import 'package:beany/engine/ledger.dart';
 import 'package:beany/render/render.dart';
 
 class AccountAlreadyOpenException implements Exception {
