@@ -49,8 +49,7 @@ class PostingSpec extends Equatable {
         throw ArgumentError('PostingSpec: cannot resolve');
       }
 
-      costSpec = CostSpec(this.costSpec!.amount,
-          date: date, label: this.costSpec!.label);
+      costSpec = this.costSpec!.copyWith(date: date);
       if (!this.copyWith(costSpec: costSpec).canResolve) {
         throw ArgumentError('PostingSpec: cannot resolve');
       }
@@ -181,7 +180,8 @@ class Posting extends Equatable implements PostingSpec {
 
     var costSpec = this.costSpec;
     if (costSpec != null) {
-      var csa = costSpec.amount;
+      // FIXME: Add a test for both amountPer and amountTotal
+      var csa = costSpec.amountPer!;
       return Amount(csa.number * baseAmount, csa.currency);
     }
 

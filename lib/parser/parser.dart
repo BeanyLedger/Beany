@@ -259,7 +259,21 @@ extension PostingSpecWithCostAndPriceParsing
 
 extension CostSpecParsing on CostSpecContext {
   CostSpec val() {
-    return CostSpec(amount()!.val());
+    if (costSpecPer() != null) return costSpecPer()!.val();
+    if (costSpecTotal() != null) return costSpecTotal()!.val();
+    throw Exception("Unknown cost spec");
+  }
+}
+
+extension CostSpecPerParsing on CostSpecPerContext {
+  CostSpec val() {
+    return CostSpec(amountPer: amount()!.val());
+  }
+}
+
+extension CostSpecTotalParsing on CostSpecTotalContext {
+  CostSpec val() {
+    return CostSpec(amountTotal: amount()!.val());
   }
 }
 

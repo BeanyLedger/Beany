@@ -62,6 +62,13 @@ String render(Statement st) {
   return sb.toString();
 }
 
+String renderPosting(PostingSpec p) {
+  var sb = StringBuffer();
+  var renderer = BeancountRenderer();
+  renderer.renderPostingSpec(sb, p, null);
+  return sb.toString();
+}
+
 class BeancountRenderer implements RendererInterface {
   void renderStatement(StringSink sink, Statement st) {
     if (st is OpenStatement) {
@@ -113,8 +120,9 @@ class BeancountRenderer implements RendererInterface {
 
   @override
   void renderCostSpec(StringSink sink, CostSpec costSpec) {
-    sink.write('{');
-    sink.write(costSpec.amount);
+    var per = costSpec.amountPer != null;
+    sink.write(per ? '{' : '{{');
+    renderAmountSpec(sink, per ? costSpec.amountPer! : costSpec.amountTotal!);
     if (costSpec.date != null) {
       sink.write(', ');
       sink.write(costSpec.date!.toIso8601String().substring(0, 10));
@@ -123,6 +131,7 @@ class BeancountRenderer implements RendererInterface {
       sink.write(', ');
       sink.write('"${costSpec.label}"');
     }
+    sink.write(per ? '}' : '}}');
   }
 
   @override

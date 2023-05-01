@@ -75,7 +75,9 @@ priceSpecPer: '@' amountSpec;
 priceSpecTotal: '@@' amountSpec;
 amountSpec: number? currency?;
 
-costSpec: '{' amount '}';
+costSpec: costSpecPer | costSpecTotal;
+costSpecPer: '{' amount '}';
+costSpecTotal: '{{' amount '}}';
 
 date: DATE;
 quoted_string: Q_STR;
