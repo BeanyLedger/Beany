@@ -89,7 +89,7 @@ class Ledger {
         var close = statement;
         var i = _accountInfo.indexWhere((a) => a.account == close.account);
         if (i == -1) {
-          throw AccountNotOpenException(close.account);
+          throw AccountNotOpenException(close.account, statement);
         }
 
         _accountInfo[i] =
@@ -107,7 +107,7 @@ class Ledger {
           );
 
           if (accountInfo == null) {
-            throw AccountNotOpenException(account);
+            throw AccountNotOpenException(account, statement);
           }
           if (accountInfo.closeDate != null) {
             if (accountInfo.closeDate!.isBefore(transaction.date)) {
@@ -139,7 +139,7 @@ class Ledger {
         );
 
         if (accountInfo == null) {
-          throw AccountNotOpenException(account);
+          throw AccountNotOpenException(account, statement);
         }
         if (accountInfo.closeDate != null) {
           if (accountInfo.closeDate!.isBefore(balance.date)) {

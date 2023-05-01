@@ -1,5 +1,6 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/amount.dart';
+import 'package:beany/core/core.dart';
 import 'package:beany/core/transaction.dart';
 import 'package:beany/engine/ledger.dart';
 import 'package:beany/render/render.dart';
@@ -13,8 +14,14 @@ class AccountAlreadyOpenException implements Exception {
 
 class AccountNotOpenException implements Exception {
   final Account account;
+  final Statement statement;
 
-  AccountNotOpenException(this.account);
+  AccountNotOpenException(this.account, this.statement);
+
+  @override
+  String toString() {
+    return 'AccountNotOpenException{account: ${account.value}, statement: ${render(statement)}}}';
+  }
 }
 
 class AccountAlreadyClosed implements Exception {
