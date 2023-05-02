@@ -51,4 +51,7 @@ class MetaValue extends Equatable {
         accountValue,
         boolValue,
       ];
+
+  @override
+  bool get stringify => true;
 }

@@ -12,6 +12,9 @@ class IncludeStatement extends Equatable implements Statement {
 
   @override
   List<Object?> get props => [path];
+
+  @override
+  bool get stringify => true;
 }
 
 @immutable
@@ -24,6 +27,9 @@ class OptionStatement extends Equatable implements Statement {
 
   @override
   List<Object?> get props => [key, value];
+
+  @override
+  bool get stringify => true;
 }
 
 @immutable
@@ -35,4 +41,7 @@ class CommentStatement extends Equatable implements Statement {
 
   @override
   List<Object?> get props => [value];
+
+  @override
+  bool get stringify => true;
 }

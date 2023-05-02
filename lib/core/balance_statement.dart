@@ -33,4 +33,7 @@ class BalanceStatement extends Equatable implements Directive {
   @override
   List<Object?> get props =>
       [date, meta, account, amount, tolerance, diffAmount];
+
+  @override
+  bool get stringify => true;
 }

@@ -25,6 +25,9 @@ class AmountSpec extends Equatable {
   @override
   List<Object?> get props => [number, currency];
 
+  @override
+  bool get stringify => true;
+
   Amount toAmount() {
     if (number == null) {
       throw ArgumentError('AmountSpec.number is null');
@@ -48,6 +51,9 @@ class Amount extends Equatable implements AmountSpec, Comparable<Amount> {
 
   @override
   List<Object?> get props => [number, currency];
+
+  @override
+  bool get stringify => true;
 
   @override
   Amount toAmount() => this;

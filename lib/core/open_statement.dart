@@ -22,4 +22,7 @@ class OpenStatement extends Equatable implements Directive {
 
   @override
   List<Object?> get props => [date, meta, account];
+
+  @override
+  bool get stringify => true;
 }

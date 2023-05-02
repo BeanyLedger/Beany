@@ -25,4 +25,7 @@ class PriceStatement extends Equatable implements Directive {
 
   @override
   List<Object?> get props => [date, meta, currency, amount];
+
+  @override
+  bool get stringify => true;
 }

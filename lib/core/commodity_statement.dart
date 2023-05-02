@@ -21,4 +21,7 @@ class CommodityStatement extends Equatable implements Directive {
 
   @override
   List<Object?> get props => [date, meta, commodity];
+
+  @override
+  bool get stringify => true;
 }

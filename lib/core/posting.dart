@@ -107,6 +107,9 @@ class PostingSpec extends Equatable {
       ];
 
   @override
+  bool get stringify => true;
+
+  @override
   bool operator ==(Object other) {
     if (other is! Posting && other is! PostingSpec) return false;
 
@@ -170,6 +173,9 @@ class Posting extends Equatable implements PostingSpec {
         costSpec,
         tags,
       ];
+
+  @override
+  bool get stringify => true;
 
   @override
   Posting toPosting({DateTime? date}) => this;

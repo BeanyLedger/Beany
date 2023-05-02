@@ -78,6 +78,9 @@ class TransactionSpec extends Equatable implements Directive {
         tags,
       ];
 
+  @override
+  bool get stringify => true;
+
   Transaction resolve() {
     return Transaction(
       date,
@@ -154,6 +157,9 @@ class Transaction extends Equatable implements TransactionSpec {
         postings,
         tags,
       ];
+
+  @override
+  bool get stringify => true;
 
   @override
   Transaction resolve() => this;

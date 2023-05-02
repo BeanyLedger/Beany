@@ -33,6 +33,9 @@ class PriceSpec extends Equatable {
   @override
   List<Object?> get props => [amountPer, amountTotal];
 
+  @override
+  bool get stringify => true;
+
   bool get canResolve {
     if (amountPer != null) {
       return amountPer!.canResolve;
@@ -73,6 +76,9 @@ class Price extends Equatable implements PriceSpec {
 
   @override
   List<Object?> get props => [amountPer, amountTotal];
+
+  @override
+  bool get stringify => true;
 
   @override
   bool get canResolve => true;

@@ -22,4 +22,7 @@ class CustomStatement extends Equatable implements Directive {
 
   @override
   List<Object?> get props => [date, meta, values];
+
+  @override
+  bool get stringify => true;
 }

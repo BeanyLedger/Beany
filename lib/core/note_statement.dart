@@ -25,4 +25,7 @@ class NoteStatement extends Equatable implements Directive {
 
   @override
   List<Object?> get props => [date, meta, account, comment];
+
+  @override
+  bool get stringify => true;
 }

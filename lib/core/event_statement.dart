@@ -24,4 +24,7 @@ class EventStatement extends Equatable implements Directive {
 
   @override
   List<Object?> get props => [date, meta, type, value];
+
+  @override
+  bool get stringify => true;
 }

@@ -30,6 +30,9 @@ class CostSpec extends Equatable {
   @override
   List<Object?> get props => [amountPer, amountTotal, date, label];
 
+  @override
+  bool get stringify => true;
+
   bool get canResolve => date != null;
 
   CostSpec copyWith({

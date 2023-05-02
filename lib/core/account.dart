@@ -10,6 +10,9 @@ class Account extends Equatable implements Comparable<Account> {
   List<Object?> get props => [value];
 
   @override
+  bool get stringify => true;
+
+  @override
   int compareTo(Account other) {
     var myType = value.split(':')[0];
     var otherType = other.value.split(':')[0];
