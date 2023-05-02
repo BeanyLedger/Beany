@@ -8,8 +8,9 @@ import 'package:beany/render/render.dart';
 class AccountAlreadyOpenException implements Exception {
   final Account account;
   final DateTime openDate;
+  final Statement statement;
 
-  AccountAlreadyOpenException(this.account, this.openDate);
+  AccountAlreadyOpenException(this.account, this.openDate, this.statement);
 }
 
 class AccountNotOpenException implements Exception {
@@ -28,8 +29,9 @@ class AccountAlreadyClosed implements Exception {
   final Account account;
   final DateTime openDate;
   final DateTime closeDate;
+  final Statement statement;
 
-  AccountAlreadyClosed(AccountInfo ai)
+  AccountAlreadyClosed(AccountInfo ai, this.statement)
       : this.account = ai.account,
         this.openDate = ai.openDate,
         this.closeDate = ai.closeDate!;
@@ -40,13 +42,20 @@ class BalanceFailure implements Exception {
   final DateTime date;
   final Amount expected;
   final Amount? actual;
+  final Statement statement;
 
   BalanceFailure(
     this.account,
+    this.statement,
     this.date, {
     required this.expected,
     required this.actual,
   });
+
+  @override
+  String toString() {
+    return 'BalanceFailure{account: ${account.value}, date: $date, expected: $expected, actual: $actual}';
+  }
 }
 
 class PostingResolutinFailure implements Exception {

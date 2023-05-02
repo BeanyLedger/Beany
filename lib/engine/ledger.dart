@@ -88,7 +88,8 @@ class Ledger {
         var actInfo = _accountInfo
             .firstWhereOrNull((a) => a.account == statement.account);
         if (actInfo != null) {
-          throw AccountAlreadyOpenException(actInfo.account, actInfo.openDate);
+          throw AccountAlreadyOpenException(
+              actInfo.account, actInfo.openDate, statement);
         }
 
         var open = statement;
@@ -119,7 +120,7 @@ class Ledger {
           }
           if (accountInfo.closeDate != null) {
             if (accountInfo.closeDate!.isBefore(transaction.date)) {
-              throw AccountAlreadyClosed(accountInfo);
+              throw AccountAlreadyClosed(accountInfo, statement);
             }
           }
           var amount = posting.amount;
@@ -151,21 +152,21 @@ class Ledger {
         }
         if (accountInfo.closeDate != null) {
           if (accountInfo.closeDate!.isBefore(balance.date)) {
-            throw AccountAlreadyClosed(accountInfo);
+            throw AccountAlreadyClosed(accountInfo, statement);
           }
         }
 
         var prevDate = date.add(Duration(days: -1));
         var prevAb = _accountBalances[prevDate];
         if (prevAb == null) {
-          throw BalanceFailure(account, date,
+          throw BalanceFailure(account, statement, date,
               expected: balance.amount, actual: null);
         }
 
         var prevAmount = prevAb.balances[account]
             .firstWhereOrNull((amt) => amt.currency == balance.amount.currency);
         if (prevAmount?.number != balance.amount.number) {
-          throw BalanceFailure(account, date,
+          throw BalanceFailure(account, statement, date,
               expected: balance.amount, actual: prevAmount);
         }
       }
