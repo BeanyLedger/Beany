@@ -16,6 +16,7 @@ void main() {
   Assets:Cash
 
 2023-01-03 balance Assets:Work:N26  1000.00 EUR
+2023-01-14 balance Assets:Work:N26  1000.00 EUR
 """;
 
     var engine = Ledger.loadString(contents);

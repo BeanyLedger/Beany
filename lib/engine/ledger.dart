@@ -10,6 +10,7 @@ import 'package:beany/core/statements.dart';
 import 'package:beany/core/transaction.dart';
 import 'package:beany/misc/date.dart';
 import 'package:beany/parser/parser.dart';
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
 
@@ -106,7 +107,16 @@ class Ledger {
       } else if (statement is TransactionSpec) {
         var transaction = statement;
         var date = Date.from(transaction.date);
-        var ab = _accountBalances[date] ?? AccountBalances(date);
+        var ab = _accountBalances[date];
+        if (ab == null) {
+          if (_accountBalances.isEmpty) {
+            ab = AccountBalances(date);
+          } else {
+            var lastDate =
+                _accountBalances.keys.reduce((a, b) => a > b ? a : b);
+            ab = _accountBalances[lastDate]!.clone(date);
+          }
+        }
 
         var resolvedPostings = transaction.resolve().postings;
         for (var posting in resolvedPostings) {
@@ -158,7 +168,13 @@ class Ledger {
 
         var prevDate = date.add(Duration(days: -1));
         var prevAb = _accountBalances[prevDate];
+        while (prevAb == null && _accountBalances.isNotEmpty) {
+          prevDate = prevDate.add(Duration(days: -1));
+          prevAb = _accountBalances[prevDate];
+        }
         if (prevAb == null) {
+          if (balance.amount.number == Decimal.zero) continue;
+
           throw BalanceFailure(account, statement, date,
               expected: balance.amount, actual: null);
         }
@@ -166,6 +182,18 @@ class Ledger {
         var prevAmount = prevAb.balances[account]
             .firstWhereOrNull((amt) => amt.currency == balance.amount.currency);
         if (prevAmount?.number != balance.amount.number) {
+          /*
+          for (var date in _accountBalances.keys) {
+            print("$date ->");
+            var balances = _accountBalances[date]!.balances;
+            for (var account in balances.keys) {
+              var values = balances[account];
+              for (var value in values) {
+                print("  $account -> $value");
+              }
+            }
+          }
+          */
           throw BalanceFailure(account, statement, date,
               expected: balance.amount, actual: prevAmount);
         }
@@ -197,4 +225,10 @@ class AccountBalances extends Equatable {
 
   @override
   List<Object?> get props => [date, balances];
+
+  AccountBalances clone(Date date) {
+    var ab = AccountBalances(date);
+    ab.balances.addAll(balances);
+    return ab;
+  }
 }

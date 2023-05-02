@@ -112,6 +112,28 @@ class Date implements DateTime {
   @override
   int get hashCode => _native.hashCode;
 
+  bool operator <(Object other) {
+    if (other is Date) {
+      return _native.isBefore(other);
+    }
+    if (other is DateTime) {
+      return _native.isBefore(other);
+    }
+
+    throw ArgumentError('Invalid argument for operator <');
+  }
+
+  bool operator >(Object other) {
+    if (other is Date) {
+      return _native.isAfter(other);
+    }
+    if (other is DateTime) {
+      return _native.isAfter(other);
+    }
+
+    throw ArgumentError('Invalid argument for operator >');
+  }
+
   static Date today() {
     final dt = DateTime.now();
     return Date(dt.year, dt.month, dt.day);
