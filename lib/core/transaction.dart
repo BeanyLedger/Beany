@@ -23,7 +23,7 @@ enum TransactionFlag {
 }
 
 @immutable
-class TransactionSpec extends Equatable implements Directive {
+class TransactionSpec extends Equatable implements Directive, Comparable {
   final DateTime date;
   final IMap<String, MetaValue> meta;
 
@@ -50,7 +50,7 @@ class TransactionSpec extends Equatable implements Directive {
         meta = IMap(meta);
 
   TransactionSpec copyWith({
-    Iterable<PostingSpec>? postings,
+    covariant Iterable<PostingSpec>? postings,
     Iterable<String>? tags,
     Map<String, MetaValue>? meta,
     ParsingInfo? parsingInfo,
@@ -93,6 +93,22 @@ class TransactionSpec extends Equatable implements Directive {
       parsingInfo: parsingInfo,
     );
   }
+
+  bool get canResolve {
+    try {
+      resolve();
+    } on PostingResolutinFailure {
+      return false;
+    }
+    return true;
+  }
+
+  TransactionSpec toSpec() => this;
+
+  @override
+  int compareTo(other) {
+    return date.compareTo(other.date);
+  }
 }
 
 class Transaction extends Equatable implements TransactionSpec {
@@ -127,7 +143,7 @@ class Transaction extends Equatable implements TransactionSpec {
   @override
   Transaction copyWith({
     Iterable<String>? comments,
-    Iterable<PostingSpec>? postings,
+    Iterable<Posting>? postings,
     Iterable<String>? tags,
     Map<String, MetaValue>? meta,
     ParsingInfo? parsingInfo,
@@ -137,10 +153,9 @@ class Transaction extends Equatable implements TransactionSpec {
       flag,
       narration,
       payee: payee,
-      tags: IList.orNull(tags) ?? this.tags,
-      comments: IList.orNull(comments) ?? this.comments,
-      postings:
-          IList.orNull(postings?.map((p) => p.toPosting())) ?? this.postings,
+      tags: tags ?? this.tags,
+      comments: comments ?? this.comments,
+      postings: postings ?? this.postings,
       meta: meta ?? this.meta.unlockView,
       parsingInfo: parsingInfo ?? this.parsingInfo,
     );
@@ -163,6 +178,28 @@ class Transaction extends Equatable implements TransactionSpec {
 
   @override
   Transaction resolve() => this;
+
+  @override
+  bool get canResolve => true;
+
+  @override
+  TransactionSpec toSpec() {
+    return TransactionSpec(
+      date,
+      flag,
+      narration,
+      payee: payee,
+      tags: tags,
+      postings: postings.map((p) => p.toSpec()),
+      meta: meta.unlockView,
+      parsingInfo: parsingInfo,
+    );
+  }
+
+  @override
+  int compareTo(other) {
+    return date.compareTo(other.date);
+  }
 }
 
 IList<Posting> resolvedPostings(TransactionSpec trSpec) {

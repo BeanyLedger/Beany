@@ -42,6 +42,7 @@ class PostingSpec extends Equatable {
     return can;
   }
 
+  // FIXME: Rename to resolve!
   Posting toPosting({DateTime? date}) {
     var costSpec = this.costSpec;
     if (!canResolve) {
@@ -81,7 +82,7 @@ class PostingSpec extends Equatable {
     List<String>? tags,
     String? comment,
     Iterable<String>? preComments,
-    PriceSpec? priceSpec,
+    covariant PriceSpec? priceSpec,
     CostSpec? costSpec,
   }) {
     return PostingSpec(
@@ -116,6 +117,8 @@ class PostingSpec extends Equatable {
     return identical(this, other) ||
         other is Equatable && equals(props, other.props);
   }
+
+  PostingSpec toSpec() => this;
 }
 
 @immutable
@@ -143,16 +146,17 @@ class Posting extends Equatable implements PostingSpec {
   })  : tags = IList(tags),
         preComments = IList(preComments);
 
-  PostingSpec copyWith({
+  @override
+  Posting copyWith({
     Account? account,
     Amount? amount,
     List<String>? tags,
     String? comment,
     Iterable<String>? preComments,
-    PriceSpec? priceSpec,
+    Price? priceSpec,
     CostSpec? costSpec,
   }) {
-    return PostingSpec(
+    return Posting(
       account ?? this.account,
       amount ?? this.amount,
       tags: tags ?? this.tags,
@@ -228,5 +232,18 @@ class Posting extends Equatable implements PostingSpec {
 
     return identical(this, other) ||
         other is Equatable && equals(props, other.props);
+  }
+
+  @override
+  PostingSpec toSpec() {
+    return PostingSpec(
+      account,
+      amount,
+      comment: comment,
+      priceSpec: priceSpec,
+      costSpec: costSpec,
+      tags: tags,
+      preComments: preComments,
+    );
   }
 }

@@ -13,6 +13,8 @@ class Date implements DateTime {
     }
   }
 
+  Date.truncate(DateTime dt) : _native = DateTime(dt.year, dt.month, dt.day);
+
   @override
   DateTime add(Duration duration) => _native.add(duration);
 

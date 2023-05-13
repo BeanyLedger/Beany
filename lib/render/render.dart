@@ -15,6 +15,7 @@ import 'package:beany/core/price_spec.dart';
 import 'package:beany/core/price_statement.dart';
 import 'package:beany/core/statements.dart';
 import 'package:beany/core/transaction.dart';
+import 'package:beany/render/prettier.dart';
 import 'package:decimal/decimal.dart';
 import 'package:quiver/iterables.dart';
 import 'package:collection/collection.dart';
@@ -60,6 +61,10 @@ String render(Statement st) {
   var renderer = BeancountRenderer();
   renderer.renderStatement(sb, st);
   return sb.toString();
+}
+
+String renderPretty(Iterable<Transaction> transactions) {
+  return transactions.map((t) => render(t.pretty())).join("\n");
 }
 
 String renderPosting(PostingSpec p) {

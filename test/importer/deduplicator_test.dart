@@ -24,6 +24,11 @@ void main() {
       meta: {"id": MetaValue(stringValue: "CARD-649346528")},
     );
 
-    expect(transactionExists(transactions, tr), true);
+    var config = DuplicatorConfig("Assets:Wise");
+    expect(transactionExists(config, transactions, tr), true);
   });
+
+  // Add a test for when the date is 1 day before or after
+  // Add a test for a 3 posting transaction
+  // Add for a 3 posting transaction where the account names don't match (say for BankCharges)
 }
