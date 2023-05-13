@@ -3,5 +3,5 @@
 {
   packages = [ pkgs.antlr4 ];
 
-  languages.dart.enable = true;
+  #languages.dart.enable = true;
 }

@@ -18,8 +18,12 @@ jobs:
       shell: sh
     - name: Download Deps
       run: devenv shell pwd
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 3.10.0
+        cache: true
     - name: Install Deps
-      run: devenv shell dart pub get
+      run: dart pub get
     - name: Generate Code
       run: devenv shell make parser
     - name: Tests
