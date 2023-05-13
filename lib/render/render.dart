@@ -228,6 +228,7 @@ class BeancountRenderer implements RendererInterface {
     renderAccount(sink, balance.account);
     sink.write('  ');
     renderAmountSpec(sink, balance.amount);
+    sink.writeln();
   }
 
   @override
@@ -235,6 +236,7 @@ class BeancountRenderer implements RendererInterface {
     sink.write(open.date.toIso8601String().substring(0, 10));
     sink.write(' open ');
     renderAccount(sink, open.account);
+    sink.writeln();
   }
 
   @override
@@ -242,6 +244,7 @@ class BeancountRenderer implements RendererInterface {
     sink.write(close.date.toIso8601String().substring(0, 10));
     sink.write(' close ');
     renderAccount(sink, close.account);
+    sink.writeln();
   }
 
   @override
@@ -249,6 +252,7 @@ class BeancountRenderer implements RendererInterface {
     sink.write(st.date.toIso8601String().substring(0, 10));
     sink.write(' commodity ');
     sink.write(st.commodity);
+    sink.writeln();
   }
 
   @override
@@ -257,12 +261,14 @@ class BeancountRenderer implements RendererInterface {
     sink.write(' document ');
     renderAccount(sink, st.account);
     sink.write(' "${st.path}"');
+    sink.writeln();
   }
 
   @override
   void renderEventDirective(StringSink sink, EventStatement st) {
     sink.write(st.date.toIso8601String().substring(0, 10));
     sink.write(' event "${st.type}" "${st.value}"');
+    sink.writeln();
   }
 
   @override
@@ -271,6 +277,7 @@ class BeancountRenderer implements RendererInterface {
     sink.write(' note ');
     renderAccount(sink, st.account);
     sink.write(' "${st.comment}"');
+    sink.writeln();
   }
 
   @override
@@ -280,6 +287,7 @@ class BeancountRenderer implements RendererInterface {
     sink.write(st.currency);
     sink.write('  ');
     renderAmountSpec(sink, st.amount);
+    sink.writeln();
   }
 
   @override
@@ -289,21 +297,25 @@ class BeancountRenderer implements RendererInterface {
     for (var value in st.values) {
       sink.write(' "$value"');
     }
+    sink.writeln();
   }
 
   @override
   void renderIncludeStatement(StringSink sink, IncludeStatement include) {
     sink.write('include "${include.path}"');
+    sink.writeln();
   }
 
   @override
   void renderCommentStatement(StringSink sink, CommentStatement comment) {
     sink.write('; ${comment.value}');
+    sink.writeln();
   }
 
   @override
   void renderOptionStatement(StringSink sink, OptionStatement option) {
     sink.write('option "${option.key}" "${option.value}"');
+    sink.writeln();
   }
 }
 
