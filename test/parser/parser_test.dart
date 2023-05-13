@@ -234,4 +234,20 @@ void main() {
     var actual = statements.map((t) => render(t)).join();
     expect(actual, input);
   });
+
+  test("Statements without newlines", () {
+    var input = """
+2021-01-21 * "Converted 1.00 GBP to 1.12 EUR"
+  id: "BALANCE-161399170"
+  Expenses:Personal:BankCharges:Transferwise  0.00 EUR @@ 2.3841776 EUR
+  Assets:Personal:Transferwise                1.12 EUR @ 1.12873 EUR
+  Assets:Personal:Transferwise                1.12 EUR
+2023-04-05 balance Assets:Personal:Transferwise  26879.19 EUR
+2002-01-15 price INR  98.87 EUR
+""";
+
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => render(t)).join() + "\n";
+    expect(actual.trim(), input.trim());
+  });
 }

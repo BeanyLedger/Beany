@@ -13,17 +13,19 @@ statement:
 	| commentStatement;
 
 directive: (
-		balanceStatement
-		| closeStatement
-		| openStatement
-		| commodityStatement
-		| priceStatement
-		| eventStatement
-		| documentStatement
-		| noteStatement
-		| customStatement
-		| trStatement
-	) NEWLINE;
+		(
+			balanceStatement
+			| closeStatement
+			| openStatement
+			| commodityStatement
+			| priceStatement
+			| eventStatement
+			| documentStatement
+			| noteStatement
+			| customStatement
+		) NEWLINE
+	)
+	| trStatement; // trStatement has a newline requirement inside it
 
 currency: CURRENCY;
 
