@@ -36,7 +36,7 @@ class SimpleCategorizer {
   Account? classify(Transaction t) {
     var narration = t.narration.toLowerCase();
     for (var rule in rules.keys) {
-      if (narration.contains(rule)) {
+      if (narration.contains(rule.toLowerCase())) {
         return rules[rule]!;
       }
     }

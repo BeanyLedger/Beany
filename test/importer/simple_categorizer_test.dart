@@ -7,6 +7,9 @@ var rules = """
 {
     "Expenses:Personal:Groceries": [
         "getir"
+    ],
+    "Expenses:Gym": [
+        "Entrevall"
     ]
 }
 """;
@@ -22,5 +25,17 @@ void main() {
 
     var categorizer = SimpleCategorizer(rules);
     expect(categorizer.classify(tr), Account("Expenses:Personal:Groceries"));
+  });
+
+  test("Test2", () {
+    var input = """
+2023-04-05 * "Paid to GIMNASIOS ENTREVALL SL"
+  id: "DIRECT_DEBIT-6089318"
+  Assets:Personal:Transferwise  9.00 EUR
+""";
+    var tr = parse(input).trStatement().val().resolve();
+
+    var categorizer = SimpleCategorizer(rules);
+    expect(categorizer.classify(tr), Account("Expenses:Gym"));
   });
 }
