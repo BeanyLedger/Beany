@@ -1,5 +1,6 @@
 import 'package:beany/core/account.dart';
 import 'package:beany/core/amount.dart';
+import 'package:beany/core/balance_statement.dart';
 import 'package:beany/core/core.dart';
 import 'package:beany/core/meta_value.dart';
 import 'package:beany/core/posting.dart';
@@ -9,12 +10,17 @@ import 'package:beany/misc/date.dart';
 
 import 'wise_json.dart';
 
-Iterable<TransactionSpec> convertWise(
+Iterable<Statement> convertWise(
   WiseConverterConfig config,
   String jsonInput,
 ) {
   var w = Welcome.fromRawJson(jsonInput);
-  return w.transactions.map((tr) => convertWiseTransaction(config, tr));
+  if (w.transactions.isEmpty) return [];
+
+  return [
+    convertWiseTransactionToBalanceStatement(config, w.transactions.first),
+    ...w.transactions.map((tr) => convertWiseTransaction(config, tr)),
+  ];
 }
 
 WiseTransaction parseWiseTransaction(String jsonInput) {
@@ -26,6 +32,21 @@ class WiseConverterConfig {
   final String bankChargesAccount;
 
   WiseConverterConfig(this.baseAccount, this.bankChargesAccount);
+}
+
+BalanceStatement convertWiseTransactionToBalanceStatement(
+  WiseConverterConfig config,
+  WiseTransaction t,
+) {
+  var date = Date.truncate(
+    t.date.toLocal().add(Duration(days: 1)),
+  );
+
+  return BalanceStatement(
+    date,
+    Account(config.baseAccount),
+    Amount(D(t.runningBalance.value.toString()), t.runningBalance.currency),
+  );
 }
 
 TransactionSpec convertWiseTransaction(

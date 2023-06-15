@@ -71,6 +71,7 @@ Future<void> process(WiseConfig config) async {
     );
     var count = 0;
     for (var t in transactions) {
+      if (t is! TransactionSpec) continue;
       if (!transactionExists(duplicatorConfig, existingTransactions, t)) {
         transactionsToAdd.add(t);
         count++;
