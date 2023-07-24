@@ -1,3 +1,5 @@
+import 'package:beany/core/balance_statement.dart';
+import 'package:beany/core/transaction.dart';
 import 'package:beany/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
@@ -37,4 +39,29 @@ Amount AMT(String str) {
   var parts = str.split(' ');
   if (parts.length != 2) throw Exception('Invalid amount: $str');
   return Amount(D(parts[0]), parts[1]);
+}
+
+int compareStatements(Statement a, Statement b) {
+  if (a is TransactionSpec && b is TransactionSpec) {
+    return a.compareTo(b);
+  }
+
+  if (a is Directive && b is Directive) {
+    var r = a.date.compareTo(b.date);
+    if (r != 0) return r;
+
+    if (a is BalanceStatement && b is! BalanceStatement) return -1;
+    if (a is! BalanceStatement && b is BalanceStatement) return 1;
+    return 0;
+  }
+
+  if (a is Directive) {
+    return -1;
+  }
+
+  if (b is Directive) {
+    return 1;
+  }
+
+  return 0;
 }

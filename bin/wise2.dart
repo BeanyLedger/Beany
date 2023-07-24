@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:beany/core/core.dart';
 import 'package:beany/core/posting.dart';
 import 'package:beany/core/transaction.dart';
 import 'package:beany/importer/deduplicator.dart';
@@ -12,6 +13,7 @@ import 'package:beany/render/render.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'package:yaml/yaml.dart';
+import 'package:collection/collection.dart';
 
 class WiseConfig {
   final String dataFolder;
@@ -51,12 +53,13 @@ List<String> inputFiles(String dataFolder) {
 
 Future<void> process(WiseConfig config) async {
   var transactionsToAdd = <TransactionSpec>[];
+  var otherStatementsToAdd = <Statement>[];
+
   var outputFileContents = File(config.outputFile).readAsStringSync();
-  var existingTransactions = parse(outputFileContents)
-      .all()
-      .val()
-      .whereType<TransactionSpec>()
-      .toList();
+  var existingStatements = parse(outputFileContents).all().val();
+
+  var existingTransactions =
+      existingStatements.whereType<TransactionSpec>().toList();
 
   var duplicatorConfig = DuplicatorConfig(config.baseAccount);
 
@@ -71,7 +74,12 @@ Future<void> process(WiseConfig config) async {
     );
     var count = 0;
     for (var t in transactions) {
-      if (t is! TransactionSpec) continue;
+      if (t is! TransactionSpec) {
+        otherStatementsToAdd.add(t);
+        continue;
+      }
+
+      // FIXME: What about balance statements!
       if (!transactionExists(duplicatorConfig, existingTransactions, t)) {
         transactionsToAdd.add(t);
         count++;
@@ -103,10 +111,19 @@ Future<void> process(WiseConfig config) async {
 
   // Make sure all of them are balanced!!
 
+  // Add Balance assertions
+
+  // Get all the existing Balance assertions and ignore transactions which are before that (date - 1 day)
+
   // Add them to the output file!
-  transactionsToAdd.sort();
-  var toAdd = transactionsToAdd.reversed;
-  var output = renderPretty(toAdd.map((tr) => tr.resolve()));
+  var toAdd = [...transactionsToAdd, ...otherStatementsToAdd];
+  mergeSort(toAdd, compare: compareStatements);
+
+  var output = renderPretty(toAdd.reversed.map((st) {
+    if (st is! TransactionSpec) return st;
+    return st.resolve();
+  }));
+
   print("Extra output $output");
   await File(config.outputFile).writeAsString(output + outputFileContents);
 }

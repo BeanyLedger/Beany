@@ -63,8 +63,11 @@ String render(Statement st) {
   return sb.toString();
 }
 
-String renderPretty(Iterable<Transaction> transactions) {
-  return transactions.map((t) => render(t.pretty())).join("\n");
+String renderPretty(Iterable<Statement> statements) {
+  return statements.map((st) {
+    if (st is Transaction) return render(st.pretty());
+    return render(st);
+  }).join("\n");
 }
 
 String renderPosting(PostingSpec p) {
