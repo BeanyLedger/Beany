@@ -236,4 +236,24 @@ class AccountBalances extends Equatable {
     ab.balances.addAll(balances);
     return ab;
   }
+
+  Multimap<Account, Amount> diff(AccountBalances other) {
+    var diff = Multimap<Account, Amount>();
+    for (var account in balances.keys) {
+      var amounts = balances[account];
+      for (var amount in amounts) {
+        var otherAmounts = other.balances[account];
+        var otherAmount = otherAmounts.firstWhereOrNull(
+          (a) => a.currency == amount.currency,
+        );
+        // Not changed
+        if (otherAmount == null) continue;
+        if (otherAmount == amount) continue;
+
+        diff.add(account, otherAmount - amount);
+      }
+    }
+
+    return diff;
+  }
 }
