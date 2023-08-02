@@ -82,6 +82,16 @@ class Ledger {
   final _accountBalances = <Date, AccountBalances>{};
   Map<Date, AccountBalances> get accountBalances => _accountBalances;
 
+  AccountBalances? balanceForDate(Date d) {
+    var ab = _accountBalances[d];
+    while (ab == null && _accountBalances.isNotEmpty) {
+      d = Date.from(d.add(Duration(days: -1)));
+      ab = _accountBalances[d];
+    }
+
+    return ab;
+  }
+
   Ledger compute() {
     for (var statement in statements) {
       if (statement is OpenStatement) {
@@ -166,12 +176,7 @@ class Ledger {
           }
         }
 
-        var prevDate = date.add(Duration(days: -1));
-        var prevAb = _accountBalances[prevDate];
-        while (prevAb == null && _accountBalances.isNotEmpty) {
-          prevDate = prevDate.add(Duration(days: -1));
-          prevAb = _accountBalances[prevDate];
-        }
+        var prevAb = balanceForDate(Date.from(date.add(Duration(days: -1))));
         if (prevAb == null) {
           if (balance.amount.number == Decimal.zero) continue;
 
