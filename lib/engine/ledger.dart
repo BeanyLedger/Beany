@@ -79,10 +79,11 @@ class Ledger {
   final _accountInfo = <AccountInfo>[];
   List<AccountInfo> get accounts => _accountInfo;
 
+  /// Stores the account balance at the end of the day
   final _accountBalances = <Date, AccountBalances>{};
   Map<Date, AccountBalances> get accountBalances => _accountBalances;
 
-  AccountBalances? balanceForDate(Date d) {
+  AccountBalances? balanceAtEndofDate(Date d) {
     var ab = _accountBalances[d];
     while (ab == null && _accountBalances.isNotEmpty) {
       d = Date.from(d.add(Duration(days: -1)));
@@ -176,7 +177,8 @@ class Ledger {
           }
         }
 
-        var prevAb = balanceForDate(Date.from(date.add(Duration(days: -1))));
+        var prevAb =
+            balanceAtEndofDate(Date.from(date.add(Duration(days: -1))));
         if (prevAb == null) {
           if (balance.amount.number == Decimal.zero) continue;
 
@@ -221,6 +223,9 @@ class AccountInfo extends Equatable {
   List<Object?> get props => [account, openDate, closeDate];
 }
 
+/**
+ * Stores the account balances at the end of the day
+ */
 @immutable
 class AccountBalances extends Equatable {
   final Date date;

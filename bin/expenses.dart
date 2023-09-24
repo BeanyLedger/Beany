@@ -17,8 +17,8 @@ Future<void> main(List<String> args) async {
   var endDate = Date(2023, 08, 01);
 
   var startBalances =
-      ledger.balanceForDate(Date.from(startDate.add(Duration(days: -1))));
-  var endBalances = ledger.balanceForDate(endDate);
+      ledger.balanceAtEndofDate(Date.from(startDate.add(Duration(days: -1))));
+  var endBalances = ledger.balanceAtEndofDate(endDate);
 
   if (startBalances == null || endBalances == null) {
     print("No balances found for $startDate or $endDate");
