@@ -1,12 +1,12 @@
 test:
-	dart test
+	cd core && dart test
 
 parser:
-	cd lib/parser && antlr -Werror -Dlanguage=Dart Beancount.g4 -o .
-	dart format --fix lib/parser
+	cd core/lib/parser && antlr -Werror -Dlanguage=Dart Beancount.g4 -o .
+	dart format --fix core/lib/parser
 
 clean:
-	rm -rf lib/parser/Beancount.interp lib/parser/Beancount.tokens lib/parser/BeancountLexer.dart lib/parser/BeancountLexer.tokens lib/parser/BeancountParser.dart lib/parser/BeancountBaseListener.dart lib/parser/BeancountListener.dart lib/parser/BeancountBaseVisitor.dart lib/parser/BeancountVisitor.dart
+	rm -rf core/lib/parser/Beancount.interp core/lib/parser/Beancount.tokens core/lib/parser/BeancountLexer.dart core/lib/parser/BeancountLexer.tokens core/lib/parser/BeancountParser.dart core/lib/parser/BeancountBaseListener.dart core/lib/parser/BeancountListener.dart core/lib/parser/BeancountBaseVisitor.dart core/lib/parser/BeancountVisitor.dart
 
 .PHONY: list test
 list:

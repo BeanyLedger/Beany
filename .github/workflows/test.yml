@@ -23,7 +23,7 @@ jobs:
         flutter-version: 3.10.0
         cache: true
     - name: Install Deps
-      run: dart pub get
+      run: cd core && dart pub get
     - name: Generate Code
       run: devenv shell make parser
     - name: Tests
