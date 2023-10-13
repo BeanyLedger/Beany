@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:beany/core/account.dart';
-import 'package:beany/core/amount.dart';
-import 'package:beany/core/balance_statement.dart';
-import 'package:beany/core/close_statement.dart';
-import 'package:beany/core/core.dart';
-import 'package:beany/core/open_statement.dart';
-import 'package:beany/core/statements.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/misc/date.dart';
-import 'package:beany/parser/parser.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/balance_statement.dart';
+import 'package:beany_core/core/close_statement.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/open_statement.dart';
+import 'package:beany_core/core/statements.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/misc/date.dart';
+import 'package:beany_core/parser/parser.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;

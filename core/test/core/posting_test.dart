@@ -1,7 +1,7 @@
-import 'package:beany/core/core.dart';
-import 'package:beany/core/posting.dart';
-import 'package:beany/misc/date.dart';
-import 'package:beany/parser/parser.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/misc/date.dart';
+import 'package:beany_core/parser/parser.dart';
 import 'package:test/test.dart';
 
 void main() {

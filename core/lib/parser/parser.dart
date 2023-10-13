@@ -1,27 +1,27 @@
 import 'package:antlr4/antlr4.dart';
-import 'package:beany/core/amount.dart';
-import 'package:beany/core/cost_spec.dart';
-import 'package:beany/core/custom_statement.dart';
-import 'package:beany/core/meta_value.dart';
-import 'package:beany/core/price_spec.dart';
-import 'package:beany/misc/date.dart';
+import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/cost_spec.dart';
+import 'package:beany_core/core/custom_statement.dart';
+import 'package:beany_core/core/meta_value.dart';
+import 'package:beany_core/core/price_spec.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 
-import 'package:beany/core/account.dart';
-import 'package:beany/core/balance_statement.dart';
-import 'package:beany/core/close_statement.dart';
-import 'package:beany/core/commodity_statement.dart';
-import 'package:beany/core/core.dart';
-import 'package:beany/core/document_statement.dart';
-import 'package:beany/core/event_statement.dart';
-import 'package:beany/core/note_statement.dart';
-import 'package:beany/core/open_statement.dart';
-import 'package:beany/core/posting.dart';
-import 'package:beany/core/price_statement.dart';
-import 'package:beany/core/statements.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/parser/BeancountLexer.dart';
-import 'package:beany/parser/BeancountParser.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/balance_statement.dart';
+import 'package:beany_core/core/close_statement.dart';
+import 'package:beany_core/core/commodity_statement.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/document_statement.dart';
+import 'package:beany_core/core/event_statement.dart';
+import 'package:beany_core/core/note_statement.dart';
+import 'package:beany_core/core/open_statement.dart';
+import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/price_statement.dart';
+import 'package:beany_core/core/statements.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/parser/BeancountLexer.dart';
+import 'package:beany_core/parser/BeancountParser.dart';
 
 BeancountParser parse(String text) {
   if (!text.endsWith('\n\n')) text += '\n\n';

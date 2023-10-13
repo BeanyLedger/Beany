@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:antlr4/antlr4.dart';
-import 'package:beany/engine/ledger.dart';
+import 'package:beany_core/engine/ledger.dart';
 
 Future<void> main(List<String> args) async {
   if (args.length != 1) {

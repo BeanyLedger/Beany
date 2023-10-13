@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:beany/core/account.dart';
-import 'package:beany/core/transaction.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/transaction.dart';
 
 class SimpleCategorizer {
   Map<String, Account> rules = {};

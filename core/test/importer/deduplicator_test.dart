@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:beany/core/account.dart';
-import 'package:beany/core/core.dart';
-import 'package:beany/core/meta_value.dart';
-import 'package:beany/core/posting.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/importer/deduplicator.dart';
-import 'package:beany/parser/parser.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/meta_value.dart';
+import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/importer/deduplicator.dart';
+import 'package:beany_core/parser/parser.dart';
 import 'package:test/test.dart';
 
 void main() {

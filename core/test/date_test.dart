@@ -1,4 +1,4 @@
-import 'package:beany/misc/date.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:test/test.dart';
 
 void main() {

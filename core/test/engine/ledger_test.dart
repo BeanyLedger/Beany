@@ -1,9 +1,9 @@
-import 'package:beany/core/account.dart';
-import 'package:beany/core/open_statement.dart';
-import 'package:beany/core/statements.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/engine/ledger.dart';
-import 'package:beany/misc/date.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/open_statement.dart';
+import 'package:beany_core/core/statements.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/engine/ledger.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:test/test.dart';
 
 void main() {

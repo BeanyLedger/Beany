@@ -1,6 +1,6 @@
-import 'package:beany/core/balance_statement.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/misc/date.dart';
+import 'package:beany_core/core/balance_statement.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 

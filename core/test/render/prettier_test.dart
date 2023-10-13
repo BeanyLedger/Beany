@@ -1,6 +1,6 @@
-import 'package:beany/parser/parser.dart';
-import 'package:beany/render/prettier.dart';
-import 'package:beany/render/render.dart';
+import 'package:beany_core/parser/parser.dart';
+import 'package:beany_core/render/prettier.dart';
+import 'package:beany_core/render/render.dart';
 import 'package:test/test.dart';
 
 void main() {

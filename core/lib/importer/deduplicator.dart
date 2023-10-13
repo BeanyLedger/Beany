@@ -1,5 +1,5 @@
-import 'package:beany/core/account.dart';
-import 'package:beany/core/transaction.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/transaction.dart';
 
 class DuplicatorConfig {
   final String mainAccount;

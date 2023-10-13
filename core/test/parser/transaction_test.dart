@@ -1,14 +1,14 @@
-import 'package:beany/core/amount.dart';
-import 'package:beany/core/core.dart';
-import 'package:beany/core/meta_value.dart';
-import 'package:beany/misc/date.dart';
-import 'package:beany/render/render.dart';
+import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/meta_value.dart';
+import 'package:beany_core/misc/date.dart';
+import 'package:beany_core/render/render.dart';
 import 'package:test/test.dart';
 
-import 'package:beany/core/account.dart';
-import 'package:beany/core/posting.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/parser/parser.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/parser/parser.dart';
 
 typedef A = Account;
 

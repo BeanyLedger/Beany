@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:beany/core/core.dart';
-import 'package:beany/core/posting.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/importer/deduplicator.dart';
-import 'package:beany/importer/simple_categorizer.dart';
-import 'package:beany/importer/wise.dart';
-import 'package:beany/misc/date.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/importer/deduplicator.dart';
+import 'package:beany_core/importer/simple_categorizer.dart';
+import 'package:beany_core/importer/wise.dart';
+import 'package:beany_core/misc/date.dart';
 
-import 'package:beany/parser/parser.dart';
-import 'package:beany/render/render.dart';
+import 'package:beany_core/parser/parser.dart';
+import 'package:beany_core/render/render.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'package:yaml/yaml.dart';

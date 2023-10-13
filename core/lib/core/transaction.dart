@@ -1,5 +1,5 @@
-import 'package:beany/core/amount.dart';
-import 'package:beany/engine/exceptions.dart';
+import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/engine/exceptions.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';

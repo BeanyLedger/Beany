@@ -1,21 +1,21 @@
-import 'package:beany/core/account.dart';
-import 'package:beany/core/amount.dart';
-import 'package:beany/core/balance_statement.dart';
-import 'package:beany/core/close_statement.dart';
-import 'package:beany/core/commodity_statement.dart';
-import 'package:beany/core/core.dart';
-import 'package:beany/core/custom_statement.dart';
-import 'package:beany/core/document_statement.dart';
-import 'package:beany/core/event_statement.dart';
-import 'package:beany/core/note_statement.dart';
-import 'package:beany/core/open_statement.dart';
-import 'package:beany/core/price_statement.dart';
-import 'package:beany/core/statements.dart';
-import 'package:beany/misc/date.dart';
-import 'package:beany/render/render.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/balance_statement.dart';
+import 'package:beany_core/core/close_statement.dart';
+import 'package:beany_core/core/commodity_statement.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/custom_statement.dart';
+import 'package:beany_core/core/document_statement.dart';
+import 'package:beany_core/core/event_statement.dart';
+import 'package:beany_core/core/note_statement.dart';
+import 'package:beany_core/core/open_statement.dart';
+import 'package:beany_core/core/price_statement.dart';
+import 'package:beany_core/core/statements.dart';
+import 'package:beany_core/misc/date.dart';
+import 'package:beany_core/render/render.dart';
 import 'package:test/test.dart';
 
-import 'package:beany/parser/parser.dart';
+import 'package:beany_core/parser/parser.dart';
 
 void main() {
   group("Statements", () {

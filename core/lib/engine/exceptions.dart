@@ -1,9 +1,9 @@
-import 'package:beany/core/account.dart';
-import 'package:beany/core/amount.dart';
-import 'package:beany/core/core.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/engine/ledger.dart';
-import 'package:beany/render/render.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/engine/ledger.dart';
+import 'package:beany_core/render/render.dart';
 
 class AccountAlreadyOpenException implements Exception {
   final Account account;

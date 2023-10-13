@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:beany/core/amount.dart';
-import 'package:beany/engine/ledger.dart';
-import 'package:beany/misc/date.dart';
-import 'package:beany/render/render.dart';
+import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/engine/ledger.dart';
+import 'package:beany_core/misc/date.dart';
+import 'package:beany_core/render/render.dart';
 
 Future<void> main(List<String> args) async {
   if (args.length != 1) {

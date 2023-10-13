@@ -1,4 +1,4 @@
-import 'package:beany/core/price_spec.dart';
+import 'package:beany_core/core/price_spec.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:equatable/src/equatable_utils.dart';

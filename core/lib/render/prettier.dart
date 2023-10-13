@@ -1,5 +1,5 @@
-import 'package:beany/core/posting.dart';
-import 'package:beany/core/transaction.dart';
+import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/transaction.dart';
 
 extension TransactionPrettier on Transaction {
   TransactionSpec pretty() {

@@ -1,7 +1,7 @@
-import 'package:beany/core/account.dart';
-import 'package:beany/engine/ledger.dart';
-import 'package:beany/engine/exceptions.dart';
-import 'package:beany/misc/date.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/engine/ledger.dart';
+import 'package:beany_core/engine/exceptions.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 

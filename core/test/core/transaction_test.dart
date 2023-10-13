@@ -1,8 +1,8 @@
-import 'package:beany/core/account.dart';
-import 'package:beany/core/core.dart';
-import 'package:beany/core/posting.dart';
-import 'package:beany/core/transaction.dart';
-import 'package:beany/parser/parser.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/parser/parser.dart';
 import 'package:test/test.dart';
 
 void main() {
