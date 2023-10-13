@@ -1,0 +1,9 @@
+name: beany
+
+packages:
+  - core
+  - app
+
+scripts:
+  analyze:
+    exec: dart analyze .

@@ -77,3 +77,5 @@ build/
 .devenv*
 .direnv
 devenv.local.nix
+
+pubspec_overrides.yaml
