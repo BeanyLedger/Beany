@@ -7,3 +7,18 @@ packages:
 scripts:
   analyze:
     exec: dart analyze .
+
+  test:
+    run: |
+      melos run test:dart
+      melos run test:flutter
+
+  test:dart:
+    exec: dart test .
+    packageFilters:
+      flutter: false
+
+  test:flutter:
+    exec: flutter test .
+    packageFilters:
+      flutter: true
