@@ -6,9 +6,27 @@ import 'package:beany/core/meta_value.dart';
 import 'package:beany/core/posting.dart';
 import 'package:beany/core/price_spec.dart';
 import 'package:beany/core/transaction.dart';
+import 'package:beany/importer/deduplicator.dart';
 import 'package:beany/misc/date.dart';
 
 import 'wise_json.dart';
+
+bool wiseFileAlreadyProcessed(
+  String jsonInput,
+  List<TransactionSpec> transactions,
+  DuplicatorConfig duplicatorConfig,
+  WiseConverterConfig config,
+) {
+  var w = Welcome.fromRawJson(jsonInput);
+  if (w.transactions.isEmpty) return true;
+
+  var latest = w.transactions.first;
+  return transactionExists(
+    duplicatorConfig,
+    transactions,
+    convertWiseTransaction(config, latest),
+  );
+}
 
 Iterable<Statement> convertWise(
   WiseConverterConfig config,

@@ -62,16 +62,20 @@ Future<void> process(WiseConfig config) async {
       existingStatements.whereType<TransactionSpec>().toList();
 
   var duplicatorConfig = DuplicatorConfig(config.baseAccount);
+  var wiseConfig =
+      WiseConverterConfig(config.baseAccount, config.bankChargesAccount);
 
   for (var inputFile in inputFiles(config.dataFolder)) {
     if (!inputFile.endsWith(".json")) continue;
     var file = File(inputFile);
     var content = await file.readAsString();
 
-    var transactions = convertWise(
-      WiseConverterConfig(config.baseAccount, config.bankChargesAccount),
-      content,
-    );
+    if (wiseFileAlreadyProcessed(
+        content, existingTransactions, duplicatorConfig, wiseConfig)) {
+      continue;
+    }
+
+    var transactions = convertWise(wiseConfig, content);
     var count = 0;
     for (var t in transactions) {
       if (t is! TransactionSpec) {
