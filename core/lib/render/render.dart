@@ -43,6 +43,7 @@ abstract class RendererInterface {
   void renderIncludeStatement(StringSink sink, IncludeStatement include);
   void renderOptionStatement(StringSink sink, OptionStatement option);
   void renderCommentStatement(StringSink sink, CommentStatement comment);
+  void renderPluginStatement(StringSink sink, PluginStatement plugin);
 }
 
 class DisplayContext {
@@ -105,6 +106,8 @@ class BeancountRenderer implements RendererInterface {
       renderOptionStatement(sink, st);
     } else if (st is CommentStatement) {
       renderCommentStatement(sink, st);
+    } else if (st is PluginStatement) {
+      renderPluginStatement(sink, st);
     } else {
       throw Exception("Unknown statement type: ${st.runtimeType}");
     }
@@ -319,6 +322,15 @@ class BeancountRenderer implements RendererInterface {
   void renderOptionStatement(StringSink sink, OptionStatement option) {
     sink.write('option "${option.key}" "${option.value}"');
     sink.writeln();
+  }
+
+  @override
+  void renderPluginStatement(StringSink sink, PluginStatement plugin) {
+    if (plugin.value == null) {
+      sink.write('plugin "${plugin.name}"');
+    } else {
+      sink.write('plugin "${plugin.name}" "${plugin.value}"');
+    }
   }
 }
 

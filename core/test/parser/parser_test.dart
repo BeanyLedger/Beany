@@ -53,6 +53,30 @@ void main() {
       var actual = statements.map((t) => render(t)).join();
       expect(actual.trim(), '; Hello');
     });
+
+    test('Plugin Parser - Without value', () {
+      var input = 'plugin "title"';
+      var plugin = parse(input).pluginStatement().val();
+
+      expect(plugin.name, 'title');
+      expect(plugin.value, null);
+
+      var statements = parse(input).all().val();
+      var actual = statements.map((t) => render(t)).join();
+      expect(actual.trim(), 'plugin "title"');
+    });
+
+    test('Plugin Parser - With Value', () {
+      var input = 'plugin "title" "val"';
+      var plugin = parse(input).pluginStatement().val();
+
+      expect(plugin.name, 'title');
+      expect(plugin.value, 'val');
+
+      var statements = parse(input).all().val();
+      var actual = statements.map((t) => render(t)).join();
+      expect(actual.trim(), 'plugin "title" "val"');
+    });
   });
 
   test('Account Parser', () {

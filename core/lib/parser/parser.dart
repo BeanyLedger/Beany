@@ -428,6 +428,16 @@ extension OptionStatementParsing on OptionStatementContext {
       );
 }
 
+extension PluginStatementParsing on PluginStatementContext {
+  PluginStatement val() {
+    return PluginStatement(
+      name!.val(),
+      value != null ? value!.val() : null,
+      parsingInfo: _buildParsingInfo(this),
+    );
+  }
+}
+
 extension IncludeStatementParsing on IncludeStatementContext {
   IncludeStatement val() => IncludeStatement(
         quoted_string()!.val(),
@@ -448,6 +458,9 @@ extension StatementParsing on StatementContext {
 
     var i = includeStatement();
     if (i != null) return i.val();
+
+    var p = pluginStatement();
+    if (p != null) return p.val();
 
     throw Exception("Unknown Statement");
   }

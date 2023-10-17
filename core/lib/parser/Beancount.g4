@@ -10,6 +10,7 @@ statement:
 	directive
 	| includeStatement
 	| optionStatement
+	| pluginStatement
 	| commentStatement;
 
 directive: (
@@ -35,6 +36,8 @@ account: ACCOUNT;
 includeStatement: 'include' quoted_string;
 optionStatement:
 	'option' key = quoted_string value = quoted_string;
+pluginStatement:
+	'plugin' name = quoted_string (value = quoted_string)?;
 commentStatement: comment NEWLINE;
 
 balanceStatement: date 'balance' account amount;

@@ -45,3 +45,18 @@ class CommentStatement extends Equatable implements Statement {
   @override
   bool get stringify => true;
 }
+
+@immutable
+class PluginStatement extends Equatable implements Statement {
+  final String name;
+  final String? value;
+  final ParsingInfo? parsingInfo;
+
+  PluginStatement(this.name, this.value, {this.parsingInfo});
+
+  @override
+  List<Object?> get props => [name, value];
+
+  @override
+  bool get stringify => true;
+}
