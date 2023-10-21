@@ -8,7 +8,7 @@ import 'core.dart';
 part 'event_statement.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class EventStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;

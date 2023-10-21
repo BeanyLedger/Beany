@@ -26,6 +26,7 @@ enum TransactionFlag {
 }
 
 @immutable
+@JsonSerializable(includeIfNull: false)
 class TransactionSpec extends Equatable implements Directive, Comparable {
   final DateTime date;
   final IMap<String, MetaValue> meta;
@@ -112,10 +113,14 @@ class TransactionSpec extends Equatable implements Directive, Comparable {
   int compareTo(other) {
     return date.compareTo(other.date);
   }
+
+  factory TransactionSpec.fromJson(Map<String, dynamic> json) =>
+      _$TransactionSpecFromJson(json);
+  Map<String, dynamic> toJson() => _$TransactionSpecToJson(this);
 }
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Transaction extends Equatable implements TransactionSpec {
   final DateTime date;
   final IMap<String, MetaValue> meta;

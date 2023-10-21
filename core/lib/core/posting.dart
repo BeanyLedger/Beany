@@ -13,7 +13,7 @@ import 'cost_spec.dart';
 part 'posting.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class PostingSpec extends Equatable {
   final Account account;
   final Amount? amount;
@@ -130,7 +130,7 @@ class PostingSpec extends Equatable {
 }
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Posting extends Equatable implements PostingSpec {
   final Account account;
   final Amount amount;

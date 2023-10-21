@@ -11,7 +11,7 @@ import 'core.dart';
 part 'balance_statement.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class BalanceStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;

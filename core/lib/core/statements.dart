@@ -7,7 +7,7 @@ import 'core.dart';
 part 'statements.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class IncludeStatement extends Equatable implements Statement {
   final String path;
   final ParsingInfo? parsingInfo;
@@ -26,7 +26,7 @@ class IncludeStatement extends Equatable implements Statement {
 }
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class OptionStatement extends Equatable implements Statement {
   final String key;
   final String value;
@@ -46,7 +46,7 @@ class OptionStatement extends Equatable implements Statement {
 }
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class CommentStatement extends Equatable implements Statement {
   final String value;
   final ParsingInfo? parsingInfo;
@@ -65,7 +65,7 @@ class CommentStatement extends Equatable implements Statement {
 }
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class PluginStatement extends Equatable implements Statement {
   final String name;
   final String? value;

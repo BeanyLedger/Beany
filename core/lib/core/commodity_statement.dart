@@ -8,7 +8,7 @@ import 'core.dart';
 part 'commodity_statement.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class CommodityStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;

@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 part 'account.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Account extends Equatable implements Comparable<Account> {
   final String value;
   Account(this.value);

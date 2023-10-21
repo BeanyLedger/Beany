@@ -9,7 +9,7 @@ import 'amount.dart';
 
 part 'core.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class ParsingInfo {
   final String filePath;
 

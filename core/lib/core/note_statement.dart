@@ -9,7 +9,7 @@ import 'core.dart';
 part 'note_statement.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class NoteStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;

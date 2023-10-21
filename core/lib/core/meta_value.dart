@@ -9,7 +9,7 @@ import 'amount.dart';
 part 'meta_value.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class MetaValue extends Equatable {
   final String? stringValue;
   final Decimal? numberValue;

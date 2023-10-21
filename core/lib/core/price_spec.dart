@@ -7,7 +7,7 @@ import 'amount.dart';
 part 'price_spec.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class PriceSpec extends Equatable {
   final AmountSpec? amountPer;
   final AmountSpec? amountTotal;
@@ -56,7 +56,7 @@ class PriceSpec extends Equatable {
 }
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Price extends Equatable implements PriceSpec {
   final Amount? amountPer;
   final Amount? amountTotal;

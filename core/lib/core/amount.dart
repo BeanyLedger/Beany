@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 part 'amount.g.dart';
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class AmountSpec extends Equatable {
   final Decimal? number;
   final String? currency;
@@ -50,7 +50,7 @@ class AmountSpec extends Equatable {
 }
 
 @immutable
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Amount extends Equatable implements AmountSpec, Comparable<Amount> {
   final Decimal number;
   final String currency;
