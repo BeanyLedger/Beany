@@ -2,18 +2,23 @@ name: beany
 description: A new Flutter project.
 
 # Prevent accidental publishing to pub.dev.
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.6 <4.0.0'
+  sdk: ">=3.0.6 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_date_range_picker: ^0.0.14
+  beany_backend:
+    path: ../backend
+  beany_core:
+    path: ../core
 
 dev_dependencies:
   flutter_test:

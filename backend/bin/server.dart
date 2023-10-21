@@ -20,11 +20,12 @@ Response _rootHandler(Request req) {
 // -> by time
 // -> by accounts
 // -> via full text search
+// -> by file
 Response _transactionsHandler(Request request) {
   var transactions = ledger.statements.whereType<TransactionSpec>();
   var jsonList = transactions.map((e) => e.resolve().toJson());
 
-  return Response.ok(jsonEncode(jsonList.toList()), headers: {
+  return Response.ok(jsonEncode(jsonList.toList().reversed.toList()), headers: {
     'content-type': 'application/json',
   });
 }
