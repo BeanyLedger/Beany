@@ -3,13 +3,17 @@ import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:equatable/src/equatable_utils.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'account.dart';
 import 'amount.dart';
 import 'cost_spec.dart';
 
+part 'posting.g.dart';
+
 @immutable
+@JsonSerializable()
 class PostingSpec extends Equatable {
   final Account account;
   final Amount? amount;
@@ -119,9 +123,14 @@ class PostingSpec extends Equatable {
   }
 
   PostingSpec toSpec() => this;
+
+  factory PostingSpec.fromJson(Map<String, dynamic> json) =>
+      _$PostingSpecFromJson(json);
+  Map<String, dynamic> toJson() => _$PostingSpecToJson(this);
 }
 
 @immutable
+@JsonSerializable()
 class Posting extends Equatable implements PostingSpec {
   final Account account;
   final Amount amount;
@@ -246,4 +255,8 @@ class Posting extends Equatable implements PostingSpec {
       preComments: preComments,
     );
   }
+
+  factory Posting.fromJson(Map<String, dynamic> json) =>
+      _$PostingFromJson(json);
+  Map<String, dynamic> toJson() => _$PostingToJson(this);
 }

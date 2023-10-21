@@ -1,7 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'account.g.dart';
+
 @immutable
+@JsonSerializable()
 class Account extends Equatable implements Comparable<Account> {
   final String value;
   Account(this.value);
@@ -24,6 +28,10 @@ class Account extends Equatable implements Comparable<Account> {
     return _getSortOrder(_getAccountType(myType))
         .compareTo(_getSortOrder(_getAccountType(otherType)));
   }
+
+  factory Account.fromJson(Map<String, dynamic> json) =>
+      _$AccountFromJson(json);
+  Map<String, dynamic> toJson() => _$AccountToJson(this);
 }
 
 AccountType _getAccountType(String myType) {

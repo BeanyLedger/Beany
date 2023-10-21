@@ -1,9 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'amount.dart';
 
+part 'cost_spec.g.dart';
+
 @immutable
+@JsonSerializable()
 class CostSpec extends Equatable {
   final Amount? amountPer;
   final Amount? amountTotal;
@@ -48,4 +52,8 @@ class CostSpec extends Equatable {
       label: label ?? this.label,
     );
   }
+
+  factory CostSpec.fromJson(Map<String, dynamic> json) =>
+      _$CostSpecFromJson(json);
+  Map<String, dynamic> toJson() => _$CostSpecToJson(this);
 }

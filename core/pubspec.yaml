@@ -15,6 +15,9 @@ dependencies:
   equatable: ^2.0.5
   quiver: ^3.2.1
   yaml: ^3.1.2
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   test: ^1.19.5
+  build_runner: any
+  json_serializable: ^6.7.1

@@ -1,8 +1,12 @@
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'amount.g.dart';
+
 @immutable
+@JsonSerializable()
 class AmountSpec extends Equatable {
   final Decimal? number;
   final String? currency;
@@ -39,9 +43,14 @@ class AmountSpec extends Equatable {
   }
 
   bool get canResolve => number != null && currency != null;
+
+  factory AmountSpec.fromJson(Map<String, dynamic> json) =>
+      _$AmountSpecFromJson(json);
+  Map<String, dynamic> toJson() => _$AmountSpecToJson(this);
 }
 
 @immutable
+@JsonSerializable()
 class Amount extends Equatable implements AmountSpec, Comparable<Amount> {
   final Decimal number;
   final String currency;
@@ -82,4 +91,7 @@ class Amount extends Equatable implements AmountSpec, Comparable<Amount> {
     }
     return number.compareTo(other.number);
   }
+
+  factory Amount.fromJson(Map<String, dynamic> json) => _$AmountFromJson(json);
+  Map<String, dynamic> toJson() => _$AmountToJson(this);
 }

@@ -3,6 +3,7 @@ import 'package:beany_core/engine/exceptions.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'package:collection/collection.dart';
@@ -10,6 +11,8 @@ import 'package:collection/collection.dart';
 import 'posting.dart';
 import 'core.dart';
 import 'meta_value.dart';
+
+part 'transaction.g.dart';
 
 enum TransactionFlag {
   Okay('*'),
@@ -111,6 +114,8 @@ class TransactionSpec extends Equatable implements Directive, Comparable {
   }
 }
 
+@immutable
+@JsonSerializable()
 class Transaction extends Equatable implements TransactionSpec {
   final DateTime date;
   final IMap<String, MetaValue> meta;
@@ -200,6 +205,10 @@ class Transaction extends Equatable implements TransactionSpec {
   int compareTo(other) {
     return date.compareTo(other.date);
   }
+
+  factory Transaction.fromJson(Map<String, dynamic> json) =>
+      _$TransactionFromJson(json);
+  Map<String, dynamic> toJson() => _$TransactionToJson(this);
 }
 
 IList<Posting> resolvedPostings(TransactionSpec trSpec) {

@@ -1,9 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'amount.dart';
 
+part 'price_spec.g.dart';
+
 @immutable
+@JsonSerializable()
 class PriceSpec extends Equatable {
   final AmountSpec? amountPer;
   final AmountSpec? amountTotal;
@@ -45,9 +49,14 @@ class PriceSpec extends Equatable {
     }
     return false;
   }
+
+  factory PriceSpec.fromJson(Map<String, dynamic> json) =>
+      _$PriceSpecFromJson(json);
+  Map<String, dynamic> toJson() => _$PriceSpecToJson(this);
 }
 
 @immutable
+@JsonSerializable()
 class Price extends Equatable implements PriceSpec {
   final Amount? amountPer;
   final Amount? amountTotal;
@@ -82,4 +91,7 @@ class Price extends Equatable implements PriceSpec {
 
   @override
   bool get canResolve => true;
+
+  factory Price.fromJson(Map<String, dynamic> json) => _$PriceFromJson(json);
+  Map<String, dynamic> toJson() => _$PriceToJson(this);
 }

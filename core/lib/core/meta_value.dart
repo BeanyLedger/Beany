@@ -1,11 +1,15 @@
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'account.dart';
 import 'amount.dart';
 
+part 'meta_value.g.dart';
+
 @immutable
+@JsonSerializable()
 class MetaValue extends Equatable {
   final String? stringValue;
   final Decimal? numberValue;
@@ -54,4 +58,8 @@ class MetaValue extends Equatable {
 
   @override
   bool get stringify => true;
+
+  factory MetaValue.fromJson(Map<String, dynamic> json) =>
+      _$MetaValueFromJson(json);
+  Map<String, dynamic> toJson() => _$MetaValueToJson(this);
 }

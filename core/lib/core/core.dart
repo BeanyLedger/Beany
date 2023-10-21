@@ -3,9 +3,13 @@ import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'amount.dart';
 
+part 'core.g.dart';
+
+@JsonSerializable()
 class ParsingInfo {
   final String filePath;
 
@@ -22,6 +26,11 @@ class ParsingInfo {
     required this.endLine,
     required this.endCold,
   });
+
+  factory ParsingInfo.fromJson(Map<String, dynamic> json) =>
+      _$ParsingInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ParsingInfoToJson(this);
 }
 
 abstract class Statement {

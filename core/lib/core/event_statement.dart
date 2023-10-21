@@ -1,10 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'core.dart';
 
+part 'event_statement.g.dart';
+
 @immutable
+@JsonSerializable()
 class EventStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
@@ -27,4 +31,8 @@ class EventStatement extends Equatable implements Directive {
 
   @override
   bool get stringify => true;
+
+  factory EventStatement.fromJson(Map<String, dynamic> json) =>
+      _$EventStatementFromJson(json);
+  Map<String, dynamic> toJson() => _$EventStatementToJson(this);
 }

@@ -1,11 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'account.dart';
 import 'core.dart';
 
+part 'close_statement.g.dart';
+
 @immutable
+@JsonSerializable()
 class CloseStatement extends Equatable implements Directive {
   final DateTime date;
   final IMap<String, dynamic> meta;
@@ -25,4 +29,8 @@ class CloseStatement extends Equatable implements Directive {
 
   @override
   bool get stringify => true;
+
+  factory CloseStatement.fromJson(Map<String, dynamic> json) =>
+      _$CloseStatementFromJson(json);
+  Map<String, dynamic> toJson() => _$CloseStatementToJson(this);
 }
