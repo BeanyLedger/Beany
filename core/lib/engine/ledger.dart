@@ -122,8 +122,8 @@ class Ledger {
           if (_accountBalances.isEmpty) {
             ab = AccountBalances(date);
           } else {
-            var lastDate =
-                _accountBalances.keys.reduce((a, b) => a > b ? a : b);
+            // This only works if the ledger is sorted by date (ascending), which it is
+            var lastDate = _accountBalances.keys.last;
             ab = _accountBalances[lastDate]!.clone(date);
           }
         }
