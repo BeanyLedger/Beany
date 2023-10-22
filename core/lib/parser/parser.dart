@@ -23,9 +23,18 @@ import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/parser/BeancountLexer.dart';
 import 'package:beany_core/parser/BeancountParser.dart';
 
-BeancountParser parse(String text) {
+class InputStreamWithSourceName extends InputStream {
+  final String sourceName;
+
+  InputStreamWithSourceName.fromString(String input, this.sourceName)
+      : super.fromString(input);
+}
+
+BeancountParser parse(String text, {String? filePath}) {
   if (!text.endsWith('\n\n')) text += '\n\n';
-  final inputStream = InputStream.fromString(text);
+  final inputStream = filePath != null
+      ? InputStreamWithSourceName.fromString(text, filePath)
+      : InputStream.fromString(text);
   final lexer = BeancountLexer(inputStream);
   final tokens = CommonTokenStream(lexer);
   final parser = BeancountParser(tokens);

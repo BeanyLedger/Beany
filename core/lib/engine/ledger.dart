@@ -58,14 +58,17 @@ class Ledger {
 
     var file = File(filePath);
     var text = await file.readAsString();
-    var statements = parse(text).all().val();
+    var statements = parse(text, filePath: filePath).all().val();
     var extraStatements = <Statement>[];
     for (var statement in statements) {
       if (statement is IncludeStatement) {
         var include = statement;
         var includeFile = File(p.join(rootDir, include.path));
         var includeText = await includeFile.readAsString();
-        var includeStatements = parse(includeText).all().val();
+        var includeStatements = parse(
+          includeText,
+          filePath: includeFile.path,
+        ).all().val();
         extraStatements.addAll(includeStatements);
       }
     }
