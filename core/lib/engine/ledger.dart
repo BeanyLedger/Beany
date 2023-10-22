@@ -76,8 +76,8 @@ class Ledger {
     return engine.compute();
   }
 
-  final _accountInfo = <AccountInfo>[];
-  List<AccountInfo> get accounts => _accountInfo;
+  final _accountInfo = Map<Account, AccountInfo>();
+  Iterable<AccountInfo> get accounts => _accountInfo.values;
 
   /// Stores the account balance at the end of the day
   final _accountBalances = <Date, AccountBalances>{};
@@ -97,24 +97,23 @@ class Ledger {
     for (var statement in statements) {
       if (statement is OpenStatement) {
         // Make sure the account is not already open
-        var actInfo = _accountInfo
-            .firstWhereOrNull((a) => a.account == statement.account);
+        var actInfo = _accountInfo[statement.account];
         if (actInfo != null) {
           throw AccountAlreadyOpenException(
               actInfo.account, actInfo.openDate, statement);
         }
 
         var open = statement;
-        _accountInfo.add(AccountInfo(open.account, open.date, null));
+        _accountInfo[open.account] = AccountInfo(open.account, open.date, null);
       } else if (statement is CloseStatement) {
         var close = statement;
-        var i = _accountInfo.indexWhere((a) => a.account == close.account);
-        if (i == -1) {
-          throw AccountNotOpenException(close.account, statement);
+        var ac = close.account;
+        var ai = _accountInfo[ac];
+        if (ai == null) {
+          throw AccountNotOpenException(ac, statement);
         }
 
-        _accountInfo[i] =
-            AccountInfo(close.account, _accountInfo[i].openDate, close.date);
+        _accountInfo[ac] = AccountInfo(ac, ai.openDate, close.date);
       } else if (statement is TransactionSpec) {
         var transaction = statement;
         var date = Date.from(transaction.date);
@@ -132,10 +131,7 @@ class Ledger {
         var resolvedPostings = transaction.resolve().postings;
         for (var posting in resolvedPostings) {
           var account = posting.account;
-          var accountInfo = _accountInfo.firstWhereOrNull(
-            (a) => a.account == account,
-          );
-
+          var accountInfo = _accountInfo[account];
           if (accountInfo == null) {
             throw AccountNotOpenException(account, statement);
           }
@@ -164,10 +160,7 @@ class Ledger {
         var date = Date.from(balance.date);
 
         var account = balance.account;
-        var accountInfo = _accountInfo.firstWhereOrNull(
-          (a) => a.account == account,
-        );
-
+        var accountInfo = _accountInfo[account];
         if (accountInfo == null) {
           throw AccountNotOpenException(account, statement);
         }
