@@ -49,7 +49,7 @@ Multimap<Account, AccountBalanceInfo> calculateCummulativeBalance(
 ) {
   var results = Multimap<Account, AccountBalanceInfo>();
 
-  var accountTree = AccountsTree(balances.keys);
+  var accountTree = AccountsTree(balances.keys, null);
   for (var accountNode in accountTree.iterByDepth()) {
     var account = accountNode.account();
     var amounts = balances[account];

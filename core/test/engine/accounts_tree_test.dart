@@ -13,7 +13,7 @@ void main() {
       "Income:Work:Bonus",
     ];
 
-    var tree = AccountsTree(accounts.map((e) => A(e)));
+    var tree = AccountsTree(accounts.map((e) => A(e)), null);
     expect(tree.iterDfs().map((e) => e.account().value).toList(), [
       "Expenses",
       "Expenses:Groceries",
