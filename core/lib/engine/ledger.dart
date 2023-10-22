@@ -83,7 +83,7 @@ class Ledger {
   final _accountBalances = <Date, AccountBalances>{};
   Map<Date, AccountBalances> get accountBalances => _accountBalances;
 
-  AccountBalances? balanceAtEndofDate(Date d) {
+  AccountBalances? balanceAtEndOfDate(Date d) {
     var ab = _accountBalances[d];
     while (ab == null && _accountBalances.isNotEmpty) {
       d = d.yesterday();
@@ -94,7 +94,7 @@ class Ledger {
   }
 
   AccountBalances? balanceAtStartOfDate(Date d) {
-    return balanceAtEndofDate(d.yesterday());
+    return balanceAtEndOfDate(d.yesterday());
   }
 
   Ledger compute() {
