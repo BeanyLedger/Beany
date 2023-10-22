@@ -9,7 +9,7 @@ class AccountsTree<T> {
   AccountsTree.empty() : _root = _Node();
   AccountsTree(Iterable<Account> iterable, T val) : _root = _Node() {
     for (var account in iterable) {
-      _addAccount(account, val);
+      addAccount(account, val);
     }
   }
 
@@ -17,21 +17,21 @@ class AccountsTree<T> {
 
   // Does not contain the account itself
   AccountsTree<T>? subTree(Account account) {
-    final node = _find(account);
+    final node = find(account);
     if (node == null) return null;
 
     return AccountsTree<T>._internal(node);
   }
 
-  void _addAccount(Account account, T val) {
+  void addAccount(Account account, T val, {bool overwrite = false}) {
     final parts = account.parts();
 
-    _Node parent = _root;
+    var parent = _root;
     for (var part in parts) {
       final child =
           parent.children.firstWhereOrNull((e) => e.accountPart == part);
       if (child == null) {
-        final newChild = AccountNode(
+        final newChild = AccountNode._(
           accountPart: part,
           parent: parent,
           val: val,
@@ -40,7 +40,15 @@ class AccountsTree<T> {
         // Insert so that the children are sorted
         var inserted = false;
         for (var i = 0; i < parent.children.length; i++) {
-          if (part.compareTo(parent.children[i].accountPart) < 0) {
+          var comp = part.compareTo(parent.children[i].accountPart);
+          if (comp == 0) {
+            if (overwrite) {
+              parent.children[i].val = val;
+            } else {
+              throw ArgumentError('Account already exists: $account');
+            }
+          }
+          if (comp < 0) {
             parent.children.insert(i, newChild);
             inserted = true;
             break;
@@ -55,7 +63,7 @@ class AccountsTree<T> {
     }
   }
 
-  AccountNode<T>? _find(Account account) {
+  AccountNode<T>? find(Account account) {
     final parts = account.parts();
 
     _Node parent = _root;
@@ -121,18 +129,20 @@ class _Node<T> {
 
 class AccountNode<T> implements _Node<T> {
   final String accountPart;
-  final _Node parent;
+  final _Node _parent;
   final int depth;
-  final T val;
+
+  T val;
 
   @override
   List<AccountNode<T>> children = [];
 
-  AccountNode({
+  AccountNode._({
     required this.accountPart,
-    required this.parent,
+    required _Node<T> parent,
     required this.val,
-  }) : depth = parent is AccountNode<T> ? parent.depth + 1 : 1;
+  })  : depth = parent is AccountNode<T> ? parent.depth + 1 : 1,
+        _parent = parent;
 
   bool get isLeaf => children.isEmpty;
 
@@ -141,8 +151,8 @@ class AccountNode<T> implements _Node<T> {
     var node = this;
     while (true) {
       parts.add(node.accountPart);
-      if (node.parent.isRoot) break;
-      node = node.parent as AccountNode<T>;
+      if (node._parent.isRoot) break;
+      node = node._parent as AccountNode<T>;
     }
 
     return Account(parts.reversed.join(':'));
@@ -155,4 +165,7 @@ class AccountNode<T> implements _Node<T> {
   String toString() {
     return "AccountNode($accountPart, $children, $val)";
   }
+
+  AccountNode<T>? get parent =>
+      _parent is AccountNode<T> ? _parent as AccountNode<T> : null;
 }
