@@ -178,8 +178,7 @@ class Ledger {
               expected: balance.amount, actual: null);
         }
 
-        var prevAmount = prevAb.balances[account]
-            .firstWhereOrNull((amt) => amt.currency == balance.amount.currency);
+        var prevAmount = prevAb.amountBy(account, balance.amount.currency);
         if (prevAmount?.number != balance.amount.number) {
           /*
           for (var date in _accountBalances.keys) {
@@ -227,6 +226,11 @@ class AccountBalances extends Equatable {
 
   @override
   List<Object?> get props => [date, balances];
+
+  Amount? amountBy(Account account, String currency) {
+    var amounts = balances[account];
+    return amounts.firstWhereOrNull((a) => a.currency == currency);
+  }
 
   AccountBalances clone(Date date) {
     var ab = AccountBalances(date);
