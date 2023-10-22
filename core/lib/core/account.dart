@@ -29,6 +29,8 @@ class Account extends Equatable implements Comparable<Account> {
         .compareTo(_getSortOrder(_getAccountType(otherType)));
   }
 
+  List<String> parts() => value.split(':');
+
   factory Account.fromJson(Map<String, dynamic> json) =>
       _$AccountFromJson(json);
   Map<String, dynamic> toJson() => _$AccountToJson(this);
