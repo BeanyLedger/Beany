@@ -14,7 +14,7 @@ void main() {
     ];
 
     var tree = AccountsTree(accounts.map((e) => A(e)));
-    expect(tree.iterDfs().map((e) => e.value).toList(), [
+    expect(tree.iterDfs().map((e) => e.account().value).toList(), [
       "Expenses",
       "Expenses:Groceries",
       "Expenses:Groceries:Food",
@@ -23,7 +23,7 @@ void main() {
       "Income:Work",
       "Income:Work:Bonus",
     ]);
-    expect(tree.iterByDepth().map((e) => e.value).toList(), [
+    expect(tree.iterByDepth().map((e) => e.account().value).toList(), [
       "Expenses:Groceries:Food",
       "Expenses:Groceries:Water",
       "Income:Work:Bonus",

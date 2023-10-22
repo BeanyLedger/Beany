@@ -29,7 +29,7 @@ class AccountsTree {
     for (var part in parts) {
       final child = parent.children.firstWhereOrNull((e) => e.val == part);
       if (child == null) {
-        final newChild = _AccountNode(val: part, parent: parent);
+        final newChild = AccountNode(val: part, parent: parent);
 
         // Insert so that the children are sorted
         var inserted = false;
@@ -49,7 +49,7 @@ class AccountsTree {
     }
   }
 
-  _AccountNode? _find(Account account) {
+  AccountNode? _find(Account account) {
     final parts = account.parts();
 
     _Node parent = _root;
@@ -60,14 +60,10 @@ class AccountsTree {
       parent = child;
     }
 
-    return parent as _AccountNode;
+    return parent as AccountNode;
   }
 
-  Iterable<Account> iterBfs() {
-    return _iterBfs().map((e) => e.account());
-  }
-
-  Iterable<_AccountNode> _iterBfs() sync* {
+  Iterable<AccountNode> iterBfs() sync* {
     final stack = Queue<_Node>();
     stack.add(_root);
 
@@ -75,13 +71,13 @@ class AccountsTree {
       final node = stack.removeFirst();
 
       stack.addAll(node.children);
-      if (node is _AccountNode) {
+      if (node is AccountNode) {
         yield node;
       }
     }
   }
 
-  Iterable<Account> iterDfs() sync* {
+  Iterable<AccountNode> iterDfs() sync* {
     final stack = ListQueue<_Node>();
     stack.add(_root);
 
@@ -89,45 +85,45 @@ class AccountsTree {
       final node = stack.removeLast();
 
       stack.addAll(node.children.reversed);
-      if (node is _AccountNode) {
-        yield node.account();
+      if (node is AccountNode) {
+        yield node;
       }
     }
   }
 
   // Goes for the lowest depth first
-  Iterable<Account> iterByDepth() sync* {
-    var values = <int, List<_AccountNode>>{};
+  Iterable<AccountNode> iterByDepth() sync* {
+    var values = <int, List<AccountNode>>{};
 
-    for (var node in _iterBfs()) {
+    for (var node in iterBfs()) {
       values.putIfAbsent(node.depth, () => []).add(node);
     }
 
     for (var i = values.length; i > 0; i--) {
       for (var node in values[i]!) {
-        yield node.account();
+        yield node;
       }
     }
   }
 }
 
 class _Node {
-  final List<_AccountNode> children = [];
+  final List<AccountNode> children = [];
   bool get isRoot => true;
 }
 
-class _AccountNode implements _Node {
+class AccountNode implements _Node {
   final String val;
   final _Node parent;
   final int depth;
 
   @override
-  List<_AccountNode> children = [];
+  List<AccountNode> children = [];
 
-  _AccountNode({
+  AccountNode({
     required this.val,
     required this.parent,
-  }) : depth = parent is _AccountNode ? parent.depth + 1 : 1;
+  }) : depth = parent is AccountNode ? parent.depth + 1 : 1;
 
   bool get isLeaf => children.isEmpty;
 
@@ -137,7 +133,7 @@ class _AccountNode implements _Node {
     while (true) {
       parts.add(node.val);
       if (node.parent.isRoot) break;
-      node = node.parent as _AccountNode;
+      node = node.parent as AccountNode;
     }
 
     return Account(parts.reversed.join(':'));
