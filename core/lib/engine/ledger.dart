@@ -93,6 +93,10 @@ class Ledger {
     return ab;
   }
 
+  AccountBalances? balanceAtStartOfDate(Date d) {
+    return balanceAtEndofDate(d.yesterday());
+  }
+
   Ledger compute() {
     for (var statement in statements) {
       if (statement is OpenStatement) {
@@ -170,7 +174,7 @@ class Ledger {
           }
         }
 
-        var prevAb = balanceAtEndofDate(date.yesterday());
+        var prevAb = balanceAtStartOfDate(date);
         if (prevAb == null) {
           if (balance.amount.number == Decimal.zero) continue;
 

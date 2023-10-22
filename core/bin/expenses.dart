@@ -16,7 +16,7 @@ Future<void> main(List<String> args) async {
   var startDate = Date(2023, 07, 01);
   var endDate = Date(2023, 08, 01);
 
-  var startBalances = ledger.balanceAtEndofDate(startDate.yesterday());
+  var startBalances = ledger.balanceAtStartOfDate(startDate);
   var endBalances = ledger.balanceAtEndofDate(endDate);
 
   if (startBalances == null || endBalances == null) {
