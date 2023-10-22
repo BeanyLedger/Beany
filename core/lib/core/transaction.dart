@@ -231,7 +231,7 @@ IList<Posting> resolvedPostings(TransactionSpec trSpec) {
         'Cannot realize transaction with more than one unresolved posting');
   }
   if (numUnresolved == 0) {
-    return postings.map((p) => p.toPosting()).toIList();
+    return postings.map((p) => p.resolve()).toIList();
   }
 
   var currencies = postings.map((p) {
@@ -264,7 +264,7 @@ IList<Posting> resolvedPostings(TransactionSpec trSpec) {
   for (var p in postings) {
     if (!p.canResolve) continue;
 
-    num += p.toPosting().weight().number;
+    num += p.resolve().weight().number;
   }
 
   var unresolvedIndex = postings.indexWhere((e) => !e.canResolve);
@@ -300,7 +300,6 @@ IList<Posting> resolvedPostings(TransactionSpec trSpec) {
     }
   }
 
-  return IList(postings
-      .replace(unresolvedIndex, unresolved)
-      .map((ps) => ps.toPosting()));
+  return IList(
+      postings.replace(unresolvedIndex, unresolved).map((ps) => ps.resolve()));
 }

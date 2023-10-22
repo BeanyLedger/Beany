@@ -46,15 +46,14 @@ class PostingSpec extends Equatable {
     return can;
   }
 
-  // FIXME: Rename to resolve!
-  Posting toPosting({DateTime? date}) {
+  Posting resolve({DateTime? costSpecDate}) {
     var costSpec = this.costSpec;
     if (!canResolve) {
       if (costSpec == null) {
         throw ArgumentError('PostingSpec: cannot resolve');
       }
 
-      costSpec = this.costSpec!.copyWith(date: date);
+      costSpec = this.costSpec!.copyWith(date: costSpecDate);
       if (!this.copyWith(costSpec: costSpec).canResolve) {
         throw ArgumentError('PostingSpec: cannot resolve');
       }
@@ -191,7 +190,7 @@ class Posting extends Equatable implements PostingSpec {
   bool get stringify => true;
 
   @override
-  Posting toPosting({DateTime? date}) => this;
+  Posting resolve({DateTime? costSpecDate}) => this;
 
   Amount weight() {
     var baseAmount = amount.number;
