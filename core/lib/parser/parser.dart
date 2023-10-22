@@ -48,6 +48,14 @@ ParsingInfo _buildParsingInfo(ParserRuleContext ctx) {
 
 extension DateParsing on DateContext {
   DateTime val() {
+    var parts = DATE()!.text!.split('-');
+    if (parts.length == 3) {
+      var year = int.parse(parts[0]);
+      var month = int.parse(parts[1]);
+      var day = int.parse(parts[2]);
+      return Date(year, month, day);
+    }
+
     return Date.from(DateTime.parse(DATE()!.text!));
   }
 }
