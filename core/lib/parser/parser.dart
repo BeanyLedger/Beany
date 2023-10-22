@@ -68,16 +68,17 @@ ParsingInfo _buildParsingInfo(ParserRuleContext ctx) {
 }
 
 extension DateParsing on DateContext {
-  DateTime val() {
+  Date val() {
     var parts = DATE()!.text!.split('-');
-    if (parts.length == 3) {
-      var year = int.parse(parts[0]);
-      var month = int.parse(parts[1]);
-      var day = int.parse(parts[2]);
-      return Date(year, month, day);
+    if (parts.length != 3) {
+      throw ParsingException(
+          "Date must be in the format YYYY-MM-DD", _buildParsingInfo(this));
     }
 
-    return Date.from(DateTime.parse(DATE()!.text!));
+    var year = int.parse(parts[0]);
+    var month = int.parse(parts[1]);
+    var day = int.parse(parts[2]);
+    return Date(year, month, day);
   }
 }
 
