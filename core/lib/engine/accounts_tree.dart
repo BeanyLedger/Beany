@@ -119,6 +119,7 @@ class _Node {
 class _AccountNode implements _Node {
   final String val;
   final _Node parent;
+  final int depth;
 
   @override
   List<_AccountNode> children = [];
@@ -126,7 +127,7 @@ class _AccountNode implements _Node {
   _AccountNode({
     required this.val,
     required this.parent,
-  });
+  }) : depth = parent is _AccountNode ? parent.depth + 1 : 1;
 
   bool get isLeaf => children.isEmpty;
 
@@ -148,11 +149,5 @@ class _AccountNode implements _Node {
   @override
   String toString() {
     return "AccountNode($val, $children)";
-  }
-
-  // FIXME: This can probably be memorized
-  int get depth {
-    if (parent is _AccountNode) return (parent as _AccountNode).depth + 1;
-    return 1;
   }
 }
