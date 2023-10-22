@@ -260,7 +260,7 @@ IList<Posting> resolvedPostings(TransactionSpec trSpec) {
   }
   var currency = currencies.first;
 
-  var num = D("0");
+  var num = Decimal.zero;
   for (var p in postings) {
     if (!p.canResolve) continue;
 
