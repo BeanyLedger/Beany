@@ -86,7 +86,7 @@ class Ledger {
   AccountBalances? balanceAtEndofDate(Date d) {
     var ab = _accountBalances[d];
     while (ab == null && _accountBalances.isNotEmpty) {
-      d = Date.from(d.add(Duration(days: -1)));
+      d = d.yesterday();
       ab = _accountBalances[d];
     }
 
@@ -170,8 +170,7 @@ class Ledger {
           }
         }
 
-        var prevAb =
-            balanceAtEndofDate(Date.from(date.add(Duration(days: -1))));
+        var prevAb = balanceAtEndofDate(date.yesterday());
         if (prevAb == null) {
           if (balance.amount.number == Decimal.zero) continue;
 

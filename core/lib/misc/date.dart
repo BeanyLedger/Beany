@@ -18,6 +18,8 @@ class Date implements DateTime {
   @override
   DateTime add(Duration duration) => _native.add(duration);
 
+  Date yesterday() => Date.from(add(Duration(days: -1)));
+
   @override
   int compareTo(DateTime other) => _native.compareTo(other);
 
