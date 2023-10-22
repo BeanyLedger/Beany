@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
@@ -54,8 +55,8 @@ class MyApp extends StatelessWidget {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(),
-          darkTheme: ThemeData.light(),
+          theme: _buildTheme(),
+          darkTheme: _buildTheme(),
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support
@@ -76,4 +77,12 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+ThemeData _buildTheme() {
+  var base = ThemeData.light();
+  var textTheme = base.textTheme;
+  return base.copyWith(
+    textTheme: GoogleFonts.firaCodeTextTheme(textTheme),
+  );
 }

@@ -19,6 +19,7 @@ dependencies:
     path: ../backend
   beany_core:
     path: ../core
+  google_fonts: ^4.0.4
 
 dev_dependencies:
   flutter_test:
