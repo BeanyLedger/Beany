@@ -17,14 +17,14 @@ class ParsingInfo {
   final int startCol;
 
   final int endLine;
-  final int endCold;
+  final int endCol;
 
   ParsingInfo({
     required this.filePath,
     required this.startLine,
     required this.startCol,
     required this.endLine,
-    required this.endCold,
+    required this.endCol,
   });
 
   factory ParsingInfo.fromJson(Map<String, dynamic> json) =>

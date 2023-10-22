@@ -45,13 +45,25 @@ BeancountParser parse(String text, {String? filePath}) {
   return parser;
 }
 
+class ParsingException implements Exception {
+  final String message;
+  final ParsingInfo parsingInfo;
+
+  ParsingException(this.message, this.parsingInfo);
+
+  @override
+  String toString() {
+    return 'ParsingException{message: $message, parsingInfo: ${parsingInfo.toJson()}}';
+  }
+}
+
 ParsingInfo _buildParsingInfo(ParserRuleContext ctx) {
   return ParsingInfo(
     filePath: ctx.start!.inputStream!.sourceName,
     startLine: ctx.start!.line!,
     endLine: ctx.stop!.line!,
     startCol: ctx.start!.charPositionInLine,
-    endCold: ctx.stop!.charPositionInLine,
+    endCol: ctx.stop!.charPositionInLine,
   );
 }
 
@@ -204,7 +216,7 @@ extension PriceSpecParsing on PriceSpecContext {
     if (priceSpecPer() != null) return priceSpecPer()!.val();
     if (priceSpecTotal() != null) return priceSpecTotal()!.val();
 
-    throw Exception("Unknown price spec");
+    throw ParsingException("Unknown price spec", _buildParsingInfo(this));
   }
 }
 
@@ -230,7 +242,8 @@ extension AmountSpecParsing on AmountSpecContext {
     var c = currency();
 
     if (n == null && c == null) {
-      throw Exception("AmountSpec has no number or currency");
+      throw ParsingException(
+          "AmountSpec has no number or currency", _buildParsingInfo(this));
     }
     return AmountSpec(n?.val(), c?.val());
   }
@@ -278,7 +291,7 @@ extension CostSpecParsing on CostSpecContext {
   CostSpec val() {
     if (costSpecPer() != null) return costSpecPer()!.val();
     if (costSpecTotal() != null) return costSpecTotal()!.val();
-    throw Exception("Unknown cost spec");
+    throw ParsingException("Unknown cost spec", _buildParsingInfo(this));
   }
 }
 
@@ -303,7 +316,8 @@ extension TrFlagParsing on TrFlagContext {
       case '!':
         return TransactionFlag.Warning;
       default:
-        throw Exception("Unknown transaction flag - $text");
+        throw ParsingException(
+            "Unknown transaction flag - $text", _buildParsingInfo(this));
     }
   }
 }
@@ -329,7 +343,8 @@ extension MetadataValueParsing on MetadataValueContext {
       return MetaValue(dateValue: date()!.val());
     }
 
-    throw Exception("Couldn't parse metadata value");
+    throw ParsingException(
+        "Couldn't parse metadata value", _buildParsingInfo(this));
   }
 }
 
@@ -389,7 +404,7 @@ extension PostingSpecParsing on PostingSpecContext {
     var p4 = postingSpecWithCostAndPrice();
     if (p4 != null) return p4.val();
 
-    throw Exception("Unknown posting spec");
+    throw ParsingException("Unknown posting spec", _buildParsingInfo(this));
   }
 }
 
@@ -426,7 +441,7 @@ extension DirectiveParsing on DirectiveContext {
     if (trStatement() != null) return trStatement()!.val();
     if (customStatement() != null) return customStatement()!.val();
 
-    throw Exception("Unknown Directive");
+    throw ParsingException("Unknown Directive", _buildParsingInfo(this));
   }
 }
 
@@ -479,7 +494,7 @@ extension StatementParsing on StatementContext {
     var p = pluginStatement();
     if (p != null) return p.val();
 
-    throw Exception("Unknown Statement");
+    throw ParsingException("Unknown Statement", _buildParsingInfo(this));
   }
 }
 
