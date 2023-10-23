@@ -3,6 +3,7 @@ name: beany
 packages:
   - core
   - app
+  - backend
 
 scripts:
   analyze:
@@ -10,7 +11,7 @@ scripts:
 
   test:
     run: |
-      melos run test:dart
+      melos run test:dart && \
       melos run test:flutter
 
   test:dart:

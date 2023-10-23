@@ -36,4 +36,4 @@ jobs:
     - name: Generate Code
       run: cd core && make parser && make build
     - name: Tests
-      run: cd core && make test
+      run: melos run test
