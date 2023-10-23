@@ -28,7 +28,7 @@ jobs:
       run: |
         export ANTLR_VERSION=4.13.1
         wget https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar -O /tmp/antlr-${ANTLR_VERSION}-complete.jar
-        echo "java -jar /tmp/antlr-${ANTLR_VERSION}-complete.jar \"\$@\"" >> /usr/bin/antlr
+        echo "java -jar /tmp/antlr-${ANTLR_VERSION}-complete.jar \"\$@\"" | sudo tee /usr/bin/antlr > /dev/null
         sudo chmod +x /usr/bin/antlr
 
     - uses: bluefireteam/melos-action@v1
