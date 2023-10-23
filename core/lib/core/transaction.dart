@@ -64,8 +64,8 @@ class TransactionSpec extends Equatable implements Directive, Comparable {
       flag,
       narration,
       payee: payee,
-      tags: IList.orNull(tags) ?? this.tags,
-      postings: IList.orNull(postings) ?? this.postings,
+      tags: tags ?? this.tags,
+      postings: postings ?? this.postings,
       meta: meta ?? this.meta.unlockView,
       parsingInfo: parsingInfo ?? this.parsingInfo,
     );
