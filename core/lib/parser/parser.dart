@@ -4,6 +4,7 @@ import 'package:beany_core/core/cost_spec.dart';
 import 'package:beany_core/core/custom_statement.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/price_spec.dart';
+import 'package:beany_core/core/query_statement.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 
@@ -108,6 +109,15 @@ extension PriceStatementParsing on PriceStatementContext {
         date()!.val(),
         currency()!.text,
         amount()!.val(),
+        parsingInfo: _buildParsingInfo(this),
+      );
+}
+
+extension QueryStatementParsing on QueryStatementContext {
+  QueryStatement val() => QueryStatement(
+        date()!.val(),
+        name!.val(),
+        value!.val(),
         parsingInfo: _buildParsingInfo(this),
       );
 }
@@ -435,6 +445,7 @@ extension DirectiveParsing on DirectiveContext {
     if (closeStatement() != null) return closeStatement()!.val();
     if (openStatement() != null) return openStatement()!.val();
     if (priceStatement() != null) return priceStatement()!.val();
+    if (queryStatement() != null) return queryStatement()!.val();
     if (commodityStatement() != null) return commodityStatement()!.val();
     if (documentStatement() != null) return documentStatement()!.val();
     if (eventStatement() != null) return eventStatement()!.val();

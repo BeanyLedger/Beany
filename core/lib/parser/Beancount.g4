@@ -20,6 +20,7 @@ directive: (
 			| openStatement
 			| commodityStatement
 			| priceStatement
+			| queryStatement
 			| eventStatement
 			| documentStatement
 			| noteStatement
@@ -45,6 +46,8 @@ closeStatement: date 'close' account;
 openStatement: date 'open' account;
 commodityStatement: date 'commodity' currency;
 priceStatement: date 'price' currency amount;
+queryStatement:
+	date 'query' name = quoted_string value = quoted_string;
 eventStatement:
 	date 'event' name = quoted_string value = quoted_string;
 documentStatement: date 'document' account quoted_string;

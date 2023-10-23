@@ -10,6 +10,7 @@ import 'package:beany_core/core/event_statement.dart';
 import 'package:beany_core/core/note_statement.dart';
 import 'package:beany_core/core/open_statement.dart';
 import 'package:beany_core/core/price_statement.dart';
+import 'package:beany_core/core/query_statement.dart';
 import 'package:beany_core/core/statements.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_core/render/render.dart';
@@ -205,6 +206,26 @@ void main() {
         Date(2002, 01, 15),
         'INR',
         Amount(D("98.87"), "EUR"),
+      ),
+    );
+
+    var statements = parse(input).all().val();
+    var actual = statements.map((t) => render(t)).join();
+    expect(actual, input);
+  });
+
+  test('Query Parser', () {
+    var sql = "SELECT account, sum(position) WHERE ‘trip-france-2014’ in tags";
+    var input = '2014-07-09 query "france-balances" "$sql"\n';
+    var price = parse(input).queryStatement().val();
+
+    expect(render(price), input);
+    expect(
+      price,
+      QueryStatement(
+        Date(2014, 07, 09),
+        'france-balances',
+        sql,
       ),
     );
 

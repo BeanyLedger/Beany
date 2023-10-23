@@ -13,6 +13,7 @@ import 'package:beany_core/core/open_statement.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/price_spec.dart';
 import 'package:beany_core/core/price_statement.dart';
+import 'package:beany_core/core/query_statement.dart';
 import 'package:beany_core/core/statements.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/render/prettier.dart';
@@ -31,6 +32,7 @@ abstract class RendererInterface {
   void renderTransactionSpec(StringSink sink, TransactionSpec transaction);
 
   void renderPriceDirective(StringSink sink, PriceStatement price);
+  void renderQueryDirective(StringSink sink, QueryStatement query);
   void renderOpenDirective(StringSink sink, OpenStatement open);
   void renderCloseDirective(StringSink sink, CloseStatement close);
   void renderNoteDirective(StringSink sink, NoteStatement note);
@@ -98,6 +100,8 @@ class BeancountRenderer implements RendererInterface {
       renderCustomDirective(sink, st);
     } else if (st is PriceStatement) {
       renderPriceDirective(sink, st);
+    } else if (st is QueryStatement) {
+      renderQueryDirective(sink, st);
     } else if (st is TransactionSpec) {
       renderTransactionSpec(sink, st);
     } else if (st is IncludeStatement) {
@@ -293,6 +297,16 @@ class BeancountRenderer implements RendererInterface {
     sink.write(st.currency);
     sink.write('  ');
     renderAmountSpec(sink, st.amount);
+    sink.writeln();
+  }
+
+  @override
+  void renderQueryDirective(StringSink sink, QueryStatement st) {
+    sink.write(st.date.toIso8601String().substring(0, 10));
+    sink.write(' query ');
+    sink.write('"${st.name}"');
+    sink.write(' ');
+    sink.write('"${st.content}"');
     sink.writeln();
   }
 
