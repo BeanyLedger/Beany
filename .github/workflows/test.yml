@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
+    # Dependencies
     - name: Get Flutter version from pubspec
       run: |
         set -e
@@ -21,15 +23,14 @@ jobs:
     - uses: awalsh128/cache-apt-pkgs-action@latest
       name: Antlr4 Dependencies
       with:
-        packages: antlr4 wget
-        version: 1.0
-    - name: Download Antlr4 correct version
+        packages: default-jre-headless wget
+    - name: Download Antlr4
       run: |
-        set -e
-        ANTLR_VERSION=4.13.1
-        wget https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar -O /antlr-${ANTLR_VERSION}-complete.jar
-        echo "java -jar /antlr-${ANTLR_VERSION}-complete.jar \"\$@\"" >> /usr/bin/antlr
+        export ANTLR_VERSION=4.13.1
+        wget https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar -O /tmp/antlr-${ANTLR_VERSION}-complete.jar
+        echo "java -jar /tmp/antlr-${ANTLR_VERSION}-complete.jar \"\$@\"" >> /usr/bin/antlr
         chmod +x /usr/bin/antlr
+
     - uses: bluefireteam/melos-action@v1
       name: Bootstrap
     - name: Generate Code
