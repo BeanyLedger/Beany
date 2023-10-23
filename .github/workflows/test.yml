@@ -29,11 +29,11 @@ jobs:
         export ANTLR_VERSION=4.13.1
         wget https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar -O /tmp/antlr-${ANTLR_VERSION}-complete.jar
         echo "java -jar /tmp/antlr-${ANTLR_VERSION}-complete.jar \"\$@\"" >> /usr/bin/antlr
-        chmod +x /usr/bin/antlr
+        sudo chmod +x /usr/bin/antlr
 
     - uses: bluefireteam/melos-action@v1
       name: Bootstrap
     - name: Generate Code
-      run: cd core && make parser
+      run: cd core && make parser && make build
     - name: Tests
       run: cd core && make test
