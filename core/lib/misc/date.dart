@@ -1,9 +1,9 @@
 class Date implements DateTime {
   final DateTime _native;
 
-  Date(int year, int month, int day) : _native = DateTime(year, month, day);
+  Date(int year, int month, int day) : _native = DateTime.utc(year, month, day);
 
-  Date.from(DateTime dt) : _native = DateTime(dt.year, dt.month, dt.day) {
+  Date.from(DateTime dt) : _native = DateTime.utc(dt.year, dt.month, dt.day) {
     if (dt.hour != 0 ||
         dt.minute != 0 ||
         dt.second != 0 ||
@@ -13,7 +13,10 @@ class Date implements DateTime {
     }
   }
 
-  Date.truncate(DateTime dt) : _native = DateTime(dt.year, dt.month, dt.day);
+  Date.truncate(DateTime dt)
+      : _native = DateTime.utc(dt.year, dt.month, dt.day);
+
+  DateTime get nt => _native;
 
   @override
   DateTime add(Duration duration) => _native.add(duration);
@@ -78,7 +81,7 @@ class Date implements DateTime {
   String toIso8601String() => _native.toIso8601String().substring(0, 10);
 
   @override
-  DateTime toLocal() => DateTime(_native.year, _native.month, _native.day);
+  DateTime toLocal() => DateTime.utc(_native.year, _native.month, _native.day);
 
   @override
   DateTime toUtc() => DateTime.utc(_native.year, _native.month, _native.day);
