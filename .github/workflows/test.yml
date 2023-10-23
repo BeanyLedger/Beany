@@ -25,6 +25,6 @@ jobs:
     - name: Install Deps
       run: cd core && dart pub get
     - name: Generate Code
-      run: devenv shell make parser
+      run: cd core && devenv shell make parser
     - name: Tests
-      run: devenv shell make test
+      run: cd core && devenv shell make test
