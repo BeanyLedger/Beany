@@ -19,9 +19,17 @@ jobs:
         flutter-version: 3.13.6
         cache: true
     - uses: awalsh128/cache-apt-pkgs-action@latest
+      name: Antlr4 Dependencies
       with:
-        packages: antlr4
+        packages: antlr4 wget
         version: 1.0
+    - name: Download Antlr4 correct version
+      run: |
+        set -e
+        ANTLR_VERSION=4.13.1
+        wget https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar -O /antlr-${ANTLR_VERSION}-complete.jar
+        echo "java -jar /antlr-${ANTLR_VERSION}-complete.jar \"\$@\"" >> /usr/bin/antlr
+        chmod +x /usr/bin/antlr
     - uses: bluefireteam/melos-action@v1
       name: Bootstrap
     - name: Generate Code
