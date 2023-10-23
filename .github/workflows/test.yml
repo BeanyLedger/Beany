@@ -9,22 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: cachix/install-nix-action@v20
-    - uses: cachix/cachix-action@v12
-      with:
-        name: devenv
-    - name: Install devenv.sh
-      run: nix profile install github:cachix/devenv/latest
-      shell: sh
-    - name: Download Deps
-      run: devenv shell pwd
     - uses: subosito/flutter-action@v2
       with:
         flutter-version: 3.10.0
         cache: true
-    - name: Install Deps
-      run: cd core && dart pub get
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: antlr4
+        version: 1.0
+    - uses: bluefireteam/melos-action@v1
+      name: Bootstrap
     - name: Generate Code
-      run: cd core && devenv shell make parser
+      run: cd core && make parser
     - name: Tests
-      run: cd core && devenv shell make test
+      run: cd core && make test
