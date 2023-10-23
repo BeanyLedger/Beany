@@ -426,7 +426,7 @@ extension TransactionParsing on TrStatementContext {
     return tr.copyWith(
       postings: postingSpecWithCommentss().map((p) => p.val()),
       meta: metadata()?.val(),
-      parsingInfo: _buildParsingInfo(this),
+      // The ParsingInfo is already present in the header
     );
   }
 }
