@@ -2,6 +2,8 @@ name: beany_core
 description: Mobile first Plain Text Accounting
 version: 0.0.1
 
+publish_to: "none"
+
 environment:
   sdk: ">=3.0.0"
 
