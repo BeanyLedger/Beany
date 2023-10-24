@@ -1,3 +1,4 @@
+import 'package:beany_core/core/meta_value.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -11,7 +12,7 @@ part 'commodity_statement.g.dart';
 @JsonSerializable(includeIfNull: false)
 class CommodityStatement extends Equatable implements Directive {
   final DateTime date;
-  final IMap<String, dynamic> meta;
+  final IMap<String, MetaValue> meta;
 
   final String commodity;
   final ParsingInfo? parsingInfo;
@@ -19,7 +20,7 @@ class CommodityStatement extends Equatable implements Directive {
   CommodityStatement(
     this.date,
     this.commodity, {
-    Map<String, dynamic>? meta,
+    Map<String, MetaValue>? meta,
     this.parsingInfo,
   }) : meta = IMap(meta);
 

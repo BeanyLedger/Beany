@@ -1,3 +1,4 @@
+import 'package:beany_core/core/meta_value.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -12,7 +13,7 @@ part 'close_statement.g.dart';
 @JsonSerializable(includeIfNull: false)
 class CloseStatement extends Equatable implements Directive {
   final DateTime date;
-  final IMap<String, dynamic> meta;
+  final IMap<String, MetaValue> meta;
 
   final Account account;
   final ParsingInfo? parsingInfo;
@@ -20,7 +21,7 @@ class CloseStatement extends Equatable implements Directive {
   CloseStatement(
     this.date,
     this.account, {
-    Map<String, dynamic>? meta,
+    Map<String, MetaValue>? meta,
     this.parsingInfo,
   }) : meta = IMap(meta);
 

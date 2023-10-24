@@ -1,4 +1,5 @@
 import 'package:beany_core/core/balance_statement.dart';
+import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
@@ -38,7 +39,7 @@ abstract class Statement {
 }
 
 abstract class Directive extends Statement {
-  IMap<String, dynamic> get meta;
+  IMap<String, MetaValue> get meta;
   DateTime get date;
 }
 

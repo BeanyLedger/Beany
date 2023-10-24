@@ -1,3 +1,4 @@
+import 'package:beany_core/core/meta_value.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -11,7 +12,7 @@ part 'event_statement.g.dart';
 @JsonSerializable(includeIfNull: false)
 class EventStatement extends Equatable implements Directive {
   final DateTime date;
-  final IMap<String, dynamic> meta;
+  final IMap<String, MetaValue> meta;
 
   final String type;
   final String value;
@@ -22,7 +23,7 @@ class EventStatement extends Equatable implements Directive {
     this.date,
     this.type,
     this.value, {
-    Map<String, dynamic>? meta,
+    Map<String, MetaValue>? meta,
     this.parsingInfo,
   }) : meta = IMap(meta);
 
