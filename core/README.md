@@ -9,3 +9,7 @@
 3. Probably things relating to Cost Specs
 
 4. Resolving Postings might fail in some cases, especially those with specific precision requirements.
+
+5. Does not allow any arithmatic expressions anywhere. In Beancount - "The Amount in “Postings” can also be an arithmetic expression using ( ) * / - + . For example,"
+
+6. Posting specific flags are not supported. In Beancount "You can also attach flags to the postings themselves, if you want to flag one of the transaction’s legs in particular:"
