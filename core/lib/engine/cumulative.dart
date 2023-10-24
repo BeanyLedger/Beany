@@ -1,105 +1,72 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:beany_core/engine/accounts_tree.dart';
 import 'package:decimal/decimal.dart';
 import 'package:quiver/collection.dart';
-import 'package:collection/collection.dart';
 
-class AccountBalanceInfo {
-  final Account account;
-  final String currency;
-
-  final Decimal cumulative;
-  final Decimal ownValue;
-
-  Decimal get totalValue => cumulative + ownValue;
-
-  AccountBalanceInfo(
-    this.account,
-    this.currency, {
-    required this.ownValue,
-    required this.cumulative,
-  });
-
-  @override
-  String toString() {
-    return 'AccountBalanceInfo{account: $account, currency: $currency, cumulative: $cumulative, ownValue: $ownValue}';
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AccountBalanceInfo &&
-          runtimeType == other.runtimeType &&
-          account == other.account &&
-          currency == other.currency &&
-          cumulative == other.cumulative &&
-          ownValue == other.ownValue;
-
-  @override
-  int get hashCode =>
-      account.hashCode ^
-      currency.hashCode ^
-      cumulative.hashCode ^
-      ownValue.hashCode;
-}
-
-Multimap<Account, AccountBalanceInfo> calculateCummulativeBalance(
+AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
   Multimap<Account, Amount> balances,
 ) {
-  var results = Multimap<Account, AccountBalanceInfo>();
+  var emptyNode = AccountBalanceNode(
+    Account(""),
+    ownValue: {},
+    cumulative: {},
+    children: [],
+  );
+
+  var balanceTree = AccountsTree<AccountBalanceNode>.empty(emptyNode);
 
   var accountTree = AccountsTree(balances.keys, null);
   for (var accountNode in accountTree.iterByDepth()) {
     var account = accountNode.account();
-    var amounts = balances[account];
+    var amounts = balances[account].toList();
 
     if (accountNode.isLeaf) {
-      for (var amt in amounts) {
-        results.add(
+      var values = AccountBalanceNode.buildValue(amounts);
+
+      balanceTree.addAccount(
+        account,
+        AccountBalanceNode(
           account,
-          AccountBalanceInfo(
-            account,
-            amt.currency,
-            ownValue: amt.number,
-            cumulative: Decimal.zero,
-          ),
-        );
-      }
+          ownValue: values,
+          cumulative: values,
+          children: [],
+        ),
+      );
     } else {
-      var childBalances = accountNode.children
-          .map((e) => results[e.account()].toList())
-          .expand((e) => e)
-          .toList();
+      var childBalances =
+          balanceTree.find(account)!.children.map((e) => e.val).toList();
 
-      var balanceByCurrency = <String, Decimal>{};
+      var allCurrencies = amounts.map((e) => e.currency).toSet();
       for (var childBalance in childBalances) {
-        var currency = childBalance.currency;
-        var value = balanceByCurrency[currency];
-        if (value == null) {
-          balanceByCurrency[currency] = childBalance.totalValue;
-        } else {
-          balanceByCurrency[currency] = value + childBalance.totalValue;
+        allCurrencies.addAll(childBalance.cumulative.keys);
+        allCurrencies.addAll(childBalance.ownValue.keys);
+      }
+
+      var ownValue = AccountBalanceNode.buildValue(amounts);
+      var cumulative = <String, Decimal>{};
+      for (var currency in allCurrencies) {
+        var value = Decimal.zero;
+        for (var childBalance in childBalances) {
+          value += childBalance.cumulative[currency] ?? Decimal.zero;
         }
+
+        value += ownValue[currency] ?? Decimal.zero;
+        cumulative[currency] = value;
       }
 
-      for (var bn in balanceByCurrency.entries) {
-        var currency = bn.key;
-        var amtForCurrency =
-            amounts.firstWhereOrNull((e) => e.currency == currency);
-
-        results.add(
+      balanceTree.addAccount(
+        account,
+        AccountBalanceNode(
           account,
-          AccountBalanceInfo(
-            account,
-            currency,
-            cumulative: bn.value,
-            ownValue: amtForCurrency?.number ?? Decimal.zero,
-          ),
-        );
-      }
+          ownValue: ownValue,
+          cumulative: cumulative,
+          children: childBalances,
+        ),
+      );
     }
   }
 
-  return results;
+  return balanceTree;
 }

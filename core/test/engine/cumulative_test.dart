@@ -18,17 +18,18 @@ void main() {
     map.add(A("Expenses"), AMT('1 EUR'));
     map.add(A("Expenses"), AMT('1 USD'));
 
-    var result = calculateCummulativeBalance(map);
-    expect(result.length, 7);
+    var balTree = calculateCummulativeBalance(map);
+    expect(balTree.iterBfs().length, 7);
+
+    var expensesBal = balTree.find(A("Expenses"))!.val;
+    expect(expensesBal.account, A("Expenses"));
     expect(
-      result[A("Expenses")].first,
-      AccountBalanceInfo(A("Expenses"), "EUR",
-          ownValue: D("1"), cumulative: D("13")),
+      expensesBal.ownValue,
+      {"EUR": D("1"), "USD": D("1")},
     );
     expect(
-      result[A("Expenses")].last,
-      AccountBalanceInfo(A("Expenses"), "USD",
-          ownValue: D("1"), cumulative: D("2")),
+      expensesBal.cumulative,
+      {"EUR": D("14"), "USD": D("3")},
     );
   });
 }

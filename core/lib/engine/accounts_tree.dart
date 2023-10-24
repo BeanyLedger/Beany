@@ -5,36 +5,46 @@ import 'package:collection/collection.dart';
 
 class AccountsTree<T> {
   final _Node<T> _root;
+  final T defaultValue;
 
-  AccountsTree.empty() : _root = _Node();
-  AccountsTree(Iterable<Account> iterable, T val) : _root = _Node() {
+  AccountsTree.empty(T defaultValue)
+      : _root = _Node(),
+        defaultValue = defaultValue;
+
+  AccountsTree(Iterable<Account> iterable, T val)
+      : _root = _Node(),
+        defaultValue = val {
     for (var account in iterable) {
       addAccount(account, val);
     }
   }
 
-  AccountsTree._internal(this._root);
+  AccountsTree._internal(this._root, this.defaultValue);
 
   // Does not contain the account itself
   AccountsTree<T>? subTree(Account account) {
     final node = find(account);
     if (node == null) return null;
 
-    return AccountsTree<T>._internal(node);
+    return AccountsTree<T>._internal(node, defaultValue);
   }
 
   void addAccount(Account account, T val, {bool overwrite = false}) {
     final parts = account.parts();
 
     var parent = _root;
-    for (var part in parts) {
-      final child =
-          parent.children.firstWhereOrNull((e) => e.accountPart == part);
+    for (var i = 0; i < parts.length; i++) {
+      var part = parts[i];
+      var atDestination = i == parts.length - 1;
+
+      final child = parent.children.firstWhereOrNull(
+        (e) => e.accountPart == part,
+      );
       if (child == null) {
         final newChild = AccountNode._(
           accountPart: part,
           parent: parent,
-          val: val,
+          val: atDestination ? val : defaultValue,
         );
 
         // Insert so that the children are sorted
@@ -59,6 +69,13 @@ class AccountsTree<T> {
         parent = newChild;
       } else {
         parent = child;
+        if (atDestination) {
+          if (overwrite || child.val == defaultValue) {
+            child.val = val;
+          } else {
+            throw ArgumentError('Account already exists: $account');
+          }
+        }
       }
     }
   }
@@ -66,10 +83,11 @@ class AccountsTree<T> {
   AccountNode<T>? find(Account account) {
     final parts = account.parts();
 
-    _Node parent = _root;
+    _Node<T> parent = _root;
     for (var part in parts) {
-      final child =
-          parent.children.firstWhereOrNull((e) => e.accountPart == part);
+      final child = parent.children.firstWhereOrNull(
+        (e) => e.accountPart == part,
+      );
       if (child == null) return null;
 
       parent = child;
