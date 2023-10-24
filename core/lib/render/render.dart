@@ -216,18 +216,14 @@ class BeancountRenderer implements RendererInterface {
     }
     sink.writeln();
 
-    if (tr.meta.isNotEmpty) {
-      for (var m in tr.meta.entries) {
-        sink.write(_tab);
-        sink.writeln('${m.key}: ${m.value}');
-      }
+    for (var m in tr.meta.entries) {
+      sink.write(_tab);
+      sink.writeln('${m.key}: ${m.value}');
     }
 
-    if (tr.postings.isNotEmpty) {
-      for (var posting in tr.postings) {
-        renderPostingSpec(sink, posting, tr);
-        sink.writeln();
-      }
+    for (var posting in tr.postings) {
+      renderPostingSpec(sink, posting, tr);
+      sink.writeln();
     }
   }
 
