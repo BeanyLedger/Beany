@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:http/http.dart';
 import 'package:beany_core/core/transaction.dart';
 
@@ -16,6 +18,7 @@ abstract class BeanyClient {
   */
 
   Future<List<Transaction>> transactions();
+  Future<AccountBalanceNode> balance(Account account);
 }
 
 class BeanyHttpClient implements BeanyClient {
@@ -33,6 +36,17 @@ class BeanyHttpClient implements BeanyClient {
     final json = response.body;
     final list = jsonDecode(json) as List<dynamic>;
     return list.map((e) => Transaction.fromJson(e)).toList();
+  }
+
+  @override
+  Future<AccountBalanceNode> balance(Account account) async {
+    final response = await get(Uri.parse('$host/balance/${account.value}'));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load balance');
+    }
+
+    final json = response.body;
+    return AccountBalanceNode.fromJson(jsonDecode(json));
   }
 }
 

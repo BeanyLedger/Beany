@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/ledger.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
@@ -12,7 +14,8 @@ import 'qr.dart';
 // Configure routes.
 final _router = Router()
   ..get('/', _rootHandler)
-  ..get('/transactions', _transactionsHandler);
+  ..get('/transactions', _transactionsHandler)
+  ..get('/balance/<account>', _balanceHandler);
 
 Response _rootHandler(Request req) {
   return Response.ok('Hello, World!\n');
@@ -28,6 +31,25 @@ Response _transactionsHandler(Request request) {
   var jsonList = transactions.map((e) => e.resolve().toJson());
 
   return Response.ok(jsonEncode(jsonList.toList().reversed.toList()), headers: {
+    'content-type': 'application/json',
+  });
+}
+
+Response _balanceHandler(Request request) {
+  var accountName = request.params['account'];
+  if (accountName == null) {
+    return Response.badRequest(body: 'Account name is required');
+  }
+  var oldestDate = ledger.accountBalances.keys.last;
+  var balance = ledger.accountBalances[oldestDate]!;
+
+  var balanceTree = calculateCummulativeBalance(balance.balances);
+  var node = balanceTree.find(Account(accountName));
+  if (node == null) {
+    return Response.notFound('Account not found');
+  }
+
+  return Response.ok(jsonEncode(node.val), headers: {
     'content-type': 'application/json',
   });
 }
