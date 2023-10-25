@@ -19,7 +19,7 @@ class AccountBalances extends Equatable {
   @override
   List<Object?> get props => [date, balances];
 
-  Amount? amountBy(Account account, String currency) {
+  Amount? amountBy(Account account, Currency currency) {
     return balances[account]?.amountBy(currency);
   }
 

@@ -8,7 +8,7 @@ part 'multi_amount.g.dart';
 
 @JsonSerializable(includeIfNull: false)
 class MultiAmount implements Equatable {
-  final Map<String, Decimal> _amounts = {};
+  final Map<Currency, Decimal> _amounts = {};
 
   MultiAmount([Iterable<Amount> amounts = const []]) {
     for (var amount in amounts) {
@@ -16,9 +16,9 @@ class MultiAmount implements Equatable {
     }
   }
 
-  Map<String, Decimal> toMap() => _amounts;
+  Map<Currency, Decimal> toMap() => _amounts;
 
-  void set(String currency, Decimal amount) {
+  void set(Currency currency, Decimal amount) {
     _amounts[currency] = amount;
   }
 
@@ -26,7 +26,7 @@ class MultiAmount implements Equatable {
     set(amount.currency, amount.number);
   }
 
-  void add(String currency, Decimal amount) {
+  void add(Currency currency, Decimal amount) {
     if (_amounts[currency] == null) {
       _amounts[currency] = amount;
     } else {
@@ -42,17 +42,17 @@ class MultiAmount implements Equatable {
     return _amounts.entries.map((e) => Amount(e.value, e.key)).toList();
   }
 
-  Amount? amountBy(String currency) {
+  Amount? amountBy(Currency currency) {
     return _amounts[currency] == null
         ? null
         : Amount(_amounts[currency]!, currency);
   }
 
-  Decimal? val(String currency) => _amounts[currency];
-  Decimal? operator [](String currency) => val(currency);
-  bool contains(String currency) => _amounts.containsKey(currency);
+  Decimal? val(Currency currency) => _amounts[currency];
+  Decimal? operator [](Currency currency) => val(currency);
+  bool contains(Currency currency) => _amounts.containsKey(currency);
 
-  Iterable<String> get currencies => _amounts.keys;
+  Iterable<Currency> get currencies => _amounts.keys;
 
   MultiAmount clone() {
     var ma = MultiAmount();

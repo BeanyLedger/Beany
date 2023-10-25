@@ -5,11 +5,13 @@ import 'package:meta/meta.dart';
 
 part 'amount.g.dart';
 
+typedef Currency = String;
+
 @immutable
 @JsonSerializable(includeIfNull: false)
 class AmountSpec extends Equatable {
   final Decimal? number;
-  final String? currency;
+  final Currency? currency;
 
   AmountSpec(this.number, this.currency) {
     if (number != null) {
