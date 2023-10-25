@@ -2,8 +2,66 @@ import 'dart:convert';
 
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:http/http.dart';
 import 'package:beany_core/core/transaction.dart';
+
+class FilterOptions {
+  final Date? startDate;
+
+  /// Includes this date
+  final Date? endDate;
+
+  /// An empty list means all files
+  final List<String> fileNames;
+
+  /// An empty list means all accounts
+  final List<Account> accounts;
+
+  FilterOptions({
+    this.startDate,
+    this.endDate,
+    this.fileNames = const [],
+    this.accounts = const [],
+  });
+
+  // We aren't using JsonSerializable here as we need a Map<String, String>
+  // and not Map<String, dynamic>
+  factory FilterOptions.fromJson(Map<String, String> json) {
+    return FilterOptions(
+      startDate: json['startDate'] == null
+          ? null
+          : Date.fromIso8601String(json['startDate']!),
+      endDate: json['endDate'] == null
+          ? null
+          : Date.fromIso8601String(json['endDate']!),
+      fileNames: json['fileNames'] == null
+          ? []
+          : json['fileNames']!.split(',').map((e) => e.trim()).toList(),
+      accounts: json['accounts'] == null
+          ? []
+          : _accountsfromJsonStringList(
+              json['accounts']!.split(',').map((e) => e.trim()).toList()),
+    );
+  }
+
+  Map<String, String> toJson() {
+    return {
+      if (startDate != null) 'startDate': startDate!.toIso8601String(),
+      if (endDate != null) 'endDate': endDate!.toIso8601String(),
+      'fileNames': fileNames.join(','),
+      'accounts': _accountsToJsonStringList(accounts).join(','),
+    };
+  }
+
+  static List<String> _accountsToJsonStringList(List<Account> accounts) {
+    return accounts.map((e) => e.value).toList();
+  }
+
+  static List<Account> _accountsfromJsonStringList(List<dynamic> json) {
+    return json.map((e) => Account(e as String)).toList();
+  }
+}
 
 abstract class BeanyClient {
   /*
@@ -18,7 +76,7 @@ abstract class BeanyClient {
   */
 
   Future<List<Transaction>> transactions();
-  Future<AccountBalanceNode> balance(Account account);
+  Future<AccountBalanceNode> balance(Account account, {FilterOptions? filter});
 }
 
 class BeanyHttpClient implements BeanyClient {
@@ -39,8 +97,15 @@ class BeanyHttpClient implements BeanyClient {
   }
 
   @override
-  Future<AccountBalanceNode> balance(Account account) async {
-    final response = await get(Uri.parse('$host/balance/${account.value}'));
+  Future<AccountBalanceNode> balance(
+    Account account, {
+    FilterOptions? filter,
+  }) async {
+    var uri = Uri.parse('$host/balance/${account.value}');
+    if (filter != null) {
+      uri.queryParameters.addAll(filter.toJson());
+    }
+    final response = await get(uri);
     if (response.statusCode != 200) {
       throw Exception('Failed to load balance');
     }

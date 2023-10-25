@@ -86,6 +86,12 @@ class Ledger {
   Map<Date, AccountBalances> get accountBalances => _accountBalances;
 
   AccountBalances? balanceAtEndOfDate(Date d) {
+    if (d.isBefore(_accountBalances.keys.first)) {
+      print("Date $d is out of range");
+      return null;
+    }
+
+    // FIXME: This definitely needs to be optimized!
     var ab = _accountBalances[d];
     while (ab == null && _accountBalances.isNotEmpty) {
       d = d.yesterday();

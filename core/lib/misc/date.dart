@@ -16,6 +16,8 @@ class Date implements DateTime {
   Date.truncate(DateTime dt)
       : _native = DateTime.utc(dt.year, dt.month, dt.day);
 
+  Date.fromIso8601String(String s) : _native = fromIso8601DateOnlyString(s);
+
   DateTime get nt => _native;
 
   @override
@@ -145,4 +147,23 @@ class Date implements DateTime {
     final dt = DateTime.now();
     return Date(dt.year, dt.month, dt.day);
   }
+
+  String toJson() => toIso8601String();
+  factory Date.fromJson(String value) => Date.fromIso8601String(value);
+}
+
+DateTime fromIso8601DateOnlyString(String s) {
+  var parts = s.split('-');
+  if (parts.length != 3) {
+    throw ArgumentError('Date must be in the format YYYY-MM-DD');
+  }
+  if (s.length != 10) {
+    throw ArgumentError('Invalid date format');
+  }
+
+  var year = int.parse(parts[0]);
+  var month = int.parse(parts[1]);
+  var day = int.parse(parts[2]);
+
+  return DateTime.utc(year, month, day);
 }

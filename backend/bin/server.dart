@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:beany_backend/beany_backend.dart';
 import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/ledger.dart';
+import 'package:quiver/collection.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -35,18 +38,56 @@ Response _transactionsHandler(Request request) {
   });
 }
 
-Response _balanceHandler(Request request) {
-  var accountName = request.params['account'];
+Response _balanceHandler(Request req) {
+  var accountName = req.params['account'];
   if (accountName == null) {
-    return Response.badRequest(body: 'Account name is required');
+    return Response.badRequest(body: {'error': 'Account name is required'});
   }
-  var oldestDate = ledger.accountBalances.keys.last;
-  var balance = ledger.accountBalances[oldestDate]!;
+  var lastDate = ledger.accountBalances.keys.last;
 
-  var balanceTree = calculateCummulativeBalance(balance.balances);
+  var filterOptions = FilterOptions.fromJson(req.url.queryParameters);
+
+  var startDate = filterOptions.startDate;
+  var endDate = filterOptions.endDate;
+
+  late final Multimap<Account, Amount> balances;
+  if (startDate == null && endDate == null) {
+    balances = ledger.balanceAtEndOfDate(lastDate)!.balances;
+  } else if (startDate != null && endDate != null) {
+    var startBal = ledger.balanceAtStartOfDate(startDate);
+    if (startBal == null) {
+      return Response.badRequest(
+          body: jsonEncode({'error': 'No balance for stateDate: $startDate'}));
+    }
+
+    var endBal = ledger.balanceAtStartOfDate(endDate);
+    if (endBal == null) {
+      return Response.badRequest(
+          body: jsonEncode({'error': 'No balance for endDate: $endDate'}));
+    }
+
+    balances = endBal.diff(startBal);
+  } else if (startDate == null) {
+    var bal = ledger.balanceAtEndOfDate(endDate!);
+    if (bal == null) {
+      return Response.badRequest(
+          body: jsonEncode({'error': 'No balance for endDate: $endDate'}));
+    }
+    balances = bal.balances;
+  } else {
+    var bal = ledger.balanceAtStartOfDate(startDate);
+    if (bal == null) {
+      return Response.badRequest(
+          body: jsonEncode({'error': 'No balance for startDate: $startDate'}));
+    }
+    balances = bal.balances;
+  }
+
+  var balanceTree = calculateCummulativeBalance(balances);
   var node = balanceTree.find(Account(accountName));
   if (node == null) {
-    return Response.notFound('Account not found');
+    return Response.badRequest(
+        body: jsonEncode({'error': 'Account not found'}));
   }
 
   return Response.ok(jsonEncode(node.val), headers: {
