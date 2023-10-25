@@ -12,16 +12,12 @@ class FilterOptions {
   /// Includes this date
   final Date? endDate;
 
-  /// An empty list means all files
-  final List<String> fileNames;
-
   /// An empty list means all accounts
   final List<Account> accounts;
 
   FilterOptions({
     this.startDate,
     this.endDate,
-    this.fileNames = const [],
     this.accounts = const [],
   });
 
@@ -35,9 +31,6 @@ class FilterOptions {
       endDate: json['endDate'] == null
           ? null
           : Date.fromIso8601String(json['endDate']!),
-      fileNames: json['fileNames'] == null
-          ? []
-          : json['fileNames']!.split(',').map((e) => e.trim()).toList(),
       accounts: json['accounts'] == null
           ? []
           : _accountsfromJsonStringList(
@@ -49,7 +42,6 @@ class FilterOptions {
     return {
       if (startDate != null) 'startDate': startDate!.toIso8601String(),
       if (endDate != null) 'endDate': endDate!.toIso8601String(),
-      'fileNames': fileNames.join(','),
       'accounts': _accountsToJsonStringList(accounts).join(','),
     };
   }
