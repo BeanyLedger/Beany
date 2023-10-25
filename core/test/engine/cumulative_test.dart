@@ -22,12 +22,12 @@ void main() {
     var expensesBal = balTree.find(A("Expenses"))!.val;
     expect(expensesBal.account, A("Expenses"));
     expect(
-      expensesBal.ownValue,
+      expensesBal.ownValue.toMap(),
       {"EUR": D("1"), "USD": D("1")},
     );
     expect(
-      expensesBal.cumulative,
-      {"EUR": D("14"), "USD": D("3")},
+      expensesBal.cumulative.toMap(),
+      {"EUR": D("13"), "USD": D("2")},
     );
   });
 }

@@ -16,6 +16,8 @@ class MultiAmount implements Equatable {
     }
   }
 
+  Map<String, Decimal> toMap() => _amounts;
+
   void set(String currency, Decimal amount) {
     _amounts[currency] = amount;
   }

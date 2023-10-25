@@ -2,15 +2,14 @@ import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:beany_core/engine/accounts_tree.dart';
 import 'package:beany_core/engine/multi_amount.dart';
-import 'package:decimal/decimal.dart';
 
 AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
   Map<Account, MultiAmount> balances,
 ) {
   var emptyNode = AccountBalanceNode(
     Account(""),
-    ownValue: {},
-    cumulative: {},
+    ownValue: MultiAmount(),
+    cumulative: MultiAmount(),
     children: [],
   );
 
@@ -19,17 +18,15 @@ AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
   var accountTree = AccountsTree(balances.keys, null);
   for (var accountNode in accountTree.iterByDepth()) {
     var account = accountNode.account();
-    var amounts = balances[account]?.toAmountList() ?? [];
+    var ownValue = balances[account] ?? MultiAmount();
 
     if (accountNode.isLeaf) {
-      var values = AccountBalanceNode.buildValue(amounts);
-
       balanceTree.addAccount(
         account,
         AccountBalanceNode(
           account,
-          ownValue: values,
-          cumulative: values,
+          ownValue: ownValue,
+          cumulative: MultiAmount(),
           children: [],
         ),
       );
@@ -37,22 +34,9 @@ AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
       var childBalances =
           balanceTree.find(account)!.children.map((e) => e.val).toList();
 
-      var allCurrencies = amounts.map((e) => e.currency).toSet();
+      var cumulative = MultiAmount();
       for (var childBalance in childBalances) {
-        allCurrencies.addAll(childBalance.cumulative.keys);
-        allCurrencies.addAll(childBalance.ownValue.keys);
-      }
-
-      var ownValue = AccountBalanceNode.buildValue(amounts);
-      var cumulative = <String, Decimal>{};
-      for (var currency in allCurrencies) {
-        var value = Decimal.zero;
-        for (var childBalance in childBalances) {
-          value += childBalance.cumulative[currency] ?? Decimal.zero;
-        }
-
-        value += ownValue[currency] ?? Decimal.zero;
-        cumulative[currency] = value;
+        cumulative.addMultiAmount(childBalance.totalValue);
       }
 
       balanceTree.addAccount(

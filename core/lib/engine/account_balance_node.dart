@@ -1,6 +1,5 @@
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/core/amount.dart';
-import 'package:decimal/decimal.dart';
+import 'package:beany_core/engine/multi_amount.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -10,16 +9,10 @@ part 'account_balance_node.g.dart';
 class AccountBalanceNode implements Equatable {
   final Account account;
 
-  final Map<String, Decimal> cumulative;
-  final Map<String, Decimal> ownValue;
+  final MultiAmount cumulative;
+  final MultiAmount ownValue;
 
-  Map<String, Decimal> get totalValue {
-    var total = Map<String, Decimal>.from(cumulative);
-    for (var currency in ownValue.keys) {
-      total[currency] = (total[currency] ?? Decimal.zero) + ownValue[currency]!;
-    }
-    return total;
-  }
+  MultiAmount get totalValue => cumulative + ownValue;
 
   final List<AccountBalanceNode> children;
 
@@ -39,11 +32,4 @@ class AccountBalanceNode implements Equatable {
   factory AccountBalanceNode.fromJson(Map<String, dynamic> json) =>
       _$AccountBalanceNodeFromJson(json);
   Map<String, dynamic> toJson() => _$AccountBalanceNodeToJson(this);
-
-  static Map<String, Decimal> buildValue(Iterable<Amount> amounts) {
-    return Map<String, Decimal>.fromIterables(
-      amounts.map((a) => a.currency),
-      amounts.map((a) => a.number),
-    );
-  }
 }
