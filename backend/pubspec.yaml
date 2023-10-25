@@ -16,7 +16,6 @@ dependencies:
     path: ../core
   qr: ^3.0.1
   equatable: ^2.0.5
-  quiver: ^3.2.1
 
 dev_dependencies:
   lints: ^2.0.0

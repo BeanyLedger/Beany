@@ -1,11 +1,10 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/engine/multi_amount.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
-import 'package:quiver/collection.dart';
-import 'package:collection/collection.dart';
 
 /**
  * Stores the account balances at the end of the day
@@ -13,7 +12,7 @@ import 'package:collection/collection.dart';
 @immutable
 class AccountBalances extends Equatable {
   final Date date;
-  final Multimap<Account, Amount> balances = Multimap();
+  final Map<Account, MultiAmount> balances = {};
 
   AccountBalances(this.date);
 
@@ -21,8 +20,7 @@ class AccountBalances extends Equatable {
   List<Object?> get props => [date, balances];
 
   Amount? amountBy(Account account, String currency) {
-    var amounts = balances[account];
-    return amounts.firstWhereOrNull((a) => a.currency == currency);
+    return balances[account]?.amountBy(currency);
   }
 
   AccountBalances clone(Date date) {
@@ -31,23 +29,32 @@ class AccountBalances extends Equatable {
     return ab;
   }
 
-  Multimap<Account, Amount> diff(AccountBalances other) {
-    var diff = Multimap<Account, Amount>();
+  Map<Account, MultiAmount> diff(AccountBalances other) {
+    var diff = Map<Account, MultiAmount>();
     for (var account in balances.keys) {
-      var amounts = balances[account];
+      var amounts = balances[account]!.toAmountList();
       for (var amount in amounts) {
         var otherAmounts = other.balances[account];
-        var otherAmount = otherAmounts.firstWhereOrNull(
-          (a) => a.currency == amount.currency,
-        );
+        if (otherAmounts == null) continue;
+
+        var otherAmount = otherAmounts.amountBy(amount.currency);
+
         // Not changed
         if (otherAmount == null) continue;
         if (otherAmount == amount) continue;
 
-        diff.add(account, otherAmount - amount);
+        var ma = diff[account] ?? MultiAmount();
+        ma.addAmount(otherAmount - amount);
+        diff[account] = ma;
       }
     }
 
     return diff;
+  }
+
+  void add(Account account, Amount amount) {
+    var ma = balances[account] ?? MultiAmount();
+    ma.addAmount(amount);
+    balances[account] = ma;
   }
 }

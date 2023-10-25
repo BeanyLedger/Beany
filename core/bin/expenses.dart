@@ -34,14 +34,14 @@ Future<void> main(List<String> args) async {
     var sb = StringBuffer();
     r.renderAccount(sb, account);
     sb.write(' ');
-    for (var amt in diff[account]) {
+    for (var amt in diff[account]!.toAmountList()) {
       r.renderAmountSpec(sb, amt);
       sb.write(' ');
     }
     print(sb.toString());
 
     if (account.value.startsWith('Expenses:')) {
-      var amts = diff[account];
+      var amts = diff[account]!.toAmountList();
       for (var amt in amts) {
         if (amt.currency == totalExpenses.currency) {
           totalExpenses += amt;

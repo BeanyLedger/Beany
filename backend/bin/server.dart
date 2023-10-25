@@ -3,11 +3,10 @@ import 'dart:io';
 
 import 'package:beany_backend/beany_backend.dart';
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/ledger.dart';
-import 'package:quiver/collection.dart';
+import 'package:beany_core/engine/multi_amount.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -50,7 +49,7 @@ Response _balanceHandler(Request req) {
   var startDate = filterOptions.startDate;
   var endDate = filterOptions.endDate;
 
-  late final Multimap<Account, Amount> balances;
+  late final Map<Account, MultiAmount> balances;
   if (startDate == null && endDate == null) {
     balances = ledger.balanceAtEndOfDate(lastDate)!.balances;
   } else if (startDate != null && endDate != null) {

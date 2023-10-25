@@ -15,7 +15,6 @@ import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
 
 import 'exceptions.dart';
 
@@ -153,17 +152,7 @@ class Ledger {
             }
           }
           var amount = posting.amount;
-
-          var val = ab.balances[account]
-              .firstWhereOrNull((a) => a.currency == amount.currency);
-          if (val == null) {
-            ab.balances.add(account, amount);
-            continue;
-          }
-
-          var sum = val + amount;
-          ab.balances.remove(account, val);
-          ab.balances.add(account, sum);
+          ab.add(account, amount);
         }
 
         _accountBalances[date] = ab;

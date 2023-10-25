@@ -1,12 +1,11 @@
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:beany_core/engine/accounts_tree.dart';
+import 'package:beany_core/engine/multi_amount.dart';
 import 'package:decimal/decimal.dart';
-import 'package:quiver/collection.dart';
 
 AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
-  Multimap<Account, Amount> balances,
+  Map<Account, MultiAmount> balances,
 ) {
   var emptyNode = AccountBalanceNode(
     Account(""),
@@ -20,7 +19,7 @@ AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
   var accountTree = AccountsTree(balances.keys, null);
   for (var accountNode in accountTree.iterByDepth()) {
     var account = accountNode.account();
-    var amounts = balances[account].toList();
+    var amounts = balances[account]?.toAmountList() ?? [];
 
     if (accountNode.isLeaf) {
       var values = AccountBalanceNode.buildValue(amounts);

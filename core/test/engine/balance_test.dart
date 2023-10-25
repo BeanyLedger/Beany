@@ -27,12 +27,12 @@ void main() {
     var ab = balances[Date(2023, 01, 02)]!.balances;
     expect(ab, hasLength(2));
 
-    var n26 = ab[Account('Assets:Work:N26')].toList();
+    var n26 = ab[Account('Assets:Work:N26')]!.toAmountList();
     expect(n26, hasLength(1));
     expect(n26.first.currency, 'EUR');
     expect(n26.first.number, Decimal.parse('1000.00'));
 
-    var cash = ab[Account('Assets:Cash')].toList();
+    var cash = ab[Account('Assets:Cash')]!.toAmountList();
     expect(cash, hasLength(1));
     expect(cash.first.currency, 'EUR');
     expect(cash.first.number, Decimal.parse('-1000.00'));
