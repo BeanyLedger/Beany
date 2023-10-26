@@ -6,46 +6,39 @@ import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
-/**
- * Stores the account balances at the end of the day
- */
 @immutable
 class AccountBalances extends Equatable {
-  final Date date;
-  final Map<Account, MultiAmount> balances = {};
+  final Map<Account, MultiAmount> balances;
 
-  AccountBalances(this.date);
+  AccountBalances([Map<Account, MultiAmount>? bal = null])
+      : balances = bal ?? {};
 
   @override
-  List<Object?> get props => [date, balances];
+  List<Object?> get props => [balances];
 
   Amount? amountBy(Account account, Currency currency) {
     return balances[account]?.amountBy(currency);
   }
 
   AccountBalances clone(Date date) {
-    var ab = AccountBalances(date);
+    var ab = AccountBalances();
     ab.balances.addAll(balances);
     return ab;
   }
 
-  Map<Account, MultiAmount> diff(AccountBalances other) {
-    var diff = Map<Account, MultiAmount>();
-    for (var account in balances.keys) {
-      var amounts = balances[account]!.toAmountList();
-      for (var amount in amounts) {
-        var otherAmounts = other.balances[account];
-        if (otherAmounts == null) continue;
+  Iterable<Account> get accounts => balances.keys;
 
-        var otherAmount = otherAmounts.amountBy(amount.currency);
+  AccountBalances operator -(AccountBalances other) {
+    var diff = AccountBalances();
+    var allAccounts = Set<Account>.from([...accounts, ...other.accounts]);
 
-        // Not changed
-        if (otherAmount == null) continue;
-        if (otherAmount == amount) continue;
+    for (var account in allAccounts) {
+      var myAmounts = balances[account] ?? MultiAmount();
+      var theirAmounts = other.balances[account] ?? MultiAmount();
 
-        var ma = diff[account] ?? MultiAmount();
-        ma.addAmount(otherAmount - amount);
-        diff[account] = ma;
+      var amountDiff = myAmounts - theirAmounts;
+      if (amountDiff.isNotEmpty) {
+        diff.addMultiAmount(account, amountDiff);
       }
     }
 
@@ -56,5 +49,34 @@ class AccountBalances extends Equatable {
     var ma = balances[account] ?? MultiAmount();
     ma.addAmount(amount);
     balances[account] = ma;
+  }
+
+  void addMultiAmount(Account account, MultiAmount amount) {
+    var ma = balances[account] ?? MultiAmount();
+    ma.addMultiAmount(amount);
+    balances[account] = ma;
+  }
+
+  MultiAmount? val(Account account) => balances[account];
+
+  factory AccountBalances.fromJson(Map<String, dynamic> json) {
+    return AccountBalances(json.map((key, value) {
+      return MapEntry(Account(key), MultiAmount.fromJson(value));
+    }));
+  }
+  Map<String, dynamic> toJson() => balances.map(
+        (key, value) => new MapEntry(key.value, value.toJson()),
+      );
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AccountBalances) return false;
+
+    if (other.balances.length != balances.length) return false;
+    for (var account in balances.keys) {
+      if (other.balances[account] != balances[account]) return false;
+    }
+    return true;
   }
 }

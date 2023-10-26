@@ -1,10 +1,11 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
+import 'package:beany_core/engine/account_balances.dart';
 import 'package:beany_core/engine/accounts_tree.dart';
 import 'package:beany_core/engine/multi_amount.dart';
 
 AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
-  Map<Account, MultiAmount> balances,
+  AccountBalances balances,
 ) {
   var emptyNode = AccountBalanceNode(
     Account(""),
@@ -15,10 +16,10 @@ AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
 
   var balanceTree = AccountsTree<AccountBalanceNode>.empty(emptyNode);
 
-  var accountTree = AccountsTree(balances.keys, null);
+  var accountTree = AccountsTree(balances.accounts, null);
   for (var accountNode in accountTree.iterByDepth()) {
     var account = accountNode.account();
-    var ownValue = balances[account] ?? MultiAmount();
+    var ownValue = balances.val(account) ?? MultiAmount();
 
     if (accountNode.isLeaf) {
       balanceTree.addAccount(

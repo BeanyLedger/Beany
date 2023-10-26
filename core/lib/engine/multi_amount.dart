@@ -2,6 +2,7 @@ import 'package:beany_core/core/amount.dart';
 import 'package:decimal/decimal.dart';
 
 import 'package:equatable/equatable.dart';
+import 'package:collection/collection.dart';
 
 class MultiAmount implements Equatable {
   final Map<Currency, Decimal> _amounts = {};
@@ -30,9 +31,17 @@ class MultiAmount implements Equatable {
     if (_amounts[currency] == null) {
       _amounts[currency] = amount;
     } else {
-      _amounts[currency] = _amounts[currency]! + amount;
+      var newAmount = _amounts[currency]! + amount;
+      if (newAmount == Decimal.zero) {
+        _amounts.remove(currency);
+      } else {
+        _amounts[currency] = newAmount;
+      }
     }
   }
+
+  bool get isEmpty => _amounts.isEmpty;
+  bool get isNotEmpty => _amounts.isNotEmpty;
 
   void addAmount(Amount amount) {
     add(amount.currency, amount.number);
@@ -74,6 +83,14 @@ class MultiAmount implements Equatable {
     }
   }
 
+  MultiAmount operator -(MultiAmount other) {
+    var ma = clone();
+    for (var currency in other.currencies) {
+      ma.add(currency, -other[currency]!);
+    }
+    return ma;
+  }
+
   factory MultiAmount.fromJson(Map<String, dynamic> json) {
     return MultiAmount.fromMap(json.map((key, value) {
       return MapEntry(key, Decimal.fromJson(value));
@@ -91,4 +108,11 @@ class MultiAmount implements Equatable {
 
   @override
   String toString() => _amounts.toString();
+
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MultiAmount) return false;
+
+    return DeepCollectionEquality.unordered().equals(other._amounts, _amounts);
+  }
 }

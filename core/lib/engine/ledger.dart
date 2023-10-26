@@ -131,7 +131,7 @@ class Ledger {
         var ab = _accountBalances[date];
         if (ab == null) {
           if (_accountBalances.isEmpty) {
-            ab = AccountBalances(date);
+            ab = AccountBalances();
           } else {
             // This only works if the ledger is sorted by date (ascending), which it is
             var lastDate = _accountBalances.keys.last;
@@ -180,7 +180,7 @@ class Ledger {
         }
 
         var prevAmount = prevAb.amountBy(account, balance.amount.currency);
-        if (prevAmount?.number != balance.amount.number) {
+        if ((prevAmount?.number ?? Decimal.zero) != balance.amount.number) {
           /*
           for (var date in _accountBalances.keys) {
             print("$date ->");

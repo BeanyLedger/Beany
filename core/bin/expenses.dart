@@ -24,24 +24,24 @@ Future<void> main(List<String> args) async {
     exit(1);
   }
 
-  var diff = endBalances.diff(startBalances);
+  var diff = endBalances - startBalances;
   var totalExpenses = Amount.zero('EUR');
-  var keys = diff.keys.toList();
-  keys.sort();
-  for (var account in keys) {
+  var accounts = diff.accounts.toList();
+  accounts.sort();
+  for (var account in accounts) {
     var r = BeancountRenderer();
 
     var sb = StringBuffer();
     r.renderAccount(sb, account);
     sb.write(' ');
-    for (var amt in diff[account]!.toAmountList()) {
+    for (var amt in diff.val(account)!.toAmountList()) {
       r.renderAmountSpec(sb, amt);
       sb.write(' ');
     }
     print(sb.toString());
 
     if (account.value.startsWith('Expenses:')) {
-      var amts = diff[account]!.toAmountList();
+      var amts = diff.val(account)!.toAmountList();
       for (var amt in amts) {
         if (amt.currency == totalExpenses.currency) {
           totalExpenses += amt;

@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:beany_backend/beany_backend.dart';
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/engine/account_balances.dart';
 import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/ledger.dart';
-import 'package:beany_core/engine/multi_amount.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -49,9 +49,9 @@ Response _balanceHandler(Request req) {
   var startDate = filterOptions.startDate;
   var endDate = filterOptions.endDate;
 
-  late final Map<Account, MultiAmount> balances;
+  late final AccountBalances balances;
   if (startDate == null && endDate == null) {
-    balances = ledger.balanceAtEndOfDate(lastDate)!.balances;
+    balances = ledger.balanceAtEndOfDate(lastDate)!;
   } else if (startDate != null && endDate != null) {
     var startBal = ledger.balanceAtStartOfDate(startDate);
     if (startBal == null) {
@@ -65,21 +65,21 @@ Response _balanceHandler(Request req) {
           body: jsonEncode({'error': 'No balance for endDate: $endDate'}));
     }
 
-    balances = endBal.diff(startBal);
+    balances = endBal - startBal;
   } else if (startDate == null) {
     var bal = ledger.balanceAtEndOfDate(endDate!);
     if (bal == null) {
       return Response.badRequest(
           body: jsonEncode({'error': 'No balance for endDate: $endDate'}));
     }
-    balances = bal.balances;
+    balances = bal;
   } else {
     var bal = ledger.balanceAtStartOfDate(startDate);
     if (bal == null) {
       return Response.badRequest(
           body: jsonEncode({'error': 'No balance for startDate: $startDate'}));
     }
-    balances = bal.balances;
+    balances = bal;
   }
 
   var balanceTree = calculateCummulativeBalance(balances);
