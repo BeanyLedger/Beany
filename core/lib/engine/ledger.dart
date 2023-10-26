@@ -135,7 +135,7 @@ class Ledger {
           } else {
             // This only works if the ledger is sorted by date (ascending), which it is
             var lastDate = _accountBalances.keys.last;
-            ab = _accountBalances[lastDate]!.clone(date);
+            ab = _accountBalances[lastDate]!.clone();
           }
         }
 

@@ -1,7 +1,6 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/engine/multi_amount.dart';
-import 'package:beany_core/misc/date.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
@@ -20,9 +19,11 @@ class AccountBalances extends Equatable {
     return balances[account]?.amountBy(currency);
   }
 
-  AccountBalances clone(Date date) {
+  AccountBalances clone() {
     var ab = AccountBalances();
-    ab.balances.addAll(balances);
+    ab.balances.addAll(
+      balances.map((key, value) => MapEntry(key, value.clone())),
+    );
     return ab;
   }
 
