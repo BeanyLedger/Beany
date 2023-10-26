@@ -8,12 +8,17 @@ part 'multi_amount.g.dart';
 
 @JsonSerializable(includeIfNull: false)
 class MultiAmount implements Equatable {
+  @JsonKey(includeFromJson: true, includeToJson: true, name: "val")
   final Map<Currency, Decimal> _amounts = {};
 
   MultiAmount([Iterable<Amount> amounts = const []]) {
     for (var amount in amounts) {
       _amounts[amount.currency] = amount.number;
     }
+  }
+
+  MultiAmount.fromMap(Map<Currency, Decimal> amounts) {
+    _amounts.addAll(amounts);
   }
 
   Map<Currency, Decimal> toMap() => _amounts;
@@ -75,12 +80,15 @@ class MultiAmount implements Equatable {
   }
 
   factory MultiAmount.fromJson(Map<String, dynamic> json) =>
-      _$MultiAmountFromJson(json);
-  Map<String, dynamic> toJson() => _$MultiAmountToJson(this);
+      _$MultiAmountFromJson({"val": json});
+  Map<String, dynamic> toJson() => _amounts;
 
   @override
   List<Object?> get props => [_amounts];
 
   @override
-  bool? get stringify => true;
+  bool? get stringify => false;
+
+  @override
+  String toString() => _amounts.toString();
 }
