@@ -37,7 +37,7 @@ AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
 
       var cumulative = MultiAmount();
       for (var childBalance in childBalances) {
-        cumulative.addMultiAmount(childBalance.totalValue);
+        cumulative += childBalance.totalValue;
       }
 
       balanceTree.addAccount(

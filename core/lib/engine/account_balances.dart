@@ -21,9 +21,7 @@ class AccountBalances extends Equatable {
 
   AccountBalances clone() {
     var ab = AccountBalances();
-    ab.balances.addAll(
-      balances.map((key, value) => MapEntry(key, value.clone())),
-    );
+    ab.balances.addAll(balances);
     return ab;
   }
 
@@ -48,14 +46,12 @@ class AccountBalances extends Equatable {
 
   void add(Account account, Amount amount) {
     var ma = balances[account] ?? MultiAmount();
-    ma.addAmount(amount);
-    balances[account] = ma;
+    balances[account] = ma.addAmount(amount);
   }
 
   void addMultiAmount(Account account, MultiAmount amount) {
     var ma = balances[account] ?? MultiAmount();
-    ma.addMultiAmount(amount);
-    balances[account] = ma;
+    balances[account] = ma + amount;
   }
 
   MultiAmount? val(Account account) => balances[account];
