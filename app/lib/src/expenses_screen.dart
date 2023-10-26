@@ -2,6 +2,7 @@ import 'package:beany/src/drawer.dart';
 import 'package:beany_backend/beany_backend.dart';
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
@@ -37,12 +38,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     var client = BeanyHttpClient('http://127.0.0.1:8080');
     balance = await client.balance(
       Account("Expenses"),
-      /*
       filter: FilterOptions(
         startDate: Date.truncate(dateRange!.start),
         endDate: Date.truncate(dateRange!.end),
       ),
-      */
     );
     setState(() {});
   }
@@ -86,56 +85,55 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   }
 
   void _onDateRangeChanged(DateRange? newDateRange) {
-    setState(() {
-      dateRange = newDateRange;
-    });
+    if (newDateRange == null) return;
+    dateRange = newDateRange;
+    setState(() {});
+
+    _initAsync();
   }
-}
 
-Widget datePickerBuilder(
-    BuildContext context, void Function(DateRange?) onDateRangeChanged) {
-  var selectedDateRange = DateRange(
-    DateTime.now().subtract(const Duration(days: 3)),
-    DateTime.now(),
-  );
-
-  var now = DateTime.now();
-  return DateRangePickerWidget(
-    doubleMonth: false,
-    initialDateRange: selectedDateRange,
-    maxDate: now,
-    onDateRangeChanged: onDateRangeChanged,
-    quickDateRanges: [
-      QuickDateRange(
-        label: "This Month",
-        dateRange: DateRange(
-          DateTime(now.year, now.month),
-          DateTime.now(),
+  Widget datePickerBuilder(
+    BuildContext context,
+    void Function(DateRange?) onDateRangeChanged,
+  ) {
+    var now = DateTime.now();
+    return DateRangePickerWidget(
+      doubleMonth: false,
+      initialDateRange: dateRange,
+      maxDate: now,
+      onDateRangeChanged: onDateRangeChanged,
+      quickDateRanges: [
+        QuickDateRange(
+          label: "This Month",
+          dateRange: DateRange(
+            DateTime(now.year, now.month),
+            DateTime.now(),
+          ),
         ),
-      ),
-      QuickDateRange(
-        label: "Last Month",
-        dateRange: DateRange(
-          DateTime(now.year, now.month - 1),
-          DateTime(now.year, now.month, 0),
+        QuickDateRange(
+          label: "Last Month",
+          dateRange: DateRange(
+            DateTime(now.year, now.month - 1),
+            DateTime(now.year, now.month, 0),
+          ),
         ),
-      ),
-      QuickDateRange(
-        label: "Last 3 Months",
-        dateRange: DateRange(
-          DateTime(now.year, now.month - 3),
-          DateTime.now(),
+        QuickDateRange(
+          label: "Last 3 Months",
+          dateRange: DateRange(
+            DateTime(now.year, now.month - 3),
+            DateTime.now(),
+          ),
         ),
-      ),
-      QuickDateRange(
-        label: "This Year",
-        dateRange: DateRange(
-          DateTime(now.year),
-          DateTime.now(),
+        QuickDateRange(
+          label: "This Year",
+          dateRange: DateRange(
+            DateTime(now.year),
+            DateTime.now(),
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }
 
 class BalancePieChart extends StatefulWidget {
