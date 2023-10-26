@@ -135,7 +135,7 @@ class Ledger {
           } else {
             // This only works if the ledger is sorted by date (ascending), which it is
             var lastDate = _accountBalances.keys.last;
-            ab = _accountBalances[lastDate]!.clone();
+            ab = _accountBalances[lastDate]!;
           }
         }
 
@@ -152,10 +152,10 @@ class Ledger {
             }
           }
           var amount = posting.amount;
-          ab.add(account, amount);
+          ab = ab!.add(account, amount);
         }
 
-        _accountBalances[date] = ab;
+        _accountBalances[date] = ab!;
       } else if (statement is BalanceStatement) {
         var balance = statement;
         var date = Date.from(balance.date);

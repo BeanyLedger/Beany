@@ -1,5 +1,4 @@
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/engine/account_balances.dart';
 import 'package:beany_core/engine/multi_amount.dart';
@@ -27,19 +26,5 @@ void main() {
       Account('Expenses:D'): MultiAmount.fromMap({"EUR": D("300.0")}),
     };
     expect(diff, AccountBalances(expected));
-
-    final clone1 = start.clone();
-    clone1.addMultiAmount(
-      Account('Expenses:E'),
-      MultiAmount.fromMap({"EUR": D("1.0")}),
-    );
-    expect(clone1, isNot(same(start)));
-
-    final clone2 = start.clone();
-    clone2.add(Account('Expenses:A'), Amount(D("1.0"), "EUR"));
-    expect(
-      clone2.val(Account("Expenses:A"))!.val("EUR"),
-      isNot(start.val(Account("Expenses:A"))!.val("EUR")),
-    );
   });
 }

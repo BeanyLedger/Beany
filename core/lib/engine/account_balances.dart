@@ -2,27 +2,22 @@ import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/engine/multi_amount.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'package:meta/meta.dart';
 
 @immutable
 class AccountBalances extends Equatable {
-  final Map<Account, MultiAmount> balances;
+  final IMap<Account, MultiAmount> balances;
 
   AccountBalances([Map<Account, MultiAmount>? bal = null])
-      : balances = bal ?? {};
+      : balances = IMap(bal);
 
   @override
   List<Object?> get props => [balances];
 
   Amount? amountBy(Account account, Currency currency) {
     return balances[account]?.amountBy(currency);
-  }
-
-  AccountBalances clone() {
-    var ab = AccountBalances();
-    ab.balances.addAll(balances);
-    return ab;
   }
 
   Iterable<Account> get accounts => balances.keys;
@@ -37,21 +32,24 @@ class AccountBalances extends Equatable {
 
       var amountDiff = myAmounts - theirAmounts;
       if (amountDiff.isNotEmpty) {
-        diff.addMultiAmount(account, amountDiff);
+        diff = diff.addMultiAmount(account, amountDiff);
       }
     }
 
     return diff;
   }
 
-  void add(Account account, Amount amount) {
-    var ma = balances[account] ?? MultiAmount();
-    balances[account] = ma.addAmount(amount);
+  AccountBalances add(Account account, Amount amount) {
+    return addMultiAmount(account, MultiAmount([amount]));
   }
 
-  void addMultiAmount(Account account, MultiAmount amount) {
-    var ma = balances[account] ?? MultiAmount();
-    balances[account] = ma + amount;
+  AccountBalances addMultiAmount(Account account, MultiAmount ma) {
+    return AccountBalances(
+      {
+        ...balances.unlockView,
+        account: (balances[account] ?? MultiAmount()) + ma,
+      },
+    );
   }
 
   MultiAmount? val(Account account) => balances[account];
@@ -61,7 +59,7 @@ class AccountBalances extends Equatable {
       return MapEntry(Account(key), MultiAmount.fromJson(value));
     }));
   }
-  Map<String, dynamic> toJson() => balances.map(
+  Map<String, dynamic> toJson() => balances.unlockView.map(
         (key, value) => new MapEntry(key.value, value.toJson()),
       );
 
