@@ -2,13 +2,8 @@ import 'package:beany_core/core/amount.dart';
 import 'package:decimal/decimal.dart';
 
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-part 'multi_amount.g.dart';
-
-@JsonSerializable(includeIfNull: false)
 class MultiAmount implements Equatable {
-  @JsonKey(includeFromJson: true, includeToJson: true, name: "val")
   final Map<Currency, Decimal> _amounts = {};
 
   MultiAmount([Iterable<Amount> amounts = const []]) {
@@ -79,9 +74,14 @@ class MultiAmount implements Equatable {
     }
   }
 
-  factory MultiAmount.fromJson(Map<String, dynamic> json) =>
-      _$MultiAmountFromJson({"val": json});
-  Map<String, dynamic> toJson() => _amounts;
+  factory MultiAmount.fromJson(Map<String, dynamic> json) {
+    return MultiAmount.fromMap(json.map((key, value) {
+      return MapEntry(key, Decimal.fromJson(value));
+    }));
+  }
+  Map<String, dynamic> toJson() => _amounts.map(
+        (key, value) => new MapEntry(key, value.toJson()),
+      );
 
   @override
   List<Object?> get props => [_amounts];

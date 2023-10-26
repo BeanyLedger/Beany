@@ -42,7 +42,8 @@ class FilterOptions {
     return {
       if (startDate != null) 'startDate': startDate!.toIso8601String(),
       if (endDate != null) 'endDate': endDate!.toIso8601String(),
-      'accounts': _accountsToJsonStringList(accounts).join(','),
+      if (accounts.isNotEmpty)
+        'accounts': _accountsToJsonStringList(accounts).join(','),
     };
   }
 
@@ -95,7 +96,7 @@ class BeanyHttpClient implements BeanyClient {
   }) async {
     var uri = Uri.parse('$host/balance/${account.value}');
     if (filter != null) {
-      uri.queryParameters.addAll(filter.toJson());
+      uri = uri.replace(queryParameters: filter.toJson());
     }
     final response = await get(uri);
     if (response.statusCode != 200) {

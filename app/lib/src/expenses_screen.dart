@@ -1,4 +1,7 @@
 import 'package:beany/src/drawer.dart';
+import 'package:beany_backend/beany_backend.dart';
+import 'package:beany_core/core/account.dart';
+import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
@@ -16,6 +19,7 @@ class ExpensesScreen extends StatefulWidget {
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
   DateRange? dateRange;
+  AccountBalanceNode? balance;
 
   @override
   void initState() {
@@ -26,6 +30,21 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
 
     super.initState();
+    _initAsync();
+  }
+
+  Future<void> _initAsync() async {
+    var client = BeanyHttpClient('http://127.0.0.1:8080');
+    balance = await client.balance(
+      Account("Expenses"),
+      /*
+      filter: FilterOptions(
+        startDate: Date.truncate(dateRange!.start),
+        endDate: Date.truncate(dateRange!.end),
+      ),
+      */
+    );
+    setState(() {});
   }
 
   @override
@@ -58,7 +77,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 child: const Text("Configure Date Range"),
               ),
               const SizedBox(height: 24),
-              const PieChartSample3(),
+              if (balance != null) BalancePieChart(balance: balance!),
             ],
           ),
         ),
@@ -119,14 +138,16 @@ Widget datePickerBuilder(
   );
 }
 
-class PieChartSample3 extends StatefulWidget {
-  const PieChartSample3({super.key});
+class BalancePieChart extends StatefulWidget {
+  final AccountBalanceNode balance;
+
+  const BalancePieChart({super.key, required this.balance});
 
   @override
-  State<StatefulWidget> createState() => PieChartSample3State();
+  State<StatefulWidget> createState() => BalancePieChartState();
 }
 
-class PieChartSample3State extends State {
+class BalancePieChartState extends State<BalancePieChart> {
   int touchedIndex = 0;
 
   @override
@@ -160,93 +181,60 @@ class PieChartSample3State extends State {
   }
 
   List<PieChartSectionData> showingSections() {
-    return List.generate(4, (i) {
+    var totalEur = widget.balance.totalValue.val("EUR");
+    if (totalEur == null) return const [];
+
+    const colors = [
+      Colors.blue,
+      Colors.green,
+      Colors.yellow,
+      Colors.red,
+      Colors.purple,
+      Colors.orange,
+      Colors.teal,
+    ];
+
+    var dataList = <PieChartSectionData>[];
+    for (var i = 0; i < widget.balance.children.length; i++) {
       final isTouched = i == touchedIndex;
       final fontSize = isTouched ? 20.0 : 16.0;
       final radius = isTouched ? 220.0 : 200.0;
-      // final widgetSize = isTouched ? 55.0 : 40.0;
-      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
 
-      switch (i) {
-        case 0:
-          return PieChartSectionData(
-            color: Colors.blue,
-            value: 40,
-            title: '40%',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'assets/icons/ophthalmology-svgrepo-com.svg',
-            //   size: widgetSize,
-            //   borderColor: AppColors.contentColorBlack,
-            // ),
-            // badgePositionPercentageOffset: .98,
-          );
-        case 1:
-          return PieChartSectionData(
-            color: Colors.yellow,
-            value: 30,
-            title: '30%',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'assets/icons/librarian-svgrepo-com.svg',
-            //   size: widgetSize,
-            //   borderColor: AppColors.contentColorBlack,
-            // ),
-            // badgePositionPercentageOffset: .98,
-          );
-        case 2:
-          return PieChartSectionData(
-            color: Colors.purple,
-            value: 16,
-            title: '16%',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'assets/icons/fitness-svgrepo-com.svg',
-            //   size: widgetSize,
-            //   borderColor: AppColors.contentColorBlack,
-            // ),
-            // badgePositionPercentageOffset: .98,
-          );
-        case 3:
-          return PieChartSectionData(
-            color: Colors.green,
-            value: 15,
-            title: '15%',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'assets/icons/worker-svgrepo-com.svg',
-            //   size: widgetSize,
-            //   borderColor: AppColors.contentColorBlack,
-            // ),
-            // badgePositionPercentageOffset: .98,
-          );
-        default:
-          throw Exception('Oh no');
-      }
-    });
+      var bal = widget.balance.children[i];
+      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
+      var value = bal.totalValue.val("EUR")!;
+
+      var data = PieChartSectionData(
+        color: colors[i % colors.length],
+        value: (value / totalEur).toDouble() * 100,
+        title: bal.account.parts().last,
+
+        radius: radius,
+        titleStyle: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xffffffff),
+          shadows: shadows,
+        ),
+        badgeWidget: Text(
+          value.toStringAsFixed(2),
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            shadows: shadows,
+          ),
+        ),
+        // badgeWidget: _Badge(
+        //   'assets/icons/ophthalmology-svgrepo-com.svg',
+        //   size: widgetSize,
+        //   borderColor: AppColors.contentColorBlack,
+        // ),
+        badgePositionPercentageOffset: 1.2,
+      );
+      dataList.add(data);
+    }
+
+    return dataList;
   }
 }
