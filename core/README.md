@@ -27,3 +27,9 @@ Beancount will round values in a sub-optimal manner -
 
 In this case, because of the `42.0`, and not `42.00`, 'Expenses:A' is rounded to 118.0 instead of '117.98'.
 Beany does not round values under any circumstances.
+
+8. Beany doesn't support links
+
+9. Beany doesn't support tag stacks
+
+10. Beany doesn't support Pad directives
