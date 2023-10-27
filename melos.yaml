@@ -4,6 +4,7 @@ packages:
   - core
   - app
   - backend
+  - importers/wise
 
 scripts:
   analyze:

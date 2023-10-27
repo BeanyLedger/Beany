@@ -650,6 +650,7 @@ class ExchangeDetails {
       };
 }
 
+// ignore: constant_identifier_names
 enum Type { CREDIT, DEBIT }
 
 final typeValues = EnumValues({"CREDIT": Type.CREDIT, "DEBIT": Type.DEBIT});

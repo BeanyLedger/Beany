@@ -1,6 +1,6 @@
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/importer/simple_categorizer.dart';
 import 'package:beany_core/parser/parser.dart';
+import 'package:beany_importer_wise/src/simple_categorizer.dart';
 import 'package:test/test.dart';
 
 var rules = """

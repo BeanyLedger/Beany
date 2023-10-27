@@ -47,11 +47,11 @@ void main(List<String> argv) async {
   exit(0);
 }
 
-class _BalanceAccountInfo {
+class BalanceAccountInfo {
   final String id;
   final String currency;
 
-  _BalanceAccountInfo(this.id, this.currency);
+  BalanceAccountInfo(this.id, this.currency);
 
   @override
   String toString() {
@@ -70,7 +70,7 @@ class WiseImporter {
     var url = "/v2/profiles";
     var data = jsonDecode(await _fetch(url));
     if (data is! List) {
-      throw new Exception("Faulty data when asking for profiles");
+      throw Exception("Faulty data when asking for profiles");
     }
 
     final d = data.firstWhere(
@@ -78,32 +78,32 @@ class WiseImporter {
       orElse: () => null,
     );
     if (d == null) {
-      throw new Exception("Wise Personal Account not found");
+      throw Exception("Wise Personal Account not found");
     }
     final id = d["id"];
     if (id == null) {
-      throw new Exception("id missing from profile data");
+      throw Exception("id missing from profile data");
     }
     return id.toString();
   }
 
   Future<List<String>> availableCurrencies(String profileId) async {
     var url =
-        "/v2/borderless-accounts-configuration/profiles/${profileId}/available-currencies";
+        "/v2/borderless-accounts-configuration/profiles/$profileId/available-currencies";
 
     return jsonDecode(await _fetch(url));
   }
 
-  Future<List<_BalanceAccountInfo>> balanceAccount(String profileId) async {
-    var url = "/v4/profiles/${profileId}/balances?types=STANDARD";
+  Future<List<BalanceAccountInfo>> balanceAccount(String profileId) async {
+    var url = "/v4/profiles/$profileId/balances?types=STANDARD";
     var data = jsonDecode(await _fetch(url));
 
     if (data is! List) {
-      throw new Exception("Faulty data when asking for balance accounts");
+      throw Exception("Faulty data when asking for balance accounts");
     }
 
     return data
-        .map((e) => _BalanceAccountInfo(e["id"].toString(), e["currency"]))
+        .map((e) => BalanceAccountInfo(e["id"].toString(), e["currency"]))
         .toList();
   }
 
@@ -136,7 +136,7 @@ class WiseImporter {
         : "https://api.sandbox.transferwise.tech";
     final url = Uri.parse(baseUrl + uri);
     var headers = {
-      HttpHeaders.authorizationHeader: 'Bearer ${token}',
+      HttpHeaders.authorizationHeader: 'Bearer $token',
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
@@ -153,7 +153,7 @@ class WiseImporter {
 
     var twoFAStatus = response.headers['x-2fa-approval-result'];
     if (twoFAStatus == 'APPROVED') {
-      var body = await response.body;
+      var body = response.body;
       // print("Approved $body");
       // print("Approved ${response.headers}");
       client.close();
@@ -171,7 +171,7 @@ class WiseImporter {
 
     response = await client.get(url, headers: headers);
 
-    var body = await response.body;
+    var body = response.body;
 
     client.close();
     return body;

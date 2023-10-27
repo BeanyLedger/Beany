@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/transaction.dart';
-import 'package:beany_core/importer/deduplicator.dart';
-import 'package:beany_core/importer/simple_categorizer.dart';
-import 'package:beany_core/importer/wise.dart';
 import 'package:beany_core/misc/date.dart';
 
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_core/render/render.dart';
+import 'package:beany_importer_wise/src/deduplicator.dart';
+import 'package:beany_importer_wise/src/simple_categorizer.dart';
+import 'package:beany_importer_wise/src/wise.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'package:yaml/yaml.dart';

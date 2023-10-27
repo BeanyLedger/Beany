@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:beany_core/importer/wise.dart';
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_core/render/render.dart';
+import 'package:beany_importer_wise/src/wise.dart';
 import 'package:test/test.dart';
 
 var config = WiseConverterConfig("Assets:Wise", "Expenses:BankCharges");

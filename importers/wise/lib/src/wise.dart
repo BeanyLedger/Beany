@@ -6,8 +6,8 @@ import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/price_spec.dart';
 import 'package:beany_core/core/transaction.dart';
-import 'package:beany_core/importer/deduplicator.dart';
 import 'package:beany_core/misc/date.dart';
+import 'package:beany_importer_wise/src/deduplicator.dart';
 
 import 'wise_json.dart';
 
@@ -84,7 +84,7 @@ TransactionSpec convertWiseTransaction(
     return _purchase(config, t);
   }
 
-  throw new Exception("Unknown Wise Transaction: ${t.toJson()}");
+  throw Exception("Unknown Wise Transaction: ${t.toJson()}");
 }
 
 Transaction _cashBack(WiseConverterConfig config, WiseTransaction t) {

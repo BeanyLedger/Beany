@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.2"
-  asn1lib:
-    dependency: transitive
-    description:
-      name: asn1lib
-      sha256: "21afe4333076c02877d14f4a89df111e658a6d466cbfc802eb705eb91bd5adfd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.0"
   async:
     dependency: transitive
     description:
@@ -254,46 +246,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-  ninja:
-    dependency: transitive
-    description:
-      name: ninja
-      sha256: "5c99d34740edab78cc58032fea81f2bb017efcd8211a8f82a08c6d4604f30b11"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.8"
-  ninja_asn1:
-    dependency: transitive
-    description:
-      name: ninja_asn1
-      sha256: b0f04877243fda51c475ec2bcaadb55a92759baee9f02888124c60775760ccf7
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
-  ninja_hex:
-    dependency: transitive
-    description:
-      name: ninja_hex
-      sha256: a84dba8810aacb8dbecfe4791db5aecc472e29c7a1894d12bccbb981b2be2969
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
-  ninja_pem:
-    dependency: transitive
-    description:
-      name: ninja_pem
-      sha256: "1db06bc389109efec00c2ad4e19d3e5151ae3cb4a5ac03d19b6e1e5ff2fa8db7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
-  ninja_prime:
-    dependency: transitive
-    description:
-      name: ninja_prime
-      sha256: "47074594d59518c665c50ecca3e0b5baa411bea1d238a3c93c83fbde90c0c3ad"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   path:
     dependency: transitive
     description:
@@ -390,14 +342,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
-  rsa_pkcs:
-    dependency: transitive
-    description:
-      name: rsa_pkcs
-      sha256: "6e1e03563d2cbd9758d8a562f738b759763d464fd65d32da132153230a0c0395"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   shelf:
     dependency: transitive
     description:
@@ -507,14 +451,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
-  yaml:
-    dependency: transitive
-    description:
-      name: yaml
-      sha256: "75769501ea3489fca56601ff33454fe45507ea3bfb014161abc3b43ae25989d5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.2"
 sdks:
   dart: ">=3.1.0-185.0.dev <4.0.0"
   flutter: ">=3.13.8"
