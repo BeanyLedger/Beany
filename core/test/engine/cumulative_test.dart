@@ -1,6 +1,6 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/core.dart';
-import 'package:beany_core/engine/account_balances.dart';
+import 'package:beany_core/engine/account_inventory_map.dart';
 import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/inventory.dart';
 import 'package:test/test.dart';
@@ -17,7 +17,7 @@ void main() {
       A("Expenses"): Inventory([AMT('1 EUR'), AMT('1 USD')]),
     };
 
-    var balTree = calculateCummulativeBalance(AccountBalances(map));
+    var balTree = calculateCummulativeBalance(AccountInventoryMap(map));
     expect(balTree.iterBfs().length, 7);
 
     var expensesBal = balTree.find(A("Expenses"))!.val;

@@ -24,7 +24,7 @@ void main() {
     expect(balances, hasLength(1));
     expect(balances[Date(2023, 01, 02)], isNotNull);
 
-    var ab = balances[Date(2023, 01, 02)]!.balances;
+    var ab = balances[Date(2023, 01, 02)]!.map;
     expect(ab, hasLength(2));
 
     var n26 = ab[Account('Assets:Work:N26')]!.toAmountList();

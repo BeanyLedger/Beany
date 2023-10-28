@@ -7,7 +7,7 @@ import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/open_statement.dart';
 import 'package:beany_core/core/statements.dart';
 import 'package:beany_core/core/transaction.dart';
-import 'package:beany_core/engine/account_balances.dart';
+import 'package:beany_core/engine/account_inventories.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_core/parser/parser.dart';
 import 'package:decimal/decimal.dart';
@@ -81,27 +81,27 @@ class Ledger {
   Iterable<AccountInfo> get accounts => _accountInfo.values;
 
   /// Stores the account balance at the end of the day
-  final _accountBalances = <Date, AccountBalances>{};
-  Map<Date, AccountBalances> get accountBalances => _accountBalances;
+  final _accountInvByDate = <Date, AccountInventoryMap>{};
+  Map<Date, AccountInventoryMap> get accountBalances => _accountInvByDate;
 
-  AccountBalances? balanceAtEndOfDate(Date d) {
-    if (d.isBefore(_accountBalances.keys.first)) {
+  AccountInventoryMap? inventoryAtEndOfDate(Date d) {
+    if (d.isBefore(_accountInvByDate.keys.first)) {
       print("Date $d is out of range");
       return null;
     }
 
     // FIXME: This definitely needs to be optimized!
-    var ab = _accountBalances[d];
-    while (ab == null && _accountBalances.isNotEmpty) {
+    var ab = _accountInvByDate[d];
+    while (ab == null && _accountInvByDate.isNotEmpty) {
       d = d.yesterday();
-      ab = _accountBalances[d];
+      ab = _accountInvByDate[d];
     }
 
     return ab;
   }
 
-  AccountBalances? balanceAtStartOfDate(Date d) {
-    return balanceAtEndOfDate(d.yesterday());
+  AccountInventoryMap? inventoryAtStartOfDate(Date d) {
+    return inventoryAtEndOfDate(d.yesterday());
   }
 
   Ledger compute() {
@@ -128,14 +128,14 @@ class Ledger {
       } else if (statement is TransactionSpec) {
         var transaction = statement;
         var date = Date.from(transaction.date);
-        var ab = _accountBalances[date];
+        var ab = _accountInvByDate[date];
         if (ab == null) {
-          if (_accountBalances.isEmpty) {
-            ab = AccountBalances();
+          if (_accountInvByDate.isEmpty) {
+            ab = AccountInventoryMap();
           } else {
             // This only works if the ledger is sorted by date (ascending), which it is
-            var lastDate = _accountBalances.keys.last;
-            ab = _accountBalances[lastDate]!;
+            var lastDate = _accountInvByDate.keys.last;
+            ab = _accountInvByDate[lastDate]!;
           }
         }
 
@@ -155,7 +155,7 @@ class Ledger {
           ab = ab!.add(account, amount);
         }
 
-        _accountBalances[date] = ab!;
+        _accountInvByDate[date] = ab!;
       } else if (statement is BalanceStatement) {
         var balance = statement;
         var date = Date.from(balance.date);
@@ -171,7 +171,7 @@ class Ledger {
           }
         }
 
-        var prevAb = balanceAtStartOfDate(date);
+        var prevAb = inventoryAtStartOfDate(date);
         if (prevAb == null) {
           if (balance.amount.number == Decimal.zero) continue;
 

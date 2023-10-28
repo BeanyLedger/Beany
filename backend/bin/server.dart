@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:beany_backend/beany_backend.dart';
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/transaction.dart';
-import 'package:beany_core/engine/account_balances.dart';
+import 'package:beany_core/engine/account_inventory_map.dart';
 import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/ledger.dart';
 import 'package:shelf/shelf.dart';
@@ -49,17 +49,17 @@ Response _balanceHandler(Request req) {
   var startDate = filterOptions.startDate;
   var endDate = filterOptions.endDate;
 
-  late final AccountBalances balances;
+  late final AccountInventoryMap balances;
   if (startDate == null && endDate == null) {
-    balances = ledger.balanceAtEndOfDate(lastDate)!;
+    balances = ledger.inventoryAtEndOfDate(lastDate)!;
   } else if (startDate != null && endDate != null) {
-    var startBal = ledger.balanceAtStartOfDate(startDate);
+    var startBal = ledger.inventoryAtStartOfDate(startDate);
     if (startBal == null) {
       return Response.badRequest(
           body: jsonEncode({'error': 'No balance for stateDate: $startDate'}));
     }
 
-    var endBal = ledger.balanceAtStartOfDate(endDate);
+    var endBal = ledger.inventoryAtStartOfDate(endDate);
     if (endBal == null) {
       return Response.badRequest(
           body: jsonEncode({'error': 'No balance for endDate: $endDate'}));
@@ -67,14 +67,14 @@ Response _balanceHandler(Request req) {
 
     balances = endBal - startBal;
   } else if (startDate == null) {
-    var bal = ledger.balanceAtEndOfDate(endDate!);
+    var bal = ledger.inventoryAtEndOfDate(endDate!);
     if (bal == null) {
       return Response.badRequest(
           body: jsonEncode({'error': 'No balance for endDate: $endDate'}));
     }
     balances = bal;
   } else {
-    var bal = ledger.balanceAtStartOfDate(startDate);
+    var bal = ledger.inventoryAtStartOfDate(startDate);
     if (bal == null) {
       return Response.badRequest(
           body: jsonEncode({'error': 'No balance for startDate: $startDate'}));

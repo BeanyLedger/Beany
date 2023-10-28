@@ -1,11 +1,11 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
-import 'package:beany_core/engine/account_balances.dart';
+import 'package:beany_core/engine/account_inventory_map.dart';
 import 'package:beany_core/engine/accounts_tree.dart';
 import 'package:beany_core/engine/inventory.dart';
 
 AccountsTree<AccountBalanceNode> calculateCummulativeBalance(
-  AccountBalances balances,
+  AccountInventoryMap balances,
 ) {
   var emptyNode = AccountBalanceNode(
     Account(""),
