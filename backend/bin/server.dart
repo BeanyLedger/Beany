@@ -16,11 +16,18 @@ import 'qr.dart';
 // Configure routes.
 final _router = Router()
   ..get('/', _rootHandler)
+  ..get('/metadata', _metadataHandler)
   ..get('/transactions', _transactionsHandler)
   ..get('/balance/<account>', _balanceHandler);
 
 Response _rootHandler(Request req) {
   return Response.ok('Hello, World!\n');
+}
+
+Response _metadataHandler(Request req) {
+  return Response.ok(jsonEncode(ledger.metaData.toJson()), headers: {
+    'content-type': 'application/json',
+  });
 }
 
 // Have some standard way to filter all API end-points

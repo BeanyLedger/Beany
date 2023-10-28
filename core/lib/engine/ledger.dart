@@ -261,7 +261,7 @@ class _LedgerBuilder {
     metaData = LedgerMetaData(
       earliestDate: earliestDate,
       latestDate: latestDate,
-      files: IList(),
+      files: IList(files),
       accounts: IList(_accountInfo.keys),
     );
 

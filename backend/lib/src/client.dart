@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
+import 'package:beany_core/engine/ledger_meta_data.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:http/http.dart';
 import 'package:beany_core/core/transaction.dart';
@@ -68,6 +69,7 @@ abstract class BeanyClient {
   Future<String> account(String repoId);
   */
 
+  Future<LedgerMetaData> metaData();
   Future<List<Transaction>> transactions();
   Future<AccountBalanceNode> balance(Account account, {FilterOptions? filter});
 }
@@ -105,6 +107,16 @@ class BeanyHttpClient implements BeanyClient {
 
     final json = response.body;
     return AccountBalanceNode.fromJson(jsonDecode(json));
+  }
+
+  @override
+  Future<LedgerMetaData> metaData() async {
+    final response = await get(Uri.parse('$host/metadata'));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load metaadata');
+    }
+
+    return LedgerMetaData.fromJson(jsonDecode(response.body));
   }
 }
 
