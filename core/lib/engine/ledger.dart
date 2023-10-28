@@ -7,19 +7,23 @@ import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/open_statement.dart';
 import 'package:beany_core/core/statements.dart';
 import 'package:beany_core/core/transaction.dart';
-import 'package:beany_core/engine/account_inventories.dart';
+import 'package:beany_core/engine/account_inventory_map.dart';
+import 'package:beany_core/engine/ledger_meta_data.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_core/parser/parser.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:meta/meta.dart';
 
 import 'exceptions.dart';
 
+// FIXME: This should also be immutable!
 class Ledger {
   List<Statement> statements = [];
+  LedgerMetaData? metaData;
 
   Ledger(this.statements) {
     statements.sort((a, b) {
@@ -82,7 +86,6 @@ class Ledger {
 
   /// Stores the account balance at the end of the day
   final _accountInvByDate = <Date, AccountInventoryMap>{};
-  Map<Date, AccountInventoryMap> get accountBalances => _accountInvByDate;
 
   AccountInventoryMap? inventoryAtEndOfDate(Date d) {
     if (d.isBefore(_accountInvByDate.keys.first)) {
@@ -105,7 +108,20 @@ class Ledger {
   }
 
   Ledger compute() {
+    Date? earliestDate;
+    Date? latestDate;
+
     for (var statement in statements) {
+      if (statement is TransactionSpec) {
+        var date = Date.from(statement.date);
+        if (earliestDate == null || date.isBefore(earliestDate)) {
+          earliestDate = date;
+        }
+        if (latestDate == null || date.isAfter(latestDate)) {
+          latestDate = date;
+        }
+      }
+
       if (statement is OpenStatement) {
         // Make sure the account is not already open
         var actInfo = _accountInfo[statement.account];
@@ -199,6 +215,12 @@ class Ledger {
       }
     }
 
+    metaData = LedgerMetaData(
+      earliestDate: earliestDate,
+      latestDate: latestDate,
+      files: IList(),
+      accounts: IList(_accountInfo.keys),
+    );
     return this;
   }
 }

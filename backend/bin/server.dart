@@ -42,7 +42,7 @@ Response _balanceHandler(Request req) {
   if (accountName == null) {
     return Response.badRequest(body: {'error': 'Account name is required'});
   }
-  var lastDate = ledger.accountBalances.keys.last;
+  var lastDate = ledger.metaData!.latestDate;
 
   var filterOptions = FilterOptions.fromJson(req.url.queryParameters);
 
@@ -51,7 +51,9 @@ Response _balanceHandler(Request req) {
 
   late final AccountInventoryMap balances;
   if (startDate == null && endDate == null) {
-    balances = ledger.inventoryAtEndOfDate(lastDate)!;
+    balances = lastDate != null
+        ? ledger.inventoryAtEndOfDate(lastDate)!
+        : AccountInventoryMap();
   } else if (startDate != null && endDate != null) {
     var startBal = ledger.inventoryAtStartOfDate(startDate);
     if (startBal == null) {

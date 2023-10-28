@@ -19,6 +19,7 @@ class AccountInventoryMap extends Equatable {
     return map[account]?.amountBy(currency);
   }
 
+  int get length => map.length;
   Iterable<Account> get accounts => map.keys;
 
   AccountInventoryMap operator -(AccountInventoryMap other) {
@@ -52,6 +53,7 @@ class AccountInventoryMap extends Equatable {
   }
 
   Inventory? val(Account account) => map[account];
+  Inventory? operator [](Account account) => val(account);
 
   factory AccountInventoryMap.fromJson(Map<String, dynamic> json) {
     return AccountInventoryMap(json.map((key, value) {
