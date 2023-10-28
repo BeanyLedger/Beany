@@ -1,5 +1,5 @@
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/engine/multi_amount.dart';
+import 'package:beany_core/engine/inventory.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -9,10 +9,10 @@ part 'account_balance_node.g.dart';
 class AccountBalanceNode implements Equatable {
   final Account account;
 
-  final MultiAmount cumulative;
-  final MultiAmount ownValue;
+  final Inventory cumulative;
+  final Inventory ownValue;
 
-  MultiAmount get totalValue => cumulative + ownValue;
+  Inventory get totalValue => cumulative + ownValue;
 
   final List<AccountBalanceNode> children;
 

@@ -1,6 +1,6 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
-import 'package:beany_core/engine/multi_amount.dart';
+import 'package:beany_core/engine/inventory.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
@@ -8,10 +8,9 @@ import 'package:meta/meta.dart';
 
 @immutable
 class AccountBalances extends Equatable {
-  final IMap<Account, MultiAmount> balances;
+  final IMap<Account, Inventory> balances;
 
-  AccountBalances([Map<Account, MultiAmount>? bal = null])
-      : balances = IMap(bal);
+  AccountBalances([Map<Account, Inventory>? bal = null]) : balances = IMap(bal);
 
   @override
   List<Object?> get props => [balances];
@@ -27,8 +26,8 @@ class AccountBalances extends Equatable {
     var allAccounts = Set<Account>.from([...accounts, ...other.accounts]);
 
     for (var account in allAccounts) {
-      var myAmounts = balances[account] ?? MultiAmount();
-      var theirAmounts = other.balances[account] ?? MultiAmount();
+      var myAmounts = balances[account] ?? Inventory();
+      var theirAmounts = other.balances[account] ?? Inventory();
 
       var amountDiff = myAmounts - theirAmounts;
       if (amountDiff.isNotEmpty) {
@@ -40,23 +39,23 @@ class AccountBalances extends Equatable {
   }
 
   AccountBalances add(Account account, Amount amount) {
-    return addMultiAmount(account, MultiAmount([amount]));
+    return addMultiAmount(account, Inventory([amount]));
   }
 
-  AccountBalances addMultiAmount(Account account, MultiAmount ma) {
+  AccountBalances addMultiAmount(Account account, Inventory ma) {
     return AccountBalances(
       {
         ...balances.unlockView,
-        account: (balances[account] ?? MultiAmount()) + ma,
+        account: (balances[account] ?? Inventory()) + ma,
       },
     );
   }
 
-  MultiAmount? val(Account account) => balances[account];
+  Inventory? val(Account account) => balances[account];
 
   factory AccountBalances.fromJson(Map<String, dynamic> json) {
     return AccountBalances(json.map((key, value) {
-      return MapEntry(Account(key), MultiAmount.fromJson(value));
+      return MapEntry(Account(key), Inventory.fromJson(value));
     }));
   }
   Map<String, dynamic> toJson() => balances.unlockView.map(

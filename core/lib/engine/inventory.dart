@@ -7,31 +7,30 @@ import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
 @immutable
-class MultiAmount implements Equatable {
+class Inventory implements Equatable {
   final IMap<Currency, Decimal> _amounts;
 
-  MultiAmount([Iterable<Amount> amounts = const []])
+  Inventory([Iterable<Amount> amounts = const []])
       : _amounts = IMap<Currency, Decimal>.fromEntries(
           amounts.map((e) => MapEntry(e.currency, e.number)),
         );
 
-  MultiAmount.fromMap(Map<Currency, Decimal> amounts)
-      : _amounts = IMap(amounts);
+  Inventory.fromMap(Map<Currency, Decimal> amounts) : _amounts = IMap(amounts);
 
   Map<Currency, Decimal> toMap() => _amounts.unlockView;
 
-  MultiAmount add(Currency currency, Decimal amount) {
+  Inventory add(Currency currency, Decimal amount) {
     if (_amounts[currency] == null) {
-      return MultiAmount.fromMap({
+      return Inventory.fromMap({
         ..._amounts.unlockView,
         currency: amount,
       });
     } else {
       var newAmount = _amounts[currency]! + amount;
       if (newAmount == Decimal.zero) {
-        return MultiAmount.fromMap(_amounts.remove(currency).unlockView);
+        return Inventory.fromMap(_amounts.remove(currency).unlockView);
       } else {
-        return MultiAmount.fromMap({
+        return Inventory.fromMap({
           ..._amounts.unlockView,
           currency: newAmount,
         });
@@ -39,7 +38,7 @@ class MultiAmount implements Equatable {
     }
   }
 
-  MultiAmount addAmount(Amount amount) => add(amount.currency, amount.number);
+  Inventory addAmount(Amount amount) => add(amount.currency, amount.number);
 
   bool get isEmpty => _amounts.isEmpty;
   bool get isNotEmpty => _amounts.isNotEmpty;
@@ -60,7 +59,7 @@ class MultiAmount implements Equatable {
 
   Iterable<Currency> get currencies => _amounts.keys;
 
-  MultiAmount operator +(MultiAmount other) {
+  Inventory operator +(Inventory other) {
     var ma = this;
     for (var currency in other.currencies) {
       ma = ma.add(currency, other[currency]!);
@@ -68,7 +67,7 @@ class MultiAmount implements Equatable {
     return ma;
   }
 
-  MultiAmount operator -(MultiAmount other) {
+  Inventory operator -(Inventory other) {
     var ma = this;
     for (var currency in other.currencies) {
       ma = ma.add(currency, -other[currency]!);
@@ -76,8 +75,8 @@ class MultiAmount implements Equatable {
     return ma;
   }
 
-  factory MultiAmount.fromJson(Map<String, dynamic> json) {
-    return MultiAmount.fromMap(json.map((key, value) {
+  factory Inventory.fromJson(Map<String, dynamic> json) {
+    return Inventory.fromMap(json.map((key, value) {
       return MapEntry(key, Decimal.fromJson(value));
     }));
   }
@@ -96,7 +95,7 @@ class MultiAmount implements Equatable {
 
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! MultiAmount) return false;
+    if (other is! Inventory) return false;
 
     return DeepCollectionEquality.unordered().equals(other._amounts, _amounts);
   }
