@@ -42,7 +42,7 @@ Response _balanceHandler(Request req) {
   if (accountName == null) {
     return Response.badRequest(body: {'error': 'Account name is required'});
   }
-  var lastDate = ledger.metaData!.latestDate;
+  var lastDate = ledger.metaData.latestDate;
 
   var filterOptions = FilterOptions.fromJson(req.url.queryParameters);
 

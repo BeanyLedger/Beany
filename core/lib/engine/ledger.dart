@@ -20,12 +20,86 @@ import 'package:meta/meta.dart';
 
 import 'exceptions.dart';
 
-// FIXME: This should also be immutable!
+@immutable
 class Ledger {
+  final IList<Statement> statements;
+  final LedgerMetaData metaData;
+
+  final IMap<Date, AccountInventoryMap> _accountInvByDate;
+
+  Ledger._({
+    required this.statements,
+    required this.metaData,
+    required Map<Date, AccountInventoryMap> accountInvByDate,
+  }) : _accountInvByDate = IMap(accountInvByDate);
+
+  AccountInventoryMap? inventoryAtEndOfDate(Date d) {
+    if (d.isBefore(_accountInvByDate.keys.first)) {
+      print("Date $d is out of range");
+      return null;
+    }
+
+    // FIXME: This definitely needs to be optimized!
+    var ab = _accountInvByDate[d];
+    while (ab == null && _accountInvByDate.isNotEmpty) {
+      d = d.yesterday();
+      ab = _accountInvByDate[d];
+    }
+
+    return ab;
+  }
+
+  AccountInventoryMap? inventoryAtStartOfDate(Date d) {
+    return inventoryAtEndOfDate(d.yesterday());
+  }
+
+  static Ledger loadString(String fileContent) {
+    var statements = parse(fileContent).all().val().toList();
+    var engine = _LedgerBuilder._(statements: statements, files: []);
+    return engine.compute();
+  }
+
+  static Future<Ledger> loadRootFile(String filePath) async {
+    var rootDir = p.dirname(filePath);
+
+    var filePaths = <String>[];
+    filePaths.add(filePath);
+
+    var file = File(filePath);
+    var text = await file.readAsString();
+    var statements = parse(text, filePath: filePath).all().val();
+    var extraStatements = <Statement>[];
+    for (var statement in statements) {
+      if (statement is IncludeStatement) {
+        var include = statement;
+        var includeFile = File(p.join(rootDir, include.path));
+        var includeText = await includeFile.readAsString();
+        var includeStatements = parse(
+          includeText,
+          filePath: includeFile.path,
+        ).all().val();
+        extraStatements.addAll(includeStatements);
+
+        filePaths.add(includeFile.path);
+      }
+    }
+
+    var statementsWithoutIncludes =
+        statements.where((s) => s is! IncludeStatement);
+    var engine = _LedgerBuilder._(
+      statements: [...statementsWithoutIncludes, ...extraStatements],
+      files: filePaths,
+    );
+    return engine.compute();
+  }
+}
+
+class _LedgerBuilder {
   List<Statement> statements = [];
   LedgerMetaData? metaData;
+  List<String> files;
 
-  Ledger(this.statements) {
+  _LedgerBuilder._({required this.statements, required this.files}) {
     statements.sort((a, b) {
       if (a is Directive && b is! Directive) {
         return -1;
@@ -49,38 +123,6 @@ class Ledger {
     });
   }
 
-  static Ledger loadString(String fileContent) {
-    var statements = parse(fileContent).all().val().toList();
-    var engine = Ledger(statements);
-    return engine.compute();
-  }
-
-  static Future<Ledger> loadRootFile(String filePath) async {
-    var rootDir = p.dirname(filePath);
-
-    var file = File(filePath);
-    var text = await file.readAsString();
-    var statements = parse(text, filePath: filePath).all().val();
-    var extraStatements = <Statement>[];
-    for (var statement in statements) {
-      if (statement is IncludeStatement) {
-        var include = statement;
-        var includeFile = File(p.join(rootDir, include.path));
-        var includeText = await includeFile.readAsString();
-        var includeStatements = parse(
-          includeText,
-          filePath: includeFile.path,
-        ).all().val();
-        extraStatements.addAll(includeStatements);
-      }
-    }
-
-    var statementsWithoutIncludes =
-        statements.where((s) => s is! IncludeStatement);
-    var engine = Ledger([...statementsWithoutIncludes, ...extraStatements]);
-    return engine.compute();
-  }
-
   final _accountInfo = Map<Account, AccountInfo>();
   Iterable<AccountInfo> get accounts => _accountInfo.values;
 
@@ -93,7 +135,8 @@ class Ledger {
       return null;
     }
 
-    // FIXME: This definitely needs to be optimized!
+    // This may seem inefficient, but it's actually awesome as we're processing the statements
+    // in order, so at most we'll have to go back 1 day
     var ab = _accountInvByDate[d];
     while (ab == null && _accountInvByDate.isNotEmpty) {
       d = d.yesterday();
@@ -221,7 +264,12 @@ class Ledger {
       files: IList(),
       accounts: IList(_accountInfo.keys),
     );
-    return this;
+
+    return Ledger._(
+      statements: IList(statements),
+      metaData: metaData!,
+      accountInvByDate: _accountInvByDate,
+    );
   }
 }
 
