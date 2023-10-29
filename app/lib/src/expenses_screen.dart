@@ -1,5 +1,5 @@
 import 'package:beany/src/drawer.dart';
-import 'package:beany_backend/beany_backend.dart';
+import 'package:beany_backend/beany_backend.dart' as bb;
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:beany_core/misc/date.dart';
@@ -35,10 +35,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   }
 
   Future<void> _initAsync() async {
-    var client = BeanyHttpClient('http://127.0.0.1:8080');
+    var client = bb.BeanyHttpClient('http://127.0.0.1:8080');
     balance = await client.balance(
       Account("Expenses"),
-      filter: FilterOptions(
+      dateRange: bb.DateRange(
         startDate: Date.truncate(dateRange!.start),
         endDate: Date.truncate(dateRange!.end),
       ),

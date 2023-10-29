@@ -51,7 +51,7 @@ Response _balanceHandler(Request req) {
   }
   var lastDate = ledger.metaData.latestDate;
 
-  var filterOptions = FilterOptions.fromJson(req.url.queryParameters);
+  var filterOptions = DateRange.fromJson(req.url.queryParameters);
 
   var startDate = filterOptions.startDate;
   var endDate = filterOptions.endDate;
