@@ -1,4 +1,4 @@
-name: beany_importer_wise
+name: beany_importer
 description: Wise integration for Beany
 version: 1.0.0
 
@@ -13,7 +13,7 @@ dependencies:
   rsa_pkcs: ^2.0.1
   yaml: ^3.1.2
   beany_core:
-    path: ../../core
+    path: ../core
   path: ^1.8.3
   fast_immutable_collections: ^9.1.6
   collection: ^1.18.0

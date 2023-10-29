@@ -7,9 +7,9 @@ import 'package:beany_core/misc/date.dart';
 
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_core/render/render.dart';
-import 'package:beany_importer_wise/src/deduplicator.dart';
-import 'package:beany_importer_wise/src/simple_categorizer.dart';
-import 'package:beany_importer_wise/src/wise.dart';
+import 'package:beany_importer/src/deduplicator.dart';
+import 'package:beany_importer/src/simple_categorizer.dart';
+import 'package:beany_importer/src/wise.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'package:yaml/yaml.dart';
@@ -83,7 +83,6 @@ Future<void> process(WiseConfig config) async {
         continue;
       }
 
-      // FIXME: What about balance statements!
       if (!transactionExists(duplicatorConfig, existingTransactions, t)) {
         transactionsToAdd.add(t);
         count++;

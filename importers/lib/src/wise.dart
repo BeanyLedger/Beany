@@ -7,7 +7,7 @@ import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/price_spec.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
-import 'package:beany_importer_wise/src/deduplicator.dart';
+import 'package:beany_importer/src/deduplicator.dart';
 
 import 'wise_json.dart';
 
