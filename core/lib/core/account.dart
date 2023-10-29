@@ -8,7 +8,9 @@ part 'account.g.dart';
 @JsonSerializable(includeIfNull: false)
 class Account extends Equatable implements Comparable<Account> {
   final String value;
+
   Account(this.value);
+  Account.fromParts(Iterable<String> parts) : value = parts.join(':');
 
   @override
   List<Object?> get props => [value];

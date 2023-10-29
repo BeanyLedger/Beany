@@ -18,11 +18,13 @@ class ExpensesScreen extends StatefulWidget {
   State<ExpensesScreen> createState() => _ExpensesScreenState();
 }
 
+const _startingAccount = "Expenses:Personal";
+
 class _ExpensesScreenState extends State<ExpensesScreen> {
   DateRange? dateRange;
 
   AccountBalanceNode? rootNode;
-  Account account = Account("Expenses");
+  Account account = Account(_startingAccount);
 
   @override
   void initState() {
@@ -39,7 +41,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Future<void> _refresh() async {
     var client = bb.BeanyHttpClient('http://127.0.0.1:8080');
     rootNode = await client.balance(
-      Account("Expenses"),
+      Account(_startingAccount),
       dateRange: bb.DateRange(
         startDate: Date.truncate(dateRange!.start),
         endDate: Date.truncate(dateRange!.end),
@@ -68,7 +70,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                   "Date Range: ${dateRange!.start.toIso8601String().substring(0, 10)} - ${dateRange!.end.toIso8601String().substring(0, 10)}",
                 ),
               const SizedBox(height: 8),
-              AccountsBar(account: account),
+              AccountsBar(
+                account: account,
+                onAccountChanged: _onAccountChanged,
+              ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () async {
@@ -84,17 +89,19 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               if (rootNode != null)
                 BalancePieChart(
                   balance: rootNode!.find(account)!,
-                  onAccountSelected: (account) {
-                    setState(() {
-                      this.account = account;
-                    });
-                  },
+                  onAccountSelected: _onAccountChanged,
                 ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _onAccountChanged(Account account) {
+    setState(() {
+      this.account = account;
+    });
   }
 
   void _onDateRangeChanged(DateRange? newDateRange) {
@@ -281,15 +288,34 @@ class BalancePieChartState extends State<BalancePieChart> {
 
 class AccountsBar extends StatelessWidget {
   final Account account;
-  final void Function(Account)? onAccountChanged;
+  final void Function(Account) onAccountChanged;
 
-  const AccountsBar({super.key, required this.account, this.onAccountChanged});
+  const AccountsBar({
+    super.key,
+    required this.account,
+    required this.onAccountChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
+    var parts = account.parts();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Text(account.value),
+      child: Row(
+        children: [
+          for (var i = 0; i < parts.length; i++) ...[
+            TextButton(
+              onPressed: () {
+                var newAccount = Account.fromParts(parts.sublist(0, i + 1));
+                onAccountChanged(newAccount);
+              },
+              child: Text(parts[i]),
+            ),
+            if (i < parts.length - 1) const Text(" > "),
+          ],
+        ],
+      ),
     );
   }
 }
