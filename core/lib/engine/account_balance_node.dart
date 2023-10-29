@@ -23,6 +23,15 @@ class AccountBalanceNode implements Equatable {
     required this.children,
   });
 
+  AccountBalanceNode? find(Account ac) {
+    if (account == ac) return this;
+    for (var child in children) {
+      var found = child.find(ac);
+      if (found != null) return found;
+    }
+    return null;
+  }
+
   @override
   List<Object?> get props => [account, cumulative, ownValue, children];
 

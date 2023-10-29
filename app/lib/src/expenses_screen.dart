@@ -20,7 +20,9 @@ class ExpensesScreen extends StatefulWidget {
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
   DateRange? dateRange;
-  AccountBalanceNode? balance;
+
+  AccountBalanceNode? rootNode;
+  Account account = Account("Expenses");
 
   @override
   void initState() {
@@ -31,12 +33,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
 
     super.initState();
-    _initAsync();
+    _refresh();
   }
 
-  Future<void> _initAsync() async {
+  Future<void> _refresh() async {
     var client = bb.BeanyHttpClient('http://127.0.0.1:8080');
-    balance = await client.balance(
+    rootNode = await client.balance(
       Account("Expenses"),
       dateRange: bb.DateRange(
         startDate: Date.truncate(dateRange!.start),
@@ -65,6 +67,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 Text(
                   "Date Range: ${dateRange!.start.toIso8601String().substring(0, 10)} - ${dateRange!.end.toIso8601String().substring(0, 10)}",
                 ),
+              const SizedBox(height: 8),
+              AccountsBar(account: account),
+              const SizedBox(height: 8),
               TextButton(
                 onPressed: () async {
                   var dateRange = await showDateRangePickerDialog(
@@ -76,7 +81,15 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 child: const Text("Configure Date Range"),
               ),
               const SizedBox(height: 24),
-              if (balance != null) BalancePieChart(balance: balance!),
+              if (rootNode != null)
+                BalancePieChart(
+                  balance: rootNode!.find(account)!,
+                  onAccountSelected: (account) {
+                    setState(() {
+                      this.account = account;
+                    });
+                  },
+                ),
             ],
           ),
         ),
@@ -89,7 +102,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     dateRange = newDateRange;
     setState(() {});
 
-    _initAsync();
+    _refresh();
   }
 
   Widget datePickerBuilder(
@@ -138,8 +151,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
 class BalancePieChart extends StatefulWidget {
   final AccountBalanceNode balance;
+  final void Function(Account) onAccountSelected;
 
-  const BalancePieChart({super.key, required this.balance});
+  const BalancePieChart(
+      {super.key, required this.balance, required this.onAccountSelected});
 
   @override
   State<StatefulWidget> createState() => BalancePieChartState();
@@ -149,6 +164,14 @@ class BalancePieChartState extends State<BalancePieChart> {
   int touchedIndex = 0;
 
   @override
+  void didUpdateWidget(covariant BalancePieChart oldWidget) {
+    if (oldWidget.balance != widget.balance) {
+      touchedIndex = 0;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 400,
@@ -156,6 +179,17 @@ class BalancePieChartState extends State<BalancePieChart> {
         PieChartData(
           pieTouchData: PieTouchData(
             touchCallback: (FlTouchEvent event, pieTouchResponse) {
+              if (event is FlTapDownEvent) {
+                if (pieTouchResponse?.touchedSection == null) {
+                  return;
+                }
+                var index =
+                    pieTouchResponse!.touchedSection!.touchedSectionIndex;
+
+                var account = _child(index).account;
+                widget.onAccountSelected(account);
+              }
+
               setState(() {
                 if (!event.isInterestedForInteractions ||
                     pieTouchResponse == null ||
@@ -178,6 +212,10 @@ class BalancePieChartState extends State<BalancePieChart> {
     );
   }
 
+  AccountBalanceNode _child(int index) {
+    return widget.balance.children[index];
+  }
+
   List<PieChartSectionData> showingSections() {
     var totalEur = widget.balance.totalValue.val("EUR");
     if (totalEur == null) return const [];
@@ -186,6 +224,10 @@ class BalancePieChartState extends State<BalancePieChart> {
       Colors.blue,
       Colors.green,
       Colors.yellow,
+      Colors.red,
+      Colors.purple,
+      Colors.orange,
+      Colors.teal,
       Colors.red,
       Colors.purple,
       Colors.orange,
@@ -234,5 +276,20 @@ class BalancePieChartState extends State<BalancePieChart> {
     }
 
     return dataList;
+  }
+}
+
+class AccountsBar extends StatelessWidget {
+  final Account account;
+  final void Function(Account)? onAccountChanged;
+
+  const AccountsBar({super.key, required this.account, this.onAccountChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Text(account.value),
+    );
   }
 }
