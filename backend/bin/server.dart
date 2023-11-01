@@ -20,6 +20,12 @@ final _router = Router()
   ..get('/transactions', _transactionsHandler)
   ..get('/balance/<account>', _balanceHandler);
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, delete, OPTIONS",
+  "Access-Control-Allow-Headers": "*",
+};
+
 Response _rootHandler(Request req) {
   return Response.ok('Hello, World!\n');
 }
@@ -41,6 +47,7 @@ Response _transactionsHandler(Request request) {
 
   return Response.ok(jsonEncode(jsonList.toList().reversed.toList()), headers: {
     'content-type': 'application/json',
+    ...corsHeaders,
   });
 }
 
@@ -100,6 +107,7 @@ Response _balanceHandler(Request req) {
 
   return Response.ok(jsonEncode(node.val), headers: {
     'content-type': 'application/json',
+    ...corsHeaders,
   });
 }
 
