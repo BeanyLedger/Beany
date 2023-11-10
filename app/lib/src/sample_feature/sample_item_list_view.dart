@@ -1,4 +1,4 @@
-import 'package:beany/src/drawer.dart';
+import 'package:beany/src/bottom_bar.dart';
 import 'package:beany_backend/beany_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:beany_core/core/transaction.dart';
@@ -37,7 +37,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
         title: const Text('Ledger'),
         actions: const [],
       ),
-      drawer: const AppDrawer(),
+      bottomNavigationBar: const BeanyBottomBar(),
       body: ListView.builder(
         restorationId: 'sampleItemListView',
         itemCount: transactions.length,

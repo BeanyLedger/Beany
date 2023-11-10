@@ -1,4 +1,4 @@
-import 'package:beany/src/drawer.dart';
+import 'package:beany/src/bottom_bar.dart';
 import 'package:beany_backend/beany_backend.dart' as bb;
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
@@ -57,7 +57,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         title: const Text('Expenses'),
         actions: const [],
       ),
-      drawer: const AppDrawer(),
+      bottomNavigationBar: const BeanyBottomBar(),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
