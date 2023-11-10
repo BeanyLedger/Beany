@@ -3,18 +3,16 @@ import 'package:beany_backend/beany_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:beany_core/core/transaction.dart';
 
-class SampleItemListView extends StatefulWidget {
-  const SampleItemListView({
-    super.key,
-  });
+class LedgerScreen extends StatefulWidget {
+  const LedgerScreen({super.key});
 
-  static const routeName = '/';
+  static const routeName = '/ledger';
 
   @override
-  State<SampleItemListView> createState() => _SampleItemListViewState();
+  State<LedgerScreen> createState() => _LedgerScreenState();
 }
 
-class _SampleItemListViewState extends State<SampleItemListView> {
+class _LedgerScreenState extends State<LedgerScreen> {
   List<Transaction> transactions = [];
 
   @override
@@ -39,7 +37,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
       ),
       bottomNavigationBar: const BeanyBottomBar(),
       body: ListView.builder(
-        restorationId: 'sampleItemListView',
+        restorationId: 'LedgerScreen',
         itemCount: transactions.length,
         itemBuilder: (BuildContext context, int index) {
           final tr = transactions[index];

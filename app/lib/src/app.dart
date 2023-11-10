@@ -1,10 +1,13 @@
+import 'package:beany/src/assets/assets_screen.dart';
+import 'package:beany/src/cash/cash_screen.dart';
 import 'package:beany/src/expenses_screen.dart';
+import 'package:beany/src/home/home_screen.dart';
+import 'package:beany/src/ledger/ledger_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 
 /// The Widget that configures your application.
@@ -69,9 +72,15 @@ class MyApp extends StatelessWidget {
                 switch (routeSettings.name) {
                   case ExpensesScreen.routeName:
                     return const ExpensesScreen();
-                  case SampleItemListView.routeName:
+                  case CashScreen.routeName:
+                    return const CashScreen();
+                  case AssetsScreen.routeName:
+                    return const AssetsScreen();
+                  case LedgerScreen.routeName:
+                    return const LedgerScreen();
+                  case HomeScreen.routeName:
                   default:
-                    return const SampleItemListView();
+                    return const HomeScreen();
                 }
               },
             );
