@@ -1,4 +1,5 @@
 import 'package:beany/src/bottom_bar.dart';
+import 'package:beany/src/ledger/transaction_view_screen.dart';
 import 'package:beany_backend/beany_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:beany_core/core/transaction.dart';
@@ -63,7 +64,17 @@ class TransactionTile extends StatelessWidget {
         // Display the Flutter Logo image asset.
         foregroundImage: AssetImage('assets/images/flutter_logo.png'),
       ),
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            settings: const RouteSettings(
+              name: "/transaction/_foo",
+            ),
+            builder: (context) => TransactionViewScreen(tr),
+          ),
+        );
+      },
     );
   }
 }
