@@ -21,7 +21,7 @@ dependencies:
   beany_core:
     path: ../core
   google_fonts: ^4.0.4
-  fl_chart: ^0.64.0
+  fl_chart: ^0.66.2
 
 dev_dependencies:
   flutter_test:
