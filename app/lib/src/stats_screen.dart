@@ -9,18 +9,18 @@ import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
 
 import 'package:fl_chart/fl_chart.dart';
 
-class ExpensesScreen extends StatefulWidget {
-  const ExpensesScreen({super.key});
+class StatsScreen extends StatefulWidget {
+  const StatsScreen({super.key});
 
-  static const routeName = '/expenses';
+  static const routeName = '/stats';
 
   @override
-  State<ExpensesScreen> createState() => _ExpensesScreenState();
+  State<StatsScreen> createState() => _StatsScreenState();
 }
 
-const _startingAccount = "Expenses:Personal";
+const _startingAccount = "Expenses";
 
-class _ExpensesScreenState extends State<ExpensesScreen> {
+class _StatsScreenState extends State<StatsScreen> {
   DateRange? dateRange;
 
   AccountBalanceNode? rootNode;

@@ -1,6 +1,6 @@
 import 'package:beany/src/assets/assets_screen.dart';
 import 'package:beany/src/cash/cash_screen.dart';
-import 'package:beany/src/expenses_screen.dart';
+import 'package:beany/src/stats_screen.dart';
 import 'package:beany/src/home/home_screen.dart';
 import 'package:beany/src/ledger/ledger_screen.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +70,8 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
-                  case ExpensesScreen.routeName:
-                    return const ExpensesScreen();
+                  case StatsScreen.routeName:
+                    return const StatsScreen();
                   case CashScreen.routeName:
                     return const CashScreen();
                   case AssetsScreen.routeName:
