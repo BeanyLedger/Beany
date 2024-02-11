@@ -42,24 +42,18 @@ class StatsView extends StatefulWidget {
 const _startingAccount = "Expenses";
 
 class _StatsViewState extends State<StatsView> {
-  late DateRange dateRange;
-
-  Account account = Account(_startingAccount);
-
   @override
   void initState() {
     var now = DateTime.now();
-    dateRange = DateRange(
-      DateTime(now.year, now.month),
-      DateTime.now(),
-    );
 
     widget.bloc.add(
       StatsScreenStarted(
-        account,
+        Account(_startingAccount),
+        // FIXME: This month might not exist and we might therefore get an error
+        //        Shouldn't we only be allowing date ranges that are valid?
         bb.DateRange(
-          startDate: Date.truncate(dateRange.start),
-          endDate: Date.truncate(dateRange.end),
+          startDate: Date(now.year, now.month - 1),
+          endDate: Date.today(),
         ),
       ),
     );
@@ -74,111 +68,121 @@ class _StatsViewState extends State<StatsView> {
         actions: const [],
       ),
       bottomNavigationBar: const BeanyBottomBar(),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 24),
-              // FIXME: I think maybe we should be getting exactly the range we need, as a Date
-              //        This business of truncating the DateTime should not be in the presentation layer
-              Text(
-                "Date Range: ${dateRange.start.toIso8601String().substring(0, 10)} - ${dateRange.end.toIso8601String().substring(0, 10)}",
-              ),
-              const SizedBox(height: 8),
-              BlocBuilder<StatsScreenBloc, StatsScreenState>(
-                builder: (context, state) {
-                  switch (state) {
-                    case StatsScreenLoading():
-                      return const CircularProgressIndicator();
-                    case StatsScreenLoaded():
-                      return AccountsBar(
-                        account: account,
-                        onAccountChanged: _onAccountChanged,
-                      );
-                    case StatsScreenError():
-                      return Text("Error: ${state.message}");
-                  }
-                },
-              ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () async {
-                  var dateRange = await showDateRangePickerDialog(
+      body: BlocBuilder<StatsScreenBloc, StatsScreenState>(
+        builder: (context, state) {
+          switch (state) {
+            case StatsScreenLoading():
+              return const CircularProgressIndicator();
+            case StatsScreenLoaded():
+              return _StatsScreenLoadedView(state);
+            case StatsScreenError():
+              return Text("Error: ${state.message}");
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _StatsScreenLoadedView extends StatelessWidget {
+  final StatsScreenLoaded state;
+
+  const _StatsScreenLoadedView(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    var dateRange = state.dateRange;
+    var account = state.accountBalanceNode.account;
+
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 24),
+            Text(
+              "Date Range: ${dateRange.startDate?.toIso8601String()} - ${dateRange.endDate?.toIso8601String()}",
+            ),
+            const SizedBox(height: 8),
+            AccountsBar(
+              account: account,
+              onAccountChanged: (account) =>
+                  _onAccountChanged(context, account),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () async {
+                var dateRange = await showDateRangePickerDialog(
                     context: context,
-                    builder: datePickerBuilder,
-                  );
-                  _onDateRangeChanged(dateRange);
-                },
-                child: const Text("Configure Date Range"),
-              ),
-              const SizedBox(height: 24),
-              BlocBuilder<StatsScreenBloc, StatsScreenState>(
-                builder: (context, state) {
-                  switch (state) {
-                    case StatsScreenLoading():
-                      return const CircularProgressIndicator();
-                    case StatsScreenLoaded():
-                      return BalancePieChart(
-                        balance: state.accountBalanceNode,
-                        onAccountSelected: _onAccountChanged,
+                    builder: (context, onDateRangeChanged) {
+                      return BeanyDateRangePicker(
+                        dateRange: state.dateRange,
+                        onDateRangeChanged: onDateRangeChanged,
                       );
-                    case StatsScreenError():
-                      return Text("Error: ${state.message}");
-                  }
-                },
-              ),
-            ],
-          ),
+                    });
+                _onDateRangeChanged(context, dateRange);
+              },
+              child: const Text("Configure Date Range"),
+            ),
+            const SizedBox(height: 24),
+            BalancePieChart(
+              balance: state.accountBalanceNode,
+              onAccountSelected: (account) =>
+                  _onAccountChanged(context, account),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _onAccountChanged(Account account) {
-    setState(() {
-      this.account = account;
-    });
-
+  void _onAccountChanged(BuildContext context, Account account) {
     var bloc = BlocProvider.of<StatsScreenBloc>(context);
-    bloc.add(
-      StatsScreenStarted(
-        account,
-        bb.DateRange(
-          startDate: Date.truncate(dateRange.start),
-          endDate: Date.truncate(dateRange.end),
-        ),
-      ),
-    );
+    bloc.add(StatsScreenStarted(account, state.dateRange));
   }
 
-  void _onDateRangeChanged(DateRange? newDateRange) {
+  void _onDateRangeChanged(BuildContext context, DateRange? newDateRange) {
     if (newDateRange == null) return;
-    dateRange = newDateRange;
-    setState(() {});
 
-    // _refresh();
+    var dateRange = bb.DateRange(
+      startDate: Date.truncate(newDateRange.start),
+      endDate: Date.truncate(newDateRange.end),
+    );
     var bloc = BlocProvider.of<StatsScreenBloc>(context);
-    bloc.add(
-      StatsScreenStarted(
-        account,
-        bb.DateRange(
-          startDate: Date.truncate(dateRange.start),
-          endDate: Date.truncate(dateRange.end),
-        ),
-      ),
+    bloc.add(StatsScreenStarted(state.accountBalanceNode.account, dateRange));
+  }
+}
+
+class BeanyDateRangePicker extends StatelessWidget {
+  final bb.DateRange dateRange;
+  final void Function(DateRange?) onDateRangeChanged;
+
+  const BeanyDateRangePicker({
+    required this.dateRange,
+    required this.onDateRangeChanged,
+    super.key,
+  });
+
+  DateRange? _range() {
+    var start = dateRange.startDate;
+    var end = dateRange.endDate;
+
+    if (start == null || end == null) {
+      return null;
+    }
+    return DateRange(
+      DateTime(start.year, start.month, start.day),
+      DateTime(end.year, end.month, end.day),
     );
   }
 
-  Widget datePickerBuilder(
-    BuildContext context,
-    void Function(DateRange?) onDateRangeChanged,
-  ) {
+  @override
+  Widget build(BuildContext context) {
     var now = DateTime.now();
     return DateRangePickerWidget(
       doubleMonth: false,
-      initialDateRange: dateRange,
+      initialDateRange: _range(),
       maxDate: now,
       onDateRangeChanged: onDateRangeChanged,
       quickDateRanges: [
@@ -252,6 +256,7 @@ class BalancePieChartState extends State<BalancePieChart> {
                 var index =
                     pieTouchResponse!.touchedSection!.touchedSectionIndex;
 
+                if (widget.balance.children.isEmpty) return;
                 var account = _child(index).account;
                 widget.onAccountSelected(account);
               }
@@ -312,6 +317,45 @@ class BalancePieChartState extends State<BalancePieChart> {
 
       var data = PieChartSectionData(
         color: colors[i % colors.length],
+        value: (value / totalEur).toDouble() * 100,
+        title: bal.account.parts().last,
+
+        radius: radius,
+        titleStyle: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xffffffff),
+          shadows: shadows,
+        ),
+        badgeWidget: Text(
+          value.toStringAsFixed(2),
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            shadows: shadows,
+          ),
+        ),
+        // badgeWidget: _Badge(
+        //   'assets/icons/ophthalmology-svgrepo-com.svg',
+        //   size: widgetSize,
+        //   borderColor: AppColors.contentColorBlack,
+        // ),
+        badgePositionPercentageOffset: 1.2,
+      );
+      dataList.add(data);
+    }
+    if (dataList.isEmpty) {
+      final isTouched = 0 == touchedIndex;
+      final fontSize = isTouched ? 20.0 : 16.0;
+      final radius = isTouched ? 220.0 : 200.0;
+
+      var bal = widget.balance;
+      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
+      var value = bal.totalValue.val("EUR")!;
+
+      var data = PieChartSectionData(
+        color: colors[0 % colors.length],
         value: (value / totalEur).toDouble() * 100,
         title: bal.account.parts().last,
 

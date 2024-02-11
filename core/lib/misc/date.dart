@@ -1,7 +1,8 @@
 class Date implements DateTime {
   final DateTime _native;
 
-  Date(int year, int month, int day) : _native = DateTime.utc(year, month, day);
+  Date(int year, [int month = 1, int day = 1])
+      : _native = DateTime.utc(year, month, day);
 
   Date.from(DateTime dt) : _native = DateTime.utc(dt.year, dt.month, dt.day) {
     if (dt.hour != 0 ||

@@ -27,7 +27,7 @@ class StatsScreenBloc extends Bloc<StatsScreenEvent, StatsScreenState> {
         event.account,
         dateRange: event.dateRange,
       );
-      emit(StatsScreenLoaded(node));
+      emit(StatsScreenLoaded(node, event.dateRange));
     } catch (e) {
       emit(StatsScreenError(e.toString()));
     }
