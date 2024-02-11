@@ -7,38 +7,6 @@ import 'package:beany_core/misc/date.dart';
 import 'package:http/http.dart';
 import 'package:beany_core/core/transaction.dart';
 
-class DateRange {
-  final Date? startDate;
-
-  /// Includes this date
-  final Date? endDate;
-
-  DateRange({
-    this.startDate,
-    this.endDate,
-  });
-
-  // We aren't using JsonSerializable here as we need a Map<String, String>
-  // and not Map<String, dynamic>
-  factory DateRange.fromJson(Map<String, String> json) {
-    return DateRange(
-      startDate: json['startDate'] == null
-          ? null
-          : Date.fromIso8601String(json['startDate']!),
-      endDate: json['endDate'] == null
-          ? null
-          : Date.fromIso8601String(json['endDate']!),
-    );
-  }
-
-  Map<String, String> toJson() {
-    return {
-      if (startDate != null) 'startDate': startDate!.toIso8601String(),
-      if (endDate != null) 'endDate': endDate!.toIso8601String(),
-    };
-  }
-}
-
 abstract class BeanyClient {
   /*
   // Repos
@@ -76,11 +44,15 @@ class BeanyHttpClient implements BeanyClient {
   @override
   Future<AccountBalanceNode> balance(
     Account account, {
-    DateRange? dateRange,
+    Date? startDate,
+    Date? endDate,
   }) async {
     var uri = Uri.parse('$host/balance/${account.value}');
-    if (dateRange != null) {
-      uri = uri.replace(queryParameters: dateRange.toJson());
+    if (startDate != null || endDate != null) {
+      uri = uri.replace(queryParameters: {
+        if (startDate != null) 'startDate': startDate.toString(),
+        if (endDate != null) 'endDate': endDate.toString(),
+      });
     }
     final response = await get(uri);
     if (response.statusCode != 200) {

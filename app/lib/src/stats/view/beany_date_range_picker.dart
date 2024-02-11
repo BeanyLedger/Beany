@@ -1,9 +1,8 @@
-import 'package:beany_backend/beany_backend.dart' as bb;
 import 'package:flutter/material.dart';
 import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
 
 class BeanyDateRangePicker extends StatelessWidget {
-  final bb.DateRange dateRange;
+  final DateRange dateRange;
   final void Function(DateRange?) onDateRangeChanged;
 
   const BeanyDateRangePicker({
@@ -12,25 +11,12 @@ class BeanyDateRangePicker extends StatelessWidget {
     super.key,
   });
 
-  DateRange? _range() {
-    var start = dateRange.startDate;
-    var end = dateRange.endDate;
-
-    if (start == null || end == null) {
-      return null;
-    }
-    return DateRange(
-      DateTime(start.year, start.month, start.day),
-      DateTime(end.year, end.month, end.day),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var now = DateTime.now();
     return DateRangePickerWidget(
       doubleMonth: false,
-      initialDateRange: _range(),
+      initialDateRange: dateRange,
       maxDate: now,
       onDateRangeChanged: onDateRangeChanged,
       quickDateRanges: [

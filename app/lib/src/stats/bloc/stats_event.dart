@@ -1,7 +1,6 @@
 import 'package:beany_core/core/account.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:equatable/equatable.dart';
-
-import 'package:beany_backend/beany_backend.dart' as bb;
 
 sealed class StatsScreenEvent extends Equatable {
   @override
@@ -10,7 +9,8 @@ sealed class StatsScreenEvent extends Equatable {
 
 final class StatsScreenStarted extends StatsScreenEvent {
   final Account account;
-  final bb.DateRange dateRange;
+  final Date startDate;
+  final Date endDate;
 
-  StatsScreenStarted(this.account, this.dateRange);
+  StatsScreenStarted(this.account, this.startDate, this.endDate);
 }

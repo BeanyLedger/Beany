@@ -25,9 +25,10 @@ class StatsScreenBloc extends Bloc<StatsScreenEvent, StatsScreenState> {
     try {
       final node = await client.balance(
         event.account,
-        dateRange: event.dateRange,
+        startDate: event.startDate,
+        endDate: event.endDate,
       );
-      emit(StatsScreenLoaded(node, event.dateRange));
+      emit(StatsScreenLoaded(node, event.startDate, event.endDate));
     } catch (e) {
       emit(StatsScreenError(e.toString()));
     }

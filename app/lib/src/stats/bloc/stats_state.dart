@@ -1,7 +1,6 @@
 import 'package:beany_core/engine/account_balance_node.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:equatable/equatable.dart';
-
-import 'package:beany_backend/beany_backend.dart' as bb;
 
 sealed class StatsScreenState extends Equatable {
   const StatsScreenState();
@@ -19,12 +18,14 @@ final class StatsScreenLoading extends StatsScreenState {
 
 final class StatsScreenLoaded extends StatsScreenState {
   final AccountBalanceNode accountBalanceNode;
-  final bb.DateRange dateRange;
+  final Date startDate;
+  final Date endDate;
 
-  const StatsScreenLoaded(this.accountBalanceNode, this.dateRange);
+  const StatsScreenLoaded(
+      this.accountBalanceNode, this.startDate, this.endDate);
 
   @override
-  List<Object> get props => [accountBalanceNode, dateRange];
+  List<Object> get props => [accountBalanceNode, startDate, endDate];
 }
 
 final class StatsScreenError extends StatsScreenState {

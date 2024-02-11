@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
-import 'package:beany_backend/beany_backend.dart' as bb;
 
 import 'package:fl_chart/fl_chart.dart';
 
@@ -53,10 +52,8 @@ class _StatsViewState extends State<StatsView> {
         Account(_startingAccount),
         // FIXME: This month might not exist and we might therefore get an error
         //        Shouldn't we only be allowing date ranges that are valid?
-        bb.DateRange(
-          startDate: Date(now.year, now.month - 1),
-          endDate: Date.today(),
-        ),
+        Date(now.year, now.month - 1),
+        Date.today(),
       ),
     );
     super.initState();
@@ -98,7 +95,8 @@ class _StatsScreenLoadedView extends StatefulWidget {
 class _StatsScreenLoadedViewState extends State<_StatsScreenLoadedView> {
   @override
   Widget build(BuildContext context) {
-    var dateRange = widget.state.dateRange;
+    var startDate = widget.state.startDate;
+    var endDate = widget.state.endDate;
     var account = widget.state.accountBalanceNode.account;
 
     return SingleChildScrollView(
@@ -109,7 +107,7 @@ class _StatsScreenLoadedViewState extends State<_StatsScreenLoadedView> {
           children: [
             const SizedBox(height: 24),
             Text(
-              "Date Range: ${dateRange.startDate?.toIso8601String()} - ${dateRange.endDate?.toIso8601String()}",
+              "Date Range: ${startDate.toIso8601String()} - ${endDate.toIso8601String()}",
             ),
             const SizedBox(height: 8),
             AccountsBar(
@@ -124,7 +122,7 @@ class _StatsScreenLoadedViewState extends State<_StatsScreenLoadedView> {
                     context: context,
                     builder: (context, onDateRangeChanged) {
                       return BeanyDateRangePicker(
-                        dateRange: widget.state.dateRange,
+                        dateRange: DateRange(startDate, endDate),
                         onDateRangeChanged: onDateRangeChanged,
                       );
                     });
@@ -147,19 +145,22 @@ class _StatsScreenLoadedViewState extends State<_StatsScreenLoadedView> {
 
   void _onAccountChanged(BuildContext context, Account account) {
     var bloc = BlocProvider.of<StatsScreenBloc>(context);
-    bloc.add(StatsScreenStarted(account, widget.state.dateRange));
+    bloc.add(StatsScreenStarted(
+      account,
+      widget.state.startDate,
+      widget.state.endDate,
+    ));
   }
 
   void _onDateRangeChanged(BuildContext context, DateRange? newDateRange) {
     if (newDateRange == null) return;
 
-    var dateRange = bb.DateRange(
-      startDate: Date.truncate(newDateRange.start),
-      endDate: Date.truncate(newDateRange.end),
-    );
     var bloc = BlocProvider.of<StatsScreenBloc>(context);
-    bloc.add(
-        StatsScreenStarted(widget.state.accountBalanceNode.account, dateRange));
+    bloc.add(StatsScreenStarted(
+      widget.state.accountBalanceNode.account,
+      Date.truncate(newDateRange.start),
+      Date.truncate(newDateRange.end),
+    ));
   }
 }
 

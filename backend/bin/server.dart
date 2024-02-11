@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:beany_backend/beany_backend.dart';
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/engine/account_inventory_map.dart';
 import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/ledger.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -58,10 +58,14 @@ Response _balanceHandler(Request req) {
   }
   var lastDate = ledger.metaData.latestDate;
 
-  var filterOptions = DateRange.fromJson(req.url.queryParameters);
+  var queryParameters = req.url.queryParameters;
 
-  var startDate = filterOptions.startDate;
-  var endDate = filterOptions.endDate;
+  var startDateStr = queryParameters['startDate'];
+  var startDate =
+      startDateStr != null ? Date.fromIso8601String(startDateStr) : null;
+
+  var endDateStr = queryParameters['endDate'];
+  var endDate = endDateStr != null ? Date.fromIso8601String(endDateStr) : null;
 
   late final AccountInventoryMap balances;
   if (startDate == null && endDate == null) {
