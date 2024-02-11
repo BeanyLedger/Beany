@@ -1,29 +1,49 @@
 import 'package:beany/src/bottom_bar.dart';
-import 'package:beany_backend/beany_backend.dart' as bb;
+import 'package:beany/src/stats/bloc/stats_bloc.dart';
+import 'package:beany/src/stats/bloc/stats_event.dart';
+import 'package:beany/src/stats/bloc/stats_state.dart';
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
+import 'package:beany_backend/beany_backend.dart' as bb;
 
 import 'package:fl_chart/fl_chart.dart';
 
-class StatsScreen extends StatefulWidget {
+class StatsScreen extends StatelessWidget {
   const StatsScreen({super.key});
 
   static const routeName = '/stats';
 
   @override
-  State<StatsScreen> createState() => _StatsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => StatsScreenBloc(),
+      child: Builder(builder: (context) {
+        var bloc = BlocProvider.of<StatsScreenBloc>(context);
+        return StatsView(bloc);
+      }),
+    );
+  }
+}
+
+class StatsView extends StatefulWidget {
+  final StatsScreenBloc bloc;
+
+  const StatsView(this.bloc, {super.key});
+
+  @override
+  State<StatsView> createState() => _StatsViewState();
 }
 
 const _startingAccount = "Expenses";
 
-class _StatsScreenState extends State<StatsScreen> {
-  DateRange? dateRange;
+class _StatsViewState extends State<StatsView> {
+  late DateRange dateRange;
 
-  AccountBalanceNode? rootNode;
   Account account = Account(_startingAccount);
 
   @override
@@ -34,20 +54,16 @@ class _StatsScreenState extends State<StatsScreen> {
       DateTime.now(),
     );
 
-    super.initState();
-    _refresh();
-  }
-
-  Future<void> _refresh() async {
-    var client = bb.BeanyHttpClient('http://127.0.0.1:8080');
-    rootNode = await client.balance(
-      Account(_startingAccount),
-      dateRange: bb.DateRange(
-        startDate: Date.truncate(dateRange!.start),
-        endDate: Date.truncate(dateRange!.end),
+    widget.bloc.add(
+      StatsScreenStarted(
+        account,
+        bb.DateRange(
+          startDate: Date.truncate(dateRange.start),
+          endDate: Date.truncate(dateRange.end),
+        ),
       ),
     );
-    setState(() {});
+    super.initState();
   }
 
   @override
@@ -65,14 +81,26 @@ class _StatsScreenState extends State<StatsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 24),
-              if (dateRange != null)
-                Text(
-                  "Date Range: ${dateRange!.start.toIso8601String().substring(0, 10)} - ${dateRange!.end.toIso8601String().substring(0, 10)}",
-                ),
+              // FIXME: I think maybe we should be getting exactly the range we need, as a Date
+              //        This business of truncating the DateTime should not be in the presentation layer
+              Text(
+                "Date Range: ${dateRange.start.toIso8601String().substring(0, 10)} - ${dateRange.end.toIso8601String().substring(0, 10)}",
+              ),
               const SizedBox(height: 8),
-              AccountsBar(
-                account: account,
-                onAccountChanged: _onAccountChanged,
+              BlocBuilder<StatsScreenBloc, StatsScreenState>(
+                builder: (context, state) {
+                  switch (state) {
+                    case StatsScreenLoading():
+                      return const CircularProgressIndicator();
+                    case StatsScreenLoaded():
+                      return AccountsBar(
+                        account: account,
+                        onAccountChanged: _onAccountChanged,
+                      );
+                    case StatsScreenError():
+                      return Text("Error: ${state.message}");
+                  }
+                },
               ),
               const SizedBox(height: 8),
               TextButton(
@@ -86,11 +114,21 @@ class _StatsScreenState extends State<StatsScreen> {
                 child: const Text("Configure Date Range"),
               ),
               const SizedBox(height: 24),
-              if (rootNode != null)
-                BalancePieChart(
-                  balance: rootNode!.find(account)!,
-                  onAccountSelected: _onAccountChanged,
-                ),
+              BlocBuilder<StatsScreenBloc, StatsScreenState>(
+                builder: (context, state) {
+                  switch (state) {
+                    case StatsScreenLoading():
+                      return const CircularProgressIndicator();
+                    case StatsScreenLoaded():
+                      return BalancePieChart(
+                        balance: state.accountBalanceNode,
+                        onAccountSelected: _onAccountChanged,
+                      );
+                    case StatsScreenError():
+                      return Text("Error: ${state.message}");
+                  }
+                },
+              ),
             ],
           ),
         ),
@@ -102,6 +140,17 @@ class _StatsScreenState extends State<StatsScreen> {
     setState(() {
       this.account = account;
     });
+
+    var bloc = BlocProvider.of<StatsScreenBloc>(context);
+    bloc.add(
+      StatsScreenStarted(
+        account,
+        bb.DateRange(
+          startDate: Date.truncate(dateRange.start),
+          endDate: Date.truncate(dateRange.end),
+        ),
+      ),
+    );
   }
 
   void _onDateRangeChanged(DateRange? newDateRange) {
@@ -109,7 +158,17 @@ class _StatsScreenState extends State<StatsScreen> {
     dateRange = newDateRange;
     setState(() {});
 
-    _refresh();
+    // _refresh();
+    var bloc = BlocProvider.of<StatsScreenBloc>(context);
+    bloc.add(
+      StatsScreenStarted(
+        account,
+        bb.DateRange(
+          startDate: Date.truncate(dateRange.start),
+          endDate: Date.truncate(dateRange.end),
+        ),
+      ),
+    );
   }
 
   Widget datePickerBuilder(
