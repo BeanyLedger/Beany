@@ -84,15 +84,20 @@ class _StatsViewState extends State<StatsView> {
   }
 }
 
-class _StatsScreenLoadedView extends StatelessWidget {
+class _StatsScreenLoadedView extends StatefulWidget {
   final StatsScreenLoaded state;
 
   const _StatsScreenLoadedView(this.state);
 
   @override
+  State<_StatsScreenLoadedView> createState() => _StatsScreenLoadedViewState();
+}
+
+class _StatsScreenLoadedViewState extends State<_StatsScreenLoadedView> {
+  @override
   Widget build(BuildContext context) {
-    var dateRange = state.dateRange;
-    var account = state.accountBalanceNode.account;
+    var dateRange = widget.state.dateRange;
+    var account = widget.state.accountBalanceNode.account;
 
     return SingleChildScrollView(
       child: Center(
@@ -117,17 +122,18 @@ class _StatsScreenLoadedView extends StatelessWidget {
                     context: context,
                     builder: (context, onDateRangeChanged) {
                       return BeanyDateRangePicker(
-                        dateRange: state.dateRange,
+                        dateRange: widget.state.dateRange,
                         onDateRangeChanged: onDateRangeChanged,
                       );
                     });
+                if (!mounted) return;
                 _onDateRangeChanged(context, dateRange);
               },
               child: const Text("Configure Date Range"),
             ),
             const SizedBox(height: 24),
             BalancePieChart(
-              balance: state.accountBalanceNode,
+              balance: widget.state.accountBalanceNode,
               onAccountSelected: (account) =>
                   _onAccountChanged(context, account),
             ),
@@ -139,7 +145,7 @@ class _StatsScreenLoadedView extends StatelessWidget {
 
   void _onAccountChanged(BuildContext context, Account account) {
     var bloc = BlocProvider.of<StatsScreenBloc>(context);
-    bloc.add(StatsScreenStarted(account, state.dateRange));
+    bloc.add(StatsScreenStarted(account, widget.state.dateRange));
   }
 
   void _onDateRangeChanged(BuildContext context, DateRange? newDateRange) {
@@ -150,7 +156,8 @@ class _StatsScreenLoadedView extends StatelessWidget {
       endDate: Date.truncate(newDateRange.end),
     );
     var bloc = BlocProvider.of<StatsScreenBloc>(context);
-    bloc.add(StatsScreenStarted(state.accountBalanceNode.account, dateRange));
+    bloc.add(
+        StatsScreenStarted(widget.state.accountBalanceNode.account, dateRange));
   }
 }
 
