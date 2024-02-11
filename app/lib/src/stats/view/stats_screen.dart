@@ -2,6 +2,8 @@ import 'package:beany/src/bottom_bar.dart';
 import 'package:beany/src/stats/bloc/stats_bloc.dart';
 import 'package:beany/src/stats/bloc/stats_event.dart';
 import 'package:beany/src/stats/bloc/stats_state.dart';
+import 'package:beany/src/stats/view/accounts_bar.dart';
+import 'package:beany/src/stats/view/beany_date_range_picker.dart';
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:beany_core/misc/date.dart';
@@ -161,77 +163,15 @@ class _StatsScreenLoadedViewState extends State<_StatsScreenLoadedView> {
   }
 }
 
-class BeanyDateRangePicker extends StatelessWidget {
-  final bb.DateRange dateRange;
-  final void Function(DateRange?) onDateRangeChanged;
-
-  const BeanyDateRangePicker({
-    required this.dateRange,
-    required this.onDateRangeChanged,
-    super.key,
-  });
-
-  DateRange? _range() {
-    var start = dateRange.startDate;
-    var end = dateRange.endDate;
-
-    if (start == null || end == null) {
-      return null;
-    }
-    return DateRange(
-      DateTime(start.year, start.month, start.day),
-      DateTime(end.year, end.month, end.day),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var now = DateTime.now();
-    return DateRangePickerWidget(
-      doubleMonth: false,
-      initialDateRange: _range(),
-      maxDate: now,
-      onDateRangeChanged: onDateRangeChanged,
-      quickDateRanges: [
-        QuickDateRange(
-          label: "This Month",
-          dateRange: DateRange(
-            DateTime(now.year, now.month),
-            DateTime.now(),
-          ),
-        ),
-        QuickDateRange(
-          label: "Last Month",
-          dateRange: DateRange(
-            DateTime(now.year, now.month - 1),
-            DateTime(now.year, now.month, 0),
-          ),
-        ),
-        QuickDateRange(
-          label: "Last 3 Months",
-          dateRange: DateRange(
-            DateTime(now.year, now.month - 3),
-            DateTime.now(),
-          ),
-        ),
-        QuickDateRange(
-          label: "This Year",
-          dateRange: DateRange(
-            DateTime(now.year),
-            DateTime.now(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class BalancePieChart extends StatefulWidget {
   final AccountBalanceNode balance;
   final void Function(Account) onAccountSelected;
 
-  const BalancePieChart(
-      {super.key, required this.balance, required this.onAccountSelected});
+  const BalancePieChart({
+    super.key,
+    required this.balance,
+    required this.onAccountSelected,
+  });
 
   @override
   State<StatefulWidget> createState() => BalancePieChartState();
@@ -393,39 +333,5 @@ class BalancePieChartState extends State<BalancePieChart> {
     }
 
     return dataList;
-  }
-}
-
-class AccountsBar extends StatelessWidget {
-  final Account account;
-  final void Function(Account) onAccountChanged;
-
-  const AccountsBar({
-    super.key,
-    required this.account,
-    required this.onAccountChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    var parts = account.parts();
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (var i = 0; i < parts.length; i++) ...[
-            TextButton(
-              onPressed: () {
-                var newAccount = Account.fromParts(parts.sublist(0, i + 1));
-                onAccountChanged(newAccount);
-              },
-              child: Text(parts[i]),
-            ),
-            if (i < parts.length - 1) const Text(" > "),
-          ],
-        ],
-      ),
-    );
   }
 }
