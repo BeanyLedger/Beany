@@ -1,6 +1,6 @@
 import 'package:beany/src/assets/assets_screen.dart';
 import 'package:beany/src/cash/cash_screen.dart';
-import 'package:beany/src/stats_screen.dart';
+import 'package:beany/src/stats/view/stats_screen.dart';
 import 'package:beany/src/home/home_screen.dart';
 import 'package:beany/src/ledger/ledger_screen.dart';
 import 'package:flutter/material.dart';
