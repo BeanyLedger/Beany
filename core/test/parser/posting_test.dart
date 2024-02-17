@@ -3,6 +3,7 @@ import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/cost_spec.dart';
 import 'package:beany_core/core/price_spec.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:beany_core/render/render.dart';
 import 'package:test/test.dart';
 
@@ -100,6 +101,46 @@ void main() {
       Account('Assets:A'),
       AMT("10 IE00BYX5NX33"),
       costSpec: CostSpec(amountPer: AMT("2.02 USD")),
+    );
+    expect(p, expected);
+    expect(renderPosting(p).trim(), input);
+  });
+
+  test("Posting with Cost and Date", () {
+    var input = "Assets:A  10.00 SOME {2.02 USD, 2015-04-01}";
+    var p = parse(input).postingSpec().val();
+    var expected = PostingSpec(
+      Account('Assets:A'),
+      AMT("10 SOME"),
+      costSpec: CostSpec(amountPer: AMT("2.02 USD"), date: Date(2015, 04, 01)),
+    );
+    expect(p, expected);
+    expect(renderPosting(p).trim(), input);
+  });
+
+  test("Posting with Cost and Label", () {
+    var input = 'Assets:A  10.00 SOME {2.02 USD, "first-lot"}';
+    var p = parse(input).postingSpec().val();
+    var expected = PostingSpec(
+      Account('Assets:A'),
+      AMT("10 SOME"),
+      costSpec: CostSpec(amountPer: AMT("2.02 USD"), label: "first-lot"),
+    );
+    expect(p, expected);
+    expect(renderPosting(p).trim(), input);
+  });
+
+  test("Posting with Cost and Date and Label", () {
+    var input = 'Assets:A  10.00 SOME {2.02 USD, 2015-04-01, "first-lot"}';
+    var p = parse(input).postingSpec().val();
+    var expected = PostingSpec(
+      Account('Assets:A'),
+      AMT("10 SOME"),
+      costSpec: CostSpec(
+        amountPer: AMT("2.02 USD"),
+        date: Date(2015, 04, 01),
+        label: "first-lot",
+      ),
     );
     expect(p, expected);
     expect(renderPosting(p).trim(), input);

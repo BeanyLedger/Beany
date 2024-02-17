@@ -84,8 +84,20 @@ priceSpecTotal: '@@' amountSpec;
 amountSpec: number? currency?;
 
 costSpec: costSpecPer | costSpecTotal;
-costSpecPer: '{' amount '}';
-costSpecTotal: '{{' amount '}}';
+costSpecPer: '{' costSpecExpr '}';
+costSpecTotal: '{{' costSpecExpr '}}';
+
+costSpecExpr:
+	costSpecExprAmountOnly
+	| costSpecExprAmountAndDate
+	| costSpecExprAmountAndLabel
+	| costSpecExprAmountDateAndLabel;
+
+costSpecExprAmountOnly: amount;
+costSpecExprAmountAndDate: amount ',' date;
+costSpecExprAmountAndLabel: amount ',' quoted_string;
+costSpecExprAmountDateAndLabel:
+	amount ',' date ',' quoted_string;
 
 date: DATE;
 quoted_string: Q_STR;

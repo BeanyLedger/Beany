@@ -310,13 +310,55 @@ extension CostSpecParsing on CostSpecContext {
 
 extension CostSpecPerParsing on CostSpecPerContext {
   CostSpec val() {
-    return CostSpec(amountPer: amount()!.val());
+    var (amount, date, label) = costSpecExpr()!.val();
+    return CostSpec(amountPer: amount, date: date, label: label);
   }
 }
 
 extension CostSpecTotalParsing on CostSpecTotalContext {
   CostSpec val() {
-    return CostSpec(amountTotal: amount()!.val());
+    var (amount, date, label) = costSpecExpr()!.val();
+    return CostSpec(amountTotal: amount, date: date, label: label);
+  }
+}
+
+extension CostSpecExprParsing on CostSpecExprContext {
+  (Amount, Date?, String?) val() {
+    if (costSpecExprAmountOnly() != null)
+      return costSpecExprAmountOnly()!.val();
+    if (costSpecExprAmountAndDate() != null)
+      return costSpecExprAmountAndDate()!.val();
+    if (costSpecExprAmountAndLabel() != null)
+      return costSpecExprAmountAndLabel()!.val();
+    if (costSpecExprAmountDateAndLabel() != null)
+      return costSpecExprAmountDateAndLabel()!.val();
+
+    throw ParsingException("Unknown cost spec expr", _buildParsingInfo(this));
+  }
+}
+
+extension CostSpecExprAmountOnlyParing on CostSpecExprAmountOnlyContext {
+  (Amount, Date?, String?) val() {
+    return (amount()!.val(), null, null);
+  }
+}
+
+extension CostSpecExprAmountDateParsing on CostSpecExprAmountAndDateContext {
+  (Amount, Date?, String?) val() {
+    return (amount()!.val(), date()!.val(), null);
+  }
+}
+
+extension CostSpecExprAmountLabelParsing on CostSpecExprAmountAndLabelContext {
+  (Amount, Date?, String?) val() {
+    return (amount()!.val(), null, quoted_string()!.val());
+  }
+}
+
+extension CostSpecExprAmountDateLabelParsing
+    on CostSpecExprAmountDateAndLabelContext {
+  (Amount, Date?, String?) val() {
+    return (amount()!.val(), date()!.val(), quoted_string()!.val());
   }
 }
 

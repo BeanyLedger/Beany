@@ -20,9 +20,6 @@ class CostSpec extends Equatable {
     this.date,
     this.label,
   }) {
-    if (date != null && label != null) {
-      throw ArgumentError('CostSpec: Both date and label cannot be specified');
-    }
     if (amountPer != null && amountTotal != null) {
       throw ArgumentError('amountPer and amountTotal cannot both be defined');
     }
