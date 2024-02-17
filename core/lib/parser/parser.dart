@@ -323,42 +323,41 @@ extension CostSpecTotalParsing on CostSpecTotalContext {
 }
 
 extension CostSpecExprParsing on CostSpecExprContext {
-  (Amount, Date?, String?) val() {
-    if (costSpecExprAmountOnly() != null)
-      return costSpecExprAmountOnly()!.val();
-    if (costSpecExprAmountAndDate() != null)
-      return costSpecExprAmountAndDate()!.val();
-    if (costSpecExprAmountAndLabel() != null)
-      return costSpecExprAmountAndLabel()!.val();
-    if (costSpecExprAmountDateAndLabel() != null)
-      return costSpecExprAmountDateAndLabel()!.val();
+  (Amount?, Date?, String?) val() {
+    Amount? amount;
+    Date? date;
+    String? label;
 
-    throw ParsingException("Unknown cost spec expr", _buildParsingInfo(this));
-  }
-}
+    for (var part in costSpecExprParts()) {
+      if (part.amount() != null) {
+        if (amount != null) {
+          throw ParsingException(
+              "Multiple amounts in cost spec", _buildParsingInfo(this));
+        }
+        amount = part.amount()!.val();
+        continue;
+      }
 
-extension CostSpecExprAmountOnlyParing on CostSpecExprAmountOnlyContext {
-  (Amount, Date?, String?) val() {
-    return (amount()!.val(), null, null);
-  }
-}
+      if (part.date() != null) {
+        if (date != null) {
+          throw ParsingException(
+              "Multiple dates in cost spec", _buildParsingInfo(this));
+        }
+        date = part.date()!.val();
+        continue;
+      }
 
-extension CostSpecExprAmountDateParsing on CostSpecExprAmountAndDateContext {
-  (Amount, Date?, String?) val() {
-    return (amount()!.val(), date()!.val(), null);
-  }
-}
+      if (part.quoted_string() != null) {
+        if (label != null) {
+          throw ParsingException(
+              "Multiple labels in cost spec", _buildParsingInfo(this));
+        }
+        label = part.quoted_string()!.val();
+        continue;
+      }
+    }
 
-extension CostSpecExprAmountLabelParsing on CostSpecExprAmountAndLabelContext {
-  (Amount, Date?, String?) val() {
-    return (amount()!.val(), null, quoted_string()!.val());
-  }
-}
-
-extension CostSpecExprAmountDateLabelParsing
-    on CostSpecExprAmountDateAndLabelContext {
-  (Amount, Date?, String?) val() {
-    return (amount()!.val(), date()!.val(), quoted_string()!.val());
+    return (amount, date, label);
   }
 }
 

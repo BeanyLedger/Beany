@@ -87,17 +87,8 @@ costSpec: costSpecPer | costSpecTotal;
 costSpecPer: '{' costSpecExpr '}';
 costSpecTotal: '{{' costSpecExpr '}}';
 
-costSpecExpr:
-	costSpecExprAmountOnly
-	| costSpecExprAmountAndDate
-	| costSpecExprAmountAndLabel
-	| costSpecExprAmountDateAndLabel;
-
-costSpecExprAmountOnly: amount;
-costSpecExprAmountAndDate: amount ',' date;
-costSpecExprAmountAndLabel: amount ',' quoted_string;
-costSpecExprAmountDateAndLabel:
-	amount ',' date ',' quoted_string;
+costSpecExpr: costSpecExprPart (',' costSpecExprPart)*;
+costSpecExprPart: amount | date | quoted_string;
 
 date: DATE;
 quoted_string: Q_STR;
