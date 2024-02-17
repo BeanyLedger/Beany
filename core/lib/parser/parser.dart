@@ -91,7 +91,7 @@ extension NumberParsing on NumberContext {
 
 extension AmountParsing on AmountContext {
   Amount val() {
-    var c = currency()!.text;
+    var c = currency()!.val();
     return Amount(number()!.val(), c);
   }
 }
@@ -107,7 +107,7 @@ extension AcountParsing on AccountContext {
 extension PriceStatementParsing on PriceStatementContext {
   PriceStatement val() => PriceStatement(
         date()!.val(),
-        currency()!.text,
+        currency()!.val(),
         amount()!.val(),
         parsingInfo: _buildParsingInfo(this),
       );
@@ -166,7 +166,9 @@ extension BalanceParsing on BalanceStatementContext {
 }
 
 extension CurrencyParsing on CurrencyContext {
-  String val() => CURRENCY()!.text!;
+  String val() {
+    return CURRENCY()!.text!;
+  }
 }
 
 extension CommodityParsing on CommodityStatementContext {

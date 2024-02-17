@@ -94,11 +94,11 @@ void main() {
   });
 
   test("Posting with Cost", () {
-    var input = "Assets:A  10.00 SOME {2.02 USD}";
+    var input = "Assets:A  10.00 IE00BYX5NX33 {2.02 USD}";
     var p = parse(input).postingSpec().val();
     var expected = PostingSpec(
       Account('Assets:A'),
-      AMT("10 SOME"),
+      AMT("10 IE00BYX5NX33"),
       costSpec: CostSpec(amountPer: AMT("2.02 USD")),
     );
     expect(p, expected);

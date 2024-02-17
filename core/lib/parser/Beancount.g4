@@ -123,7 +123,7 @@ METAKEY_WITH_COLON: METAKEY ':';
 COMMENT: ';' ~('\n')*;
 TAG: [#]WORD;
 
-CURRENCY: [A-Z][A-Z'.\\-_]+ [A-Z0-9]; // max 24
+CURRENCY: [A-Z][A-Z0-9'.\\-_]+ [A-Z0-9]; // max 24
 
 fragment WORD: [\p{Alnum}\-_]+;
 ACCOUNT: WORD (':' WORD)+;
