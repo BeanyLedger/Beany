@@ -21,7 +21,11 @@ abstract class BeanyClient {
 
   Future<LedgerMetaData> metaData();
   Future<List<Transaction>> transactions();
-  Future<AccountBalanceNode> balance(Account account, {DateRange? dateRange});
+  Future<AccountBalanceNode> balance(
+    Account account, {
+    Date? startDate,
+    Date? endDate,
+  });
 }
 
 class BeanyHttpClient implements BeanyClient {
