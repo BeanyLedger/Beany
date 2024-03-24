@@ -170,6 +170,14 @@ class WiseImporter {
     headers['x-2fa-approval'] = twoFAHeader;
 
     response = await client.get(url, headers: headers);
+    twoFAStatus = response.headers['x-2fa-approval-result'];
+    if (twoFAStatus != 'APPROVED') {
+      throw Exception("Failed 2fa for fetching transactions");
+    }
+    if (response.statusCode != 200) {
+      throw Exception(
+          "Failed to fetch transactions. HTTP Status: ${response.statusCode}");
+    }
 
     var body = response.body;
 
