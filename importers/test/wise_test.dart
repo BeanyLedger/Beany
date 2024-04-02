@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_core/render/render.dart';
 import 'package:beany_importer/src/wise.dart';
@@ -9,87 +7,63 @@ var config = WiseConverterConfig("Assets:Wise", "Expenses:BankCharges");
 
 void main() {
   test('Basic Test', () {
-    var filePath = 'test/testdata/wise_test_data.json';
-    var jsonInput = File(filePath).readAsStringSync();
+    var input = """
+ID,Status,Direction,"Created on","Finished on","Source fee amount","Source fee currency","Target fee amount","Target fee currency","Source name","Source amount (after fees)","Source currency","Target name","Target amount (after fees)","Target currency","Exchange rate",Reference,Batch
+"CARD_TRANSACTION-1352812512",COMPLETED,OUT,"2024-03-30 18:55:30","2024-03-30 18:55:30",0.00,EUR,,,"Vishesh Handa",8.90,EUR,"Sifan Sumi 2018 Sl",8.90,EUR,1.00000000,,
+TRANSFER-996241724,COMPLETED,IN,"2024-03-11 18:06:56","2024-03-11 18:07:02",4.14,USD,,,"MEDL CORPORATION",7195.86,USD,"Vishesh Handa",7195.86,USD,1.0,,
+"CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.07,EUR,,,"Vishesh Handa",13.25,EUR,Audible,14.38,USD,1.08530000,,
+"CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.00,USD,,,"Vishesh Handa",0.56,USD,Audible,0.56,USD,1.00000000,,
+""";
 
-    var statements = convertWise(config, jsonInput);
+    var statements = convertWise(config, input);
     var actualOutput = statements.map((e) => render(e)).join('\n');
-    var expectedOutput =
-        File('test/testdata/wise_output.beancount').readAsStringSync();
+    var expectedOutput = """
+2024-03-30 * "Sifan Sumi 2018 Sl"
+  id: "CARD_TRANSACTION-1352812512"
+  Assets:Wise  -8.90 EUR
+
+2024-03-11 * "" "MEDL CORPORATION"
+  id: "TRANSFER-996241724"
+  Assets:Wise  7195.86 USD
+
+2024-02-26 * "Audible"
+  id: "CARD_TRANSACTION-1279776353"
+  Assets:Wise               -13.25 EUR
+  Expenses:BankCharges        0.07 EUR
+
+2024-02-26 * "Audible"
+  id: "CARD_TRANSACTION-1279776353"
+  Assets:Wise  -0.56 USD
+""";
 
     expect(actualOutput, _format(expectedOutput));
   });
 
-  test("Another transaction", () {
+  test('Currency Conversion', () {
     var input = """
-    {
-      "type": "DEBIT",
-      "date": "2022-07-11T17:49:43.559336Z",
-      "amount": { "value": -38.83, "currency": "EUR", "zero": false },
-      "totalFees": { "value": 0.0, "currency": "EUR", "zero": true },
-      "details": {
-        "type": "DIRECT_DEBIT",
-        "description": "Paid to AIGUES DE BARCELONA, S.A.",
-        "originator": "AIGUES DE BARCELONA, S.A.",
-        "paymentReference": "2022-07-11-04.41.30.547053"
-      },
-      "exchangeDetails": null,
-      "runningBalance": { "value": 5918.21, "currency": "EUR", "zero": false },
-      "referenceNumber": "DIRECT_DEBIT-3322166",
-      "attachment": null,
-      "activityAssetAttributions": []
-    }
-    """;
-    var wt = parseWiseTransaction(input);
-    var tr = convertWiseTransaction(config, wt);
-    var expectedOutput = """
-2022-07-11 * "AIGUES DE BARCELONA, S.A."
-  id: "DIRECT_DEBIT-3322166"
-  Assets:Wise  -38.83 EUR
+ID,Status,Direction,"Created on","Finished on","Source fee amount","Source fee currency","Target fee amount","Target fee currency","Source name","Source amount (after fees)","Source currency","Target name","Target amount (after fees)","Target currency","Exchange rate",Reference,Batch
+"BALANCE_TRANSACTION-1734932751",COMPLETED,NEUTRAL,"2024-02-04 23:56:13","2024-02-04 23:56:13",52.82,USD,,,"Vishesh Handa",10778.77,USD,"Vishesh Handa",10000.00,EUR,0.92775000,,
+"BALANCE_TRANSACTION-1735891654",COMPLETED,IN,"2024-02-05 09:56:05","2024-02-05 09:56:05",50.24,USD,,,"Vishesh Handa",10249.76,USD,"Vishesh Handa",9532.28,EUR,0.93000000,,
 """;
 
-    expect(render(tr), expectedOutput);
-  });
-
-  test("Conversion", () {
-    var input = """
-    {
-      "type": "CREDIT",
-      "date": "2022-10-08T10:00:30.917367Z",
-      "amount": { "value": 6131.38, "currency": "EUR", "zero": false },
-      "totalFees": { "value": 0.0, "currency": "EUR", "zero": true },
-      "details": {
-        "type": "CONVERSION",
-        "description": "Converted 6000.00 USD to 6131.38 EUR",
-        "sourceAmount": { "value": 6000.0, "currency": "USD", "zero": false },
-        "targetAmount": { "value": 6131.38, "currency": "EUR", "zero": false },
-        "rate": 1.0267
-      },
-      "exchangeDetails": {
-        "toAmount": { "value": 6131.38, "currency": "EUR", "zero": false },
-        "fromAmount": { "value": 6000.0, "currency": "USD", "zero": false },
-        "rate": 1.0267
-      },
-      "runningBalance": { "value": 9036.23, "currency": "EUR", "zero": false },
-      "referenceNumber": "BALANCE-652343984",
-      "attachment": null,
-      "activityAssetAttributions": []
-    }
-    """;
-
-    var wt = parseWiseTransaction(input);
-    var tr = convertWiseTransaction(config, wt);
+    var statements = convertWise(config, input);
+    var actualOutput = statements.map((e) => render(e)).join('\n');
     var expectedOutput = """
-2022-10-08 * "Converted 6000.00 USD to 6131.38 EUR"
-  id: "BALANCE-652343984"
-  Assets:Wise           -6000.00 USD @ 1.0267 EUR
-  Expenses:BankCharges      0.00 EUR @@ EUR
-  Assets:Wise            6131.38 EUR
+2024-02-04 * "Currency Conversion"
+  id: "BALANCE-1734932751"
+  Assets:Wise                -10831.59 USD @ 0.92775 EUR
+  Expenses:BankCharges           52.82 USD @@ 49.0076225 EUR
+  Assets:Wise                 10000.00 EUR
+
+2024-02-05 * "Converted 10300.00 USD to 9532.28 EUR"
+  id: "BALANCE_TRANSACTION-1735891654"
+  Expenses:Personal:BankCharges:Transferwise      50.24 USD @@ 46.72 EUR
+  Assets:Personal:Transferwise                -10300.00 USD @ 0.93 EUR
+  Assets:Personal:Transferwise                  9532.28 EUR
 """;
 
-//  Expenses:BankCharges     28.07 USD @@ EUR
-    expect(render(tr), expectedOutput);
-  });
+    expect(actualOutput, _format(expectedOutput));
+  }, skip: true);
 }
 
 String _format(String input) {

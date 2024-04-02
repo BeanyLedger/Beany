@@ -66,7 +66,7 @@ Future<void> process(WiseConfig config) async {
       WiseConverterConfig(config.baseAccount, config.bankChargesAccount);
 
   for (var inputFile in inputFiles(config.dataFolder)) {
-    if (!inputFile.endsWith(".json")) continue;
+    if (!inputFile.endsWith(".csv")) continue;
     var file = File(inputFile);
     var content = await file.readAsString();
 
