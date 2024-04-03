@@ -1,5 +1,4 @@
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/core/core.dart';
 import 'package:beany_core/engine/account_inventory_map.dart';
 import 'package:beany_core/engine/cumulative.dart';
 import 'package:beany_core/engine/inventory.dart';
@@ -10,11 +9,11 @@ typedef A = Account;
 void main() {
   test('Balance', () {
     var map = <Account, Inventory>{
-      A("Expenses:Groceries:Water"): Inventory([AMT('2 EUR')]),
-      A("Expenses:Groceries:Food"): Inventory([AMT('2 EUR')]),
-      A("Expenses:Cake"): Inventory([AMT('5 EUR')]),
-      A("Expenses:DogFood:Rat"): Inventory([AMT('4 EUR'), AMT('2 USD')]),
-      A("Expenses"): Inventory([AMT('1 EUR'), AMT('1 USD')]),
+      A("Expenses:Groceries:Water"): _inv("2 EUR"),
+      A("Expenses:Groceries:Food"): _inv("2 EUR"),
+      A("Expenses:Cake"): _inv("5 EUR"),
+      A("Expenses:DogFood:Rat"): _inv("4 EUR, 2 USD"),
+      A("Expenses"): _inv("1 EUR, 1 USD"),
     };
 
     var balTree = calculateCummulativeBalance(AccountInventoryMap(map));
@@ -23,12 +22,14 @@ void main() {
     var expensesBal = balTree.find(A("Expenses"))!.val;
     expect(expensesBal.account, A("Expenses"));
     expect(
-      expensesBal.ownValue.toMap(),
-      {"EUR": D("1"), "USD": D("1")},
+      expensesBal.ownValue.toDebugString(),
+      "1 EUR, 1 USD",
     );
     expect(
-      expensesBal.cumulative.toMap(),
-      {"EUR": D("13"), "USD": D("2")},
+      expensesBal.cumulative.toDebugString(),
+      "13 EUR, 2 USD",
     );
   });
 }
+
+Inventory _inv(String str) => Inventory.fromDebugString(str);

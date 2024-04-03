@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 
 part 'amount.g.dart';
 
+// I think it woudl be good for this to an actual class!
 typedef Currency = String;
 
 @immutable
@@ -81,6 +82,10 @@ class Amount extends Equatable implements AmountSpec, Comparable<Amount> {
       throw ArgumentError('Cannot subtract amounts with different currencies');
     }
     return Amount(number - other.number, currency);
+  }
+
+  Amount operator -() {
+    return Amount(-number, currency);
   }
 
   @override

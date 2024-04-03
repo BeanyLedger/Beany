@@ -1,4 +1,5 @@
 import 'package:beany_core/core/price_spec.dart';
+import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:equatable/src/equatable_utils.dart';
@@ -191,6 +192,18 @@ class Posting extends Equatable implements PostingSpec {
 
   @override
   Posting resolve({DateTime? costSpecDate}) => this;
+
+  CostBasis? get costBasis {
+    var cs = costSpec;
+    if (cs == null) return null;
+
+    var units = cs.amountPer?.number;
+    if (units == null) {
+      var total = cs.amountTotal!.number;
+      units = (total / amount.number).toDecimal();
+    }
+    return CostBasis(units, cs.currency, Date.truncate(cs.date!));
+  }
 
   Amount weight() {
     var baseAmount = amount.number;

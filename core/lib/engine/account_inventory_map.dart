@@ -1,6 +1,8 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/engine/inventory.dart';
+import 'package:beany_core/engine/position.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
@@ -39,8 +41,9 @@ class AccountInventoryMap extends Equatable {
     return diff;
   }
 
-  AccountInventoryMap add(Account account, Amount amount) {
-    return addInventory(account, Inventory([amount]));
+  AccountInventoryMap add(Account account, Posting posting) {
+    var pos = Position.fromPosting(posting);
+    return addInventory(account, Inventory([pos]));
   }
 
   AccountInventoryMap addInventory(Account account, Inventory ma) {

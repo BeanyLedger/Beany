@@ -1,5 +1,4 @@
 import 'package:beany_core/core/account.dart';
-import 'package:beany_core/core/core.dart';
 import 'package:beany_core/engine/account_inventory_map.dart';
 import 'package:beany_core/engine/inventory.dart';
 import 'package:test/test.dart';
@@ -7,24 +6,26 @@ import 'package:test/test.dart';
 void main() {
   test('diff should return correct difference', () {
     final startInv = {
-      Account('Expenses:A'): Inventory.fromMap({"EUR": D("100.0")}),
-      Account('Expenses:B'): Inventory.fromMap({"EUR": D("200.0")}),
-      Account('Expenses:C'): Inventory.fromMap({"EUR": D("600.0")}),
+      Account('Expenses:A'): _inv("100 EUR"),
+      Account('Expenses:B'): _inv("200 EUR"),
+      Account('Expenses:C'): _inv("600 EUR"),
     };
     final endInv = {
-      Account('Expenses:A'): Inventory.fromMap({"EUR": D("100.0")}),
-      Account('Expenses:B'): Inventory.fromMap({"EUR": D("250.0")}),
-      Account('Expenses:D'): Inventory.fromMap({"EUR": D("300.0")}),
+      Account('Expenses:A'): _inv("100 EUR"),
+      Account('Expenses:B'): _inv("250 EUR"),
+      Account('Expenses:D'): _inv("300 EUR"),
     };
     final start = AccountInventoryMap(startInv);
     final end = AccountInventoryMap(endInv);
 
     final diff = end - start;
     final expected = {
-      Account('Expenses:B'): Inventory.fromMap({"EUR": D("50.0")}),
-      Account('Expenses:C'): Inventory.fromMap({"EUR": D("-600.0")}),
-      Account('Expenses:D'): Inventory.fromMap({"EUR": D("300.0")}),
+      Account('Expenses:B'): _inv("50 EUR"),
+      Account('Expenses:C'): _inv("-600 EUR"),
+      Account('Expenses:D'): _inv("300 EUR"),
     };
     expect(diff, AccountInventoryMap(expected));
   });
 }
+
+Inventory _inv(String str) => Inventory.fromDebugString(str);

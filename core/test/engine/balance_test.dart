@@ -2,7 +2,6 @@ import 'package:beany_core/core/account.dart';
 import 'package:beany_core/engine/ledger.dart';
 import 'package:beany_core/engine/exceptions.dart';
 import 'package:beany_core/misc/date.dart';
-import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -23,15 +22,11 @@ void main() {
     var ab = engine.inventoryAtEndOfDate(Date(2023, 01, 02))!;
     expect(ab, hasLength(2));
 
-    var n26 = ab[Account('Assets:Work:N26')]!.toAmountList();
-    expect(n26, hasLength(1));
-    expect(n26.first.currency, 'EUR');
-    expect(n26.first.number, Decimal.parse('1000.00'));
+    var n26 = ab[Account('Assets:Work:N26')]!;
+    expect(n26.toDebugString(), "1000 EUR");
 
-    var cash = ab[Account('Assets:Cash')]!.toAmountList();
-    expect(cash, hasLength(1));
-    expect(cash.first.currency, 'EUR');
-    expect(cash.first.number, Decimal.parse('-1000.00'));
+    var cash = ab[Account('Assets:Cash')]!;
+    expect(cash.toDebugString(), "-1000 EUR");
   });
 
   test("Account cannot be closed before it is opened", () {

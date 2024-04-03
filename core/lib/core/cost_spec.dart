@@ -1,3 +1,5 @@
+import 'package:beany_core/misc/date.dart';
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -9,6 +11,7 @@ part 'cost_spec.g.dart';
 @immutable
 @JsonSerializable(includeIfNull: false)
 class CostSpec extends Equatable {
+  // This should be an AmountSpec instead
   final Amount? amountPer;
   final Amount? amountTotal;
   final DateTime? date;
@@ -26,6 +29,11 @@ class CostSpec extends Equatable {
     if (amountPer == null && amountTotal == null) {
       throw ArgumentError('amountPer or amountTotal must be defined');
     }
+  }
+
+  Currency get currency {
+    if (amountPer != null) return amountPer!.currency;
+    return amountTotal!.currency;
   }
 
   @override
@@ -53,4 +61,30 @@ class CostSpec extends Equatable {
   factory CostSpec.fromJson(Map<String, dynamic> json) =>
       _$CostSpecFromJson(json);
   Map<String, dynamic> toJson() => _$CostSpecToJson(this);
+}
+
+@immutable
+@JsonSerializable(includeIfNull: false)
+class CostBasis implements Equatable {
+  final Decimal cost;
+  final Currency costCurrency;
+  final Date lotDate;
+  final String? label;
+
+  CostBasis(this.cost, this.costCurrency, this.lotDate, {this.label});
+
+  @override
+  String toString() {
+    return 'CostBasis{cost: $cost, costCurrency: $costCurrency, lotDate: $lotDate, label: $label}';
+  }
+
+  @override
+  List<Object?> get props => [cost, costCurrency, lotDate, label];
+
+  @override
+  bool? get stringify => false;
+
+  factory CostBasis.fromJson(Map<String, dynamic> json) =>
+      _$CostBasisFromJson(json);
+  Map<String, dynamic> toJson() => _$CostBasisToJson(this);
 }

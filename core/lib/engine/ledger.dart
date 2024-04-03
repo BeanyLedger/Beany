@@ -210,8 +210,7 @@ class _LedgerBuilder {
               throw AccountAlreadyClosed(accountInfo, statement);
             }
           }
-          var amount = posting.amount;
-          ab = ab!.add(account, amount);
+          ab = ab!.add(account, posting);
         }
 
         _accountInvByDate[date] = ab!;

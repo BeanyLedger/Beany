@@ -106,6 +106,20 @@ void main() {
     expect(renderPosting(p).trim(), input);
   });
 
+  /*
+  test("Posting with Cost without value but with currency", () {
+    var input = "Assets:A  10.00 SOME {EUR}";
+    var p = parse(input).postingSpec().val();
+    var expected = PostingSpec(
+      Account('Assets:A'),
+      AMT("10 SOME"),
+      costSpec: CostSpec(),
+    );
+    expect(p, expected);
+    expect(renderPosting(p).trim(), input);
+  });
+  */
+
   test("Posting with Cost and Date", () {
     var input = "Assets:A  10.00 SOME {2.02 USD, 2015-04-01}";
     var p = parse(input).postingSpec().val();
