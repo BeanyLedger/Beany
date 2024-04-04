@@ -12,80 +12,78 @@ import 'package:meta/meta.dart';
 void trainImporter(List<dynamic> csvValues, TransactionSpec expectedTr) {}
 
 @immutable
-class TrainedData {
-  final int dateIndex;
-  final DateTransformer dateTransformer;
+class TransactionTransformer {
+  final List<Transformer> dateTransformers;
+  final List<Transformer> narrationTransformers;
+  final List<Transformer> payeeTransformers;
 
-  final int narrationIndex;
-  final StringTransformer narrationTransformer;
+  final List<Transformer> posting0AccountTransformers;
+  final List<Transformer> posting0AmountTransformers;
+  final List<Transformer> posting0CurrencyTransformers;
 
-  final int payeeIndex;
-  final StringTransformer payeeTransformer;
+  TransactionTransformer({
+    required this.dateTransformers,
+    required this.narrationTransformers,
+    this.payeeTransformers = const [],
+    required this.posting0AccountTransformers,
+    required this.posting0AmountTransformers,
+    required this.posting0CurrencyTransformers,
+  }) {
+    //
+    // Validate Inputs
+    //
+    if (dateTransformers.isEmpty) {
+      throw Exception('Empty Date transformers');
+    }
+    if (narrationTransformers.isEmpty) {
+      throw Exception('Empty Narration transformers');
+    }
+    if (posting0AccountTransformers.isEmpty) {
+      throw Exception('Empty Posting0Account transformers');
+    }
+    if (posting0AmountTransformers.isEmpty) {
+      throw Exception('Empty Posting0Amount transformers');
+    }
+    if (posting0CurrencyTransformers.isEmpty) {
+      throw Exception('Empty Posting0Currency transformers');
+    }
 
-  final int meta0Index;
-  final StringTransformer meta0Transformer;
+    //
+    // Validate Outputs
+    //
+    if (dateTransformers.last.outputType != Date) {
+      throw Exception('Invalid date transformer');
+    }
+    if (narrationTransformers.last.outputType != String) {
+      throw Exception('Invalid narration transformer');
+    }
+    if (payeeTransformers.isNotEmpty &&
+        payeeTransformers.last.outputType != String) {
+      throw Exception('Invalid payee transformer');
+    }
+    if (posting0AccountTransformers.last.outputType != Account) {
+      throw Exception('Invalid posting0Account transformer');
+    }
+    if (posting0AmountTransformers.last.outputType != Decimal) {
+      throw Exception('Invalid posting0Amount transformer');
+    }
+    if (posting0CurrencyTransformers.last.outputType != String) {
+      throw Exception('Invalid posting0Currency transformer');
+    }
+  }
 
-  final int meta1Index;
-  final StringTransformer meta1Transformer;
-
-  final int meta2Index;
-  final StringTransformer meta2Transformer;
-
-  final int posting0AccountIndex;
-  final AccountTransformer posting0AccountTransformer;
-
-  final int posting0AmountIndex;
-  final NumberTransformer posting0AmountTransformer;
-
-  final int posting0CurrencyIndex;
-  final StringTransformer posting0CurrencyTransformer;
-
-  // Add cost info
-  // Add potential price info
-  // What about more postings
-
-  TrainedData({
-    required this.dateIndex,
-    required this.dateTransformer,
-    required this.narrationIndex,
-    required this.narrationTransformer,
-    required this.payeeIndex,
-    required this.payeeTransformer,
-    required this.meta0Index,
-    required this.meta0Transformer,
-    required this.meta1Index,
-    required this.meta1Transformer,
-    required this.meta2Index,
-    required this.meta2Transformer,
-    required this.posting0AccountIndex,
-    required this.posting0AccountTransformer,
-    required this.posting0AmountIndex,
-    required this.posting0AmountTransformer,
-    required this.posting0CurrencyIndex,
-    required this.posting0CurrencyTransformer,
-  });
-
-  TransactionSpec apply(List<dynamic> values) {
-    var date = dateTransformer.transform(values[dateIndex]);
-    var narration = narrationTransformer.transform(values[narrationIndex]);
-    var payee = payeeIndex == -1
+  TransactionSpec apply(List<String> values) {
+    var date = applyTransformers(dateTransformers, values);
+    var narration = applyTransformers(narrationTransformers, values);
+    var payee = payeeTransformers.isEmpty
         ? null
-        : payeeTransformer.transform(values[payeeIndex]);
-    // Also handle metadata keys
-    // var meta0 = meta0Index == -1
-    //     ? null
-    //     : meta0Transformer.transform(values[meta0Index]);
-    // var meta1 = meta1Index == -1
-    //     ? null
-    //     : meta1Transformer.transform(values[meta1Index]);
-    // var meta2 = meta2Index == -1
-    //     ? null
-    //     : meta2Transformer.transform(values[meta2Index]);
+        : applyTransformers(payeeTransformers, values);
+
     var posting0Account =
-        posting0AccountTransformer.transform(values[posting0AccountIndex]);
-    var posting0Amount = Decimal.parse(values[posting0AmountIndex]);
+        applyTransformers(posting0AccountTransformers, values);
+    var posting0Amount = applyTransformers(posting0AmountTransformers, values);
     var posting0Currency =
-        posting0CurrencyTransformer.transform(values[posting0CurrencyIndex]);
+        applyTransformers(posting0CurrencyTransformers, values);
 
     return TransactionSpec(
       date,
@@ -99,25 +97,42 @@ class TrainedData {
   }
 }
 
-// Date
-abstract class DateTransformer {
-  Date transform(String input);
-
-  factory DateTransformer.fromJson(Map<String, dynamic> json) {
-    switch (json['type']) {
-      case 'excel':
-        return DateTransformerExcel();
-      case 'format':
-        return DateTransformerFormat.fromJson(json);
-      default:
-        throw Exception('Unknown DateTransformer type');
-    }
+T applyTransformers<T>(List<Transformer> transformers, List<String> values) {
+  dynamic input = values;
+  for (var transformer in transformers) {
+    var output = transformer.transform(input);
+    input = output;
   }
 
-  // Map<String, dynamic> toJson();
+  return input;
 }
 
-class DateTransformerExcel implements DateTransformer {
+// Maybe this can operate on the header instead of the index?
+
+abstract class Transformer<T, R> {
+  R transform(T input);
+
+  Type get inputType => T;
+  Type get outputType => R;
+
+  String get typeId;
+}
+
+class CsvIndexPosTransformer extends Transformer<List<String>, String> {
+  final int index;
+
+  CsvIndexPosTransformer(this.index);
+
+  @override
+  String transform(List<String> input) {
+    return input[index];
+  }
+
+  @override
+  String get typeId => 'CsvIndexPos';
+}
+
+class DateTransformerExcel extends Transformer<String, Date> {
   DateTransformerExcel();
 
   @override
@@ -133,148 +148,77 @@ class DateTransformerExcel implements DateTransformer {
     }
     return Date.truncate(dt);
   }
+
+  @override
+  String get typeId => 'DateTransformerExcel';
 }
 
-class DateTransformerFormat implements DateTransformer {
+class DateTransformerFormat extends Transformer<String, Date> {
   final String format;
 
   DateTransformerFormat(this.format);
 
   @override
   Date transform(String input) {
-    return Date(2024, 3, 30);
+    throw Exception("Not implemented");
   }
-
-  // Auto-generate this?
-  Map<String, dynamic> toJson() {
-    return {
-      'format': format,
-    };
-  }
-
-  factory DateTransformerFormat.fromJson(Map<String, dynamic> json) {
-    return DateTransformerFormat(json['format']);
-  }
-}
-
-// String
-abstract class StringTransformer {
-  String transform(String input);
-
-  factory StringTransformer.fromJson(Map<String, dynamic> json) {
-    switch (json['type']) {
-      case 'none':
-        return StringTransformerNone();
-      // case 'split':
-      // return StringTransformerSplit.fromJson(json);
-      default:
-        throw Exception('Unknown StringTransformer type');
-    }
-  }
-
-  // Map<String, dynamic> toJson();
-}
-
-class StringTransformerNone implements StringTransformer {
-  StringTransformerNone();
 
   @override
-  String transform(String input) {
-    return input;
-  }
-
-  // factory StringTransformerNone.fromJson(Map<String, dynamic> json) =>
-  // _$StringTransformerNoneFromJson(json);
-  // Map<String, dynamic> toJson() => _$StringTransformerNoneToJson(this);
+  String get typeId => 'DateTransformerFormat';
 }
 
-class StringTransformerFixed implements StringTransformer {
+class StringTransformerFixed extends Transformer<void, String> {
   final String fixedValue;
 
   StringTransformerFixed(this.fixedValue);
 
   @override
-  String transform(String input) {
+  String transform(void input) {
     return fixedValue;
   }
+
+  @override
+  String get typeId => 'StringTransformerFixed';
 }
 
-// Account
-abstract class AccountTransformer {
-  Account transform(String input);
-}
-
-class AccountTransformerFixed implements AccountTransformer {
+class AccountTransformerFixed extends Transformer<void, Account> {
   final String fixedValue;
 
   AccountTransformerFixed(this.fixedValue);
 
   @override
-  Account transform(String input) {
+  Account transform(void input) {
     return Account(fixedValue);
   }
+
+  @override
+  String get typeId => 'AccountTransformerFixed';
 }
 
-// Numbers
-abstract class NumberTransformer {
-  Decimal transform(String input);
-
-  factory NumberTransformer.fromJson(Map<String, dynamic> json) {
-    switch (json['type']) {
-      case 'decimalComma':
-        return NumberTransformerDecimalComma();
-      case 'decimalPoint':
-        return NumberTransformerDecimalPoint();
-      default:
-        throw Exception('Unknown NumberTransformer type');
-    }
-  }
-}
-
-class NumberTransformerDecimalComma implements NumberTransformer {
+class NumberTransformerDecimalComma extends Transformer<String, Decimal> {
   @override
   Decimal transform(String input) {
     input = input.trim();
     input = input.replaceAll('.', '').replaceAll(',', '.');
     return Decimal.parse(input);
   }
+
+  @override
+  String get typeId => 'NumberTransformerDecimalComma';
 }
 
-class NumberTransformerDecimalPoint implements NumberTransformer {
+class NumberTransformerDecimalPoint extends Transformer<String, Decimal> {
   @override
   Decimal transform(String input) {
     input = input.trim();
     input = input.replaceAll(',', '');
     return Decimal.parse(input);
   }
+
+  @override
+  String get typeId => 'NumberTransformerDecimalPoint';
 }
-
-// We can have specific transformers
-// Date
-// string
-// number
-// currency
-// account
-
-
-// For Dates
-// - Excel format
-// - The exact format used
-
-// For numbers
-// - DecimalComma format
-// - DecimalPoint format
-
-// For Strings
-// - Split and Take index - Ensure that it the split number of words in constant
-
-//
-// We can write some kind of transformer with indexes + list of transformers for that data
-// This can be the final model
-//
 
 // After that we need to add some kind of decision tree to figure out which model to use based on the input
 // In the simplest case, it would be best to do it based on the existance / non-existance of some field
 // or based on the enum value of some field (how do we figure this one out?)
-
-// Should we allow for multiple transformers?

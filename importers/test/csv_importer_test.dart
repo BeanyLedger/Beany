@@ -17,28 +17,19 @@ void main() {
       fieldDelimiter: ',',
       shouldParseNumbers: false,
     );
-    final row = rows[0];
+    final input = rows[0].map((e) => e.toString()).toList();
 
-    final importer = TrainedData(
-      dateIndex: 0,
-      dateTransformer: DateTransformerExcel(),
-      narrationIndex: 2,
-      narrationTransformer: StringTransformerNone(),
-      payeeIndex: -1,
-      payeeTransformer: StringTransformerNone(),
-      meta0Index: -1,
-      meta0Transformer: StringTransformerNone(),
-      meta1Index: -1,
-      meta1Transformer: StringTransformerNone(),
-      meta2Index: -1,
-      meta2Transformer: StringTransformerNone(),
-      posting0AccountIndex: 0,
-      posting0AccountTransformer:
-          AccountTransformerFixed("Assets:Personal:Spain:LaCaixa"),
-      posting0AmountIndex: 4,
-      posting0AmountTransformer: NumberTransformerDecimalPoint(),
-      posting0CurrencyIndex: 0,
-      posting0CurrencyTransformer: StringTransformerFixed('EUR'),
+    final importer = TransactionTransformer(
+      dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
+      narrationTransformers: [CsvIndexPosTransformer(2)],
+      posting0AccountTransformers: [
+        AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
+      ],
+      posting0AmountTransformers: [
+        CsvIndexPosTransformer(4),
+        NumberTransformerDecimalPoint()
+      ],
+      posting0CurrencyTransformers: [StringTransformerFixed('EUR')],
     );
 
     final expectedOutput = """
@@ -46,7 +37,7 @@ void main() {
     Assets:Personal:Spain:LaCaixa   -37.91 EUR
 """;
 
-    var actualOutput = render(importer.apply(row));
+    var actualOutput = render(importer.apply(input));
     expect(actualOutput, _format(expectedOutput));
   });
 }
