@@ -8,20 +8,15 @@ import 'package:test/test.dart';
 var config = WiseConverterConfig("Assets:Wise", "Expenses:BankCharges");
 
 void main() {
-  test('Test Working', () {
+  test('LaCaixa', () {
     var csvInput =
         "45371.0,45371.0,ENDESA ENERGIA S.,Recibo de suministros,-37.91,4009.32";
-    final rows = const CsvToListConverter().convert(
-      csvInput,
-      eol: '\n',
-      fieldDelimiter: ',',
-      shouldParseNumbers: false,
-    );
-    final input = rows[0].map((e) => e.toString()).toList();
+    final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
       dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
       narrationTransformers: [CsvIndexPosTransformer(2)],
+      commentsTransformers: [CsvIndexPosTransformer(3)],
       posting0AccountTransformers: [
         AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
       ],
@@ -34,7 +29,8 @@ void main() {
 
     final expectedOutput = """
 2024-03-20 * "ENDESA ENERGIA S."
-    Assets:Personal:Spain:LaCaixa   -37.91 EUR
+  ; Recibo de suministros
+  Assets:Personal:Spain:LaCaixa   -37.91 EUR
 """;
 
     var actualOutput = render(importer.apply(input));

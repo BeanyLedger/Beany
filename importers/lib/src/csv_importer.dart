@@ -16,6 +16,7 @@ class TransactionTransformer {
   final List<Transformer> dateTransformers;
   final List<Transformer> narrationTransformers;
   final List<Transformer> payeeTransformers;
+  final List<Transformer> commentsTransformers;
 
   final List<Transformer> posting0AccountTransformers;
   final List<Transformer> posting0AmountTransformers;
@@ -25,6 +26,7 @@ class TransactionTransformer {
     required this.dateTransformers,
     required this.narrationTransformers,
     this.payeeTransformers = const [],
+    this.commentsTransformers = const [],
     required this.posting0AccountTransformers,
     required this.posting0AmountTransformers,
     required this.posting0CurrencyTransformers,
@@ -61,6 +63,10 @@ class TransactionTransformer {
         payeeTransformers.last.outputType != String) {
       throw Exception('Invalid payee transformer');
     }
+    if (commentsTransformers.isNotEmpty &&
+        commentsTransformers.last.outputType != String) {
+      throw Exception('Invalid comments transformer');
+    }
     if (posting0AccountTransformers.last.outputType != Account) {
       throw Exception('Invalid posting0Account transformer');
     }
@@ -78,6 +84,9 @@ class TransactionTransformer {
     var payee = payeeTransformers.isEmpty
         ? null
         : applyTransformers(payeeTransformers, values);
+    var comment = commentsTransformers.isEmpty
+        ? null
+        : applyTransformers(commentsTransformers, values);
 
     var posting0Account =
         applyTransformers(posting0AccountTransformers, values);
@@ -90,6 +99,7 @@ class TransactionTransformer {
       TransactionFlag.Okay,
       narration,
       payee: payee,
+      comments: [comment],
       postings: [
         PostingSpec(posting0Account, Amount(posting0Amount, posting0Currency)),
       ],

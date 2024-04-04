@@ -221,6 +221,12 @@ class BeancountRenderer implements RendererInterface {
       sink.writeln('${m.key}: ${m.value}');
     }
 
+    for (var comment in tr.comments) {
+      sink.write(_tab);
+      sink.write('; ');
+      sink.writeln(comment);
+    }
+
     for (var posting in tr.postings) {
       renderPostingSpec(sink, posting, tr);
       sink.writeln();
