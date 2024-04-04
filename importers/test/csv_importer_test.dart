@@ -74,6 +74,39 @@ void main() {
     var actualOutput = render(importer.apply(input));
     expect(actualOutput, _format(expectedOutput));
   });
+
+  test('N26 Deposit', () {
+    var csvInput = """
+Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f6c-442d-a288-1fcf7ca0a73b,
+""";
+    final input = parseCsvRow0(csvInput);
+
+    final importer = TransactionTransformer(
+      dateTransformers: [
+        CsvIndexPosTransformer(1),
+        DateTransformerFormat('yyyy-MM-dd HH:mm:ss')
+      ],
+      narrationTransformers: [CsvIndexPosTransformer(0)],
+      payeeTransformers: [CsvIndexPosTransformer(13)],
+      posting0AccountTransformers: [AccountTransformerFixed("Assets:N26")],
+      posting0AmountTransformers: [
+        CsvIndexPosTransformer(9),
+        NumberTransformerDecimalPoint()
+      ],
+      posting0CurrencyTransformers: [StringTransformerFixed('EUR')],
+      meta0KeyTransformer: [StringTransformerFixed('id')],
+      meta0ValueTransformer: [CsvIndexPosTransformer(14)],
+    );
+
+    final expectedOutput = """
+2022-03-10 * "Deposit" "Bank Transfer"
+  id: "40459ed3-7f6c-442d-a288-1fcf7ca0a73b"
+  Assets:N26  1000.00 EUR
+""";
+
+    var actualOutput = render(importer.apply(input));
+    expect(actualOutput, _format(expectedOutput));
+  });
 }
 
 List<String> parseCsvRow0(String csvInput) {
