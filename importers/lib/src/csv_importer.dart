@@ -14,6 +14,53 @@ import 'package:meta/meta.dart';
 void trainImporter(List<dynamic> csvValues, TransactionSpec expectedTr) {}
 
 @immutable
+class PostingTransformer {
+  final List<Transformer> accountTransformers;
+  final List<Transformer> amountTransformers;
+  final List<Transformer> currencyTransformers;
+
+  PostingTransformer({
+    required this.accountTransformers,
+    required this.amountTransformers,
+    required this.currencyTransformers,
+  }) {
+    //
+    // Validate Inputs
+    //
+    if (accountTransformers.isEmpty) {
+      throw Exception('Empty Account transformers');
+    }
+    if (amountTransformers.isEmpty) {
+      throw Exception('Empty Amount transformers');
+    }
+    if (currencyTransformers.isEmpty) {
+      throw Exception('Empty Currency transformers');
+    }
+
+    //
+    // Validate Outputs
+    //
+    if (accountTransformers.last.outputType != Account) {
+      throw Exception('Invalid Account transformer');
+    }
+    if (amountTransformers.last.outputType != Decimal) {
+      throw Exception('Invalid Amount transformer');
+    }
+    if (currencyTransformers.last.outputType != String) {
+      throw Exception('Invalid Currency transformer');
+    }
+  }
+
+  PostingSpec apply(List<String> values) {
+    var account = applyTransformers(accountTransformers, values);
+    var amount = applyTransformers(amountTransformers, values);
+    var currency = applyTransformers(currencyTransformers, values);
+
+    return PostingSpec(account, Amount(amount, currency));
+  }
+}
+
+@immutable
 class TransactionTransformer {
   final List<Transformer> dateTransformers;
   final List<Transformer> narrationTransformers;
@@ -26,9 +73,7 @@ class TransactionTransformer {
   final List<Transformer> meta1KeyTransformer;
   final List<Transformer> meta1ValueTransformer;
 
-  final List<Transformer> posting0AccountTransformers;
-  final List<Transformer> posting0AmountTransformers;
-  final List<Transformer> posting0CurrencyTransformers;
+  final List<PostingTransformer> postingTransformers;
 
   TransactionTransformer({
     required this.dateTransformers,
@@ -39,9 +84,7 @@ class TransactionTransformer {
     this.meta0ValueTransformer = const [],
     this.meta1KeyTransformer = const [],
     this.meta1ValueTransformer = const [],
-    required this.posting0AccountTransformers,
-    required this.posting0AmountTransformers,
-    required this.posting0CurrencyTransformers,
+    required this.postingTransformers,
   }) {
     //
     // Validate Inputs
@@ -51,15 +94,6 @@ class TransactionTransformer {
     }
     if (narrationTransformers.isEmpty) {
       throw Exception('Empty Narration transformers');
-    }
-    if (posting0AccountTransformers.isEmpty) {
-      throw Exception('Empty Posting0Account transformers');
-    }
-    if (posting0AmountTransformers.isEmpty) {
-      throw Exception('Empty Posting0Amount transformers');
-    }
-    if (posting0CurrencyTransformers.isEmpty) {
-      throw Exception('Empty Posting0Currency transformers');
     }
 
     //
@@ -95,16 +129,6 @@ class TransactionTransformer {
         meta1ValueTransformer.last.outputType != String) {
       throw Exception('Invalid meta1Value transformer');
     }
-
-    if (posting0AccountTransformers.last.outputType != Account) {
-      throw Exception('Invalid posting0Account transformer');
-    }
-    if (posting0AmountTransformers.last.outputType != Decimal) {
-      throw Exception('Invalid posting0Amount transformer');
-    }
-    if (posting0CurrencyTransformers.last.outputType != String) {
-      throw Exception('Invalid posting0Currency transformer');
-    }
   }
 
   TransactionSpec apply(List<String> values) {
@@ -131,12 +155,6 @@ class TransactionTransformer {
         ? null
         : applyTransformers(meta1ValueTransformer, values);
 
-    var posting0Account =
-        applyTransformers(posting0AccountTransformers, values);
-    var posting0Amount = applyTransformers(posting0AmountTransformers, values);
-    var posting0Currency =
-        applyTransformers(posting0CurrencyTransformers, values);
-
     var meta = <String, MetaValue>{
       if (meta0Key != null && meta0Value != null)
         meta0Key: MetaValue(stringValue: meta0Value),
@@ -152,7 +170,7 @@ class TransactionTransformer {
       comments: comment != null ? [comment] : [],
       meta: meta,
       postings: [
-        PostingSpec(posting0Account, Amount(posting0Amount, posting0Currency)),
+        for (var transformer in postingTransformers) transformer.apply(values),
       ],
     );
   }

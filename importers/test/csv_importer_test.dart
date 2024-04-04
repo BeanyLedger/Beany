@@ -17,14 +17,18 @@ void main() {
       dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
       narrationTransformers: [CsvIndexPosTransformer(2)],
       commentsTransformers: [CsvIndexPosTransformer(3)],
-      posting0AccountTransformers: [
-        AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformers: [
+            AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
+          ],
+          amountTransformers: [
+            CsvIndexPosTransformer(4),
+            NumberTransformerDecimalPoint()
+          ],
+          currencyTransformers: [StringTransformerFixed('EUR')],
+        ),
       ],
-      posting0AmountTransformers: [
-        CsvIndexPosTransformer(4),
-        NumberTransformerDecimalPoint()
-      ],
-      posting0CurrencyTransformers: [StringTransformerFixed('EUR')],
     );
 
     final expectedOutput = """
@@ -53,15 +57,19 @@ void main() {
       ],
       meta0KeyTransformer: [StringTransformerFixed('orderId')],
       meta0ValueTransformer: [CsvIndexPosTransformer(0)],
-      posting0AccountTransformers: [AccountTransformerFixed("Expenses:Amazon")],
-      posting0AmountTransformers: [
-        CsvIndexPosTransformer(4),
-        StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
-        NumberTransformerDecimalComma()
-      ],
-      posting0CurrencyTransformers: [
-        CsvIndexPosTransformer(4),
-        StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformers: [AccountTransformerFixed("Expenses:Amazon")],
+          amountTransformers: [
+            CsvIndexPosTransformer(4),
+            StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
+            NumberTransformerDecimalComma()
+          ],
+          currencyTransformers: [
+            CsvIndexPosTransformer(4),
+            StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
+          ],
+        ),
       ],
     );
 
@@ -88,14 +96,18 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
       ],
       narrationTransformers: [CsvIndexPosTransformer(0)],
       payeeTransformers: [CsvIndexPosTransformer(13)],
-      posting0AccountTransformers: [AccountTransformerFixed("Assets:N26")],
-      posting0AmountTransformers: [
-        CsvIndexPosTransformer(9),
-        NumberTransformerDecimalPoint()
-      ],
-      posting0CurrencyTransformers: [StringTransformerFixed('EUR')],
       meta0KeyTransformer: [StringTransformerFixed('id')],
       meta0ValueTransformer: [CsvIndexPosTransformer(14)],
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformers: [AccountTransformerFixed("Assets:N26")],
+          amountTransformers: [
+            CsvIndexPosTransformer(9),
+            NumberTransformerDecimalPoint()
+          ],
+          currencyTransformers: [StringTransformerFixed('EUR')],
+        ),
+      ],
     );
 
     final expectedOutput = """
