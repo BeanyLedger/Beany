@@ -36,6 +36,54 @@ void main() {
     var actualOutput = render(importer.apply(input));
     expect(actualOutput, _format(expectedOutput));
   });
+
+  test('Amazon', () {
+    var csvInput =
+        "404-7319078-6347502,3 Scale Home Brew Hydrometer Wine Beer Cider Alcohol Testing Making Tester; ,Vishesh Handa,2019-06-24,\"EUR 2,34\",N/A,N/A,N/A,N/A,";
+    final input = parseCsvRow0(csvInput);
+
+    final importer = TransactionTransformer(
+      dateTransformers: [
+        CsvIndexPosTransformer(3),
+        DateTransformerFormat('yyyy-MM-dd')
+      ],
+      narrationTransformers: [
+        CsvIndexPosTransformer(1),
+        StringTrimmingTransformer()
+      ],
+      meta0KeyTransformer: [StringTransformerFixed('orderId')],
+      meta0ValueTransformer: [CsvIndexPosTransformer(0)],
+      posting0AccountTransformers: [AccountTransformerFixed("Expenses:Amazon")],
+      posting0AmountTransformers: [
+        CsvIndexPosTransformer(4),
+        StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
+        NumberTransformerDecimalComma()
+      ],
+      posting0CurrencyTransformers: [
+        CsvIndexPosTransformer(4),
+        StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
+      ],
+    );
+
+    final expectedOutput = """
+2019-06-24 * "3 Scale Home Brew Hydrometer Wine Beer Cider Alcohol Testing Making Tester;"
+  orderId: "404-7319078-6347502"
+  Expenses:Amazon  2.34 EUR
+""";
+
+    var actualOutput = render(importer.apply(input));
+    expect(actualOutput, _format(expectedOutput));
+  });
+}
+
+List<String> parseCsvRow0(String csvInput) {
+  final rows = const CsvToListConverter().convert(
+    csvInput,
+    eol: '\n',
+    fieldDelimiter: ',',
+    shouldParseNumbers: false,
+  );
+  return rows[0].map((e) => e.toString()).toList();
 }
 
 String _format(String input) {

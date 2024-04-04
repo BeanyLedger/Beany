@@ -1,9 +1,11 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
+import 'package:intl/intl.dart';
 
 import 'package:meta/meta.dart';
 
@@ -18,6 +20,12 @@ class TransactionTransformer {
   final List<Transformer> payeeTransformers;
   final List<Transformer> commentsTransformers;
 
+  final List<Transformer> meta0KeyTransformer;
+  final List<Transformer> meta0ValueTransformer;
+
+  final List<Transformer> meta1KeyTransformer;
+  final List<Transformer> meta1ValueTransformer;
+
   final List<Transformer> posting0AccountTransformers;
   final List<Transformer> posting0AmountTransformers;
   final List<Transformer> posting0CurrencyTransformers;
@@ -27,6 +35,10 @@ class TransactionTransformer {
     required this.narrationTransformers,
     this.payeeTransformers = const [],
     this.commentsTransformers = const [],
+    this.meta0KeyTransformer = const [],
+    this.meta0ValueTransformer = const [],
+    this.meta1KeyTransformer = const [],
+    this.meta1ValueTransformer = const [],
     required this.posting0AccountTransformers,
     required this.posting0AmountTransformers,
     required this.posting0CurrencyTransformers,
@@ -67,6 +79,23 @@ class TransactionTransformer {
         commentsTransformers.last.outputType != String) {
       throw Exception('Invalid comments transformer');
     }
+    if (meta0KeyTransformer.isNotEmpty &&
+        meta0KeyTransformer.last.outputType != String) {
+      throw Exception('Invalid meta0Key transformer');
+    }
+    if (meta0ValueTransformer.isNotEmpty &&
+        meta0ValueTransformer.last.outputType != String) {
+      throw Exception('Invalid meta0Value transformer');
+    }
+    if (meta1KeyTransformer.isNotEmpty &&
+        meta1KeyTransformer.last.outputType != String) {
+      throw Exception('Invalid meta1Key transformer');
+    }
+    if (meta1ValueTransformer.isNotEmpty &&
+        meta1ValueTransformer.last.outputType != String) {
+      throw Exception('Invalid meta1Value transformer');
+    }
+
     if (posting0AccountTransformers.last.outputType != Account) {
       throw Exception('Invalid posting0Account transformer');
     }
@@ -88,18 +117,40 @@ class TransactionTransformer {
         ? null
         : applyTransformers(commentsTransformers, values);
 
+    var meta0Key = meta0KeyTransformer.isEmpty
+        ? null
+        : applyTransformers(meta0KeyTransformer, values);
+    var meta0Value = meta0ValueTransformer.isEmpty
+        ? null
+        : applyTransformers(meta0ValueTransformer, values);
+
+    var meta1Key = meta1KeyTransformer.isEmpty
+        ? null
+        : applyTransformers(meta1KeyTransformer, values);
+    var meta1Value = meta1ValueTransformer.isEmpty
+        ? null
+        : applyTransformers(meta1ValueTransformer, values);
+
     var posting0Account =
         applyTransformers(posting0AccountTransformers, values);
     var posting0Amount = applyTransformers(posting0AmountTransformers, values);
     var posting0Currency =
         applyTransformers(posting0CurrencyTransformers, values);
 
+    var meta = <String, MetaValue>{
+      if (meta0Key != null && meta0Value != null)
+        meta0Key: MetaValue(stringValue: meta0Value),
+      if (meta1Key != null && meta1Value != null)
+        meta1Key: MetaValue(stringValue: meta1Value),
+    };
+
     return TransactionSpec(
       date,
       TransactionFlag.Okay,
       narration,
       payee: payee,
-      comments: [comment],
+      comments: comment != null ? [comment] : [],
+      meta: meta,
       postings: [
         PostingSpec(posting0Account, Amount(posting0Amount, posting0Currency)),
       ],
@@ -170,7 +221,8 @@ class DateTransformerFormat extends Transformer<String, Date> {
 
   @override
   Date transform(String input) {
-    throw Exception("Not implemented");
+    var formatter = DateFormat(format);
+    return Date.truncate(formatter.parse(input));
   }
 
   @override
@@ -189,6 +241,16 @@ class StringTransformerFixed extends Transformer<void, String> {
 
   @override
   String get typeId => 'StringTransformerFixed';
+}
+
+class StringTrimmingTransformer extends Transformer<String, String> {
+  @override
+  String transform(String input) {
+    return input.trim();
+  }
+
+  @override
+  String get typeId => 'StringTrimmingTransformer';
 }
 
 class AccountTransformerFixed extends Transformer<void, Account> {
@@ -227,6 +289,30 @@ class NumberTransformerDecimalPoint extends Transformer<String, Decimal> {
 
   @override
   String get typeId => 'NumberTransformerDecimalPoint';
+}
+
+class StringSplittingTransformer extends Transformer<String, String> {
+  final int part;
+  final String separator;
+  final int? expectedParts;
+
+  StringSplittingTransformer(
+    this.part, {
+    this.separator = ' ',
+    this.expectedParts,
+  });
+
+  @override
+  String transform(String input) {
+    var parts = input.split(separator);
+    if (expectedParts != null && parts.length != expectedParts) {
+      throw Exception('Invalid number of parts');
+    }
+    return parts[part];
+  }
+
+  @override
+  String get typeId => 'StringSplittingTransformer';
 }
 
 // After that we need to add some kind of decision tree to figure out which model to use based on the input
