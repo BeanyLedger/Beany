@@ -309,6 +309,26 @@ class NumberTransformerDecimalPoint extends Transformer<String, Decimal> {
   String get typeId => 'NumberTransformerDecimalPoint';
 }
 
+class PositiveNumberTransformer extends Transformer<Decimal, Decimal> {
+  @override
+  Decimal transform(Decimal input) {
+    return input.abs();
+  }
+
+  @override
+  String get typeId => 'PositiveNumberTransformer';
+}
+
+class NegativeNumberTransformer extends Transformer<Decimal, Decimal> {
+  @override
+  Decimal transform(Decimal input) {
+    return -input.abs();
+  }
+
+  @override
+  String get typeId => 'NegativeNumberTransformer';
+}
+
 class StringSplittingTransformer extends Transformer<String, String> {
   final int part;
   final String separator;

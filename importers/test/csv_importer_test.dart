@@ -119,6 +119,54 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
     var actualOutput = render(importer.apply(input));
     expect(actualOutput, _format(expectedOutput));
   });
+
+  test('Wise complex test', () {
+    var csvInput = """
+"CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.07,EUR,,,"Vishesh Handa",13.25,EUR,Audible,14.38,USD,1.08530000,,
+ """;
+    final input = parseCsvRow0(csvInput);
+
+    final importer = TransactionTransformer(
+      dateTransformers: [
+        CsvIndexPosTransformer(3),
+        DateTransformerFormat('yyyy-MM-dd')
+      ],
+      narrationTransformers: [CsvIndexPosTransformer(12)],
+      meta0KeyTransformer: [StringTransformerFixed('id')],
+      meta0ValueTransformer: [CsvIndexPosTransformer(0)],
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformers: [AccountTransformerFixed("Assets:Wise")],
+          amountTransformers: [
+            CsvIndexPosTransformer(10),
+            NumberTransformerDecimalPoint(),
+            NegativeNumberTransformer(),
+          ],
+          currencyTransformers: [StringTransformerFixed('EUR')],
+        ),
+        PostingTransformer(
+          accountTransformers: [
+            AccountTransformerFixed("Expenses:BankCharges")
+          ],
+          amountTransformers: [
+            CsvIndexPosTransformer(5),
+            NumberTransformerDecimalPoint()
+          ],
+          currencyTransformers: [StringTransformerFixed('EUR')],
+        ),
+      ],
+    );
+
+    final expectedOutput = """
+2024-02-26 * "Audible"
+  id: "CARD_TRANSACTION-1279776353"
+  Assets:Wise               -13.25 EUR
+  Expenses:BankCharges        0.07 EUR
+""";
+
+    var actualOutput = render(importer.apply(input));
+    expect(actualOutput, _format(expectedOutput));
+  });
 }
 
 List<String> parseCsvRow0(String csvInput) {
