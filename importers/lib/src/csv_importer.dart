@@ -75,18 +75,57 @@ class PostingTransformer {
 }
 
 @immutable
+class MetaDataTransformer {
+  final List<Transformer> keyTransformers;
+  final List<Transformer> valueTransformers;
+
+  MetaDataTransformer({
+    required this.keyTransformers,
+    required this.valueTransformers,
+  }) {
+    //
+    // Validate Inputs
+    //
+    if (keyTransformers.isEmpty) {
+      throw Exception('Empty Key transformers');
+    }
+    if (valueTransformers.isEmpty) {
+      throw Exception('Empty Value transformers');
+    }
+
+    //
+    // Validate Outputs
+    //
+    if (keyTransformers.last.outputType != String) {
+      throw Exception('Invalid Key transformer');
+    }
+    if (valueTransformers.last.outputType != String) {
+      throw Exception('Invalid Value transformer');
+    }
+
+    //
+    // Validate Transformer Chains
+    //
+    validateTransformerChain(keyTransformers);
+    validateTransformerChain(valueTransformers);
+  }
+
+  Map<String, MetaValue> apply(List<String> values) {
+    var key = applyTransformers(keyTransformers, values);
+    var value = applyTransformers(valueTransformers, values);
+
+    return {key: MetaValue(stringValue: value)};
+  }
+}
+
+@immutable
 class TransactionTransformer {
   final List<Transformer> dateTransformers;
   final List<Transformer> narrationTransformers;
   final List<Transformer> payeeTransformers;
   final List<Transformer> commentsTransformers;
 
-  final List<Transformer> meta0KeyTransformer;
-  final List<Transformer> meta0ValueTransformer;
-
-  final List<Transformer> meta1KeyTransformer;
-  final List<Transformer> meta1ValueTransformer;
-
+  final List<MetaDataTransformer> metaTransformers;
   final List<PostingTransformer> postingTransformers;
 
   TransactionTransformer({
@@ -94,10 +133,7 @@ class TransactionTransformer {
     required this.narrationTransformers,
     this.payeeTransformers = const [],
     this.commentsTransformers = const [],
-    this.meta0KeyTransformer = const [],
-    this.meta0ValueTransformer = const [],
-    this.meta1KeyTransformer = const [],
-    this.meta1ValueTransformer = const [],
+    this.metaTransformers = const [],
     required this.postingTransformers,
   }) {
     //
@@ -127,22 +163,6 @@ class TransactionTransformer {
         commentsTransformers.last.outputType != String) {
       throw Exception('Invalid comments transformer');
     }
-    if (meta0KeyTransformer.isNotEmpty &&
-        meta0KeyTransformer.last.outputType != String) {
-      throw Exception('Invalid meta0Key transformer');
-    }
-    if (meta0ValueTransformer.isNotEmpty &&
-        meta0ValueTransformer.last.outputType != String) {
-      throw Exception('Invalid meta0Value transformer');
-    }
-    if (meta1KeyTransformer.isNotEmpty &&
-        meta1KeyTransformer.last.outputType != String) {
-      throw Exception('Invalid meta1Key transformer');
-    }
-    if (meta1ValueTransformer.isNotEmpty &&
-        meta1ValueTransformer.last.outputType != String) {
-      throw Exception('Invalid meta1Value transformer');
-    }
 
     //
     // Validate Chains
@@ -151,10 +171,6 @@ class TransactionTransformer {
     validateTransformerChain(narrationTransformers);
     validateTransformerChain(payeeTransformers);
     validateTransformerChain(commentsTransformers);
-    validateTransformerChain(meta0KeyTransformer);
-    validateTransformerChain(meta0ValueTransformer);
-    validateTransformerChain(meta1KeyTransformer);
-    validateTransformerChain(meta1ValueTransformer);
   }
 
   TransactionSpec apply(List<String> values) {
@@ -167,34 +183,16 @@ class TransactionTransformer {
         ? null
         : applyTransformers(commentsTransformers, values);
 
-    var meta0Key = meta0KeyTransformer.isEmpty
-        ? null
-        : applyTransformers(meta0KeyTransformer, values);
-    var meta0Value = meta0ValueTransformer.isEmpty
-        ? null
-        : applyTransformers(meta0ValueTransformer, values);
-
-    var meta1Key = meta1KeyTransformer.isEmpty
-        ? null
-        : applyTransformers(meta1KeyTransformer, values);
-    var meta1Value = meta1ValueTransformer.isEmpty
-        ? null
-        : applyTransformers(meta1ValueTransformer, values);
-
-    var meta = <String, MetaValue>{
-      if (meta0Key != null && meta0Value != null)
-        meta0Key: MetaValue(stringValue: meta0Value),
-      if (meta1Key != null && meta1Value != null)
-        meta1Key: MetaValue(stringValue: meta1Value),
-    };
-
     return TransactionSpec(
       date,
       TransactionFlag.Okay,
       narration,
       payee: payee,
       comments: comment != null ? [comment] : [],
-      meta: meta,
+      meta: {
+        for (var metaTransformer in metaTransformers)
+          ...metaTransformer.apply(values),
+      },
       postings: [
         for (var transformer in postingTransformers) transformer.apply(values),
       ],

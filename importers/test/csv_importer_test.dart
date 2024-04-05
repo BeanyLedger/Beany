@@ -52,8 +52,12 @@ void main() {
         CsvIndexPosTransformer(1),
         StringTrimmingTransformer()
       ],
-      meta0KeyTransformer: [StringTransformerFixed('orderId')],
-      meta0ValueTransformer: [CsvIndexPosTransformer(0)],
+      metaTransformers: [
+        MetaDataTransformer(
+          keyTransformers: [StringTransformerFixed('orderId')],
+          valueTransformers: [CsvIndexPosTransformer(0)],
+        ),
+      ],
       postingTransformers: [
         PostingTransformer(
           accountTransformers: [AccountTransformerFixed("Expenses:Amazon")],
@@ -93,8 +97,12 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
       ],
       narrationTransformers: [CsvIndexPosTransformer(0)],
       payeeTransformers: [CsvIndexPosTransformer(13)],
-      meta0KeyTransformer: [StringTransformerFixed('id')],
-      meta0ValueTransformer: [CsvIndexPosTransformer(14)],
+      metaTransformers: [
+        MetaDataTransformer(
+          keyTransformers: [StringTransformerFixed('id')],
+          valueTransformers: [CsvIndexPosTransformer(14)],
+        ),
+      ],
       postingTransformers: [
         PostingTransformer(
           accountTransformers: [AccountTransformerFixed("Assets:N26")],
@@ -130,10 +138,16 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
       ],
       narrationTransformers: [CsvIndexPosTransformer(0)],
       payeeTransformers: [CsvIndexPosTransformer(4)],
-      meta0KeyTransformer: [StringTransformerFixed('isin')],
-      meta0ValueTransformer: [CsvIndexPosTransformer(2)],
-      meta1KeyTransformer: [StringTransformerFixed('id')],
-      meta1ValueTransformer: [CsvIndexPosTransformer(14)],
+      metaTransformers: [
+        MetaDataTransformer(
+          keyTransformers: [StringTransformerFixed('isin')],
+          valueTransformers: [CsvIndexPosTransformer(2)],
+        ),
+        MetaDataTransformer(
+          keyTransformers: [StringTransformerFixed('id')],
+          valueTransformers: [CsvIndexPosTransformer(14)],
+        ),
+      ],
       postingTransformers: [
         PostingTransformer(
           accountTransformers: [AccountTransformerFixed("Assets:N26")],
@@ -174,8 +188,12 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
         DateTransformerFormat('yyyy-MM-dd')
       ],
       narrationTransformers: [CsvIndexPosTransformer(12)],
-      meta0KeyTransformer: [StringTransformerFixed('id')],
-      meta0ValueTransformer: [CsvIndexPosTransformer(0)],
+      metaTransformers: [
+        MetaDataTransformer(
+          keyTransformers: [StringTransformerFixed('id')],
+          valueTransformers: [CsvIndexPosTransformer(0)],
+        ),
+      ],
       postingTransformers: [
         PostingTransformer(
           accountTransformers: [AccountTransformerFixed("Assets:Wise")],
