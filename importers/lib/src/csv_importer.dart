@@ -14,7 +14,7 @@ import 'package:meta/meta.dart';
 
 // Shouldn't this List<String> be just a template type?
 @immutable
-class PostingTransformer extends Equatable {
+class PostingTransformer extends Transformer<List<String>, PostingSpec> {
   final Transformer<List<String>, Account> accountTransformer;
   final Transformer<List<String>, Decimal> amountTransformer;
   final Transformer<List<String>, String> currencyTransformer;
@@ -35,7 +35,9 @@ class PostingTransformer extends Equatable {
     this.costSpecTransformer,
   });
 
-  PostingSpec apply(List<String> values) {
+  @override
+  PostingSpec transform(List<String> input) {
+    var values = input;
     var account = accountTransformer.transform(values);
     // This should probably be combined into a single transformer
     // as the currency can often be in the same column as the amount
@@ -45,6 +47,15 @@ class PostingTransformer extends Equatable {
 
     return PostingSpec(account, Amount(amount, currency), costSpec: costSpec);
   }
+
+  @override
+  Type get inputType => List<String>;
+
+  @override
+  Type get outputType => PostingSpec;
+
+  @override
+  String get typeId => 'PostingTransformer';
 }
 
 @immutable
@@ -114,9 +125,9 @@ class TransactionTransformer extends Equatable {
         for (var metaTransformer in metaTransformers)
           ...metaTransformer.apply(values),
       },
-      postings: [
-        for (var transformer in postingTransformers) transformer.apply(values),
-      ],
+      postings:
+          ParallelTransformer<List<String>, PostingSpec>(postingTransformers)
+              .transform(values),
     );
   }
 }
@@ -152,6 +163,25 @@ class SeqTransformer<T, R> extends Transformer<T, R> {
 
   @override
   String get typeId => 'SeqTransformer';
+
+  @override
+  List<Object?> get props => [transformers];
+}
+
+// Calls all the transformers on the input T independently, and gives a list of results
+// This operation can be parallelized
+class ParallelTransformer<T, R> extends Transformer<T, List<R>> {
+  final List<Transformer<T, R>> transformers;
+
+  ParallelTransformer(this.transformers);
+
+  @override
+  List<R> transform(T input) {
+    return transformers.map((tr) => tr.transform(input)).toList();
+  }
+
+  @override
+  String get typeId => 'ParallelTransformer';
 
   @override
   List<Object?> get props => [transformers];
