@@ -236,8 +236,8 @@ void validateTransformerChain(List<Transformer> transformers) {
   }
 }
 
-T applyTransformers<T>(List<Transformer> transformers, List<String> values) {
-  dynamic input = values;
+R applyTransformers<T, R>(List<Transformer> transformers, T value) {
+  dynamic input = value;
   for (var transformer in transformers) {
     var output = transformer.transform(input);
     input = output;
@@ -281,6 +281,7 @@ class DateTransformerExcel extends Transformer<String, Date> {
   Date transform(String input) {
     var days = double.parse(input);
     var dt = Date(1899, 12, 30).add(Duration(days: days.toInt()));
+    /*
     if (dt.year < 1900) {
       throw Exception('Invalid date - Excel Transformer date is too old');
     }
@@ -288,6 +289,7 @@ class DateTransformerExcel extends Transformer<String, Date> {
       throw Exception(
           'Invalid date - Excel Transformer date is too much in the futre');
     }
+    */
     return Date.truncate(dt);
   }
 
@@ -388,6 +390,19 @@ class NumberTransformerDecimalPoint extends Transformer<String, Decimal> {
 
   @override
   String get typeId => 'NumberTransformerDecimalPoint';
+  @override
+  List<Object?> get props => [];
+}
+
+class NumberTransformerFlipSign extends Transformer<Decimal, Decimal> {
+  @override
+  Decimal transform(Decimal input) {
+    return -input;
+  }
+
+  @override
+  String get typeId => 'NumberTransformerFlipSign';
+
   @override
   List<Object?> get props => [];
 }
