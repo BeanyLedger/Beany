@@ -115,7 +115,7 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
     }
 
     if (num.signum != output.signum) {
-      return ChainedListTransformer(
+      return SeqTransformer(
         [numTransformer, NumberTransformerFlipSign()],
       );
     }
@@ -174,11 +174,10 @@ class ListIteratorTransformerBuilder<T>
       var val = input[i];
       var tr = builder.build(val, output);
       if (tr != null) {
-        return ChainedListTransformer([
+        return SeqTransformer([
           CsvIndexPosTransformer(i),
-          if (tr is ChainedListTransformer)
-            ...(tr as ChainedListTransformer).transformers,
-          if (tr is! ChainedListTransformer) tr,
+          if (tr is SeqTransformer) ...(tr as SeqTransformer).transformers,
+          if (tr is! SeqTransformer) tr,
         ]);
       }
     }

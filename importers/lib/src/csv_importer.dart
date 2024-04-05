@@ -121,10 +121,10 @@ class TransactionTransformer extends Equatable {
   }
 }
 
-class ChainedListTransformer<T, R> extends Transformer<T, R> {
+class SeqTransformer<T, R> extends Transformer<T, R> {
   final List<Transformer> transformers;
 
-  ChainedListTransformer(this.transformers) {
+  SeqTransformer(this.transformers) {
     if (transformers.isEmpty) {
       throw Exception('Empty transformers');
     }
@@ -151,7 +151,7 @@ class ChainedListTransformer<T, R> extends Transformer<T, R> {
   }
 
   @override
-  String get typeId => 'ChainedListTransformer';
+  String get typeId => 'SeqTransformer';
 
   @override
   List<Object?> get props => [transformers];

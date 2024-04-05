@@ -11,7 +11,7 @@ void main() {
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: ChainedListTransformer([
+      dateTransformers: SeqTransformer([
         CsvIndexPosTransformer(0),
         DateTransformerExcel(),
       ]),
@@ -20,7 +20,7 @@ void main() {
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(4),
             NumberTransformerDecimalPoint(),
           ]),
@@ -45,11 +45,11 @@ void main() {
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: ChainedListTransformer([
+      dateTransformers: SeqTransformer([
         CsvIndexPosTransformer(3),
         DateTransformerFormat('yyyy-MM-dd'),
       ]),
-      narrationTransformers: ChainedListTransformer([
+      narrationTransformers: SeqTransformer([
         CsvIndexPosTransformer(1),
         StringTrimmingTransformer(),
       ]),
@@ -62,12 +62,12 @@ void main() {
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Expenses:Amazon"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(4),
             StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
             NumberTransformerDecimalComma(),
           ]),
-          currencyTransformer: ChainedListTransformer([
+          currencyTransformer: SeqTransformer([
             CsvIndexPosTransformer(4),
             StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
           ]),
@@ -92,7 +92,7 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: ChainedListTransformer([
+      dateTransformers: SeqTransformer([
         CsvIndexPosTransformer(1),
         DateTransformerFormat('yyyy-MM-dd HH:mm:ss'),
       ]),
@@ -107,7 +107,7 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:N26"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(9),
             NumberTransformerDecimalPoint(),
           ]),
@@ -133,7 +133,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: ChainedListTransformer([
+      dateTransformers: SeqTransformer([
         CsvIndexPosTransformer(1),
         DateTransformerFormat('yyyy-MM-dd HH:mm:ss'),
       ]),
@@ -152,12 +152,12 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:N26"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(5),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: StringTransformerFixed('VUSA'),
-          costSpecTransformer: ChainedListTransformer([
+          costSpecTransformer: SeqTransformer([
             CsvIndexPosTransformer(9),
             NumberTransformerDecimalPoint(),
             CostSpecTotalTransformer(currency: 'EUR'),
@@ -184,7 +184,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: ChainedListTransformer(
+      dateTransformers: SeqTransformer(
           [CsvIndexPosTransformer(3), DateTransformerFormat('yyyy-MM-dd')]),
       narrationTransformers: CsvIndexPosTransformer(12),
       metaTransformers: [
@@ -196,7 +196,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:Wise"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(10),
             NumberTransformerDecimalPoint(),
             NegativeNumberTransformer(),
@@ -205,7 +205,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
         ),
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Expenses:BankCharges"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(5),
             NumberTransformerDecimalPoint(),
           ]),
@@ -227,7 +227,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
 
   test('operator ==', () {
     final importer1 = TransactionTransformer(
-      dateTransformers: ChainedListTransformer([
+      dateTransformers: SeqTransformer([
         CsvIndexPosTransformer(0),
         DateTransformerExcel(),
       ]),
@@ -236,7 +236,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(4),
             NumberTransformerDecimalPoint(),
           ]),
@@ -245,7 +245,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
       ],
     );
     final importer2 = TransactionTransformer(
-      dateTransformers: ChainedListTransformer([
+      dateTransformers: SeqTransformer([
         CsvIndexPosTransformer(0),
         DateTransformerExcel(),
       ]),
@@ -254,7 +254,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
-          amountTransformer: ChainedListTransformer([
+          amountTransformer: SeqTransformer([
             CsvIndexPosTransformer(4),
             NumberTransformerDecimalPoint(),
           ]),
