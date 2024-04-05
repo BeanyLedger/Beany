@@ -88,26 +88,37 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
   }
 }
 
-List<Transformer> buildNumberTransformerChain(String s, Decimal expectedValue) {
-  s = s.trim();
+class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
+  NumberTransformerBuilder();
 
-  var numberRegexp = RegExp(r'^-?\d+[,.\d]*[\d]+$');
-  if (!numberRegexp.hasMatch(s)) return [];
+  @override
+  String get typeId => 'NumberTransformerBuilder';
 
-  var numTransformer = isDecimalComma(s)
-      ? NumberTransformerDecimalComma()
-      : NumberTransformerDecimalPoint();
-  var num = numTransformer.transform(s);
+  @override
+  List<Object?> get props => [];
 
-  // Does not match what we want
-  if (num.abs() != expectedValue.abs()) {
-    return [];
+  @override
+  List<Transformer> _createTransformers(String input, Decimal output) {
+    var s = input.trim();
+
+    var numberRegexp = RegExp(r'^-?\d+[,.\d]*[\d]+$');
+    if (!numberRegexp.hasMatch(s)) return [];
+
+    var numTransformer = isDecimalComma(s)
+        ? NumberTransformerDecimalComma()
+        : NumberTransformerDecimalPoint();
+    var num = numTransformer.transform(s);
+
+    // Does not match what we want
+    if (num.abs() != output.abs()) {
+      return [];
+    }
+
+    if (num.signum != output.signum) {
+      return [numTransformer, NumberTransformerFlipSign()];
+    }
+    return [numTransformer];
   }
-
-  if (num.signum != expectedValue.signum) {
-    return [numTransformer, NumberTransformerFlipSign()];
-  }
-  return [numTransformer];
 }
 
 bool isDecimalComma(String s) {
