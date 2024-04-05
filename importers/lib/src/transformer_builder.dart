@@ -32,27 +32,46 @@ Transformer<String, Date>? buildDateTransformer(String s, Date expectedValue) {
   // Check for excel format
   var d = double.tryParse(s);
   if (d != null) {
-    print("A");
     var tr = DateTransformerExcel();
     if (tr.transform(s) == expectedValue) {
       return tr;
     }
-    print("Failed transforming");
-    print(tr.transform(s));
-  }
-
-  return null;
-
-  /*
-  // FIXME: We need to figure out a way to get the date format
-  // FIXME: Also handle the excel date format
-  try {
-    DateTime.parse(s);
-    return DateTransformerExcel();
-  } catch (e) {
     return null;
   }
-  */
+
+  var formats = [
+    "yyyy-MM-dd",
+    "dd-MM-yyyy",
+    "dd/MM/yyyy",
+    "dd-MMM-yyyy",
+    'MM/dd/yyyy',
+    "yyyy/MM/dd",
+    "MMddyyyy",
+    "ddMMyyyy",
+    "yyyyMMdd",
+    "MM-dd-yyyy",
+    "MM.dd.yyyy",
+    "dd.MM.yyyy",
+    "yyyy.MM.dd",
+    "MMM dd, yyyy",
+    "dd MMM yyyy",
+    "yyyy, MMM dd",
+    "MMM-dd-yyyy",
+    "yyyy-MMM-dd",
+    "dd/MM/yy",
+    "MM/dd/yy",
+  ];
+  for (var format in formats) {
+    try {
+      var tr = DateTransformerFormat(format);
+      if (tr.transform(s) == expectedValue) {
+        return tr;
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }
+  return null;
 }
 
 List<Transformer> buildNumberTransformerChain(String s, Decimal expectedValue) {
