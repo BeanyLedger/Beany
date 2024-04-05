@@ -27,51 +27,65 @@
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/csv_importer.dart';
 import 'package:decimal/decimal.dart';
+import 'package:equatable/equatable.dart';
 
-Transformer<String, Date>? buildDateTransformer(String s, Date expectedValue) {
-  // Check for excel format
-  var d = double.tryParse(s);
-  if (d != null) {
-    var tr = DateTransformerExcel();
-    if (tr.transform(s) == expectedValue) {
-      return tr;
-    }
-    return null;
-  }
+class DateTransformerBuilder extends TransformerBuilder<String, Date> {
+  DateTransformerBuilder();
 
-  var formats = [
-    "yyyy-MM-dd",
-    "dd-MM-yyyy",
-    "dd/MM/yyyy",
-    "dd-MMM-yyyy",
-    'MM/dd/yyyy',
-    "yyyy/MM/dd",
-    "MMddyyyy",
-    "ddMMyyyy",
-    "yyyyMMdd",
-    "MM-dd-yyyy",
-    "MM.dd.yyyy",
-    "dd.MM.yyyy",
-    "yyyy.MM.dd",
-    "MMM dd, yyyy",
-    "dd MMM yyyy",
-    "yyyy, MMM dd",
-    "MMM-dd-yyyy",
-    "yyyy-MMM-dd",
-    "dd/MM/yy",
-    "MM/dd/yy",
-  ];
-  for (var format in formats) {
-    try {
-      var tr = DateTransformerFormat(format);
-      if (tr.transform(s) == expectedValue) {
-        return tr;
+  @override
+  String get typeId => 'DateTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  List<Transformer> _createTransformers(String input, Date output) {
+    var s = input.trim();
+
+    // Check for excel format
+    var d = double.tryParse(s);
+    if (d != null) {
+      var tr = DateTransformerExcel();
+      if (tr.transform(s) == output) {
+        return [tr];
       }
-    } catch (e) {
-      // Ignore
+      return [];
     }
+
+    var formats = [
+      "yyyy-MM-dd",
+      "dd-MM-yyyy",
+      "dd/MM/yyyy",
+      "dd-MMM-yyyy",
+      'MM/dd/yyyy',
+      "yyyy/MM/dd",
+      "MMddyyyy",
+      "ddMMyyyy",
+      "yyyyMMdd",
+      "MM-dd-yyyy",
+      "MM.dd.yyyy",
+      "dd.MM.yyyy",
+      "yyyy.MM.dd",
+      "MMM dd, yyyy",
+      "dd MMM yyyy",
+      "yyyy, MMM dd",
+      "MMM-dd-yyyy",
+      "yyyy-MMM-dd",
+      "dd/MM/yy",
+      "MM/dd/yy",
+    ];
+    for (var format in formats) {
+      try {
+        var tr = DateTransformerFormat(format);
+        if (tr.transform(s) == output) {
+          return [tr];
+        }
+      } catch (e) {
+        // Ignore
+      }
+    }
+    return [];
   }
-  return null;
 }
 
 List<Transformer> buildNumberTransformerChain(String s, Decimal expectedValue) {
@@ -105,16 +119,72 @@ bool isDecimalComma(String s) {
   throw Exception('Cannot figure out if the number is decimal comma or point');
 }
 
+// Do for strings
+// try via trim
 
-// buildNumberTransformerChain
-// String input, Decimal output
-// -> Check if it matches the regexp for a number
-// -> See if Decimal point or comma, check against abs value
-// -> If sign is different, flip it
-
+// Do for
 
 // buildCsvIndexPosTransformer
 // Takes csvInput and the expected value with the type
 // This gives a csv chain
 
 // buildStringTransformerChain
+// do this for currencies
+
+abstract class TransformerBuilder<T, R> extends Equatable {
+  List<Transformer> build(T input, R output) {
+    final trChain = _createTransformers(input, output);
+
+    // Runtime type checks for the first and last transformers
+    if (trChain.isNotEmpty) {
+      final first = trChain.first;
+      final last = trChain.last;
+
+      // Validate the first transformer's input type
+      if (first.inputType != T) {
+        throw Exception(
+            'The first transformer ${first.typeId} expected ${first.inputType} instead of $T.');
+      }
+
+      // Validate the last transformer's output type
+      if (last.outputType != R) {
+        throw Exception(
+            'The last transformer ${last.typeId} produced ${last.outputType} instead of $R.');
+      }
+    }
+
+    return trChain;
+  }
+
+  List<Transformer> _createTransformers(T input, R output);
+
+  Type get inputType => T;
+  Type get outputType => R;
+
+  String get typeId;
+}
+
+class ListIteratorTransformerBuilder<T>
+    extends TransformerBuilder<List<String>, T> {
+  final TransformerBuilder<String, T> builder;
+
+  ListIteratorTransformerBuilder({required this.builder});
+
+  @override
+  String get typeId => 'ListIteratorTransformerBuilder';
+
+  @override
+  List<Object?> get props => [builder];
+
+  @override
+  List<Transformer> _createTransformers(List<String> input, T output) {
+    for (var i = 0; i < input.length; i++) {
+      var val = input[i];
+      var trChain = builder.build(val, output);
+      if (trChain.isNotEmpty) {
+        return [CsvIndexPosTransformer(i), ...trChain];
+      }
+    }
+    return [];
+  }
+}

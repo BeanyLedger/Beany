@@ -5,39 +5,82 @@ import 'package:beany_importer/src/transformer_builder.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
 
+class TestData<INP, OUT> {
+  final INP input;
+  final OUT expectedOutput;
+  final bool shouldFail;
+
+  TestData(this.input, this.expectedOutput, {this.shouldFail = false});
+}
+
 void main() {
-  test('Date Transformer Excel', () {
-    var inp = "45371.0";
-    var out = Date(2024, 03, 20);
+  group("Date Transformer", () {
+    var dateTestData = <TestData<String, Date>>[
+      TestData("45371.0", Date(2024, 03, 20)),
+      TestData("1.0", Date(2024, 03, 20), shouldFail: true),
+      TestData("31-Jan-2011", Date(2011, 01, 31)),
+    ];
 
-    var trChain = [buildDateTransformer(inp, out)!];
-    var actualOutput = applyTransformers<String, Date>(trChain, inp);
-    expect(actualOutput, out);
+    for (var data in dateTestData) {
+      test("Date Transformer ${data.input} -> ${data.expectedOutput}", () {
+        var builder = DateTransformerBuilder();
+        var trC = builder.build(data.input, data.expectedOutput);
+        if (data.shouldFail) {
+          expect(trC, isEmpty);
+        } else {
+          var out = applyTransformers(trC, data.input);
+          expect(out, data.expectedOutput);
+        }
+      });
+    }
   });
 
-  test('Date Transformer Excel Bad', () {
-    var inp = "1.0";
-    var out = Date(2024, 03, 20);
+  group("Number Transformer", () {
+    var numberTestData = <TestData<String, Decimal>>[
+      TestData("37.91", D("37.91")),
+      TestData("44.333,22", D("44333.22")),
+      TestData("22D", D("44333.22"), shouldFail: true),
+    ];
 
-    var tr = buildDateTransformer(inp, out);
-    expect(tr, isNull);
+    for (var data in numberTestData) {
+      test("Number Transformer ${data.input} -> ${data.expectedOutput}", () {
+        var trC = buildNumberTransformerChain(data.input, data.expectedOutput);
+        if (data.shouldFail) {
+          expect(trC, isEmpty);
+        } else {
+          var out = applyTransformers<String, Decimal>(trC, data.input);
+          expect(out, data.expectedOutput);
+        }
+      });
+    }
   });
 
-  test('Number Transformer', () {
-    var inp = "37.91";
-    var out = D("37.91");
+  group("CSV to Date Transformer Builder", () {
+    var csvTestData = <TestData<List<String>, Date>>[
+      TestData([
+        "45371.0",
+        "45371.0",
+        "ENDESA ENERGIA S.,Recibo de suministros",
+        "-37.91",
+        "4009.32"
+      ], Date(2024, 03, 20)),
+    ];
 
-    var trChain = buildNumberTransformerChain(inp, out);
-    var actualOutput = applyTransformers<String, Decimal>(trChain, inp);
-    expect(actualOutput, out);
-  });
-
-  test('Number Transformer with comma', () {
-    var inp = "44.333,22";
-    var out = D("44333.22");
-
-    var trChain = buildNumberTransformerChain(inp, out);
-    var actualOutput = applyTransformers<String, Decimal>(trChain, inp);
-    expect(actualOutput, out);
+    for (var data in csvTestData) {
+      test(
+          "List<String> to Date Transformer ${data.input} -> ${data.expectedOutput}",
+          () {
+        var builder = ListIteratorTransformerBuilder(
+          builder: DateTransformerBuilder(),
+        );
+        var trC = builder.build(data.input, data.expectedOutput);
+        if (data.shouldFail) {
+          expect(trC, isEmpty);
+        } else {
+          var out = applyTransformers(trC, data.input);
+          expect(out, data.expectedOutput);
+        }
+      });
+    }
   });
 }
