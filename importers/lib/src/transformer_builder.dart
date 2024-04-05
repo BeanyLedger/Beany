@@ -39,7 +39,7 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
   List<Object?> get props => [];
 
   @override
-  List<Transformer> _createTransformers(String input, Date output) {
+  Transformer<String, Date>? build(String input, Date output) {
     var s = input.trim();
 
     // Check for excel format
@@ -47,9 +47,9 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
     if (d != null) {
       var tr = DateTransformerExcel();
       if (tr.transform(s) == output) {
-        return [tr];
+        return tr;
       }
-      return [];
+      return null;
     }
 
     var formats = [
@@ -78,13 +78,13 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
       try {
         var tr = DateTransformerFormat(format);
         if (tr.transform(s) == output) {
-          return [tr];
+          return tr;
         }
       } catch (e) {
         // Ignore
       }
     }
-    return [];
+    return null;
   }
 }
 
@@ -98,11 +98,11 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
   List<Object?> get props => [];
 
   @override
-  List<Transformer> _createTransformers(String input, Decimal output) {
+  Transformer<String, Decimal>? build(String input, Decimal output) {
     var s = input.trim();
 
     var numberRegexp = RegExp(r'^-?\d+[,.\d]*[\d]+$');
-    if (!numberRegexp.hasMatch(s)) return [];
+    if (!numberRegexp.hasMatch(s)) return null;
 
     var numTransformer = isDecimalComma(s)
         ? NumberTransformerDecimalComma()
@@ -111,13 +111,15 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
 
     // Does not match what we want
     if (num.abs() != output.abs()) {
-      return [];
+      return null;
     }
 
     if (num.signum != output.signum) {
-      return [numTransformer, NumberTransformerFlipSign()];
+      return ChainedListTransformer(
+        [numTransformer, NumberTransformerFlipSign()],
+      );
     }
-    return [numTransformer];
+    return numTransformer;
   }
 }
 
@@ -143,31 +145,7 @@ bool isDecimalComma(String s) {
 // do this for currencies
 
 abstract class TransformerBuilder<T, R> extends Equatable {
-  List<Transformer> build(T input, R output) {
-    final trChain = _createTransformers(input, output);
-
-    // Runtime type checks for the first and last transformers
-    if (trChain.isNotEmpty) {
-      final first = trChain.first;
-      final last = trChain.last;
-
-      // Validate the first transformer's input type
-      if (first.inputType != T) {
-        throw Exception(
-            'The first transformer ${first.typeId} expected ${first.inputType} instead of $T.');
-      }
-
-      // Validate the last transformer's output type
-      if (last.outputType != R) {
-        throw Exception(
-            'The last transformer ${last.typeId} produced ${last.outputType} instead of $R.');
-      }
-    }
-
-    return trChain;
-  }
-
-  List<Transformer> _createTransformers(T input, R output);
+  Transformer<T, R>? build(T input, R output);
 
   Type get inputType => T;
   Type get outputType => R;
@@ -175,6 +153,9 @@ abstract class TransformerBuilder<T, R> extends Equatable {
   String get typeId;
 }
 
+// Maybe rename this to FindInListTransformerBuilder
+// and we can have strategies for finding the first correct value
+// vs the second or whatever
 class ListIteratorTransformerBuilder<T>
     extends TransformerBuilder<List<String>, T> {
   final TransformerBuilder<String, T> builder;
@@ -188,14 +169,33 @@ class ListIteratorTransformerBuilder<T>
   List<Object?> get props => [builder];
 
   @override
-  List<Transformer> _createTransformers(List<String> input, T output) {
+  Transformer<List<String>, T>? build(List<String> input, T output) {
     for (var i = 0; i < input.length; i++) {
       var val = input[i];
-      var trChain = builder.build(val, output);
-      if (trChain.isNotEmpty) {
-        return [CsvIndexPosTransformer(i), ...trChain];
+      var tr = builder.build(val, output);
+      if (tr != null) {
+        return ChainedListTransformer([
+          CsvIndexPosTransformer(i),
+          if (tr is ChainedListTransformer)
+            ...(tr as ChainedListTransformer).transformers,
+          if (tr is! ChainedListTransformer) tr,
+        ]);
       }
     }
-    return [];
+    return null;
   }
 }
+
+// For each Transformer
+// there needs to be similar TransformerBuilder
+
+
+
+// Instead of returning a list of transformers
+// Create a special ListChainTransformer
+// which takes a list of transformers
+// and runs them one after another!
+
+// The constructor of this ListChainTransformer can also validate
+// that the types match up for each node in this transformer
+

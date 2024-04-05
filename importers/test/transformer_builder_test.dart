@@ -1,6 +1,5 @@
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/misc/date.dart';
-import 'package:beany_importer/src/csv_importer.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
@@ -61,12 +60,11 @@ void main() {
           test("Number Transformer ${data.input} -> ${data.expectedOutput}",
               () {
             var builder = tbTest.builder;
-            var trC = builder.build(data.input, data.expectedOutput);
+            var tr = builder.build(data.input, data.expectedOutput);
             if (data.shouldFail) {
-              expect(trC, isEmpty);
+              expect(tr, isNull);
             } else {
-              var tr = ChainedListTransformer(trC);
-              var out = tr.transform(data.input);
+              var out = tr!.transform(data.input);
               expect(out, data.expectedOutput);
             }
           });
