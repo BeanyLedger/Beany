@@ -12,73 +12,36 @@ import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
+// Shouldn't this List<String> be just a template type?
 @immutable
 class PostingTransformer extends Equatable {
-  final List<Transformer> accountTransformers;
-  final List<Transformer> amountTransformers;
-  final List<Transformer> currencyTransformers;
-  final List<Transformer> costSpecTransformers;
+  final Transformer<List<String>, Account> accountTransformer;
+  final Transformer<List<String>, Decimal> amountTransformer;
+  final Transformer<List<String>, String> currencyTransformer;
+  final Transformer<List<String>, CostSpec>? costSpecTransformer;
 
   @override
   List<Object?> get props => [
-        accountTransformers,
-        amountTransformers,
-        currencyTransformers,
-        costSpecTransformers
+        accountTransformer,
+        amountTransformer,
+        currencyTransformer,
+        costSpecTransformer
       ];
 
   PostingTransformer({
-    required this.accountTransformers,
-    required this.amountTransformers,
-    required this.currencyTransformers,
-    this.costSpecTransformers = const [],
-  }) {
-    //
-    // Validate Inputs
-    //
-    if (accountTransformers.isEmpty) {
-      throw Exception('Empty Account transformers');
-    }
-    if (amountTransformers.isEmpty) {
-      throw Exception('Empty Amount transformers');
-    }
-    if (currencyTransformers.isEmpty) {
-      throw Exception('Empty Currency transformers');
-    }
-
-    //
-    // Validate Outputs
-    //
-    if (accountTransformers.last.outputType != Account) {
-      throw Exception('Invalid Account transformer');
-    }
-    if (amountTransformers.last.outputType != Decimal) {
-      throw Exception('Invalid Amount transformer');
-    }
-    if (currencyTransformers.last.outputType != String) {
-      throw Exception('Invalid Currency transformer');
-    }
-    if (costSpecTransformers.isNotEmpty &&
-        costSpecTransformers.last.outputType != CostSpec) {
-      throw Exception('Invalid CostSpec transformer');
-    }
-
-    //
-    // Validate Transformer Chains
-    //
-    validateTransformerChain(accountTransformers);
-    validateTransformerChain(amountTransformers);
-    validateTransformerChain(currencyTransformers);
-    validateTransformerChain(costSpecTransformers);
-  }
+    required this.accountTransformer,
+    required this.amountTransformer,
+    required this.currencyTransformer,
+    this.costSpecTransformer,
+  });
 
   PostingSpec apply(List<String> values) {
-    var account = applyTransformers(accountTransformers, values);
-    var amount = applyTransformers(amountTransformers, values);
-    var currency = applyTransformers(currencyTransformers, values);
-    var costSpec = costSpecTransformers.isEmpty
-        ? null
-        : applyTransformers(costSpecTransformers, values);
+    var account = accountTransformer.transform(values);
+    // This should probably be combined into a single transformer
+    // as the currency can often be in the same column as the amount
+    var amount = amountTransformer.transform(values);
+    var currency = currencyTransformer.transform(values);
+    var costSpec = costSpecTransformer?.transform(values);
 
     return PostingSpec(account, Amount(amount, currency), costSpec: costSpec);
   }
@@ -86,46 +49,20 @@ class PostingTransformer extends Equatable {
 
 @immutable
 class MetaDataTransformer extends Equatable {
-  final List<Transformer> keyTransformers;
-  final List<Transformer> valueTransformers;
+  final Transformer<List<String>, String> keyTransformer;
+  final Transformer<List<String>, String> valueTransformer;
 
   @override
-  List<Object?> get props => [keyTransformers, valueTransformers];
+  List<Object?> get props => [keyTransformer, valueTransformer];
 
   MetaDataTransformer({
-    required this.keyTransformers,
-    required this.valueTransformers,
-  }) {
-    //
-    // Validate Inputs
-    //
-    if (keyTransformers.isEmpty) {
-      throw Exception('Empty Key transformers');
-    }
-    if (valueTransformers.isEmpty) {
-      throw Exception('Empty Value transformers');
-    }
-
-    //
-    // Validate Outputs
-    //
-    if (keyTransformers.last.outputType != String) {
-      throw Exception('Invalid Key transformer');
-    }
-    if (valueTransformers.last.outputType != String) {
-      throw Exception('Invalid Value transformer');
-    }
-
-    //
-    // Validate Transformer Chains
-    //
-    validateTransformerChain(keyTransformers);
-    validateTransformerChain(valueTransformers);
-  }
+    required this.keyTransformer,
+    required this.valueTransformer,
+  });
 
   Map<String, MetaValue> apply(List<String> values) {
-    var key = applyTransformers(keyTransformers, values);
-    var value = applyTransformers(valueTransformers, values);
+    var key = keyTransformer.transform(values);
+    var value = valueTransformer.transform(values);
 
     return {key: MetaValue(stringValue: value)};
   }
@@ -133,11 +70,12 @@ class MetaDataTransformer extends Equatable {
 
 @immutable
 class TransactionTransformer extends Equatable {
-  final List<Transformer> dateTransformers;
-  final List<Transformer> narrationTransformers;
-  final List<Transformer> payeeTransformers;
-  final List<Transformer> commentsTransformers;
+  final Transformer<List<String>, Date> dateTransformers;
+  final Transformer<List<String>, String> narrationTransformers;
+  final Transformer<List<String>, String>? payeeTransformers;
+  final Transformer<List<String>, String>? commentsTransformers;
 
+  // This should also ideally just be a single Transformer, no need for multiple
   final List<MetaDataTransformer> metaTransformers;
   final List<PostingTransformer> postingTransformers;
 
@@ -154,57 +92,17 @@ class TransactionTransformer extends Equatable {
   TransactionTransformer({
     required this.dateTransformers,
     required this.narrationTransformers,
-    this.payeeTransformers = const [],
-    this.commentsTransformers = const [],
+    this.payeeTransformers,
+    this.commentsTransformers,
     this.metaTransformers = const [],
     required this.postingTransformers,
-  }) {
-    //
-    // Validate Inputs
-    //
-    if (dateTransformers.isEmpty) {
-      throw Exception('Empty Date transformers');
-    }
-    if (narrationTransformers.isEmpty) {
-      throw Exception('Empty Narration transformers');
-    }
-
-    //
-    // Validate Outputs
-    //
-    if (dateTransformers.last.outputType != Date) {
-      throw Exception('Invalid date transformer');
-    }
-    if (narrationTransformers.last.outputType != String) {
-      throw Exception('Invalid narration transformer');
-    }
-    if (payeeTransformers.isNotEmpty &&
-        payeeTransformers.last.outputType != String) {
-      throw Exception('Invalid payee transformer');
-    }
-    if (commentsTransformers.isNotEmpty &&
-        commentsTransformers.last.outputType != String) {
-      throw Exception('Invalid comments transformer');
-    }
-
-    //
-    // Validate Chains
-    //
-    validateTransformerChain(dateTransformers);
-    validateTransformerChain(narrationTransformers);
-    validateTransformerChain(payeeTransformers);
-    validateTransformerChain(commentsTransformers);
-  }
+  });
 
   TransactionSpec apply(List<String> values) {
-    var date = applyTransformers(dateTransformers, values);
-    var narration = applyTransformers(narrationTransformers, values);
-    var payee = payeeTransformers.isEmpty
-        ? null
-        : applyTransformers(payeeTransformers, values);
-    var comment = commentsTransformers.isEmpty
-        ? null
-        : applyTransformers(commentsTransformers, values);
+    var date = dateTransformers.transform(values);
+    var narration = narrationTransformers.transform(values);
+    var payee = payeeTransformers?.transform(values);
+    var comment = commentsTransformers?.transform(values);
 
     return TransactionSpec(
       date,
@@ -223,30 +121,41 @@ class TransactionTransformer extends Equatable {
   }
 }
 
-void validateTransformerChain(List<Transformer> transformers) {
-  if (transformers.isEmpty) return;
+class ChainedListTransformer<T, R> extends Transformer<T, R> {
+  final List<Transformer> transformers;
 
-  var currentType = transformers.first.inputType;
-  for (var tr in transformers) {
-    if (tr.inputType != currentType) {
-      throw Exception(
-          'Invalid input type while validating transformers. ${tr.typeId} cannot accept $currentType. It needs ${tr.inputType}');
+  ChainedListTransformer(this.transformers) {
+    if (transformers.isEmpty) {
+      throw Exception('Empty transformers');
     }
-    currentType = tr.outputType;
+
+    var currentType = transformers.first.inputType;
+    for (var tr in transformers) {
+      if (tr.inputType != currentType) {
+        throw Exception(
+            'Invalid input type while validating transformers. ${tr.typeId} cannot accept $currentType. It needs ${tr.inputType}');
+      }
+      currentType = tr.outputType;
+    }
   }
-}
 
-R applyTransformers<T, R>(List<Transformer> transformers, T value) {
-  dynamic input = value;
-  for (var transformer in transformers) {
-    var output = transformer.transform(input);
-    input = output;
+  @override
+  R transform(T input) {
+    dynamic val = input;
+    for (var transformer in transformers) {
+      var output = transformer.transform(val);
+      val = output;
+    }
+
+    return val;
   }
 
-  return input;
-}
+  @override
+  String get typeId => 'ChainedListTransformer';
 
-// Maybe this can operate on the header instead of the index?
+  @override
+  List<Object?> get props => [transformers];
+}
 
 abstract class Transformer<T, R> extends Equatable {
   R transform(T input);
@@ -318,13 +227,13 @@ class DateTransformerFormat extends Transformer<String, Date> {
   List<Object?> get props => [format];
 }
 
-class StringTransformerFixed extends Transformer<void, String> {
+class StringTransformerFixed<T> extends Transformer<T, String> {
   final String fixedValue;
 
   StringTransformerFixed(this.fixedValue);
 
   @override
-  String transform(void input) {
+  String transform(T input) {
     return fixedValue;
   }
 
@@ -348,13 +257,13 @@ class StringTrimmingTransformer extends Transformer<String, String> {
   List<Object?> get props => [];
 }
 
-class AccountTransformerFixed extends Transformer<void, Account> {
+class AccountTransformerFixed<T> extends Transformer<T, Account> {
   final String fixedValue;
 
   AccountTransformerFixed(this.fixedValue);
 
   @override
-  Account transform(void input) {
+  Account transform(T input) {
     return Account(fixedValue);
   }
 

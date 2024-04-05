@@ -65,7 +65,8 @@ void main() {
             if (data.shouldFail) {
               expect(trC, isEmpty);
             } else {
-              var out = applyTransformers(trC, data.input);
+              var tr = ChainedListTransformer(trC);
+              var out = tr.transform(data.input);
               expect(out, data.expectedOutput);
             }
           });

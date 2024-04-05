@@ -11,19 +11,20 @@ void main() {
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
-      narrationTransformers: [CsvIndexPosTransformer(2)],
-      commentsTransformers: [CsvIndexPosTransformer(3)],
+      dateTransformers: ChainedListTransformer([
+        CsvIndexPosTransformer(0),
+        DateTransformerExcel(),
+      ]),
+      narrationTransformers: CsvIndexPosTransformer(2),
+      commentsTransformers: CsvIndexPosTransformer(3),
       postingTransformers: [
         PostingTransformer(
-          accountTransformers: [
-            AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
-          ],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(4),
-            NumberTransformerDecimalPoint()
-          ],
-          currencyTransformers: [StringTransformerFixed('EUR')],
+            NumberTransformerDecimalPoint(),
+          ]),
+          currencyTransformer: StringTransformerFixed('EUR'),
         ),
       ],
     );
@@ -31,7 +32,7 @@ void main() {
     final expectedOutput = """
 2024-03-20 * "ENDESA ENERGIA S."
   ; Recibo de suministros
-  Assets:Personal:Spain:LaCaixa   -37.91 EUR
+  Assets:LaCaixa   -37.91 EUR
 """;
 
     var actualOutput = render(importer.apply(input));
@@ -44,32 +45,32 @@ void main() {
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: [
+      dateTransformers: ChainedListTransformer([
         CsvIndexPosTransformer(3),
-        DateTransformerFormat('yyyy-MM-dd')
-      ],
-      narrationTransformers: [
+        DateTransformerFormat('yyyy-MM-dd'),
+      ]),
+      narrationTransformers: ChainedListTransformer([
         CsvIndexPosTransformer(1),
-        StringTrimmingTransformer()
-      ],
+        StringTrimmingTransformer(),
+      ]),
       metaTransformers: [
         MetaDataTransformer(
-          keyTransformers: [StringTransformerFixed('orderId')],
-          valueTransformers: [CsvIndexPosTransformer(0)],
+          keyTransformer: StringTransformerFixed('orderId'),
+          valueTransformer: CsvIndexPosTransformer(0),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
-          accountTransformers: [AccountTransformerFixed("Expenses:Amazon")],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Expenses:Amazon"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(4),
             StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
-            NumberTransformerDecimalComma()
-          ],
-          currencyTransformers: [
+            NumberTransformerDecimalComma(),
+          ]),
+          currencyTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(4),
             StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
-          ],
+          ]),
         ),
       ],
     );
@@ -91,26 +92,26 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: [
+      dateTransformers: ChainedListTransformer([
         CsvIndexPosTransformer(1),
-        DateTransformerFormat('yyyy-MM-dd HH:mm:ss')
-      ],
-      narrationTransformers: [CsvIndexPosTransformer(0)],
-      payeeTransformers: [CsvIndexPosTransformer(13)],
+        DateTransformerFormat('yyyy-MM-dd HH:mm:ss'),
+      ]),
+      narrationTransformers: CsvIndexPosTransformer(0),
+      payeeTransformers: CsvIndexPosTransformer(13),
       metaTransformers: [
         MetaDataTransformer(
-          keyTransformers: [StringTransformerFixed('id')],
-          valueTransformers: [CsvIndexPosTransformer(14)],
+          keyTransformer: StringTransformerFixed('id'),
+          valueTransformer: CsvIndexPosTransformer(14),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
-          accountTransformers: [AccountTransformerFixed("Assets:N26")],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Assets:N26"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(9),
-            NumberTransformerDecimalPoint()
-          ],
-          currencyTransformers: [StringTransformerFixed('EUR')],
+            NumberTransformerDecimalPoint(),
+          ]),
+          currencyTransformer: StringTransformerFixed('EUR'),
         ),
       ],
     );
@@ -132,35 +133,35 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: [
+      dateTransformers: ChainedListTransformer([
         CsvIndexPosTransformer(1),
-        DateTransformerFormat('yyyy-MM-dd HH:mm:ss')
-      ],
-      narrationTransformers: [CsvIndexPosTransformer(0)],
-      payeeTransformers: [CsvIndexPosTransformer(4)],
+        DateTransformerFormat('yyyy-MM-dd HH:mm:ss'),
+      ]),
+      narrationTransformers: CsvIndexPosTransformer(0),
+      payeeTransformers: CsvIndexPosTransformer(4),
       metaTransformers: [
         MetaDataTransformer(
-          keyTransformers: [StringTransformerFixed('isin')],
-          valueTransformers: [CsvIndexPosTransformer(2)],
+          keyTransformer: StringTransformerFixed('isin'),
+          valueTransformer: CsvIndexPosTransformer(2),
         ),
         MetaDataTransformer(
-          keyTransformers: [StringTransformerFixed('id')],
-          valueTransformers: [CsvIndexPosTransformer(14)],
+          keyTransformer: StringTransformerFixed('id'),
+          valueTransformer: CsvIndexPosTransformer(14),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
-          accountTransformers: [AccountTransformerFixed("Assets:N26")],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Assets:N26"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(5),
-            NumberTransformerDecimalPoint()
-          ],
-          currencyTransformers: [StringTransformerFixed('VUSA')],
-          costSpecTransformers: [
+            NumberTransformerDecimalPoint(),
+          ]),
+          currencyTransformer: StringTransformerFixed('VUSA'),
+          costSpecTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(9),
             NumberTransformerDecimalPoint(),
             CostSpecTotalTransformer(currency: 'EUR'),
-          ],
+          ]),
         ),
       ],
     );
@@ -183,36 +184,32 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
-      dateTransformers: [
-        CsvIndexPosTransformer(3),
-        DateTransformerFormat('yyyy-MM-dd')
-      ],
-      narrationTransformers: [CsvIndexPosTransformer(12)],
+      dateTransformers: ChainedListTransformer(
+          [CsvIndexPosTransformer(3), DateTransformerFormat('yyyy-MM-dd')]),
+      narrationTransformers: CsvIndexPosTransformer(12),
       metaTransformers: [
         MetaDataTransformer(
-          keyTransformers: [StringTransformerFixed('id')],
-          valueTransformers: [CsvIndexPosTransformer(0)],
+          keyTransformer: StringTransformerFixed('id'),
+          valueTransformer: CsvIndexPosTransformer(0),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
-          accountTransformers: [AccountTransformerFixed("Assets:Wise")],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Assets:Wise"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(10),
             NumberTransformerDecimalPoint(),
             NegativeNumberTransformer(),
-          ],
-          currencyTransformers: [CsvIndexPosTransformer(11)],
+          ]),
+          currencyTransformer: CsvIndexPosTransformer(11),
         ),
         PostingTransformer(
-          accountTransformers: [
-            AccountTransformerFixed("Expenses:BankCharges")
-          ],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Expenses:BankCharges"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(5),
-            NumberTransformerDecimalPoint()
-          ],
-          currencyTransformers: [CsvIndexPosTransformer(6)],
+            NumberTransformerDecimalPoint(),
+          ]),
+          currencyTransformer: CsvIndexPosTransformer(6),
         ),
       ],
     );
@@ -230,36 +227,38 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
 
   test('operator ==', () {
     final importer1 = TransactionTransformer(
-      dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
-      narrationTransformers: [CsvIndexPosTransformer(2)],
-      commentsTransformers: [CsvIndexPosTransformer(3)],
+      dateTransformers: ChainedListTransformer([
+        CsvIndexPosTransformer(0),
+        DateTransformerExcel(),
+      ]),
+      narrationTransformers: CsvIndexPosTransformer(2),
+      commentsTransformers: CsvIndexPosTransformer(3),
       postingTransformers: [
         PostingTransformer(
-          accountTransformers: [
-            AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
-          ],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(4),
-            NumberTransformerDecimalPoint()
-          ],
-          currencyTransformers: [StringTransformerFixed('EUR')],
+            NumberTransformerDecimalPoint(),
+          ]),
+          currencyTransformer: StringTransformerFixed('EUR'),
         ),
       ],
     );
     final importer2 = TransactionTransformer(
-      dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
-      narrationTransformers: [CsvIndexPosTransformer(2)],
-      commentsTransformers: [CsvIndexPosTransformer(3)],
+      dateTransformers: ChainedListTransformer([
+        CsvIndexPosTransformer(0),
+        DateTransformerExcel(),
+      ]),
+      narrationTransformers: CsvIndexPosTransformer(2),
+      commentsTransformers: CsvIndexPosTransformer(3),
       postingTransformers: [
         PostingTransformer(
-          accountTransformers: [
-            AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
-          ],
-          amountTransformers: [
+          accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
+          amountTransformer: ChainedListTransformer([
             CsvIndexPosTransformer(4),
-            NumberTransformerDecimalPoint()
-          ],
-          currencyTransformers: [StringTransformerFixed('EUR')],
+            NumberTransformerDecimalPoint(),
+          ]),
+          currencyTransformer: StringTransformerFixed('EUR'),
         ),
       ],
     );
