@@ -1,5 +1,6 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/cost_spec.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/transaction.dart';
@@ -9,20 +10,18 @@ import 'package:intl/intl.dart';
 
 import 'package:meta/meta.dart';
 
-// part 'csv_importer.g.dart';
-
-void trainImporter(List<dynamic> csvValues, TransactionSpec expectedTr) {}
-
 @immutable
 class PostingTransformer {
   final List<Transformer> accountTransformers;
   final List<Transformer> amountTransformers;
   final List<Transformer> currencyTransformers;
+  final List<Transformer> costSpecTransformers;
 
   PostingTransformer({
     required this.accountTransformers,
     required this.amountTransformers,
     required this.currencyTransformers,
+    this.costSpecTransformers = const [],
   }) {
     //
     // Validate Inputs
@@ -49,14 +48,29 @@ class PostingTransformer {
     if (currencyTransformers.last.outputType != String) {
       throw Exception('Invalid Currency transformer');
     }
+    if (costSpecTransformers.isNotEmpty &&
+        costSpecTransformers.last.outputType != CostSpec) {
+      throw Exception('Invalid CostSpec transformer');
+    }
+
+    //
+    // Validate Transformer Chains
+    //
+    validateTransformerChain(accountTransformers);
+    validateTransformerChain(amountTransformers);
+    validateTransformerChain(currencyTransformers);
+    validateTransformerChain(costSpecTransformers);
   }
 
   PostingSpec apply(List<String> values) {
     var account = applyTransformers(accountTransformers, values);
     var amount = applyTransformers(amountTransformers, values);
     var currency = applyTransformers(currencyTransformers, values);
+    var costSpec = costSpecTransformers.isEmpty
+        ? null
+        : applyTransformers(costSpecTransformers, values);
 
-    return PostingSpec(account, Amount(amount, currency));
+    return PostingSpec(account, Amount(amount, currency), costSpec: costSpec);
   }
 }
 
@@ -129,6 +143,18 @@ class TransactionTransformer {
         meta1ValueTransformer.last.outputType != String) {
       throw Exception('Invalid meta1Value transformer');
     }
+
+    //
+    // Validate Chains
+    //
+    validateTransformerChain(dateTransformers);
+    validateTransformerChain(narrationTransformers);
+    validateTransformerChain(payeeTransformers);
+    validateTransformerChain(commentsTransformers);
+    validateTransformerChain(meta0KeyTransformer);
+    validateTransformerChain(meta0ValueTransformer);
+    validateTransformerChain(meta1KeyTransformer);
+    validateTransformerChain(meta1ValueTransformer);
   }
 
   TransactionSpec apply(List<String> values) {
@@ -173,6 +199,19 @@ class TransactionTransformer {
         for (var transformer in postingTransformers) transformer.apply(values),
       ],
     );
+  }
+}
+
+void validateTransformerChain(List<Transformer> transformers) {
+  if (transformers.isEmpty) return;
+
+  var currentType = transformers.first.inputType;
+  for (var tr in transformers) {
+    if (tr.inputType != currentType) {
+      throw Exception(
+          'Invalid input type while validating transformers. ${tr.typeId} cannot accept $currentType. It needs ${tr.inputType}');
+    }
+    currentType = tr.outputType;
   }
 }
 
@@ -351,6 +390,20 @@ class StringSplittingTransformer extends Transformer<String, String> {
 
   @override
   String get typeId => 'StringSplittingTransformer';
+}
+
+class CostSpecTotalTransformer extends Transformer<Decimal, CostSpec> {
+  final Currency currency;
+
+  CostSpecTotalTransformer({required this.currency});
+
+  @override
+  CostSpec transform(Decimal input) {
+    return CostSpec(amountTotal: Amount(input, currency));
+  }
+
+  @override
+  String get typeId => 'CostSpecTotalTransformer';
 }
 
 // After that we need to add some kind of decision tree to figure out which model to use based on the input

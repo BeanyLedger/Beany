@@ -120,6 +120,51 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
     expect(actualOutput, _format(expectedOutput));
   });
 
+  test('N26 Market Buy', () {
+    var csvInput = """
+Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.0000000000,62.43,GBP,0.83977,744.47,,,,,EOF1828459892,1.12
+""";
+    final input = parseCsvRow0(csvInput);
+
+    final importer = TransactionTransformer(
+      dateTransformers: [
+        CsvIndexPosTransformer(1),
+        DateTransformerFormat('yyyy-MM-dd HH:mm:ss')
+      ],
+      narrationTransformers: [CsvIndexPosTransformer(0)],
+      payeeTransformers: [CsvIndexPosTransformer(4)],
+      meta0KeyTransformer: [StringTransformerFixed('isin')],
+      meta0ValueTransformer: [CsvIndexPosTransformer(2)],
+      meta1KeyTransformer: [StringTransformerFixed('id')],
+      meta1ValueTransformer: [CsvIndexPosTransformer(14)],
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformers: [AccountTransformerFixed("Assets:N26")],
+          amountTransformers: [
+            CsvIndexPosTransformer(5),
+            NumberTransformerDecimalPoint()
+          ],
+          currencyTransformers: [StringTransformerFixed('VUSA')],
+          costSpecTransformers: [
+            CsvIndexPosTransformer(9),
+            NumberTransformerDecimalPoint(),
+            CostSpecTotalTransformer(currency: 'EUR'),
+          ],
+        ),
+      ],
+    );
+
+    final expectedOutput = """
+2022-03-11 * "Market buy" "Vanguard S&P 500 ETF"
+  isin: "IE00B3XXRP09"
+  id: "EOF1828459892"
+  Assets:N26  10.00 VUSA {{ 744.47 EUR }}
+""";
+
+    var actualOutput = render(importer.apply(input));
+    expect(actualOutput, _format(expectedOutput));
+  });
+
   test('Wise complex test', () {
     var csvInput = """
 "CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.07,EUR,,,"Vishesh Handa",13.25,EUR,Audible,14.38,USD,1.08530000,,
