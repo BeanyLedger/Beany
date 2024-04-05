@@ -1,11 +1,8 @@
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_core/render/render.dart';
 import 'package:beany_importer/src/csv_importer.dart';
-import 'package:beany_importer/src/wise.dart';
 import 'package:csv/csv.dart';
 import 'package:test/test.dart';
-
-var config = WiseConverterConfig("Assets:Wise", "Expenses:BankCharges");
 
 void main() {
   test('LaCaixa', () {
@@ -187,7 +184,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
             NumberTransformerDecimalPoint(),
             NegativeNumberTransformer(),
           ],
-          currencyTransformers: [StringTransformerFixed('EUR')],
+          currencyTransformers: [CsvIndexPosTransformer(11)],
         ),
         PostingTransformer(
           accountTransformers: [
@@ -197,7 +194,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
             CsvIndexPosTransformer(5),
             NumberTransformerDecimalPoint()
           ],
-          currencyTransformers: [StringTransformerFixed('EUR')],
+          currencyTransformers: [CsvIndexPosTransformer(6)],
         ),
       ],
     );
