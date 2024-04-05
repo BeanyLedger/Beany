@@ -8,14 +8,24 @@ import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
 
+import 'package:equatable/equatable.dart';
+
 import 'package:meta/meta.dart';
 
 @immutable
-class PostingTransformer {
+class PostingTransformer extends Equatable {
   final List<Transformer> accountTransformers;
   final List<Transformer> amountTransformers;
   final List<Transformer> currencyTransformers;
   final List<Transformer> costSpecTransformers;
+
+  @override
+  List<Object?> get props => [
+        accountTransformers,
+        amountTransformers,
+        currencyTransformers,
+        costSpecTransformers
+      ];
 
   PostingTransformer({
     required this.accountTransformers,
@@ -75,9 +85,12 @@ class PostingTransformer {
 }
 
 @immutable
-class MetaDataTransformer {
+class MetaDataTransformer extends Equatable {
   final List<Transformer> keyTransformers;
   final List<Transformer> valueTransformers;
+
+  @override
+  List<Object?> get props => [keyTransformers, valueTransformers];
 
   MetaDataTransformer({
     required this.keyTransformers,
@@ -119,7 +132,7 @@ class MetaDataTransformer {
 }
 
 @immutable
-class TransactionTransformer {
+class TransactionTransformer extends Equatable {
   final List<Transformer> dateTransformers;
   final List<Transformer> narrationTransformers;
   final List<Transformer> payeeTransformers;
@@ -127,6 +140,16 @@ class TransactionTransformer {
 
   final List<MetaDataTransformer> metaTransformers;
   final List<PostingTransformer> postingTransformers;
+
+  @override
+  List<Object?> get props => [
+        dateTransformers,
+        narrationTransformers,
+        payeeTransformers,
+        commentsTransformers,
+        metaTransformers,
+        postingTransformers,
+      ];
 
   TransactionTransformer({
     required this.dateTransformers,
@@ -225,7 +248,7 @@ T applyTransformers<T>(List<Transformer> transformers, List<String> values) {
 
 // Maybe this can operate on the header instead of the index?
 
-abstract class Transformer<T, R> {
+abstract class Transformer<T, R> extends Equatable {
   R transform(T input);
 
   Type get inputType => T;
@@ -246,6 +269,9 @@ class CsvIndexPosTransformer extends Transformer<List<String>, String> {
 
   @override
   String get typeId => 'CsvIndexPos';
+
+  @override
+  List<Object?> get props => [index];
 }
 
 class DateTransformerExcel extends Transformer<String, Date> {
@@ -267,6 +293,9 @@ class DateTransformerExcel extends Transformer<String, Date> {
 
   @override
   String get typeId => 'DateTransformerExcel';
+
+  @override
+  List<Object?> get props => [];
 }
 
 class DateTransformerFormat extends Transformer<String, Date> {
@@ -282,6 +311,9 @@ class DateTransformerFormat extends Transformer<String, Date> {
 
   @override
   String get typeId => 'DateTransformerFormat';
+
+  @override
+  List<Object?> get props => [format];
 }
 
 class StringTransformerFixed extends Transformer<void, String> {
@@ -296,6 +328,9 @@ class StringTransformerFixed extends Transformer<void, String> {
 
   @override
   String get typeId => 'StringTransformerFixed';
+
+  @override
+  List<Object?> get props => [fixedValue];
 }
 
 class StringTrimmingTransformer extends Transformer<String, String> {
@@ -306,6 +341,9 @@ class StringTrimmingTransformer extends Transformer<String, String> {
 
   @override
   String get typeId => 'StringTrimmingTransformer';
+
+  @override
+  List<Object?> get props => [];
 }
 
 class AccountTransformerFixed extends Transformer<void, Account> {
@@ -320,6 +358,9 @@ class AccountTransformerFixed extends Transformer<void, Account> {
 
   @override
   String get typeId => 'AccountTransformerFixed';
+
+  @override
+  List<Object?> get props => [fixedValue];
 }
 
 class NumberTransformerDecimalComma extends Transformer<String, Decimal> {
@@ -332,6 +373,9 @@ class NumberTransformerDecimalComma extends Transformer<String, Decimal> {
 
   @override
   String get typeId => 'NumberTransformerDecimalComma';
+
+  @override
+  List<Object?> get props => [];
 }
 
 class NumberTransformerDecimalPoint extends Transformer<String, Decimal> {
@@ -344,6 +388,8 @@ class NumberTransformerDecimalPoint extends Transformer<String, Decimal> {
 
   @override
   String get typeId => 'NumberTransformerDecimalPoint';
+  @override
+  List<Object?> get props => [];
 }
 
 class PositiveNumberTransformer extends Transformer<Decimal, Decimal> {
@@ -354,6 +400,9 @@ class PositiveNumberTransformer extends Transformer<Decimal, Decimal> {
 
   @override
   String get typeId => 'PositiveNumberTransformer';
+
+  @override
+  List<Object?> get props => [];
 }
 
 class NegativeNumberTransformer extends Transformer<Decimal, Decimal> {
@@ -364,6 +413,9 @@ class NegativeNumberTransformer extends Transformer<Decimal, Decimal> {
 
   @override
   String get typeId => 'NegativeNumberTransformer';
+
+  @override
+  List<Object?> get props => [];
 }
 
 class StringSplittingTransformer extends Transformer<String, String> {
@@ -388,6 +440,9 @@ class StringSplittingTransformer extends Transformer<String, String> {
 
   @override
   String get typeId => 'StringSplittingTransformer';
+
+  @override
+  List<Object?> get props => [part, separator, expectedParts];
 }
 
 class CostSpecTotalTransformer extends Transformer<Decimal, CostSpec> {
@@ -402,6 +457,9 @@ class CostSpecTotalTransformer extends Transformer<Decimal, CostSpec> {
 
   @override
   String get typeId => 'CostSpecTotalTransformer';
+
+  @override
+  List<Object?> get props => [currency];
 }
 
 // After that we need to add some kind of decision tree to figure out which model to use based on the input

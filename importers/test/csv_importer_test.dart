@@ -227,6 +227,44 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
     var actualOutput = render(importer.apply(input));
     expect(actualOutput, _format(expectedOutput));
   });
+
+  test('operator ==', () {
+    final importer1 = TransactionTransformer(
+      dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
+      narrationTransformers: [CsvIndexPosTransformer(2)],
+      commentsTransformers: [CsvIndexPosTransformer(3)],
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformers: [
+            AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
+          ],
+          amountTransformers: [
+            CsvIndexPosTransformer(4),
+            NumberTransformerDecimalPoint()
+          ],
+          currencyTransformers: [StringTransformerFixed('EUR')],
+        ),
+      ],
+    );
+    final importer2 = TransactionTransformer(
+      dateTransformers: [CsvIndexPosTransformer(0), DateTransformerExcel()],
+      narrationTransformers: [CsvIndexPosTransformer(2)],
+      commentsTransformers: [CsvIndexPosTransformer(3)],
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformers: [
+            AccountTransformerFixed("Assets:Personal:Spain:LaCaixa")
+          ],
+          amountTransformers: [
+            CsvIndexPosTransformer(4),
+            NumberTransformerDecimalPoint()
+          ],
+          currencyTransformers: [StringTransformerFixed('EUR')],
+        ),
+      ],
+    );
+    expect(importer1 == importer2, isTrue);
+  });
 }
 
 List<String> parseCsvRow0(String csvInput) {
