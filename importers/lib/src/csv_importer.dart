@@ -16,7 +16,7 @@ import 'package:meta/meta.dart';
 class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
   final Transformer<Map<String, String>, Account> accountTransformer;
   final Transformer<Map<String, String>, Decimal>? amountTransformer;
-  final Transformer<Map<String, String>, String>? currencyTransformer;
+  final Transformer<Map<String, String>, Currency>? currencyTransformer;
   final Transformer<Map<String, String>, CostSpec>? costSpecTransformer;
 
   @override
@@ -423,6 +423,53 @@ class CostSpecTotalTransformer extends Transformer<Decimal, CostSpec> {
 
   @override
   List<Object?> get props => [currency];
+}
+
+class CurrencyTransformerFixed<T> extends Transformer<T, Currency> {
+  final Currency currency;
+
+  CurrencyTransformerFixed(this.currency);
+
+  @override
+  Currency transform(T input) {
+    return currency;
+  }
+
+  @override
+  String get typeId => 'CurrencyTransformerFixed';
+
+  @override
+  List<Object?> get props => [currency];
+}
+
+class CurrencyTransformer extends Transformer<String, Currency> {
+  @override
+  Currency transform(String input) {
+    if (resembesCurrency(input)) {
+      return input;
+    }
+
+    throw Exception('Invalid currency');
+  }
+
+  @override
+  String get typeId => 'CurrencyTransformer';
+
+  @override
+  List<Object?> get props => [];
+
+  static bool resembesCurrency(String input) {
+    input = input.trim();
+    if (input.isEmpty || input.length > 24) return false;
+
+    // From the beancount documentation
+    // Technically, a currency name may be up to 24 characters long, and it must
+    // start with a capital letter, must end with with a capital letter or number,
+    // and its other characters must only be capital letters, numbers, or punctuation
+    // limited to these characters: “'._-” (apostrophe, period, underscore, dash.
+    var currencyRegExp = RegExp('[A-Z][A-Z0-9\'._-]+[A-Z0-9]');
+    return currencyRegExp.hasMatch(input);
+  }
 }
 
 // After that we need to add some kind of decision tree to figure out which model to use based on the input

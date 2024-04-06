@@ -24,7 +24,7 @@ void main() {
             MapValueTransformer("4"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: StringTransformerFixed('EUR'),
+          currencyTransformer: CurrencyTransformerFixed('EUR'),
         ),
       ],
     );
@@ -70,6 +70,7 @@ void main() {
           currencyTransformer: SeqTransformer([
             MapValueTransformer("4"),
             StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
+            CurrencyTransformer(),
           ]),
         ),
       ],
@@ -111,7 +112,7 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
             MapValueTransformer("9"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: StringTransformerFixed('EUR'),
+          currencyTransformer: CurrencyTransformerFixed('EUR'),
         ),
       ],
     );
@@ -156,7 +157,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
             MapValueTransformer("5"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: StringTransformerFixed('VUSA'),
+          currencyTransformer: CurrencyTransformerFixed('VUSA'),
           costSpecTransformer: SeqTransformer([
             MapValueTransformer("9"),
             NumberTransformerDecimalPoint(),
@@ -198,7 +199,7 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
             NumberTransformerDecimalPoint(),
             NegativeNumberTransformer(),
           ]),
-          currencyTransformer: StringTransformerFixed('EUR'),
+          currencyTransformer: CurrencyTransformerFixed('EUR'),
         ),
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:Trading212"),
@@ -256,7 +257,10 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
             NumberTransformerDecimalPoint(),
             NegativeNumberTransformer(),
           ]),
-          currencyTransformer: MapValueTransformer("11"),
+          currencyTransformer: SeqTransformer([
+            MapValueTransformer("11"),
+            CurrencyTransformer(),
+          ]),
         ),
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Expenses:BankCharges"),
@@ -264,7 +268,10 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
             MapValueTransformer("5"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: MapValueTransformer("6"),
+          currencyTransformer: SeqTransformer([
+            MapValueTransformer("6"),
+            CurrencyTransformer(),
+          ]),
         ),
       ],
     );
@@ -295,7 +302,7 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
             MapValueTransformer("4"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: StringTransformerFixed('EUR'),
+          currencyTransformer: CurrencyTransformerFixed('EUR'),
         ),
       ],
     );
@@ -313,7 +320,7 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
             MapValueTransformer("4"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: StringTransformerFixed('EUR'),
+          currencyTransformer: CurrencyTransformerFixed('EUR'),
         ),
       ],
     );
