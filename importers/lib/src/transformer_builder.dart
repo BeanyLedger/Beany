@@ -156,11 +156,8 @@ abstract class TransformerBuilder<T, R> extends Equatable {
   String get typeId;
 }
 
-// Maybe rename this to FindInListTransformerBuilder
-// and we can have strategies for finding the first correct value
-// vs the second or whatever
-// FIXME: This clearly needs to be changed!!
-//        We don't exactly have a list any more, it's more a Map<String, String>
+/// Runs the given Transformer for each value in the map
+/// and if it finds a match, it adds a MapValueTransformer
 class MapIteratorTransformerBuilder<T>
     extends TransformerBuilder<Map<String, String>, T> {
   final TransformerBuilder<String, T> builder;
