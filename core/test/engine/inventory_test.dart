@@ -1,4 +1,3 @@
-import 'package:beany_core/core/core.dart';
 import 'package:beany_core/engine/inventory.dart';
 import 'package:test/test.dart';
 
