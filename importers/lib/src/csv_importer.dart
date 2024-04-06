@@ -15,22 +15,19 @@ import 'package:meta/meta.dart';
 @immutable
 class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
   final Transformer<Map<String, String>, Account> accountTransformer;
-  final Transformer<Map<String, String>, Decimal>? amountTransformer;
-  final Transformer<Map<String, String>, Currency>? currencyTransformer;
+  final Transformer<Map<String, String>, Amount>? amountTransformer;
   final Transformer<Map<String, String>, CostSpec>? costSpecTransformer;
 
   @override
   List<Object?> get props => [
         accountTransformer,
         amountTransformer,
-        currencyTransformer,
-        costSpecTransformer
+        costSpecTransformer,
       ];
 
   PostingTransformer({
     required this.accountTransformer,
     this.amountTransformer,
-    this.currencyTransformer,
     this.costSpecTransformer,
   });
 
@@ -38,15 +35,10 @@ class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
   PostingSpec transform(Map<String, String> input) {
     var values = input;
     var account = accountTransformer.transform(values);
-    // This should probably be combined into a single transformer
-    // as the currency can often be in the same column as the amount
     var amount = amountTransformer?.transform(values);
-    var currency = currencyTransformer?.transform(values);
     var costSpec = costSpecTransformer?.transform(values);
-    var amountT =
-        amount != null && currency != null ? Amount(amount, currency) : null;
 
-    return PostingSpec(account, amountT, costSpec: costSpec);
+    return PostingSpec(account, amount, costSpec: costSpec);
   }
 
   @override
@@ -445,6 +437,7 @@ class CurrencyTransformerFixed<T> extends Transformer<T, Currency> {
 class CurrencyTransformer extends Transformer<String, Currency> {
   @override
   Currency transform(String input) {
+    input = input.trim();
     if (resembesCurrency(input)) {
       return input;
     }
@@ -472,6 +465,25 @@ class CurrencyTransformer extends Transformer<String, Currency> {
   }
 }
 
-// After that we need to add some kind of decision tree to figure out which model to use based on the input
-// In the simplest case, it would be best to do it based on the existance / non-existance of some field
-// or based on the enum value of some field (how do we figure this one out?)
+class AmountTransformer extends Transformer<Map<String, String>, Amount> {
+  final Transformer<Map<String, String>, Decimal> numberTransformer;
+  final Transformer<Map<String, String>, Currency> currencyTransformer;
+
+  AmountTransformer({
+    required this.numberTransformer,
+    required this.currencyTransformer,
+  });
+
+  @override
+  Amount transform(Map<String, String> input) {
+    var amount = numberTransformer.transform(input);
+    var currency = currencyTransformer.transform(input);
+    return Amount(amount, currency);
+  }
+
+  @override
+  String get typeId => 'AmountTransformer';
+
+  @override
+  List<Object?> get props => [numberTransformer, currencyTransformer];
+}

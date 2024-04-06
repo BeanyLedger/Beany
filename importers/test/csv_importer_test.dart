@@ -20,11 +20,13 @@ void main() {
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("4"),
-            NumberTransformerDecimalPoint(),
-          ]),
-          currencyTransformer: CurrencyTransformerFixed('EUR'),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("4"),
+              NumberTransformerDecimalPoint(),
+            ]),
+            currencyTransformer: CurrencyTransformerFixed('EUR'),
+          ),
         ),
       ],
     );
@@ -62,16 +64,18 @@ void main() {
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Expenses:Amazon"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("4"),
-            StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
-            NumberTransformerDecimalComma(),
-          ]),
-          currencyTransformer: SeqTransformer([
-            MapValueTransformer("4"),
-            StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
-            CurrencyTransformer(),
-          ]),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("4"),
+              StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
+              NumberTransformerDecimalComma(),
+            ]),
+            currencyTransformer: SeqTransformer([
+              MapValueTransformer("4"),
+              StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
+              CurrencyTransformer(),
+            ]),
+          ),
         ),
       ],
     );
@@ -108,11 +112,13 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:N26"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("9"),
-            NumberTransformerDecimalPoint(),
-          ]),
-          currencyTransformer: CurrencyTransformerFixed('EUR'),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("9"),
+              NumberTransformerDecimalPoint(),
+            ]),
+            currencyTransformer: CurrencyTransformerFixed('EUR'),
+          ),
         ),
       ],
     );
@@ -153,11 +159,16 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:N26"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("5"),
-            NumberTransformerDecimalPoint(),
-          ]),
-          currencyTransformer: CurrencyTransformerFixed('VUSA'),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("5"),
+              NumberTransformerDecimalPoint(),
+            ]),
+            currencyTransformer: SeqTransformer([
+              MapValueTransformer("3"),
+              CurrencyTransformer(),
+            ]),
+          ),
           costSpecTransformer: SeqTransformer([
             MapValueTransformer("9"),
             NumberTransformerDecimalPoint(),
@@ -194,12 +205,14 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Income:Dividends"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("9"),
-            NumberTransformerDecimalPoint(),
-            NegativeNumberTransformer(),
-          ]),
-          currencyTransformer: CurrencyTransformerFixed('EUR'),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("9"),
+              NumberTransformerDecimalPoint(),
+              NumberTransformerFlipSign(),
+            ]),
+            currencyTransformer: CurrencyTransformerFixed('EUR'),
+          ),
         ),
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:Trading212"),
@@ -252,26 +265,30 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:Wise"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("10"),
-            NumberTransformerDecimalPoint(),
-            NegativeNumberTransformer(),
-          ]),
-          currencyTransformer: SeqTransformer([
-            MapValueTransformer("11"),
-            CurrencyTransformer(),
-          ]),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("10"),
+              NumberTransformerDecimalPoint(),
+              NumberTransformerFlipSign(),
+            ]),
+            currencyTransformer: SeqTransformer([
+              MapValueTransformer("11"),
+              CurrencyTransformer(),
+            ]),
+          ),
         ),
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Expenses:BankCharges"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("5"),
-            NumberTransformerDecimalPoint(),
-          ]),
-          currencyTransformer: SeqTransformer([
-            MapValueTransformer("6"),
-            CurrencyTransformer(),
-          ]),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("5"),
+              NumberTransformerDecimalPoint(),
+            ]),
+            currencyTransformer: SeqTransformer([
+              MapValueTransformer("6"),
+              CurrencyTransformer(),
+            ]),
+          ),
         ),
       ],
     );
@@ -298,11 +315,13 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("4"),
-            NumberTransformerDecimalPoint(),
-          ]),
-          currencyTransformer: CurrencyTransformerFixed('EUR'),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("4"),
+              NumberTransformerDecimalPoint(),
+            ]),
+            currencyTransformer: CurrencyTransformerFixed('EUR'),
+          ),
         ),
       ],
     );
@@ -316,11 +335,13 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
-          amountTransformer: SeqTransformer([
-            MapValueTransformer("4"),
-            NumberTransformerDecimalPoint(),
-          ]),
-          currencyTransformer: CurrencyTransformerFixed('EUR'),
+          amountTransformer: AmountTransformer(
+            numberTransformer: SeqTransformer([
+              MapValueTransformer("4"),
+              NumberTransformerDecimalPoint(),
+            ]),
+            currencyTransformer: CurrencyTransformerFixed('EUR'),
+          ),
         ),
       ],
     );
