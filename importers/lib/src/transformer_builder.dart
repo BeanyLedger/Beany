@@ -100,9 +100,7 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
   @override
   Transformer<String, Decimal>? build(String input, Decimal output) {
     var s = input.trim();
-
-    var numberRegexp = RegExp(r'^-?\d+[,.\d]*[\d]+$');
-    if (!numberRegexp.hasMatch(s)) return null;
+    if (!looksLikeNumber(s)) return null;
 
     var numTransformer = isDecimalComma(s)
         ? NumberTransformerDecimalComma()
@@ -120,6 +118,11 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
       );
     }
     return numTransformer;
+  }
+
+  static bool looksLikeNumber(String s) {
+    var numberRegexp = RegExp(r'^-?\d+[,.\d]*[\d]+$');
+    return numberRegexp.hasMatch(s);
   }
 }
 
