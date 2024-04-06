@@ -16,8 +16,8 @@ import 'package:meta/meta.dart';
 @immutable
 class PostingTransformer extends Transformer<List<String>, PostingSpec> {
   final Transformer<List<String>, Account> accountTransformer;
-  final Transformer<List<String>, Decimal> amountTransformer;
-  final Transformer<List<String>, String> currencyTransformer;
+  final Transformer<List<String>, Decimal>? amountTransformer;
+  final Transformer<List<String>, String>? currencyTransformer;
   final Transformer<List<String>, CostSpec>? costSpecTransformer;
 
   @override
@@ -30,8 +30,8 @@ class PostingTransformer extends Transformer<List<String>, PostingSpec> {
 
   PostingTransformer({
     required this.accountTransformer,
-    required this.amountTransformer,
-    required this.currencyTransformer,
+    this.amountTransformer,
+    this.currencyTransformer,
     this.costSpecTransformer,
   });
 
@@ -41,11 +41,13 @@ class PostingTransformer extends Transformer<List<String>, PostingSpec> {
     var account = accountTransformer.transform(values);
     // This should probably be combined into a single transformer
     // as the currency can often be in the same column as the amount
-    var amount = amountTransformer.transform(values);
-    var currency = currencyTransformer.transform(values);
+    var amount = amountTransformer?.transform(values);
+    var currency = currencyTransformer?.transform(values);
     var costSpec = costSpecTransformer?.transform(values);
+    var amountT =
+        amount != null && currency != null ? Amount(amount, currency) : null;
 
-    return PostingSpec(account, Amount(amount, currency), costSpec: costSpec);
+    return PostingSpec(account, amountT, costSpec: costSpec);
   }
 
   @override

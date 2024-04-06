@@ -177,6 +177,61 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
     expect(actualOutput, _format(expectedOutput));
   });
 
+  test("N26 Divident", () {
+    var csvInput = """
+Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dist)",10.0000000000,0.20,GBP,Not available,2.36,-0.00,GBP,,,,
+""";
+    final input = parseCsvRow0(csvInput);
+
+    final importer = TransactionTransformer(
+      dateTransformers: SeqTransformer([
+        CsvIndexPosTransformer(1),
+        DateTransformerFormat('yyyy-MM-dd'),
+      ]),
+      narrationTransformers: CsvIndexPosTransformer(0),
+      payeeTransformers: CsvIndexPosTransformer(4),
+      postingTransformers: [
+        PostingTransformer(
+          accountTransformer: AccountTransformerFixed("Income:Dividends"),
+          amountTransformer: SeqTransformer([
+            CsvIndexPosTransformer(9),
+            NumberTransformerDecimalPoint(),
+            NegativeNumberTransformer(),
+          ]),
+          currencyTransformer: StringTransformerFixed('EUR'),
+        ),
+        PostingTransformer(
+          accountTransformer: AccountTransformerFixed("Assets:Trading212"),
+        ),
+      ],
+    );
+
+    final expectedOutput = """
+2022-04-06 * "Dividend (Ordinary)" "Vanguard S&P 500 (Dist)"
+    Income:Dividends  -2.36 EUR
+    Assets:Trading212
+""";
+
+    var actualOutput = render(importer.transform(input));
+    expect(actualOutput, _format(expectedOutput));
+  });
+
+  // Add test for withdrawl
+  // Withdrawal,2023-02-10 12:11:34,,,,,,,,,982.96,"Sent to Bank Account BE70967069118425",4ba269d2-535c-4344-84d2-abc0e2022d7d,
+  /*
+2023-02-10 * "Withdrawal"
+    Assets:Personal:Trading212  -982.96 EUR
+    Assets:ZeroSum:BankTransfer
+  */
+
+  /*
+  Market sell,2023-02-10 12:10:50,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dist)",13.3000000000,63.52,GBP,0.88370,-26.63,954.52,,EOF2263033364,1.43
+2023-02-10 * "Market Sell" "Vanguard S&P 500 (Dist)"
+    Assets:Personal:Trading212  -13.30 IE00B3XXRP09 {}
+    Assets:Personal:Trading212  954.52 EUR
+    Income:Trading
+    */
+
   test('Wise complex test', () {
     var csvInput = """
 "CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.07,EUR,,,"Vishesh Handa",13.25,EUR,Audible,14.38,USD,1.08530000,,
