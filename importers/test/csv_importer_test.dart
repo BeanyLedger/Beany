@@ -35,7 +35,7 @@ void main() {
   Assets:LaCaixa   -37.91 EUR
 """;
 
-    var actualOutput = render(importer.apply(input));
+    var actualOutput = render(importer.transform(input));
     expect(actualOutput, _format(expectedOutput));
   });
 
@@ -81,7 +81,7 @@ void main() {
   Expenses:Amazon  2.34 EUR
 """;
 
-    var actualOutput = render(importer.apply(input));
+    var actualOutput = render(importer.transform(input));
     expect(actualOutput, _format(expectedOutput));
   });
 
@@ -122,7 +122,7 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
   Assets:N26  1000.00 EUR
 """;
 
-    var actualOutput = render(importer.apply(input));
+    var actualOutput = render(importer.transform(input));
     expect(actualOutput, _format(expectedOutput));
   });
 
@@ -173,7 +173,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
   Assets:N26  10.00 VUSA {{ 744.47 EUR }}
 """;
 
-    var actualOutput = render(importer.apply(input));
+    var actualOutput = render(importer.transform(input));
     expect(actualOutput, _format(expectedOutput));
   });
 
@@ -221,7 +221,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
   Expenses:BankCharges        0.07 EUR
 """;
 
-    var actualOutput = render(importer.apply(input));
+    var actualOutput = render(importer.transform(input));
     expect(actualOutput, _format(expectedOutput));
   });
 

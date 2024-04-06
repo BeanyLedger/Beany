@@ -59,7 +59,8 @@ class PostingTransformer extends Transformer<List<String>, PostingSpec> {
 }
 
 @immutable
-class MetaDataTransformer extends Equatable {
+class MetaDataTransformer
+    extends Transformer<List<String>, Map<String, MetaValue>> {
   final Transformer<List<String>, String> keyTransformer;
   final Transformer<List<String>, String> valueTransformer;
 
@@ -71,16 +72,22 @@ class MetaDataTransformer extends Equatable {
     required this.valueTransformer,
   });
 
-  Map<String, MetaValue> apply(List<String> values) {
+  @override
+  Map<String, MetaValue> transform(List<String> input) {
+    var values = input;
     var key = keyTransformer.transform(values);
     var value = valueTransformer.transform(values);
 
     return {key: MetaValue(stringValue: value)};
   }
+
+  @override
+  String get typeId => "MetaDataTransformer";
 }
 
 @immutable
-class TransactionTransformer extends Equatable {
+class TransactionTransformer
+    extends Transformer<List<String>, TransactionSpec> {
   final Transformer<List<String>, Date> dateTransformers;
   final Transformer<List<String>, String> narrationTransformers;
   final Transformer<List<String>, String>? payeeTransformers;
@@ -109,7 +116,9 @@ class TransactionTransformer extends Equatable {
     required this.postingTransformers,
   });
 
-  TransactionSpec apply(List<String> values) {
+  @override
+  TransactionSpec transform(List<String> input) {
+    var values = input;
     var date = dateTransformers.transform(values);
     var narration = narrationTransformers.transform(values);
     var payee = payeeTransformers?.transform(values);
@@ -123,13 +132,16 @@ class TransactionTransformer extends Equatable {
       comments: comment != null ? [comment] : [],
       meta: {
         for (var metaTransformer in metaTransformers)
-          ...metaTransformer.apply(values),
+          ...metaTransformer.transform(values),
       },
       postings:
           ParallelTransformer<List<String>, PostingSpec>(postingTransformers)
               .transform(values),
     );
   }
+
+  @override
+  String get typeId => 'TransactionTransformer';
 }
 
 class SeqTransformer<T, R> extends Transformer<T, R> {
