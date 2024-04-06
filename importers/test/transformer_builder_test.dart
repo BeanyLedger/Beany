@@ -37,18 +37,18 @@ void main() {
         TestData("22D", D("44333.22"), shouldFail: true),
       ],
     ),
-    TransformerBuilderTest<List<String>, Date>(
-      builder: ListIteratorTransformerBuilder(
+    TransformerBuilderTest<Map<String, String>, Date>(
+      builder: MapIteratorTransformerBuilder(
         builder: DateTransformerBuilder(),
       ),
       testData: [
-        TestData([
-          "45371.0",
-          "45371.0",
-          "ENDESA ENERGIA S.,Recibo de suministros",
-          "-37.91",
-          "4009.32"
-        ], Date(2024, 03, 20)),
+        TestData({
+          "0": "45371.0",
+          "1": "45371.0",
+          "2": "ENDESA ENERGIA S.,Recibo de suministros",
+          "3": "-37.91",
+          "4": "4009.32",
+        }, Date(2024, 03, 20)),
       ],
     ),
   ];

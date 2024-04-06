@@ -12,13 +12,12 @@ import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
-// Shouldn't this List<String> be just a template type?
 @immutable
-class PostingTransformer extends Transformer<List<String>, PostingSpec> {
-  final Transformer<List<String>, Account> accountTransformer;
-  final Transformer<List<String>, Decimal>? amountTransformer;
-  final Transformer<List<String>, String>? currencyTransformer;
-  final Transformer<List<String>, CostSpec>? costSpecTransformer;
+class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
+  final Transformer<Map<String, String>, Account> accountTransformer;
+  final Transformer<Map<String, String>, Decimal>? amountTransformer;
+  final Transformer<Map<String, String>, String>? currencyTransformer;
+  final Transformer<Map<String, String>, CostSpec>? costSpecTransformer;
 
   @override
   List<Object?> get props => [
@@ -36,7 +35,7 @@ class PostingTransformer extends Transformer<List<String>, PostingSpec> {
   });
 
   @override
-  PostingSpec transform(List<String> input) {
+  PostingSpec transform(Map<String, String> input) {
     var values = input;
     var account = accountTransformer.transform(values);
     // This should probably be combined into a single transformer
@@ -51,20 +50,14 @@ class PostingTransformer extends Transformer<List<String>, PostingSpec> {
   }
 
   @override
-  Type get inputType => List<String>;
-
-  @override
-  Type get outputType => PostingSpec;
-
-  @override
   String get typeId => 'PostingTransformer';
 }
 
 @immutable
 class MetaDataTransformer
-    extends Transformer<List<String>, Map<String, MetaValue>> {
-  final Transformer<List<String>, String> keyTransformer;
-  final Transformer<List<String>, String> valueTransformer;
+    extends Transformer<Map<String, String>, Map<String, MetaValue>> {
+  final Transformer<Map<String, String>, String> keyTransformer;
+  final Transformer<Map<String, String>, String> valueTransformer;
 
   @override
   List<Object?> get props => [keyTransformer, valueTransformer];
@@ -75,7 +68,7 @@ class MetaDataTransformer
   });
 
   @override
-  Map<String, MetaValue> transform(List<String> input) {
+  Map<String, MetaValue> transform(Map<String, String> input) {
     var values = input;
     var key = keyTransformer.transform(values);
     var value = valueTransformer.transform(values);
@@ -89,11 +82,11 @@ class MetaDataTransformer
 
 @immutable
 class TransactionTransformer
-    extends Transformer<List<String>, TransactionSpec> {
-  final Transformer<List<String>, Date> dateTransformers;
-  final Transformer<List<String>, String> narrationTransformers;
-  final Transformer<List<String>, String>? payeeTransformers;
-  final Transformer<List<String>, String>? commentsTransformers;
+    extends Transformer<Map<String, String>, TransactionSpec> {
+  final Transformer<Map<String, String>, Date> dateTransformers;
+  final Transformer<Map<String, String>, String> narrationTransformers;
+  final Transformer<Map<String, String>, String>? payeeTransformers;
+  final Transformer<Map<String, String>, String>? commentsTransformers;
 
   // This should also ideally just be a single Transformer, no need for multiple
   final List<MetaDataTransformer> metaTransformers;
@@ -119,7 +112,7 @@ class TransactionTransformer
   });
 
   @override
-  TransactionSpec transform(List<String> input) {
+  TransactionSpec transform(Map<String, String> input) {
     var values = input;
     var date = dateTransformers.transform(values);
     var narration = narrationTransformers.transform(values);
@@ -136,9 +129,9 @@ class TransactionTransformer
         for (var metaTransformer in metaTransformers)
           ...metaTransformer.transform(values),
       },
-      postings:
-          ParallelTransformer<List<String>, PostingSpec>(postingTransformers)
-              .transform(values),
+      postings: ParallelTransformer<Map<String, String>, PostingSpec>(
+              postingTransformers)
+          .transform(values),
     );
   }
 
@@ -210,21 +203,23 @@ abstract class Transformer<T, R> extends Equatable {
   String get typeId;
 }
 
-class CsvIndexPosTransformer extends Transformer<List<String>, String> {
-  final int index;
+/// Fetches the value for the given key from the map
+class MapValueTransformer extends Transformer<Map<String, String>, String> {
+  final String key;
 
-  CsvIndexPosTransformer(this.index);
+  MapValueTransformer(this.key);
 
   @override
-  String transform(List<String> input) {
-    return input[index];
+  String transform(Map<String, String> input) {
+    // FIXME: Throw a proper exception over here! For error handling
+    return input[key]!;
   }
 
   @override
-  String get typeId => 'CsvIndexPos';
+  String get typeId => 'MapValueTransformer';
 
   @override
-  List<Object?> get props => [index];
+  List<Object?> get props => [key];
 }
 
 class DateTransformerExcel extends Transformer<String, Date> {

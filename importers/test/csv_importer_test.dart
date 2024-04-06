@@ -1,7 +1,7 @@
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_core/render/render.dart';
 import 'package:beany_importer/src/csv_importer.dart';
-import 'package:csv/csv.dart';
+import 'package:beany_importer/src/csv_utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -12,16 +12,16 @@ void main() {
 
     final importer = TransactionTransformer(
       dateTransformers: SeqTransformer([
-        CsvIndexPosTransformer(0),
+        MapValueTransformer("0"),
         DateTransformerExcel(),
       ]),
-      narrationTransformers: CsvIndexPosTransformer(2),
-      commentsTransformers: CsvIndexPosTransformer(3),
+      narrationTransformers: MapValueTransformer("2"),
+      commentsTransformers: MapValueTransformer("3"),
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(4),
+            MapValueTransformer("4"),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: StringTransformerFixed('EUR'),
@@ -46,29 +46,29 @@ void main() {
 
     final importer = TransactionTransformer(
       dateTransformers: SeqTransformer([
-        CsvIndexPosTransformer(3),
+        MapValueTransformer("3"),
         DateTransformerFormat('yyyy-MM-dd'),
       ]),
       narrationTransformers: SeqTransformer([
-        CsvIndexPosTransformer(1),
+        MapValueTransformer("1"),
         StringTrimmingTransformer(),
       ]),
       metaTransformers: [
         MetaDataTransformer(
           keyTransformer: StringTransformerFixed('orderId'),
-          valueTransformer: CsvIndexPosTransformer(0),
+          valueTransformer: MapValueTransformer("0"),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Expenses:Amazon"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(4),
+            MapValueTransformer("4"),
             StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
             NumberTransformerDecimalComma(),
           ]),
           currencyTransformer: SeqTransformer([
-            CsvIndexPosTransformer(4),
+            MapValueTransformer("4"),
             StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
           ]),
         ),
@@ -93,22 +93,22 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
 
     final importer = TransactionTransformer(
       dateTransformers: SeqTransformer([
-        CsvIndexPosTransformer(1),
+        MapValueTransformer("1"),
         DateTransformerFormat('yyyy-MM-dd HH:mm:ss'),
       ]),
-      narrationTransformers: CsvIndexPosTransformer(0),
-      payeeTransformers: CsvIndexPosTransformer(13),
+      narrationTransformers: MapValueTransformer("0"),
+      payeeTransformers: MapValueTransformer("13"),
       metaTransformers: [
         MetaDataTransformer(
           keyTransformer: StringTransformerFixed('id'),
-          valueTransformer: CsvIndexPosTransformer(14),
+          valueTransformer: MapValueTransformer("14"),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:N26"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(9),
+            MapValueTransformer("9"),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: StringTransformerFixed('EUR'),
@@ -134,31 +134,31 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
 
     final importer = TransactionTransformer(
       dateTransformers: SeqTransformer([
-        CsvIndexPosTransformer(1),
+        MapValueTransformer("1"),
         DateTransformerFormat('yyyy-MM-dd HH:mm:ss'),
       ]),
-      narrationTransformers: CsvIndexPosTransformer(0),
-      payeeTransformers: CsvIndexPosTransformer(4),
+      narrationTransformers: MapValueTransformer("0"),
+      payeeTransformers: MapValueTransformer("4"),
       metaTransformers: [
         MetaDataTransformer(
           keyTransformer: StringTransformerFixed('isin'),
-          valueTransformer: CsvIndexPosTransformer(2),
+          valueTransformer: MapValueTransformer("2"),
         ),
         MetaDataTransformer(
           keyTransformer: StringTransformerFixed('id'),
-          valueTransformer: CsvIndexPosTransformer(14),
+          valueTransformer: MapValueTransformer("14"),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:N26"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(5),
+            MapValueTransformer("5"),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: StringTransformerFixed('VUSA'),
           costSpecTransformer: SeqTransformer([
-            CsvIndexPosTransformer(9),
+            MapValueTransformer("9"),
             NumberTransformerDecimalPoint(),
             CostSpecTotalTransformer(currency: 'EUR'),
           ]),
@@ -185,16 +185,16 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
 
     final importer = TransactionTransformer(
       dateTransformers: SeqTransformer([
-        CsvIndexPosTransformer(1),
+        MapValueTransformer("1"),
         DateTransformerFormat('yyyy-MM-dd'),
       ]),
-      narrationTransformers: CsvIndexPosTransformer(0),
-      payeeTransformers: CsvIndexPosTransformer(4),
+      narrationTransformers: MapValueTransformer("0"),
+      payeeTransformers: MapValueTransformer("4"),
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Income:Dividends"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(9),
+            MapValueTransformer("9"),
             NumberTransformerDecimalPoint(),
             NegativeNumberTransformer(),
           ]),
@@ -235,36 +235,36 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
   test('Wise complex test', () {
     var csvInput = """
 "CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.07,EUR,,,"Vishesh Handa",13.25,EUR,Audible,14.38,USD,1.08530000,,
- """;
+""";
     final input = parseCsvRow0(csvInput);
 
     final importer = TransactionTransformer(
       dateTransformers: SeqTransformer(
-          [CsvIndexPosTransformer(3), DateTransformerFormat('yyyy-MM-dd')]),
-      narrationTransformers: CsvIndexPosTransformer(12),
+          [MapValueTransformer("3"), DateTransformerFormat('yyyy-MM-dd')]),
+      narrationTransformers: MapValueTransformer("12"),
       metaTransformers: [
         MetaDataTransformer(
           keyTransformer: StringTransformerFixed('id'),
-          valueTransformer: CsvIndexPosTransformer(0),
+          valueTransformer: MapValueTransformer("0"),
         ),
       ],
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:Wise"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(10),
+            MapValueTransformer("10"),
             NumberTransformerDecimalPoint(),
             NegativeNumberTransformer(),
           ]),
-          currencyTransformer: CsvIndexPosTransformer(11),
+          currencyTransformer: MapValueTransformer("11"),
         ),
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Expenses:BankCharges"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(5),
+            MapValueTransformer("5"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: CsvIndexPosTransformer(6),
+          currencyTransformer: MapValueTransformer("6"),
         ),
       ],
     );
@@ -283,16 +283,16 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
   test('operator ==', () {
     final importer1 = TransactionTransformer(
       dateTransformers: SeqTransformer([
-        CsvIndexPosTransformer(0),
+        MapValueTransformer("0"),
         DateTransformerExcel(),
       ]),
-      narrationTransformers: CsvIndexPosTransformer(2),
-      commentsTransformers: CsvIndexPosTransformer(3),
+      narrationTransformers: MapValueTransformer("2"),
+      commentsTransformers: MapValueTransformer("3"),
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(4),
+            MapValueTransformer("4"),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: StringTransformerFixed('EUR'),
@@ -301,16 +301,16 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
     );
     final importer2 = TransactionTransformer(
       dateTransformers: SeqTransformer([
-        CsvIndexPosTransformer(0),
+        MapValueTransformer("0"),
         DateTransformerExcel(),
       ]),
-      narrationTransformers: CsvIndexPosTransformer(2),
-      commentsTransformers: CsvIndexPosTransformer(3),
+      narrationTransformers: MapValueTransformer("2"),
+      commentsTransformers: MapValueTransformer("3"),
       postingTransformers: [
         PostingTransformer(
           accountTransformer: AccountTransformerFixed("Assets:LaCaixa"),
           amountTransformer: SeqTransformer([
-            CsvIndexPosTransformer(4),
+            MapValueTransformer("4"),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: StringTransformerFixed('EUR'),
@@ -321,14 +321,8 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
   });
 }
 
-List<String> parseCsvRow0(String csvInput) {
-  final rows = const CsvToListConverter().convert(
-    csvInput,
-    eol: '\n',
-    fieldDelimiter: ',',
-    shouldParseNumbers: false,
-  );
-  return rows[0].map((e) => e.toString()).toList();
+Map<String, String> parseCsvRow0(String csvInput) {
+  return parseCsvToMapInventHeaders(csvInput)[0];
 }
 
 String _format(String input) {

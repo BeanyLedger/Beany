@@ -156,26 +156,30 @@ abstract class TransformerBuilder<T, R> extends Equatable {
 // Maybe rename this to FindInListTransformerBuilder
 // and we can have strategies for finding the first correct value
 // vs the second or whatever
-class ListIteratorTransformerBuilder<T>
-    extends TransformerBuilder<List<String>, T> {
+// FIXME: This clearly needs to be changed!!
+//        We don't exactly have a list any more, it's more a Map<String, String>
+class MapIteratorTransformerBuilder<T>
+    extends TransformerBuilder<Map<String, String>, T> {
   final TransformerBuilder<String, T> builder;
 
-  ListIteratorTransformerBuilder({required this.builder});
+  MapIteratorTransformerBuilder({required this.builder});
 
   @override
-  String get typeId => 'ListIteratorTransformerBuilder';
+  String get typeId => 'MapIteratorTransformerBuilder';
 
   @override
   List<Object?> get props => [builder];
 
   @override
-  Transformer<List<String>, T>? build(List<String> input, T output) {
-    for (var i = 0; i < input.length; i++) {
-      var val = input[i];
-      var tr = builder.build(val, output);
+  Transformer<Map<String, String>, T>? build(
+    Map<String, String> input,
+    T output,
+  ) {
+    for (var entry in input.entries) {
+      var tr = builder.build(entry.value, output);
       if (tr != null) {
         return SeqTransformer([
-          CsvIndexPosTransformer(i),
+          MapValueTransformer(entry.key),
           if (tr is SeqTransformer) ...(tr as SeqTransformer).transformers,
           if (tr is! SeqTransformer) tr,
         ]);
