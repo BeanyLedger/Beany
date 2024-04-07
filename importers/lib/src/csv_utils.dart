@@ -19,6 +19,10 @@ List<List<String>> parseCsvToList(String csvInput) {
 List<Map<String, String>> _convertCsvListToMap(List<List<String>> rows) {
   final headers = rows.first;
 
+  // for (var i = 0; i < headers.length; i++) {
+  //   print('$i: ${headers[i]}');
+  // }
+
   final List<Map<String, String>> result = [];
   for (var i = 1; i < rows.length; i++) {
     final row = rows[i];

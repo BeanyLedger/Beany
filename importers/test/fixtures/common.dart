@@ -29,4 +29,28 @@ class ImporterTestData {
     required this.csvHeaders,
     required this.decisionTree,
   });
+
+  String get csvInput {
+    var input = csvHeaders;
+    if (!input.endsWith('\n')) {
+      input += '\n';
+    }
+
+    var lines = trData.values.map((e) => e.csvInput.trim()).join('\n');
+    return input + lines;
+  }
+
+  String csvInputForTransformer(String transformerName) {
+    var input = csvHeaders;
+    if (!input.endsWith('\n')) {
+      input += '\n';
+    }
+
+    var lines = trData[transformerName]!.csvInput.trim();
+    return input + lines;
+  }
+
+  String get expectedOutput {
+    return trData.values.map((e) => e.output).join('\n');
+  }
 }

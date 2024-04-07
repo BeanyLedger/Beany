@@ -203,7 +203,10 @@ class MapValueTransformer extends Transformer<Map<String, String>, String> {
 
   @override
   String transform(Map<String, String> input) {
-    // FIXME: Throw a proper exception over here! For error handling
+    var val = input[key];
+    if (val == null) {
+      throw Exception('Key not found in the input map');
+    }
     return input[key]!;
   }
 

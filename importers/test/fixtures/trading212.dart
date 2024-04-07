@@ -3,6 +3,28 @@ import 'package:beany_importer/src/decision_tree.dart';
 
 import 'common.dart';
 
+/*
+Headers
+
+0: Action
+1: Time
+2: ISIN
+3: Ticker
+4: Name
+5: No. of shares
+6: Price / share
+7: Currency (Price / share)
+8: Exchange rate
+9: Total (EUR)
+10: Withholding tax
+11: Currency (Withholding tax)
+12: Charge amount (EUR)
+13: Notes
+14: ID
+15: Currency conversion fee (EUR)
+
+*/
+
 var _deposit = SingleTransformerTestData(
   name: 'Deposit',
   csvInput: """
@@ -15,15 +37,15 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
 """,
   transformer: TransactionTransformer(
     dateTransformers: SeqTransformer([
-      MapValueTransformer("1"),
+      MapValueTransformer("Time"),
       DateTransformerFormat('yyyy-MM-dd'),
     ]),
-    narrationTransformers: MapValueTransformer("0"),
-    payeeTransformers: MapValueTransformer("13"),
+    narrationTransformers: MapValueTransformer("Action"),
+    payeeTransformers: MapValueTransformer("Notes"),
     metaTransformers: [
       MetaDataTransformer(
         keyTransformer: StringTransformerFixed('id'),
-        valueTransformer: MapValueTransformer("14"),
+        valueTransformer: MapValueTransformer("ID"),
       ),
     ],
     postingTransformers: [
@@ -31,7 +53,7 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
         accountTransformer: AccountTransformerFixed("Assets:N26"),
         amountTransformer: AmountTransformer(
           numberTransformer: SeqTransformer([
-            MapValueTransformer("9"),
+            MapValueTransformer("Total (EUR)"),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: CurrencyTransformerFixed('EUR'),
@@ -54,19 +76,19 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
 """,
   transformer: TransactionTransformer(
     dateTransformers: SeqTransformer([
-      MapValueTransformer("1"),
+      MapValueTransformer("Time"),
       DateTransformerFormat('yyyy-MM-dd HH:mm:ss'),
     ]),
-    narrationTransformers: MapValueTransformer("0"),
-    payeeTransformers: MapValueTransformer("4"),
+    narrationTransformers: MapValueTransformer("Action"),
+    payeeTransformers: MapValueTransformer("Name"),
     metaTransformers: [
       MetaDataTransformer(
         keyTransformer: StringTransformerFixed('isin'),
-        valueTransformer: MapValueTransformer("2"),
+        valueTransformer: MapValueTransformer("ISIN"),
       ),
       MetaDataTransformer(
         keyTransformer: StringTransformerFixed('id'),
-        valueTransformer: MapValueTransformer("14"),
+        valueTransformer: MapValueTransformer("ID"),
       ),
     ],
     postingTransformers: [
@@ -74,16 +96,16 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
         accountTransformer: AccountTransformerFixed("Assets:N26"),
         amountTransformer: AmountTransformer(
           numberTransformer: SeqTransformer([
-            MapValueTransformer("5"),
+            MapValueTransformer("No. of shares"),
             NumberTransformerDecimalPoint(),
           ]),
           currencyTransformer: SeqTransformer([
-            MapValueTransformer("3"),
+            MapValueTransformer("Ticker"),
             CurrencyTransformer(),
           ]),
         ),
         costSpecTransformer: SeqTransformer([
-          MapValueTransformer("9"),
+          MapValueTransformer("Total (EUR)"),
           NumberTransformerDecimalPoint(),
           CostSpecTotalTransformer(currency: 'EUR'),
         ]),
@@ -104,17 +126,17 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
 """,
   transformer: TransactionTransformer(
     dateTransformers: SeqTransformer([
-      MapValueTransformer("1"),
+      MapValueTransformer("Time"),
       DateTransformerFormat('yyyy-MM-dd'),
     ]),
-    narrationTransformers: MapValueTransformer("0"),
-    payeeTransformers: MapValueTransformer("4"),
+    narrationTransformers: MapValueTransformer("Action"),
+    payeeTransformers: MapValueTransformer("Name"),
     postingTransformers: [
       PostingTransformer(
         accountTransformer: AccountTransformerFixed("Income:Dividends"),
         amountTransformer: AmountTransformer(
           numberTransformer: SeqTransformer([
-            MapValueTransformer("9"),
+            MapValueTransformer("Total (EUR)"),
             NumberTransformerDecimalPoint(),
             NumberTransformerFlipSign(),
           ]),
@@ -147,16 +169,16 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
 var trading212TestData = ImporterTestData(
   name: 'Trading212',
   trData: {
-    'Deposit': _deposit,
-    'MarketBuy': _marketBuy,
-    'Dividend': _dividend,
+    _deposit.name: _deposit,
+    _marketBuy.name: _marketBuy,
+    _dividend.name: _dividend,
   },
   csvHeaders: """
 Action,Time,ISIN,Ticker,Name,No. of shares,Price / share,Currency (Price / share),Exchange rate,Total (EUR),Withholding tax,Currency (Withholding tax),Charge amount (EUR),Notes,ID,Currency conversion fee (EUR)
 """,
   decisionTree: DecisionEnumNode(fieldName: 'Action', branches: {
-    'Deposit': DecisionLeafNode('Deposit'),
-    'Dividend (Ordinary)': DecisionLeafNode('Dividend'),
-    'Market buy': DecisionLeafNode('MarketBuy'),
+    'Deposit': DecisionLeafNode(_deposit.name),
+    'Dividend (Ordinary)': DecisionLeafNode(_dividend.name),
+    'Market buy': DecisionLeafNode(_marketBuy.name),
   }),
 );

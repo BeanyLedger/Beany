@@ -14,7 +14,8 @@ void main() {
     group(fixture.name, () {
       for (var trTest in fixture.trData.values) {
         test(trTest.name, () {
-          final input = _parseCsvRow0(trTest.csvInput);
+          final csvInput = fixture.csvInputForTransformer(trTest.name);
+          final input = parseCsvToMap(csvInput).first;
 
           var t = trTest.transformer;
           var actualOutput = render(t.transform(input));
@@ -23,10 +24,6 @@ void main() {
       }
     });
   }
-}
-
-Map<String, String> _parseCsvRow0(String csvInput) {
-  return parseCsvToMapInventHeaders(csvInput)[0];
 }
 
 String _format(String input) {
