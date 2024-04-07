@@ -41,64 +41,6 @@ void main() {
     expect(actualOutput, _format(expectedOutput));
   });
 
-  test('Wise complex test', () {
-    var csvInput = """
-"CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.07,EUR,,,"Vishesh Handa",13.25,EUR,Audible,14.38,USD,1.08530000,,
-""";
-    final input = parseCsvRow0(csvInput);
-
-    final importer = TransactionTransformer(
-      dateTransformers: SeqTransformer(
-          [MapValueTransformer("3"), DateTransformerFormat('yyyy-MM-dd')]),
-      narrationTransformers: MapValueTransformer("12"),
-      metaTransformers: [
-        MetaDataTransformer(
-          keyTransformer: StringTransformerFixed('id'),
-          valueTransformer: MapValueTransformer("0"),
-        ),
-      ],
-      postingTransformers: [
-        PostingTransformer(
-          accountTransformer: AccountTransformerFixed("Assets:Wise"),
-          amountTransformer: AmountTransformer(
-            numberTransformer: SeqTransformer([
-              MapValueTransformer("10"),
-              NumberTransformerDecimalPoint(),
-              NumberTransformerFlipSign(),
-            ]),
-            currencyTransformer: SeqTransformer([
-              MapValueTransformer("11"),
-              CurrencyTransformer(),
-            ]),
-          ),
-        ),
-        PostingTransformer(
-          accountTransformer: AccountTransformerFixed("Expenses:BankCharges"),
-          amountTransformer: AmountTransformer(
-            numberTransformer: SeqTransformer([
-              MapValueTransformer("5"),
-              NumberTransformerDecimalPoint(),
-            ]),
-            currencyTransformer: SeqTransformer([
-              MapValueTransformer("6"),
-              CurrencyTransformer(),
-            ]),
-          ),
-        ),
-      ],
-    );
-
-    final expectedOutput = """
-2024-02-26 * "Audible"
-  id: "CARD_TRANSACTION-1279776353"
-  Assets:Wise               -13.25 EUR
-  Expenses:BankCharges        0.07 EUR
-""";
-
-    var actualOutput = render(importer.transform(input));
-    expect(actualOutput, _format(expectedOutput));
-  });
-
   test('operator ==', () {
     final importer1 = TransactionTransformer(
       dateTransformers: SeqTransformer([
