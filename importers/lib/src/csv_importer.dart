@@ -195,6 +195,28 @@ abstract class Transformer<T, R> extends Equatable {
   String get typeId;
 }
 
+class TransformerException<T> implements Exception {
+  final T input;
+
+  TransformerException(this.input);
+
+  @override
+  String toString() {
+    return 'TransformerException: failed on $input';
+  }
+}
+
+class MapKeyMissingException extends TransformerException<Map<String, String>> {
+  final String key;
+
+  MapKeyMissingException(Map<String, String> input, this.key) : super(input);
+
+  @override
+  String toString() {
+    return 'MapKeyMissingException: key "$key" not found in $input';
+  }
+}
+
 /// Fetches the value for the given key from the map
 class MapValueTransformer extends Transformer<Map<String, String>, String> {
   final String key;
@@ -205,7 +227,7 @@ class MapValueTransformer extends Transformer<Map<String, String>, String> {
   String transform(Map<String, String> input) {
     var val = input[key];
     if (val == null) {
-      throw Exception('Key not found in the input map');
+      throw MapKeyMissingException(input, key);
     }
     return input[key]!;
   }
