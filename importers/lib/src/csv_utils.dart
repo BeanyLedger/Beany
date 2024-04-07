@@ -28,7 +28,8 @@ List<Map<String, String>> _convertCsvListToMap(List<List<String>> rows) {
     final row = rows[i];
     final map = <String, String>{};
     for (var j = 0; j < headers.length; j++) {
-      map[headers[j]] = row[j];
+      var header = headers[j].trim();
+      map[header] = row[j];
     }
 
     result.add(map);

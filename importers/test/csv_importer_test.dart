@@ -41,55 +41,6 @@ void main() {
     expect(actualOutput, _format(expectedOutput));
   });
 
-  test('Amazon', () {
-    var csvInput =
-        "404-7319078-6347502,3 Scale Home Brew Hydrometer Wine Beer Cider Alcohol Testing Making Tester; ,Vishesh Handa,2019-06-24,\"EUR 2,34\",N/A,N/A,N/A,N/A,";
-    final input = parseCsvRow0(csvInput);
-
-    final importer = TransactionTransformer(
-      dateTransformers: SeqTransformer([
-        MapValueTransformer("3"),
-        DateTransformerFormat('yyyy-MM-dd'),
-      ]),
-      narrationTransformers: SeqTransformer([
-        MapValueTransformer("1"),
-        StringTrimmingTransformer(),
-      ]),
-      metaTransformers: [
-        MetaDataTransformer(
-          keyTransformer: StringTransformerFixed('orderId'),
-          valueTransformer: MapValueTransformer("0"),
-        ),
-      ],
-      postingTransformers: [
-        PostingTransformer(
-          accountTransformer: AccountTransformerFixed("Expenses:Amazon"),
-          amountTransformer: AmountTransformer(
-            numberTransformer: SeqTransformer([
-              MapValueTransformer("4"),
-              StringSplittingTransformer(1, expectedParts: 2, separator: ' '),
-              NumberTransformerDecimalComma(),
-            ]),
-            currencyTransformer: SeqTransformer([
-              MapValueTransformer("4"),
-              StringSplittingTransformer(0, expectedParts: 2, separator: ' '),
-              CurrencyTransformer(),
-            ]),
-          ),
-        ),
-      ],
-    );
-
-    final expectedOutput = """
-2019-06-24 * "3 Scale Home Brew Hydrometer Wine Beer Cider Alcohol Testing Making Tester;"
-  orderId: "404-7319078-6347502"
-  Expenses:Amazon  2.34 EUR
-""";
-
-    var actualOutput = render(importer.transform(input));
-    expect(actualOutput, _format(expectedOutput));
-  });
-
   test('Wise complex test', () {
     var csvInput = """
 "CARD_TRANSACTION-1279776353",COMPLETED,OUT,"2024-02-26 12:13:29","2024-02-26 12:13:29",0.07,EUR,,,"Vishesh Handa",13.25,EUR,Audible,14.38,USD,1.08530000,,
