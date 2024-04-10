@@ -512,3 +512,14 @@ class AmountTransformer extends Transformer<Map<String, String>, Amount> {
   @override
   List<Object?> get props => [numberTransformer, currencyTransformer];
 }
+
+class NoOpTransformer<T> extends Transformer<T, T> {
+  @override
+  T transform(T input) => input;
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String get typeId => 'NoOpTransformer';
+}

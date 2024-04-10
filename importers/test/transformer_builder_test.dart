@@ -1,3 +1,4 @@
+import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
@@ -37,6 +38,38 @@ void main() {
         TestData("22D", D("44333.22"), shouldFail: true),
       ],
     ),
+    TransformerBuilderTest<String, Currency>(
+      builder: CurrencyTransformerBuilder(),
+      testData: [
+        TestData("EUR", "EUR"),
+        TestData("EURD", "EUR", shouldFail: true),
+      ],
+    ),
+    TransformerBuilderTest<String, String>(
+      builder: StringMatchingTransformerBuilder(),
+      testData: [
+        TestData("blah", "blah"),
+        TestData("blah ", "blah"),
+        TestData("blahd", "blah", shouldFail: true),
+      ],
+    ),
+    TransformerBuilderTest<Map<String, String>, Amount>(
+      builder: AmountTransformerBuilder(),
+      testData: [
+        TestData({
+          "0": "37.90",
+          "1": "EUR",
+        }, Amount(D("37.91"), "EUR")),
+        TestData({
+          "0": "37.90",
+          "1": "Food",
+        }, Amount(D("37.91"), "EUR")),
+        TestData({
+          "0": "32.90",
+          "1": "Food",
+        }, Amount(D("37.91"), "EUR"), shouldFail: true),
+      ],
+    ),
     TransformerBuilderTest<Map<String, String>, Date>(
       builder: MapIteratorTransformerBuilder(
         builder: DateTransformerBuilder(),
@@ -53,19 +86,21 @@ void main() {
     ),
   ];
 
-  group("Transformer", () {
+  group("TransformerBuilder", () {
     for (var tbTest in tbTestData) {
       group("${tbTest.builder.runtimeType}", () {
         for (var data in tbTest.testData) {
           test("Number Transformer ${data.input} -> ${data.expectedOutput}",
               () {
             var builder = tbTest.builder;
-            var tr = builder.build(data.input, data.expectedOutput);
+            var matchingTrs = builder.build(data.input, data.expectedOutput);
             if (data.shouldFail) {
-              expect(tr, isNull);
+              expect(matchingTrs, isEmpty);
             } else {
-              var out = tr!.transform(data.input);
-              expect(out, data.expectedOutput);
+              for (var tr in matchingTrs) {
+                var out = tr.transform(data.input);
+                expect(out, data.expectedOutput);
+              }
             }
           });
         }

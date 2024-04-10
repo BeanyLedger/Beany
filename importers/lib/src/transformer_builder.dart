@@ -24,10 +24,22 @@
 // -> Parse the existing transaction and see what all values are non-null
 // -> Also do this for the postings
 
+import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/csv_importer.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
+
+abstract class TransformerBuilder<T, R> extends Equatable {
+  /// Returns all the transformers that can transform the input to the output
+  /// If input == output, then it'll give a NoOpTransformer
+  Iterable<Transformer<T, R>> build(T input, R output);
+
+  Type get inputType => T;
+  Type get outputType => R;
+
+  String get typeId;
+}
 
 class DateTransformerBuilder extends TransformerBuilder<String, Date> {
   DateTransformerBuilder();
@@ -39,7 +51,7 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
   List<Object?> get props => [];
 
   @override
-  Transformer<String, Date>? build(String input, Date output) {
+  Iterable<Transformer<String, Date>> build(String input, Date output) {
     var s = input.trim();
 
     // Check for excel format
@@ -47,9 +59,9 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
     if (d != null) {
       var tr = DateTransformerExcel();
       if (tr.transform(s) == output) {
-        return tr;
+        return [tr];
       }
-      return null;
+      return [];
     }
 
     var formats = [
@@ -78,13 +90,13 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
       try {
         var tr = DateTransformerFormat(format);
         if (tr.transform(s) == output) {
-          return tr;
+          return [tr];
         }
       } catch (e) {
         // Ignore
       }
     }
-    return null;
+    return [];
   }
 }
 
@@ -98,9 +110,9 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
   List<Object?> get props => [];
 
   @override
-  Transformer<String, Decimal>? build(String input, Decimal output) {
+  Iterable<Transformer<String, Decimal>> build(String input, Decimal output) {
     var s = input.trim();
-    if (!looksLikeNumber(s)) return null;
+    if (!looksLikeNumber(s)) return [];
 
     var numTransformer = isDecimalComma(s)
         ? NumberTransformerDecimalComma()
@@ -109,15 +121,16 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
 
     // Does not match what we want
     if (num.abs() != output.abs()) {
-      return null;
+      return [];
     }
 
     if (num.signum != output.signum) {
-      return SeqTransformer(
+      var tr = SeqTransformer<String, Decimal>(
         [numTransformer, NumberTransformerFlipSign()],
       );
+      return [tr];
     }
-    return numTransformer;
+    return [numTransformer];
   }
 
   static bool looksLikeNumber(String s) {
@@ -135,27 +148,6 @@ bool isDecimalComma(String s) {
   throw Exception('Cannot figure out if the number is decimal comma or point');
 }
 
-// Do for strings
-// try via trim
-
-// Do for
-
-// buildCsvIndexPosTransformer
-// Takes csvInput and the expected value with the type
-// This gives a csv chain
-
-// buildStringTransformerChain
-// do this for currencies
-
-abstract class TransformerBuilder<T, R> extends Equatable {
-  Transformer<T, R>? build(T input, R output);
-
-  Type get inputType => T;
-  Type get outputType => R;
-
-  String get typeId;
-}
-
 /// Runs the given Transformer for each value in the map
 /// and if it finds a match, it adds a MapValueTransformer
 class MapIteratorTransformerBuilder<T>
@@ -171,34 +163,170 @@ class MapIteratorTransformerBuilder<T>
   List<Object?> get props => [builder];
 
   @override
-  Transformer<Map<String, String>, T>? build(
+  Iterable<Transformer<Map<String, String>, T>> build(
     Map<String, String> input,
     T output,
-  ) {
+  ) sync* {
     for (var entry in input.entries) {
-      var tr = builder.build(entry.value, output);
-      if (tr != null) {
-        return SeqTransformer([
+      var matchingTransformer = builder.build(entry.value, output);
+      if (matchingTransformer.isEmpty) continue;
+
+      for (var tr in matchingTransformer) {
+        yield SeqTransformer<Map<String, String>, T>([
           MapValueTransformer(entry.key),
           if (tr is SeqTransformer) ...(tr as SeqTransformer).transformers,
           if (tr is! SeqTransformer) tr,
         ]);
       }
     }
-    return null;
   }
 }
 
-// For each Transformer
-// there needs to be similar TransformerBuilder
+class StringMatchingTransformerBuilder
+    extends TransformerBuilder<String, String> {
+  StringMatchingTransformerBuilder();
+
+  @override
+  String get typeId => 'StringMatchingTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  Iterable<Transformer<String, String>> build(String input, String output) {
+    if (input == output) {
+      return [NoOpTransformer()];
+    }
+
+    if (input.trim() == output) {
+      return [StringTrimmingTransformer()];
+    }
+
+    // What other heuristics do we use?
+    // Splitting the string?
+
+    return [];
+  }
+}
+
+class CurrencyTransformerBuilder extends TransformerBuilder<String, Currency> {
+  CurrencyTransformerBuilder();
+
+  @override
+  String get typeId => 'CurrencyTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  Iterable<Transformer<String, String>> build(String input, String output) {
+    try {
+      var tr = CurrencyTransformer();
+      if (tr.transform(input) == output) {
+        return [tr];
+      }
+    } catch (ex) {
+      return [];
+    }
+    return [];
+  }
+}
+
+class AmountTransformerBuilder
+    extends TransformerBuilder<Map<String, String>, Amount> {
+  AmountTransformerBuilder();
+
+  @override
+  String get typeId => 'AmountTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  Iterable<Transformer<Map<String, String>, Amount>> build(
+    Map<String, String> input,
+    Amount output,
+  ) sync* {
+    var numberBuilder = MapIteratorTransformerBuilder(
+      builder: NumberTransformerBuilder(),
+    );
+    var currencyBuilder = MapIteratorTransformerBuilder(
+      builder: CurrencyTransformerBuilder(),
+    );
+
+    var numberTransformers = numberBuilder.build(input, output.number);
+    var currencyTransformers = currencyBuilder.build(input, output.currency);
+    if (currencyTransformers.isEmpty) {
+      currencyTransformers = [CurrencyTransformerFixed(output.currency)];
+    }
+
+    for (var numberTr in numberTransformers) {
+      for (var currencyTr in currencyTransformers) {
+        yield AmountTransformer(
+          numberTransformer: numberTr,
+          currencyTransformer: currencyTr,
+        );
+      }
+    }
+
+    // FIXME: Also try to get both the number and currency
+    // from the same string!
+  }
+}
+
+/*
+class PostingTransformerBuilder
+    extends TransformerBuilder<Map<String, String>, PostingSpec> {
+  final TransformerBuilder<String, String> accountBuilder;
+  final TransformerBuilder<String, Decimal> amountBuilder;
+
+  PostingTransformerBuilder({
+    required this.accountBuilder,
+    required this.amountBuilder,
+  });
+
+  @override
+  String get typeId => 'PostingTransformerBuilder';
+
+  @override
+  List<Object?> get props => [accountBuilder, amountBuilder];
+
+  @override
+  Iterable<Transformer<Map<String, String>, Posting>> build(
+    Map<String, String> input,
+    Posting output,
+  ) {
+    var expectedAccount = output.account;
+    // For the account, iterate over the map and try to find a match
+
+    var account = accountBuilder.build(input['account']!, output.account);
+
+    // For the Amount number, iterate over the map and try to find a match
+    // For the Amount currency, same but default to fixed if not found
+    var amount = amountBuilder.build(input['amount']!, output.amount);
+    if (account == null || amount == null) return null;
+
+    return PostingTransformer(
+      accountTransformer: account,
+      amountTransformer: amount,
+    );
+  }
+}
+*/
 
 
+// Then we do MetaDataTransformerBuilder
+// Then we do a TransactionTransformerBuilder
 
-// Instead of returning a list of transformers
-// Create a special ListChainTransformer
-// which takes a list of transformers
-// and runs them one after another!
+// With this, we then need a TransformerSimplifier which removes the NoOpTransformers
+// and combines the SeqTransformers, if possible
 
-// The constructor of this ListChainTransformer can also validate
-// that the types match up for each node in this transformer
+// Maybe the way to reduce the number of solutions is to ask for more data
+// instead of applying heuristics to the data?
+// How do we communicate what extra data is required in order to reduce the number of solutions?
+// This isn't trivial!
 
+// FIXME: Make sure any FixedTransformer is only used for -
+// - Account Names
+// - Currency Names
+// - MetaData keys
