@@ -196,20 +196,22 @@ abstract class Transformer<T, R> extends Equatable {
 }
 
 class TransformerException<T> implements Exception {
+  final Transformer tr;
   final T input;
 
-  TransformerException(this.input);
+  TransformerException(this.tr, this.input);
 
   @override
   String toString() {
-    return 'TransformerException: failed on $input';
+    return 'TransformerException: failed on $input for $tr';
   }
 }
 
 class MapKeyMissingException extends TransformerException<Map<String, String>> {
   final String key;
 
-  MapKeyMissingException(Map<String, String> input, this.key) : super(input);
+  MapKeyMissingException(Map<String, String> input, this.key)
+      : super(MapValueTransformer(key), input);
 
   @override
   String toString() {
@@ -244,6 +246,7 @@ class DateTransformerExcel extends Transformer<String, Date> {
 
   @override
   Date transform(String input) {
+    input = input.trim();
     var days = double.parse(input);
     var dt = Date(1899, 12, 30).add(Duration(days: days.toInt()));
     /*
@@ -333,9 +336,13 @@ class AccountTransformerFixed<T> extends Transformer<T, Account> {
 class NumberTransformerDecimalComma extends Transformer<String, Decimal> {
   @override
   Decimal transform(String input) {
-    input = input.trim();
-    input = input.replaceAll('.', '').replaceAll(',', '.');
-    return Decimal.parse(input);
+    try {
+      input = input.trim();
+      input = input.replaceAll('.', '').replaceAll(',', '.');
+      return Decimal.parse(input);
+    } catch (ex) {
+      throw TransformerException(this, input);
+    }
   }
 
   @override
@@ -508,6 +515,29 @@ class AmountTransformer extends Transformer<Map<String, String>, Amount> {
 
   @override
   String get typeId => 'AmountTransformer';
+
+  @override
+  List<Object?> get props => [numberTransformer, currencyTransformer];
+}
+
+class AmountFromStringTransformer extends Transformer<String, Amount> {
+  final Transformer<String, Decimal> numberTransformer;
+  final Transformer<String, Currency> currencyTransformer;
+
+  AmountFromStringTransformer({
+    required this.numberTransformer,
+    required this.currencyTransformer,
+  });
+
+  @override
+  Amount transform(String input) {
+    var amount = numberTransformer.transform(input);
+    var currency = currencyTransformer.transform(input);
+    return Amount(amount, currency);
+  }
+
+  @override
+  String get typeId => 'AmountFromStringTransformer';
 
   @override
   List<Object?> get props => [numberTransformer, currencyTransformer];

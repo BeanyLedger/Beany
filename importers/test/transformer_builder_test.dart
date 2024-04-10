@@ -57,17 +57,21 @@ void main() {
       builder: AmountTransformerBuilder(),
       testData: [
         TestData({
-          "0": "37.90",
+          "0": "37.91",
           "1": "EUR",
         }, Amount(D("37.91"), "EUR")),
         TestData({
-          "0": "37.90",
+          "0": "37.91",
           "1": "Food",
         }, Amount(D("37.91"), "EUR")),
         TestData({
           "0": "32.90",
           "1": "Food",
         }, Amount(D("37.91"), "EUR"), shouldFail: true),
+        TestData({
+          "0": "37,91 EUR",
+          "1": "Food",
+        }, Amount(D("37.91"), "EUR")),
       ],
     ),
     TransformerBuilderTest<Map<String, String>, Date>(
@@ -86,25 +90,23 @@ void main() {
     ),
   ];
 
-  group("TransformerBuilder", () {
-    for (var tbTest in tbTestData) {
-      group("${tbTest.builder.runtimeType}", () {
-        for (var data in tbTest.testData) {
-          test("Number Transformer ${data.input} -> ${data.expectedOutput}",
-              () {
-            var builder = tbTest.builder;
-            var matchingTrs = builder.build(data.input, data.expectedOutput);
-            if (data.shouldFail) {
-              expect(matchingTrs, isEmpty);
-            } else {
-              for (var tr in matchingTrs) {
-                var out = tr.transform(data.input);
-                expect(out, data.expectedOutput);
-              }
+  for (var tbTest in tbTestData) {
+    group("${tbTest.builder.runtimeType}", () {
+      for (var data in tbTest.testData) {
+        test("Number Transformer ${data.input} -> ${data.expectedOutput}", () {
+          var builder = tbTest.builder;
+          var matchingTrs = builder.build(data.input, data.expectedOutput);
+          if (data.shouldFail) {
+            expect(matchingTrs, isEmpty);
+          } else {
+            expect(matchingTrs, isNotEmpty);
+            for (var tr in matchingTrs) {
+              var out = tr.transform(data.input);
+              expect(out, data.expectedOutput);
             }
-          });
-        }
-      });
-    }
-  });
+          }
+        });
+      }
+    });
+  }
 }

@@ -52,7 +52,7 @@ class DateTransformerBuilder extends TransformerBuilder<String, Date> {
 
   @override
   Iterable<Transformer<String, Date>> build(String input, Date output) {
-    var s = input.trim();
+    var s = input;
 
     // Check for excel format
     var d = double.tryParse(s);
@@ -232,6 +232,75 @@ class CurrencyTransformerBuilder extends TransformerBuilder<String, Currency> {
   }
 }
 
+class AmountFromStringTransformerBuilder
+    extends TransformerBuilder<String, Amount> {
+  AmountFromStringTransformerBuilder();
+
+  @override
+  String get typeId => 'AmountFromStringTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  Iterable<Transformer<String, Amount>> build(
+      String input, Amount output) sync* {
+    // What about the extra spaces?
+    // if there are more parts cause of empty spaces?
+    // the empty spaces could be anywhere?
+
+    var parts = input.split(' ');
+    if (parts.length != 2) return;
+
+    var numberBuilder = NumberTransformerBuilder();
+    var currencyBuilder = CurrencyTransformerBuilder();
+
+    var numberTransformers = numberBuilder.build(parts[0], output.number);
+    if (numberTransformers.isNotEmpty) {
+      var currencyTransformers =
+          currencyBuilder.build(parts[1], output.currency);
+      if (currencyTransformers.isNotEmpty) {
+        for (var numberTr in numberTransformers) {
+          for (var currencyTr in currencyTransformers) {
+            yield AmountFromStringTransformer(
+              numberTransformer: SeqTransformer([
+                StringSplittingTransformer(0, separator: ' ', expectedParts: 2),
+                numberTr,
+              ]),
+              currencyTransformer: SeqTransformer([
+                StringSplittingTransformer(1, separator: ' ', expectedParts: 2),
+                currencyTr,
+              ]),
+            );
+          }
+        }
+      }
+    }
+
+    numberTransformers = numberBuilder.build(parts[1], output.number);
+    if (numberTransformers.isNotEmpty) {
+      var currencyTransformers =
+          currencyBuilder.build(parts[0], output.currency);
+      if (currencyTransformers.isNotEmpty) {
+        for (var numberTr in numberTransformers) {
+          for (var currencyTr in currencyTransformers) {
+            yield AmountFromStringTransformer(
+              numberTransformer: SeqTransformer([
+                StringSplittingTransformer(1, separator: ' ', expectedParts: 2),
+                numberTr,
+              ]),
+              currencyTransformer: SeqTransformer([
+                StringSplittingTransformer(0, separator: ' ', expectedParts: 2),
+                currencyTr,
+              ]),
+            );
+          }
+        }
+      }
+    }
+  }
+}
+
 class AmountTransformerBuilder
     extends TransformerBuilder<Map<String, String>, Amount> {
   AmountTransformerBuilder();
@@ -256,6 +325,7 @@ class AmountTransformerBuilder
 
     var numberTransformers = numberBuilder.build(input, output.number);
     var currencyTransformers = currencyBuilder.build(input, output.currency);
+
     if (currencyTransformers.isEmpty) {
       currencyTransformers = [CurrencyTransformerFixed(output.currency)];
     }
@@ -269,8 +339,14 @@ class AmountTransformerBuilder
       }
     }
 
-    // FIXME: Also try to get both the number and currency
-    // from the same string!
+    var amountFromStringBuilder = MapIteratorTransformerBuilder(
+      builder: AmountFromStringTransformerBuilder(),
+    );
+    var amountFromStringTransformers =
+        amountFromStringBuilder.build(input, output);
+    for (var tr in amountFromStringTransformers) {
+      yield tr;
+    }
   }
 }
 
