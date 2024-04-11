@@ -21,7 +21,10 @@ var _purchase = SingleTransformerTestData(
     metaTransformers: [
       MetaDataTransformer(
         keyTransformer: StringTransformerFixed('id'),
-        valueTransformer: MapValueTransformer("0"),
+        valueTransformer: SeqTransformer([
+          MapValueTransformer("0"),
+          MetaValueTransformer(),
+        ]),
       ),
     ],
     postingTransformers: [

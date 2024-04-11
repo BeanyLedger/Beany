@@ -24,7 +24,10 @@ var _purcahse0 = SingleTransformerTestData(
     metaTransformers: [
       MetaDataTransformer(
         keyTransformer: StringTransformerFixed('orderId'),
-        valueTransformer: MapValueTransformer("0"),
+        valueTransformer: SeqTransformer([
+          MapValueTransformer("0"),
+          MetaValueTransformer(),
+        ]),
       ),
     ],
     postingTransformers: [

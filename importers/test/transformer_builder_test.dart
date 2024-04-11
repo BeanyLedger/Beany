@@ -2,6 +2,7 @@ import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/currency.dart';
+import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
@@ -106,6 +107,33 @@ void main() {
             Account("Expenses:Foo"),
             Amount(D("37.91"), CUR("EUR")),
           ),
+        ),
+      ],
+    ),
+    TransformerBuilderTest<Map<String, String>, (String, MetaValue)>(
+      builder: MetaDataEntryTransformerBuilder(),
+      testData: [
+        TestData(
+          {
+            "0": "Market buy",
+            "1": "2022-03-11 13:39:01",
+            "2": "IE00B3XXRP09",
+            "3": "VUSA",
+            "4": "Vanguard S&P 500 ETF",
+            "5": "10.0000000000",
+            "6": "62.43",
+            "7": "GBP",
+            "8": "0.83977",
+            "9": "744.47",
+            "10": "",
+            "11": "",
+            "12": "",
+            "13": "",
+            "14": "",
+            "15": "EOF1828459892",
+            "16": "1.12",
+          },
+          ("isin", MetaValue(stringValue: "IE00B3XXRP09")),
         ),
       ],
     ),

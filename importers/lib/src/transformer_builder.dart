@@ -26,6 +26,7 @@
 
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/currency.dart';
+import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/csv_importer.dart';
@@ -390,6 +391,68 @@ class PostingTransformerBuilder
     }
 
     // Handle CostSpec?
+  }
+}
+
+class MetaValueTransformerBuilder
+    extends TransformerBuilder<Map<String, String>, MetaValue> {
+  MetaValueTransformerBuilder();
+
+  @override
+  String get typeId => 'MetaValueTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  Iterable<Transformer<Map<String, String>, MetaValue>> build(
+    Map<String, String> input,
+    MetaValue output,
+  ) sync* {
+    if (output.stringValue == null) {
+      throw Exception('MetaValue must have a string value');
+    }
+
+    var valueBuilder = MapIteratorTransformerBuilder(
+      builder: StringMatchingTransformerBuilder(),
+    );
+    var valueTransformers = valueBuilder.build(input, output.stringValue!);
+    for (var valueTr in valueTransformers) {
+      yield SeqTransformer([
+        valueTr,
+        MetaValueTransformer(),
+      ]);
+    }
+
+    return;
+  }
+}
+
+class MetaDataEntryTransformerBuilder
+    extends TransformerBuilder<Map<String, String>, (String, MetaValue)> {
+  MetaDataEntryTransformerBuilder();
+
+  @override
+  String get typeId => 'MetaDataEntryTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  Iterable<Transformer<Map<String, String>, (String, MetaValue)>> build(
+    Map<String, String> input,
+    (String, MetaValue) output,
+  ) sync* {
+    var keyTransformer = StringTransformerFixed<Map<String, String>>(output.$1);
+    var valueTransformerBuilder = MetaValueTransformerBuilder();
+    var valueTransformers = valueTransformerBuilder.build(input, output.$2);
+
+    for (var valueTr in valueTransformers) {
+      yield MetaDataTransformer(
+        keyTransformer: keyTransformer,
+        valueTransformer: valueTr,
+      );
+    }
   }
 }
 

@@ -48,9 +48,9 @@ class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
 
 @immutable
 class MetaDataTransformer
-    extends Transformer<Map<String, String>, Map<String, MetaValue>> {
+    extends Transformer<Map<String, String>, (String, MetaValue)> {
   final Transformer<Map<String, String>, String> keyTransformer;
-  final Transformer<Map<String, String>, String> valueTransformer;
+  final Transformer<Map<String, String>, MetaValue> valueTransformer;
 
   @override
   List<Object?> get props => [keyTransformer, valueTransformer];
@@ -61,16 +61,29 @@ class MetaDataTransformer
   });
 
   @override
-  Map<String, MetaValue> transform(Map<String, String> input) {
+  (String, MetaValue) transform(Map<String, String> input) {
     var values = input;
     var key = keyTransformer.transform(values);
     var value = valueTransformer.transform(values);
 
-    return {key: MetaValue(stringValue: value)};
+    return (key, value);
   }
 
   @override
   String get typeId => "MetaDataTransformer";
+}
+
+class MetaValueTransformer extends Transformer<String, MetaValue> {
+  @override
+  MetaValue transform(String input) {
+    return MetaValue(stringValue: input);
+  }
+
+  @override
+  String get typeId => 'MetaValueTransformer';
+
+  @override
+  List<Object?> get props => [];
 }
 
 @immutable
@@ -118,10 +131,12 @@ class TransactionTransformer
       narration,
       payee: payee,
       comments: comment != null ? [comment] : [],
-      meta: {
-        for (var metaTransformer in metaTransformers)
-          ...metaTransformer.transform(values),
-      },
+      meta: Map.fromEntries(
+        metaTransformers.map((mt) {
+          var tuple = mt.transform(values);
+          return MapEntry(tuple.$1, tuple.$2);
+        }),
+      ),
       postings: ParallelTransformer<Map<String, String>, PostingSpec>(
               postingTransformers)
           .transform(values),
