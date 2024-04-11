@@ -317,6 +317,9 @@ class StringTrimmingTransformer extends Transformer<String, String> {
   List<Object?> get props => [];
 }
 
+/// This is a template class, as it's ignoring the input completely
+/// and we want to be able to pass any kind of input
+/// Normally either a String or Map<String, String>
 class AccountTransformerFixed<T> extends Transformer<T, Account> {
   final String fixedValue;
 

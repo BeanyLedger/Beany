@@ -26,6 +26,7 @@
 
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/currency.dart';
+import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/csv_importer.dart';
 import 'package:decimal/decimal.dart';
@@ -351,45 +352,47 @@ class AmountTransformerBuilder
   }
 }
 
-/*
 class PostingTransformerBuilder
     extends TransformerBuilder<Map<String, String>, PostingSpec> {
-  final TransformerBuilder<String, String> accountBuilder;
-  final TransformerBuilder<String, Decimal> amountBuilder;
-
-  PostingTransformerBuilder({
-    required this.accountBuilder,
-    required this.amountBuilder,
-  });
+  PostingTransformerBuilder();
 
   @override
   String get typeId => 'PostingTransformerBuilder';
 
   @override
-  List<Object?> get props => [accountBuilder, amountBuilder];
+  List<Object?> get props => [];
 
   @override
-  Iterable<Transformer<Map<String, String>, Posting>> build(
+  Iterable<Transformer<Map<String, String>, PostingSpec>> build(
     Map<String, String> input,
-    Posting output,
-  ) {
+    PostingSpec output,
+  ) sync* {
+    // For now, we're just assuming the account to be fixed
     var expectedAccount = output.account;
-    // For the account, iterate over the map and try to find a match
-
-    var account = accountBuilder.build(input['account']!, output.account);
-
-    // For the Amount number, iterate over the map and try to find a match
-    // For the Amount currency, same but default to fixed if not found
-    var amount = amountBuilder.build(input['amount']!, output.amount);
-    if (account == null || amount == null) return null;
-
-    return PostingTransformer(
-      accountTransformer: account,
-      amountTransformer: amount,
+    var accountTransformer = AccountTransformerFixed<Map<String, String>>(
+      expectedAccount.value,
     );
+
+    if (output.amount == null) {
+      yield PostingTransformer(accountTransformer: accountTransformer);
+      return;
+    }
+
+    var amount = output.amount!;
+    var amountBuilder = AmountTransformerBuilder();
+    var amountTransformers = amountBuilder.build(input, amount);
+
+    for (var amountTr in amountTransformers) {
+      yield PostingTransformer(
+        accountTransformer: accountTransformer,
+        amountTransformer: amountTr,
+      );
+    }
+
+    // Handle CostSpec?
   }
 }
-*/
+
 
 
 // Then we do MetaDataTransformerBuilder

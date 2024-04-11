@@ -1,6 +1,8 @@
+import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/currency.dart';
+import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
 import 'package:decimal/decimal.dart';
@@ -87,6 +89,24 @@ void main() {
           "3": "-37.91",
           "4": "4009.32",
         }, Date(2024, 03, 20)),
+      ],
+    ),
+    TransformerBuilderTest<Map<String, String>, PostingSpec>(
+      builder: PostingTransformerBuilder(),
+      testData: [
+        TestData(
+          {
+            "0": "45371.0",
+            "1": "45371.0",
+            "2": "ENDESA ENERGIA S.,Recibo de suministros",
+            "3": "-37.91",
+            "4": "4009.32",
+          },
+          PostingSpec(
+            Account("Expenses:Foo"),
+            Amount(D("37.91"), CUR("EUR")),
+          ),
+        ),
       ],
     ),
   ];
