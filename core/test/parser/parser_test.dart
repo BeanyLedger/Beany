@@ -97,7 +97,7 @@ void main() {
       BalanceStatement(
         Date(2002, 01, 15),
         Account('Assets:Personal:Transferwise'),
-        Amount(D("98.87"), "EUR"),
+        Amount(D("98.87"), CUR("EUR")),
       ),
     );
 
@@ -124,7 +124,7 @@ void main() {
     var c = parse(input).commodityStatement().val();
 
     expect(render(c), input);
-    expect(c, CommodityStatement(Date(2000, 11, 21), 'INR'));
+    expect(c, CommodityStatement(Date(2000, 11, 21), CUR('INR')));
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => render(t)).join();
@@ -204,8 +204,8 @@ void main() {
       price,
       PriceStatement(
         Date(2002, 01, 15),
-        'INR',
-        Amount(D("98.87"), "EUR"),
+        CUR('INR'),
+        Amount(D("98.87"), CUR("EUR")),
       ),
     );
 
@@ -257,9 +257,9 @@ void main() {
   test("Amounts", () {
     Amount a(String str) => parse(str).amount().val();
 
-    expect(a("1.23 EUR"), Amount(D("1.23"), "EUR"));
-    expect(a("-331.223 EUR"), Amount(D("-331.223"), "EUR"));
-    expect(a("155,225.77 INR"), Amount(D("155225.77"), "INR"));
+    expect(a("1.23 EUR"), Amount(D("1.23"), CUR("EUR")));
+    expect(a("-331.223 EUR"), Amount(D("-331.223"), CUR("EUR")));
+    expect(a("155,225.77 INR"), Amount(D("155225.77"), CUR("INR")));
   });
 
   test("Custom Parser", () {

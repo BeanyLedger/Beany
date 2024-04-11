@@ -1,4 +1,6 @@
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/engine/position.dart';
 import 'package:decimal/decimal.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
@@ -126,7 +128,7 @@ class Inventory extends Equatable {
     var positions = inputs.map((input) {
       var number = input.split(' ')[0];
       var currency = input.split(' ')[1];
-      return Position(units: Amount(Decimal.parse(number), currency));
+      return Position(units: Amount(D(number), CUR(currency)));
     });
 
     return Inventory(positions);
@@ -134,7 +136,7 @@ class Inventory extends Equatable {
 
   String toDebugString() {
     var positionStrs = positions
-        .map((p) => "${p.units.number} ${p.units.currency}")
+        .map((p) => "${p.units.number} ${p.units.currency.value}")
         .sortedBy((s) => s.split(' ')[1]);
     return positionStrs.join(", ");
   }

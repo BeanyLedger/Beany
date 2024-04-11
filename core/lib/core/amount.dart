@@ -1,12 +1,10 @@
+import 'package:beany_core/core/currency.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 part 'amount.g.dart';
-
-// I think it woudl be good for this to an actual class!
-typedef Currency = String;
 
 @immutable
 @JsonSerializable(includeIfNull: false)
@@ -56,7 +54,7 @@ class AmountSpec extends Equatable {
 @JsonSerializable(includeIfNull: false)
 class Amount extends Equatable implements AmountSpec, Comparable<Amount> {
   final Decimal number;
-  final String currency;
+  final Currency currency;
 
   Amount(this.number, this.currency);
   Amount.zero(this.currency) : number = Decimal.zero;

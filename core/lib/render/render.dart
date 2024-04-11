@@ -5,6 +5,7 @@ import 'package:beany_core/core/close_statement.dart';
 import 'package:beany_core/core/commodity_statement.dart';
 import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/cost_spec.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/custom_statement.dart';
 import 'package:beany_core/core/document_statement.dart';
 import 'package:beany_core/core/event_statement.dart';
@@ -55,6 +56,10 @@ class DisplayContext {
 String renderNumber(Decimal d) {
   if (d.scale < 2) return d.toStringAsFixed(2);
   return d.toString();
+}
+
+String renderCurrency(Currency c) {
+  return c.value;
 }
 
 const _tab = "  ";
@@ -129,7 +134,7 @@ class BeancountRenderer implements RendererInterface {
     }
     if (amountSpec.currency != null) {
       if (amountSpec.number != null) sink.write(' ');
-      sink.write(amountSpec.currency);
+      sink.write(renderCurrency(amountSpec.currency!));
     }
   }
 
@@ -263,7 +268,7 @@ class BeancountRenderer implements RendererInterface {
   void renderCommodityDirective(StringSink sink, CommodityStatement st) {
     sink.write(st.date.toIso8601String().substring(0, 10));
     sink.write(' commodity ');
-    sink.write(st.commodity);
+    sink.write(renderCurrency(st.commodity));
     sink.writeln();
   }
 
@@ -296,7 +301,7 @@ class BeancountRenderer implements RendererInterface {
   void renderPriceDirective(StringSink sink, PriceStatement st) {
     sink.write(st.date.toIso8601String().substring(0, 10));
     sink.write(' price ');
-    sink.write(st.currency);
+    sink.write(renderCurrency(st.currency));
     sink.write('  ');
     renderAmountSpec(sink, st.amount);
     sink.writeln();

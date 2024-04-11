@@ -184,7 +184,7 @@ Transaction _cashBack(WiseConverterConfig config, WiseTransaction t) {
     postings: [
       Posting(
         Account(config.baseAccount),
-        Amount(D(t.targetAmountAfterFees!), t.targetCurrency!),
+        Amount(D(t.targetAmountAfterFees!), CUR(t.targetCurrency!)),
       ),
     ],
   );
@@ -203,14 +203,14 @@ Transaction _purchase(WiseConverterConfig config, WiseTransaction t) {
     postings: [
       Posting(
         Account(config.baseAccount),
-        Amount(-D(t.sourceAmountAfterFees!), t.sourceCurrency!),
+        Amount(-D(t.sourceAmountAfterFees!), CUR(t.sourceCurrency!)),
       ),
       if (t.sourceFeeAmount != null &&
           t.sourceFeeAmount != "" &&
           t.sourceFeeAmount != "0.00")
         Posting(
           Account(config.bankChargesAccount),
-          Amount(D(t.sourceFeeAmount!), t.sourceFeeCurrency!),
+          Amount(D(t.sourceFeeAmount!), CUR(t.sourceFeeCurrency!)),
         ),
     ],
   );
@@ -228,17 +228,18 @@ TransactionSpec _conversion(WiseConverterConfig config, WiseTransaction t) {
     postings: [
       Posting(
         Account(config.baseAccount),
-        Amount(D(t.sourceAmountAfterFees!).abs() * D("-1"), t.sourceCurrency!),
+        Amount(D(t.sourceAmountAfterFees!).abs() * D("-1"),
+            CUR(t.sourceCurrency!)),
         priceSpec: Price(
           amountPer: Amount(
             D(t.exchangeRate!),
-            t.targetCurrency!,
+            CUR(t.targetCurrency!),
           ),
         ),
       ),
       PostingSpec(
         Account(config.bankChargesAccount),
-        Amount(D(t.sourceFeeAmount!), t.sourceFeeCurrency!),
+        Amount(D(t.sourceFeeAmount!), CUR(t.sourceFeeCurrency!)),
         // priceSpec: PriceSpec(
         // amountTotal: AmountSpec(null, t.targetCurrency!),
         // ),
@@ -247,7 +248,7 @@ TransactionSpec _conversion(WiseConverterConfig config, WiseTransaction t) {
         Account(config.baseAccount),
         Amount(
           D(t.targetAmountAfterFees!),
-          t.targetCurrency!,
+          CUR(t.targetCurrency!),
         ),
       ),
     ],
@@ -266,7 +267,7 @@ Transaction _receivedMoney(WiseConverterConfig config, WiseTransaction t) {
     postings: [
       Posting(
         Account(config.baseAccount),
-        Amount(D(t.targetAmountAfterFees!), t.targetCurrency!),
+        Amount(D(t.targetAmountAfterFees!), CUR(t.targetCurrency!)),
       ),
     ],
   );

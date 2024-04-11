@@ -1,3 +1,4 @@
+import 'package:beany_core/core/core.dart';
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_core/render/render.dart';
 import 'package:beany_importer/src/csv_importer.dart';
@@ -25,7 +26,7 @@ void main() {
               MapValueTransformer("4"),
               NumberTransformerDecimalPoint(),
             ]),
-            currencyTransformer: CurrencyTransformerFixed('EUR'),
+            currencyTransformer: CurrencyTransformerFixed(CUR('EUR')),
           ),
         ),
       ],
@@ -57,7 +58,7 @@ void main() {
               MapValueTransformer("4"),
               NumberTransformerDecimalPoint(),
             ]),
-            currencyTransformer: CurrencyTransformerFixed('EUR'),
+            currencyTransformer: CurrencyTransformerFixed(CUR('EUR')),
           ),
         ),
       ],
@@ -77,7 +78,7 @@ void main() {
               MapValueTransformer("4"),
               NumberTransformerDecimalPoint(),
             ]),
-            currencyTransformer: CurrencyTransformerFixed('EUR'),
+            currencyTransformer: CurrencyTransformerFixed(CUR('EUR')),
           ),
         ),
       ],

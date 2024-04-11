@@ -57,9 +57,9 @@ void main() {
     var p = parse(input).postingSpec().val();
     var actual = PostingSpec(
       Account('Assets:MyBank:Checking'),
-      Amount(D("-400.00"), "USD"),
+      Amount(D("-400.00"), CUR("USD")),
       priceSpec: PriceSpec(
-        amountPer: AmountSpec(D("1.09"), "CAD"),
+        amountPer: AmountSpec(D("1.09"), CUR("CAD")),
       ),
     );
     expect(p, actual);
@@ -71,9 +71,9 @@ void main() {
     var p = parse(input).postingSpec().val();
     var actual = PostingSpec(
       Account('Assets:MyBank:Checking'),
-      Amount(D("-400.00"), "USD"),
+      Amount(D("-400.00"), CUR("USD")),
       priceSpec: PriceSpec(
-        amountTotal: AmountSpec(D("436.01"), "CAD"),
+        amountTotal: AmountSpec(D("436.01"), CUR("CAD")),
       ),
     );
     expect(p, actual);
@@ -85,9 +85,9 @@ void main() {
     var p = parse(input).postingSpec().val();
     var actual = PostingSpec(
       Account('Expenses:B'),
-      Amount(D("89.33"), "USD"),
+      Amount(D("89.33"), CUR("USD")),
       priceSpec: PriceSpec(
-        amountTotal: AmountSpec(null, "EUR"),
+        amountTotal: AmountSpec(null, CUR("EUR")),
       ),
     );
     expect(p, actual);
@@ -179,7 +179,7 @@ void main() {
       Account('Assets:A'),
       AMT("10 SOME"),
       costSpec: CostSpec(amountPer: AMT("2.02 USD")),
-      priceSpec: PriceSpec(amountPer: AmountSpec(D("1.00"), "USD")),
+      priceSpec: PriceSpec(amountPer: AmountSpec(D("1.00"), CUR("USD"))),
     );
     expect(p, expected);
     expect(renderPosting(p).trim(), input);

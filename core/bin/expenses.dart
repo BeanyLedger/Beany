@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/core.dart';
 import 'package:beany_core/engine/ledger.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_core/render/render.dart';
@@ -25,7 +26,7 @@ Future<void> main(List<String> args) async {
   }
 
   var diff = endBalances - startBalances;
-  var totalExpenses = Amount.zero('EUR');
+  var totalExpenses = Amount.zero(CUR('EUR'));
   var accounts = diff.accounts.toList();
   accounts.sort();
   for (var account in accounts) {

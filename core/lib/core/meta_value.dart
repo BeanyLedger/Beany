@@ -1,3 +1,4 @@
+import 'package:beany_core/core/currency.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -16,7 +17,7 @@ class MetaValue extends Equatable {
   final Amount? amountValue;
   final DateTime? dateValue;
   final String? tagValue;
-  final String? currencyValue;
+  final Currency? currencyValue;
   final Account? accountValue;
   final bool? boolValue;
 
@@ -37,7 +38,7 @@ class MetaValue extends Equatable {
     if (amountValue != null) return amountValue.toString();
     if (dateValue != null) return dateValue!.toIso8601String();
     if (tagValue != null) return '#$tagValue';
-    if (currencyValue != null) return currencyValue!;
+    if (currencyValue != null) return currencyValue!.toString();
     if (accountValue != null) return accountValue!.toString();
     if (boolValue != null) return boolValue.toString();
 

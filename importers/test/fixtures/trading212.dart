@@ -1,3 +1,4 @@
+import 'package:beany_core/core/core.dart';
 import 'package:beany_importer/src/csv_importer.dart';
 import 'package:beany_importer/src/decision_tree.dart';
 
@@ -56,7 +57,7 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
             MapValueTransformer("Total (EUR)"),
             NumberTransformerDecimalPoint(),
           ]),
-          currencyTransformer: CurrencyTransformerFixed('EUR'),
+          currencyTransformer: CurrencyTransformerFixed(CUR('EUR')),
         ),
       ),
     ],
@@ -107,7 +108,7 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
         costSpecTransformer: SeqTransformer([
           MapValueTransformer("Total (EUR)"),
           NumberTransformerDecimalPoint(),
-          CostSpecTotalTransformer(currency: 'EUR'),
+          CostSpecTotalTransformer(currency: CUR('EUR')),
         ]),
       ),
     ],
@@ -140,7 +141,7 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
             NumberTransformerDecimalPoint(),
             NumberTransformerFlipSign(),
           ]),
-          currencyTransformer: CurrencyTransformerFixed('EUR'),
+          currencyTransformer: CurrencyTransformerFixed(CUR('EUR')),
         ),
       ),
       PostingTransformer(

@@ -1,5 +1,6 @@
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/cost_spec.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/posting.dart';
 
 import 'package:equatable/equatable.dart';

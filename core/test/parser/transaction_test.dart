@@ -127,7 +127,7 @@ void main() {
         "stringValue": MetaValue(stringValue: "foo"),
         "numberValue": MetaValue(numberValue: D("1.5")),
         "amountValue": MetaValue(
-          amountValue: Amount(D("4.4"), "EUR"),
+          amountValue: Amount(D("4.4"), CUR("EUR")),
         ),
         "datesVal1": MetaValue(dateValue: DT("2022-12-09")),
         // "datesVal2": "2022-12-09T14:05:00",

@@ -5,6 +5,7 @@ import 'package:beany/src/stats/bloc/stats_state.dart';
 import 'package:beany/src/stats/view/accounts_bar.dart';
 import 'package:beany/src/stats/view/beany_date_range_picker.dart';
 import 'package:beany_core/core/account.dart';
+import 'package:beany_core/core/core.dart';
 import 'package:beany_core/engine/account_balance_node.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:flutter/material.dart';
@@ -236,7 +237,7 @@ class BalancePieChartState extends State<BalancePieChart> {
   }
 
   List<PieChartSectionData> showingSections() {
-    var totalEur = widget.balance.totalValue.val("EUR");
+    var totalEur = widget.balance.totalValue.val(CUR("EUR"));
     if (totalEur == null) return const [];
 
     final colors = _getColors(widget.balance.children.length);
@@ -248,7 +249,7 @@ class BalancePieChartState extends State<BalancePieChart> {
       final radius = isTouched ? 220.0 : 200.0;
 
       var bal = widget.balance.children[i];
-      var value = bal.totalValue.val("EUR")!;
+      var value = bal.totalValue.val(CUR("EUR"))!;
 
       var data = PieChartSectionData(
         color: colors[i % colors.length],
@@ -284,7 +285,7 @@ class BalancePieChartState extends State<BalancePieChart> {
       final radius = isTouched ? 220.0 : 200.0;
 
       var bal = widget.balance;
-      var value = bal.totalValue.val("EUR")!;
+      var value = bal.totalValue.val(CUR("EUR"))!;
 
       var data = PieChartSectionData(
         color: colors[0 % colors.length],

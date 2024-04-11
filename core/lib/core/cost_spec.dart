@@ -1,3 +1,4 @@
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';

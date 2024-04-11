@@ -1,5 +1,6 @@
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/core.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
 import 'package:decimal/decimal.dart';
@@ -41,8 +42,8 @@ void main() {
     TransformerBuilderTest<String, Currency>(
       builder: CurrencyTransformerBuilder(),
       testData: [
-        TestData("EUR", "EUR"),
-        TestData("EURD", "EUR", shouldFail: true),
+        TestData("EUR", CUR("EUR")),
+        TestData("EURD", CUR("EUR"), shouldFail: true),
       ],
     ),
     TransformerBuilderTest<String, String>(
@@ -59,19 +60,19 @@ void main() {
         TestData({
           "0": "37.91",
           "1": "EUR",
-        }, Amount(D("37.91"), "EUR")),
+        }, Amount(D("37.91"), CUR("EUR"))),
         TestData({
           "0": "37.91",
           "1": "Food",
-        }, Amount(D("37.91"), "EUR")),
+        }, Amount(D("37.91"), CUR("EUR"))),
         TestData({
           "0": "32.90",
           "1": "Food",
-        }, Amount(D("37.91"), "EUR"), shouldFail: true),
+        }, Amount(D("37.91"), CUR("EUR")), shouldFail: true),
         TestData({
           "0": "37,91 EUR",
           "1": "Food",
-        }, Amount(D("37.91"), "EUR")),
+        }, Amount(D("37.91"), CUR("EUR"))),
       ],
     ),
     TransformerBuilderTest<Map<String, String>, Date>(

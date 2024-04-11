@@ -1,6 +1,7 @@
 import 'package:beany_core/core/account.dart';
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/cost_spec.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/transaction.dart';
@@ -471,7 +472,7 @@ class CurrencyTransformer extends Transformer<String, Currency> {
   Currency transform(String input) {
     input = input.trim();
     if (resembesCurrency(input)) {
-      return input;
+      return Currency(input);
     }
 
     throw Exception('Invalid currency');

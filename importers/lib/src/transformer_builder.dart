@@ -25,6 +25,7 @@
 // -> Also do this for the postings
 
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/csv_importer.dart';
 import 'package:decimal/decimal.dart';
@@ -219,7 +220,7 @@ class CurrencyTransformerBuilder extends TransformerBuilder<String, Currency> {
   List<Object?> get props => [];
 
   @override
-  Iterable<Transformer<String, String>> build(String input, String output) {
+  Iterable<Transformer<String, Currency>> build(String input, Currency output) {
     try {
       var tr = CurrencyTransformer();
       if (tr.transform(input) == output) {

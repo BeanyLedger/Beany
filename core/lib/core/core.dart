@@ -1,4 +1,5 @@
 import 'package:beany_core/core/balance_statement.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
@@ -44,11 +45,12 @@ abstract class Directive extends Statement {
 }
 
 Decimal D(String value) => Decimal.parse(value);
+Currency CUR(String value) => Currency(value);
 Date DT(String value) => Date.from(DateTime.parse(value));
 Amount AMT(String str) {
   var parts = str.split(' ');
   if (parts.length != 2) throw Exception('Invalid amount: $str');
-  return Amount(D(parts[0]), parts[1]);
+  return Amount(D(parts[0]), CUR(parts[1]));
 }
 
 int compareStatements(Statement a, Statement b) {

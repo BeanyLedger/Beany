@@ -1,6 +1,7 @@
 import 'package:antlr4/antlr4.dart';
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/cost_spec.dart';
+import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/custom_statement.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/price_spec.dart';
@@ -166,8 +167,8 @@ extension BalanceParsing on BalanceStatementContext {
 }
 
 extension CurrencyParsing on CurrencyContext {
-  String val() {
-    return CURRENCY()!.text!;
+  Currency val() {
+    return Currency(CURRENCY()!.text!);
   }
 }
 
