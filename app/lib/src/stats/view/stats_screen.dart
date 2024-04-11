@@ -239,19 +239,7 @@ class BalancePieChartState extends State<BalancePieChart> {
     var totalEur = widget.balance.totalValue.val("EUR");
     if (totalEur == null) return const [];
 
-    const colors = [
-      Colors.blue,
-      Colors.green,
-      Colors.yellow,
-      Colors.red,
-      Colors.purple,
-      Colors.orange,
-      Colors.teal,
-      Colors.red,
-      Colors.purple,
-      Colors.orange,
-      Colors.teal,
-    ];
+    final colors = _getColors(widget.balance.children.length);
 
     var dataList = <PieChartSectionData>[];
     for (var i = 0; i < widget.balance.children.length; i++) {
@@ -260,7 +248,6 @@ class BalancePieChartState extends State<BalancePieChart> {
       final radius = isTouched ? 220.0 : 200.0;
 
       var bal = widget.balance.children[i];
-      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
       var value = bal.totalValue.val("EUR")!;
 
       var data = PieChartSectionData(
@@ -273,7 +260,6 @@ class BalancePieChartState extends State<BalancePieChart> {
           fontSize: fontSize,
           fontWeight: FontWeight.bold,
           color: const Color(0xffffffff),
-          shadows: shadows,
         ),
         badgeWidget: Text(
           value.toStringAsFixed(2),
@@ -281,7 +267,6 @@ class BalancePieChartState extends State<BalancePieChart> {
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
             color: Colors.black,
-            shadows: shadows,
           ),
         ),
         // badgeWidget: _Badge(
@@ -299,7 +284,6 @@ class BalancePieChartState extends State<BalancePieChart> {
       final radius = isTouched ? 220.0 : 200.0;
 
       var bal = widget.balance;
-      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
       var value = bal.totalValue.val("EUR")!;
 
       var data = PieChartSectionData(
@@ -312,7 +296,7 @@ class BalancePieChartState extends State<BalancePieChart> {
           fontSize: fontSize,
           fontWeight: FontWeight.bold,
           color: const Color(0xffffffff),
-          shadows: shadows,
+          // shadows: shadows,
         ),
         badgeWidget: Text(
           value.toStringAsFixed(2),
@@ -320,7 +304,7 @@ class BalancePieChartState extends State<BalancePieChart> {
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
             color: Colors.black,
-            shadows: shadows,
+            // shadows: shadows,
           ),
         ),
         // badgeWidget: _Badge(
@@ -334,5 +318,53 @@ class BalancePieChartState extends State<BalancePieChart> {
     }
 
     return dataList;
+  }
+}
+
+List<Color> _getColors(int num) {
+  switch (num) {
+    case 1:
+      return [const Color(0xff003f5c)];
+    case 2:
+      return [const Color(0xff003f5c), const Color(0xffbc5090)];
+    case 3:
+      return [
+        const Color(0xff003f5c),
+        const Color(0xffbc5090),
+        const Color(0xffffa600),
+      ];
+    case 4:
+      return [
+        const Color(0xff1D3140),
+        const Color(0xff125862),
+        const Color(0xff0B8174),
+        const Color(0xff46AA75)
+      ];
+    case 5:
+      return [
+        const Color(0xff1D3140),
+        const Color(0xff125862),
+        const Color(0xff0B8174),
+        const Color(0xff46AA75),
+        const Color(0xff91D069)
+      ];
+    case 6:
+      return [
+        const Color(0xff1D3140),
+        const Color(0xff125862),
+        const Color(0xff0B8174),
+        const Color(0xff46AA75),
+        const Color(0xff91D069),
+        const Color(0xffEDEF5D)
+      ];
+    default:
+      return [
+        const Color(0xff1D3140),
+        const Color(0xff125862),
+        const Color(0xff0B8174),
+        const Color(0xff46AA75),
+        const Color(0xff91D069),
+        const Color(0xffEDEF5D)
+      ];
   }
 }
