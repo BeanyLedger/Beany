@@ -96,7 +96,7 @@ class TransactionTransformer
 
   // This should also ideally just be a single Transformer, no need for multiple
   final List<MetaDataTransformer> metaTransformers;
-  final List<PostingTransformer> postingTransformers;
+  final List<Transformer<Map<String, String>, PostingSpec>> postingTransformers;
 
   @override
   List<Object?> get props => [

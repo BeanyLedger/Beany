@@ -4,6 +4,7 @@ import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
 import 'package:decimal/decimal.dart';
@@ -134,6 +135,32 @@ void main() {
             "16": "1.12",
           },
           ("isin", MetaValue(stringValue: "IE00B3XXRP09")),
+        ),
+      ],
+    ),
+    TransformerBuilderTest<Map<String, String>, TransactionSpec>(
+      builder: TransactionTransformerBuilder(),
+      testData: [
+        TestData(
+          {
+            "0": "45371.0",
+            "1": "45371.0",
+            "2": "ENDESA ENERGIA S.",
+            "3": "Recibo de suministros",
+            "4": "-37.91",
+            "5": "4009.32",
+          },
+          TransactionSpec(
+            Date(2024, 03, 20),
+            TransactionFlag.Okay,
+            "ENDESA ENERGIA S.",
+            postings: [
+              PostingSpec(
+                Account("Expenses:Foo"),
+                Amount(D("37.91"), CUR("EUR")),
+              ),
+            ],
+          ),
         ),
       ],
     ),

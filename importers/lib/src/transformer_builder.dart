@@ -28,6 +28,7 @@ import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/csv_importer.dart';
 import 'package:decimal/decimal.dart';
@@ -456,10 +457,100 @@ class MetaDataEntryTransformerBuilder
   }
 }
 
+/*
+Iterable<List<T>> _cartesianProduct<T>(List<Iterable<T>> lists) {
+  Iterable<List<T>> result = [[]];
+  for (var list in lists) {
+    result = result.expand((product) => list.map((item) => [...product, item]));
+  }
+  return result;
+}
 
+class ArrayTransformerBuilder<T>
+    extends TransformerBuilder<Map<String, String>, List<T>> {
+  final List<TransformerBuilder<Map<String, String>, T>> builders;
 
-// Then we do MetaDataTransformerBuilder
-// Then we do a TransactionTransformerBuilder
+  ArrayTransformerBuilder({required this.builders});
+
+  @override
+  String get typeId => 'ArrayTransformerBuilder';
+
+  @override
+  List<Object?> get props => [builders];
+
+  @override
+  Iterable<Transformer<Map<String, String>, List<T>>> build(
+    Map<String, String> input,
+    List<T> output,
+  ) sync* {
+    if (output.length != builders.length) {
+      throw ArgumentError(
+          'Length of output does not match the length of builders');
+    }
+
+    // So we get a list of transformers for each item
+    // and then we need to do a product of all of them
+    var transformers = <Iterable<Transformer<Map<String, String>, T>>>[];
+
+    for (var i = 0; i < output.length; i++) {
+      var trList = builders[i].build(input, output[i]);
+      transformers.add(trList);
+    }
+
+    var product = _cartesianProduct(transformers);
+    for (var trList in product) {
+      yield trList);
+    }
+  }
+}
+*/
+
+class TransactionTransformerBuilder
+    extends TransformerBuilder<Map<String, String>, TransactionSpec> {
+  TransactionTransformerBuilder();
+
+  @override
+  String get typeId => 'TransactionTransformerBuilder';
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  Iterable<Transformer<Map<String, String>, TransactionSpec>> build(
+    Map<String, String> input,
+    TransactionSpec output,
+  ) sync* {
+    var dateBuilder = MapIteratorTransformerBuilder(
+      builder: DateTransformerBuilder(),
+    );
+    var narrationBuilder = MapIteratorTransformerBuilder(
+      builder: StringMatchingTransformerBuilder(),
+    );
+    // var metaBuilder = MetaDataEntryTransformerBuilder();
+    var postingBuilder = PostingTransformerBuilder();
+
+    var dateTransformers = dateBuilder.build(input, Date.truncate(output.date));
+    var narrationTransformers = narrationBuilder.build(input, output.narration);
+    // var metaTransformers = metaBuilder.build(input, output.meta);
+    var postingTransformers =
+        postingBuilder.build(input, output.postings.first);
+
+    for (var dateTr in dateTransformers) {
+      for (var narrationTr in narrationTransformers) {
+        // for (var metaTr in metaTransformers) {
+        for (var postingTr in postingTransformers) {
+          yield TransactionTransformer(
+            dateTransformers: dateTr,
+            narrationTransformers: narrationTr,
+            postingTransformers: [postingTr],
+          );
+        }
+        // }
+      }
+    }
+  }
+}
+
 
 // With this, we then need a TransformerSimplifier which removes the NoOpTransformers
 // and combines the SeqTransformers, if possible
@@ -468,8 +559,3 @@ class MetaDataEntryTransformerBuilder
 // instead of applying heuristics to the data?
 // How do we communicate what extra data is required in order to reduce the number of solutions?
 // This isn't trivial!
-
-// FIXME: Make sure any FixedTransformer is only used for -
-// - Account Names
-// - Currency Names
-// - MetaData keys
