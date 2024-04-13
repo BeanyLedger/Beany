@@ -6,6 +6,7 @@ import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
+import 'package:beany_core/render/render.dart';
 import 'package:beany_importer/src/csv_utils.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
 import 'package:decimal/decimal.dart';
@@ -202,7 +203,7 @@ void main() {
           expect(matchingTrs, isNotEmpty);
           for (var tr in matchingTrs) {
             var out = tr.transform(input);
-            expect(out, output);
+            expect(render(out), render(output));
           }
         });
       }

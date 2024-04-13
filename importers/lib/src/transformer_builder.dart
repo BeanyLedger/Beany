@@ -598,6 +598,9 @@ class TransactionTransformerBuilder
     var payeeBuilder = MapIteratorTransformerBuilder(
       builder: StringMatchingTransformerBuilder(),
     );
+    var commentBuilder = MapIteratorTransformerBuilder(
+      builder: StringMatchingTransformerBuilder(),
+    );
     var metaBuilder = MetaDataTransformerBuilder();
     var postingsBuilder = MultiTransformerProduct(
       builder: PostingTransformerBuilder(),
@@ -607,6 +610,23 @@ class TransactionTransformerBuilder
     var narrationTransformers = narrationBuilder.build(input, output.narration);
     var payeeTransformers = output.payee != null
         ? payeeBuilder.build(input, output.payee!).toList()
+        : <Transformer<Map<String, String>, String?>>[
+            NullTransformer<Map<String, String>, String?>(),
+          ];
+
+    // FIXME: This is a big hack to support comments
+    //        as the comments are sometimes parsed as the Posting's preComments
+    //        The entire TrasnactionSpec needs to be changed
+    //        to be able to address comments better
+    //        Comments can also come between metadata lines
+    var comments = output.comments;
+    if (comments.isEmpty) {
+      if (output.postings.isNotEmpty) {
+        comments = output.postings[0].preComments;
+      }
+    }
+    var commentsTransformers = comments.isNotEmpty
+        ? commentBuilder.build(input, comments[0]).toList()
         : <Transformer<Map<String, String>, String?>>[
             NullTransformer<Map<String, String>, String?>(),
           ];
@@ -620,16 +640,19 @@ class TransactionTransformerBuilder
 
     for (var dateTr in dateTransformers) {
       for (var narrationTr in narrationTransformers) {
-        for (var payeeTransformers in payeeTransformers) {
-          for (var metaTr in metaTransformers) {
-            for (var postingTrs in postingTransformers) {
-              yield TransactionTransformer(
-                dateTransformers: dateTr,
-                narrationTransformers: narrationTr,
-                payeeTransformers: payeeTransformers,
-                metaTransformers: metaTr,
-                postingTransformers: postingTrs,
-              );
+        for (var payeeTr in payeeTransformers) {
+          for (var commentTr in commentsTransformers) {
+            for (var metaTr in metaTransformers) {
+              for (var postingTrs in postingTransformers) {
+                yield TransactionTransformer(
+                  dateTransformers: dateTr,
+                  narrationTransformers: narrationTr,
+                  payeeTransformers: payeeTr,
+                  metaTransformers: metaTr,
+                  postingTransformers: postingTrs,
+                  commentsTransformers: commentTr,
+                );
+              }
             }
           }
         }

@@ -92,7 +92,7 @@ class TransactionTransformer
   final Transformer<Map<String, String>, Date> dateTransformers;
   final Transformer<Map<String, String>, String> narrationTransformers;
   final Transformer<Map<String, String>, String?>? payeeTransformers;
-  final Transformer<Map<String, String>, String>? commentsTransformers;
+  final Transformer<Map<String, String>, String?>? commentsTransformers;
 
   // This should also ideally just be a single Transformer, no need for multiple
   final List<Transformer<Map<String, String>, (String, MetaValue)>>
@@ -125,7 +125,6 @@ class TransactionTransformer
     var narration = narrationTransformers.transform(values);
     var payee = payeeTransformers?.transform(values);
     var comment = commentsTransformers?.transform(values);
-
     return TransactionSpec(
       date,
       TransactionFlag.Okay,
