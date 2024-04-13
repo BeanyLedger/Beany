@@ -22,7 +22,7 @@ var _purcahse0 = SingleTransformerTestData(
       StringTrimmingTransformer(),
     ]),
     metaTransformers: [
-      MetaDataTransformer(
+      MetaDataEntryTransformer(
         keyTransformer: StringTransformerFixed('orderId'),
         valueTransformer: SeqTransformer([
           MapValueTransformer("0"),

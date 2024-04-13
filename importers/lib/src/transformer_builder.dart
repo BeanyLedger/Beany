@@ -449,7 +449,7 @@ class MetaDataEntryTransformerBuilder
     var valueTransformers = valueTransformerBuilder.build(input, output.$2);
 
     for (var valueTr in valueTransformers) {
-      yield MetaDataTransformer(
+      yield MetaDataEntryTransformer(
         keyTransformer: keyTransformer,
         valueTransformer: valueTr,
       );
@@ -457,53 +457,94 @@ class MetaDataEntryTransformerBuilder
   }
 }
 
-/*
-Iterable<List<T>> _cartesianProduct<T>(List<Iterable<T>> lists) {
-  Iterable<List<T>> result = [[]];
-  for (var list in lists) {
-    result = result.expand((product) => list.map((item) => [...product, item]));
+class MetaDataTransformerBuilder {
+  MetaDataTransformerBuilder();
+
+  Iterable<List<Transformer<Map<String, String>, (String, MetaValue)>>> build(
+    Map<String, String> input,
+    Map<String, MetaValue> output,
+  ) sync* {
+    var transformers =
+        <Iterable<Transformer<Map<String, String>, (String, MetaValue)>>>[];
+
+    var builder = MetaDataEntryTransformerBuilder();
+    for (var entry in output.entries) {
+      var trList = builder.build(input, (entry.key, entry.value));
+      transformers.add(trList);
+    }
+
+    if (transformers.length == 1) {
+      for (var tr0 in transformers[0]) {
+        yield [tr0];
+      }
+      return;
+    }
+    if (transformers.length == 2) {
+      for (var tr0 in transformers[0]) {
+        for (var tr1 in transformers[1]) {
+          yield [tr0, tr1];
+        }
+      }
+      return;
+    }
+    if (transformers.length == 3) {
+      for (var tr0 in transformers[0]) {
+        for (var tr1 in transformers[1]) {
+          for (var tr2 in transformers[2]) {
+            yield [tr0, tr1, tr2];
+          }
+        }
+      }
+      return;
+    }
   }
-  return result;
 }
 
-class ArrayTransformerBuilder<T>
-    extends TransformerBuilder<Map<String, String>, List<T>> {
-  final List<TransformerBuilder<Map<String, String>, T>> builders;
+class MultiTransformerProduct<T> {
+  final TransformerBuilder<Map<String, String>, T> builder;
 
-  ArrayTransformerBuilder({required this.builders});
+  MultiTransformerProduct({required this.builder});
 
-  @override
-  String get typeId => 'ArrayTransformerBuilder';
-
-  @override
-  List<Object?> get props => [builders];
-
-  @override
-  Iterable<Transformer<Map<String, String>, List<T>>> build(
+  Iterable<List<Transformer<Map<String, String>, T>>> build(
     Map<String, String> input,
     List<T> output,
   ) sync* {
-    if (output.length != builders.length) {
-      throw ArgumentError(
-          'Length of output does not match the length of builders');
-    }
-
     // So we get a list of transformers for each item
     // and then we need to do a product of all of them
     var transformers = <Iterable<Transformer<Map<String, String>, T>>>[];
 
-    for (var i = 0; i < output.length; i++) {
-      var trList = builders[i].build(input, output[i]);
+    for (var out in output) {
+      var trList = builder.build(input, out);
       transformers.add(trList);
     }
 
-    var product = _cartesianProduct(transformers);
-    for (var trList in product) {
-      yield trList);
+    // How do I simplify this code and make it more abstract?
+    if (transformers.length == 1) {
+      for (var tr0 in transformers[0]) {
+        yield [tr0];
+      }
+      return;
+    }
+    if (transformers.length == 2) {
+      for (var tr0 in transformers[0]) {
+        for (var tr1 in transformers[1]) {
+          yield [tr0, tr1];
+        }
+      }
+      return;
+    }
+    if (transformers.length == 3) {
+      for (var tr0 in transformers[0]) {
+        for (var tr1 in transformers[1]) {
+          for (var tr2 in transformers[2]) {
+            yield [tr0, tr1, tr2];
+          }
+        }
+      }
+      return;
     }
   }
 }
-*/
 
 class TransactionTransformerBuilder
     extends TransformerBuilder<Map<String, String>, TransactionSpec> {
@@ -526,30 +567,50 @@ class TransactionTransformerBuilder
     var narrationBuilder = MapIteratorTransformerBuilder(
       builder: StringMatchingTransformerBuilder(),
     );
-    // var metaBuilder = MetaDataEntryTransformerBuilder();
-    var postingBuilder = PostingTransformerBuilder();
+    var payeeBuilder = MapIteratorTransformerBuilder(
+      builder: StringMatchingTransformerBuilder(),
+    );
+    var metaBuilder = MetaDataTransformerBuilder();
+    var postingsBuilder = MultiTransformerProduct(
+      builder: PostingTransformerBuilder(),
+    );
 
     var dateTransformers = dateBuilder.build(input, Date.truncate(output.date));
     var narrationTransformers = narrationBuilder.build(input, output.narration);
-    // var metaTransformers = metaBuilder.build(input, output.meta);
+    var payeeTransformers = output.payee != null
+        ? payeeBuilder.build(input, output.payee!).toList()
+        : <Transformer<Map<String, String>, String?>>[
+            NullTransformer<Map<String, String>, String?>(),
+          ];
+    var metaTransformers =
+        metaBuilder.build(input, output.meta.unlockView).toList();
+    if (metaTransformers.isEmpty) {
+      metaTransformers.add([]);
+    }
     var postingTransformers =
-        postingBuilder.build(input, output.postings.first);
+        postingsBuilder.build(input, output.postings.unlockView);
 
     for (var dateTr in dateTransformers) {
       for (var narrationTr in narrationTransformers) {
-        // for (var metaTr in metaTransformers) {
-        for (var postingTr in postingTransformers) {
-          yield TransactionTransformer(
-            dateTransformers: dateTr,
-            narrationTransformers: narrationTr,
-            postingTransformers: [postingTr],
-          );
+        for (var payeeTransformers in payeeTransformers) {
+          for (var metaTr in metaTransformers) {
+            for (var postingTrs in postingTransformers) {
+              yield TransactionTransformer(
+                dateTransformers: dateTr,
+                narrationTransformers: narrationTr,
+                payeeTransformers: payeeTransformers,
+                metaTransformers: metaTr,
+                postingTransformers: postingTrs,
+              );
+            }
+          }
         }
-        // }
       }
     }
   }
 }
+
+
 
 
 // With this, we then need a TransformerSimplifier which removes the NoOpTransformers

@@ -44,7 +44,7 @@ Deposit,2022-03-10 07:39:09,,,,,,,,1000.00,,,1000.00,"Bank Transfer",40459ed3-7f
     narrationTransformers: MapValueTransformer("Action"),
     payeeTransformers: MapValueTransformer("Notes"),
     metaTransformers: [
-      MetaDataTransformer(
+      MetaDataEntryTransformer(
         keyTransformer: StringTransformerFixed('id'),
         valueTransformer: SeqTransformer([
           MapValueTransformer("ID"),
@@ -86,14 +86,14 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
     narrationTransformers: MapValueTransformer("Action"),
     payeeTransformers: MapValueTransformer("Name"),
     metaTransformers: [
-      MetaDataTransformer(
+      MetaDataEntryTransformer(
         keyTransformer: StringTransformerFixed('isin'),
         valueTransformer: SeqTransformer([
           MapValueTransformer("ISIN"),
           MetaValueTransformer(),
         ]),
       ),
-      MetaDataTransformer(
+      MetaDataEntryTransformer(
         keyTransformer: StringTransformerFixed('id'),
         valueTransformer: SeqTransformer([
           MapValueTransformer("ID"),

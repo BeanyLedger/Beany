@@ -6,9 +6,12 @@ import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
+import 'package:beany_importer/src/csv_utils.dart';
 import 'package:beany_importer/src/transformer_builder.dart';
 import 'package:decimal/decimal.dart';
 import 'package:test/test.dart';
+
+import 'fixtures/fixtures.dart';
 
 class TestData<INP, OUT> {
   final INP input;
@@ -169,7 +172,7 @@ void main() {
   for (var tbTest in tbTestData) {
     group("${tbTest.builder.runtimeType}", () {
       for (var data in tbTest.testData) {
-        test("Number Transformer ${data.input} -> ${data.expectedOutput}", () {
+        test("Transformer ${data.input} -> ${data.expectedOutput}", () {
           var builder = tbTest.builder;
           var matchingTrs = builder.build(data.input, data.expectedOutput);
           if (data.shouldFail) {
@@ -180,6 +183,26 @@ void main() {
               var out = tr.transform(data.input);
               expect(out, data.expectedOutput);
             }
+          }
+        });
+      }
+    });
+  }
+
+  for (var fixture in allFixtures) {
+    group(fixture.name, () {
+      for (var trData in fixture.trData.values) {
+        test(trData.name, () {
+          var csvInput = fixture.csvInputForTransformer(trData.name);
+          var input = parseCsvToMap(csvInput)[0];
+          var output = trData.transactionSpec;
+
+          var builder = TransactionTransformerBuilder();
+          var matchingTrs = builder.build(input, output);
+          expect(matchingTrs, isNotEmpty);
+          for (var tr in matchingTrs) {
+            var out = tr.transform(input);
+            expect(out, output);
           }
         });
       }

@@ -19,7 +19,7 @@ var _purchase = SingleTransformerTestData(
         [MapValueTransformer("3"), DateTransformerFormat('yyyy-MM-dd')]),
     narrationTransformers: MapValueTransformer("12"),
     metaTransformers: [
-      MetaDataTransformer(
+      MetaDataEntryTransformer(
         keyTransformer: StringTransformerFixed('id'),
         valueTransformer: SeqTransformer([
           MapValueTransformer("0"),

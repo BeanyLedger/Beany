@@ -1,3 +1,5 @@
+import 'package:beany_core/core/transaction.dart';
+import 'package:beany_core/parser/parser.dart';
 import 'package:beany_importer/src/csv_importer.dart';
 import 'package:beany_importer/src/decision_tree.dart';
 
@@ -13,6 +15,18 @@ class SingleTransformerTestData {
     required this.output,
     required this.transformer,
   });
+
+  TransactionSpec get transactionSpec {
+    var statements = parse(output).all().val().toList();
+    if (statements.length != 1) {
+      throw Exception('Expected 1 statement, got ${statements.length}');
+    }
+    var st = statements[0];
+    if (st is! TransactionSpec) {
+      throw Exception('Expected TransactionSpec, got ${st.runtimeType}');
+    }
+    return st;
+  }
 }
 
 class ImporterTestData {

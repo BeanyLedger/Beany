@@ -47,7 +47,7 @@ class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
 }
 
 @immutable
-class MetaDataTransformer
+class MetaDataEntryTransformer
     extends Transformer<Map<String, String>, (String, MetaValue)> {
   final Transformer<Map<String, String>, String> keyTransformer;
   final Transformer<Map<String, String>, MetaValue> valueTransformer;
@@ -55,7 +55,7 @@ class MetaDataTransformer
   @override
   List<Object?> get props => [keyTransformer, valueTransformer];
 
-  MetaDataTransformer({
+  MetaDataEntryTransformer({
     required this.keyTransformer,
     required this.valueTransformer,
   });
@@ -91,11 +91,12 @@ class TransactionTransformer
     extends Transformer<Map<String, String>, TransactionSpec> {
   final Transformer<Map<String, String>, Date> dateTransformers;
   final Transformer<Map<String, String>, String> narrationTransformers;
-  final Transformer<Map<String, String>, String>? payeeTransformers;
+  final Transformer<Map<String, String>, String?>? payeeTransformers;
   final Transformer<Map<String, String>, String>? commentsTransformers;
 
   // This should also ideally just be a single Transformer, no need for multiple
-  final List<MetaDataTransformer> metaTransformers;
+  final List<Transformer<Map<String, String>, (String, MetaValue)>>
+      metaTransformers;
   final List<Transformer<Map<String, String>, PostingSpec>> postingTransformers;
 
   @override
@@ -571,4 +572,17 @@ class NoOpTransformer<T> extends Transformer<T, T> {
 
   @override
   String get typeId => 'NoOpTransformer';
+}
+
+class NullTransformer<T, R> extends Transformer<T, R?> {
+  @override
+  R? transform(T input) {
+    return null;
+  }
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String get typeId => 'NullTransformer';
 }
