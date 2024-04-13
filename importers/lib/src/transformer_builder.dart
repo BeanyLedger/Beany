@@ -25,6 +25,7 @@
 // -> Also do this for the postings
 
 import 'package:beany_core/core/amount.dart';
+import 'package:beany_core/core/cost_spec.dart';
 import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
@@ -354,6 +355,45 @@ class AmountTransformerBuilder
   }
 }
 
+class CostSpecTransformerBuilder
+    extends TransformerBuilder<Map<String, String>, CostSpec> {
+  @override
+  Iterable<Transformer<Map<String, String>, CostSpec>> build(
+    Map<String, String> input,
+    CostSpec output,
+  ) sync* {
+    var amountPer = output.amountPer;
+    if (amountPer != null) {
+      var builder = AmountTransformerBuilder();
+      var transformers = builder.build(input, amountPer);
+      for (var tr in transformers) {
+        yield SeqTransformer([
+          tr,
+          CostSpecAmountPerTransformer(),
+        ]);
+      }
+    }
+
+    var amountTotal = output.amountTotal;
+    if (amountTotal != null) {
+      var builder = AmountTransformerBuilder();
+      var transformers = builder.build(input, amountTotal);
+      for (var tr in transformers) {
+        yield SeqTransformer([
+          tr,
+          CostSpecAmountTotalTransformer(),
+        ]);
+      }
+    }
+  }
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String get typeId => 'CostSpecTransformerBuilder';
+}
+
 class PostingTransformerBuilder
     extends TransformerBuilder<Map<String, String>, PostingSpec> {
   PostingTransformerBuilder();
@@ -384,14 +424,28 @@ class PostingTransformerBuilder
     var amountBuilder = AmountTransformerBuilder();
     var amountTransformers = amountBuilder.build(input, amount);
 
+    var costSpec = output.costSpec;
+    if (costSpec != null) {
+      var costSpecBuilder = CostSpecTransformerBuilder();
+      var costSpecTransformers = costSpecBuilder.build(input, costSpec);
+      for (var costSpecTr in costSpecTransformers) {
+        for (var amountTr in amountTransformers) {
+          yield PostingTransformer(
+            accountTransformer: accountTransformer,
+            amountTransformer: amountTr,
+            costSpecTransformer: costSpecTr,
+          );
+        }
+      }
+      return;
+    }
+
     for (var amountTr in amountTransformers) {
       yield PostingTransformer(
         accountTransformer: accountTransformer,
         amountTransformer: amountTr,
       );
     }
-
-    // Handle CostSpec?
   }
 }
 

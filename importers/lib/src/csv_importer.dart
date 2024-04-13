@@ -17,7 +17,7 @@ import 'package:meta/meta.dart';
 class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
   final Transformer<Map<String, String>, Account> accountTransformer;
   final Transformer<Map<String, String>, Amount>? amountTransformer;
-  final Transformer<Map<String, String>, CostSpec>? costSpecTransformer;
+  final Transformer<Map<String, String>, CostSpec?>? costSpecTransformer;
 
   @override
   List<Object?> get props => [
@@ -467,6 +467,36 @@ class CostSpecTotalTransformer extends Transformer<Decimal, CostSpec> {
 
   @override
   List<Object?> get props => [currency];
+}
+
+class CostSpecAmountPerTransformer extends Transformer<Amount, CostSpec> {
+  CostSpecAmountPerTransformer();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  CostSpec transform(Amount input) {
+    return CostSpec(amountPer: input);
+  }
+
+  @override
+  String get typeId => 'CostSpecAmountPerTransformer';
+}
+
+class CostSpecAmountTotalTransformer extends Transformer<Amount, CostSpec> {
+  CostSpecAmountTotalTransformer();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  CostSpec transform(Amount input) {
+    return CostSpec(amountTotal: input);
+  }
+
+  @override
+  String get typeId => 'CostSpecAmountTotalTransformer';
 }
 
 class CurrencyTransformerFixed<T> extends Transformer<T, Currency> {
