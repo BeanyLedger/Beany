@@ -1,29 +1,3 @@
-// For the date one
-// -> try every field which looks like a date
-//    -> we can have some kind of date heuristic
-//    -> keep a list of some 10-20 date formats
-//    -> keep trying via each of them until you find one that works
-//
-// For narration and payee look for exact matches
-//     if not found look for matches after trimming the sides
-
-// Same for metadata
-
-// For numbers, it'll be a bit special
-// -> Check if it looks like a number
-// -> check if it matches exactly
-// -> check if the sign needs to be flipped (I would prefer flipping it over using abs or neg)
-// I think we should also have a special currency one, which also accepts ISIN formats
-
-// Every part of this seems to be quite clear
-// Step 1:
-// -> build all the heuristics,
-// -> add a simple transformation chain builder when given a csv input, and output (with type)
-
-// Step 2:
-// -> Parse the existing transaction and see what all values are non-null
-// -> Also do this for the postings
-
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/cost_spec.dart';
 import 'package:beany_core/core/currency.dart';
@@ -669,6 +643,7 @@ class TransactionTransformerBuilder
 
 // With this, we then need a TransformerSimplifier which removes the NoOpTransformers
 // and combines the SeqTransformers, if possible
+// and removes the NullTransformers
 
 // Maybe the way to reduce the number of solutions is to ask for more data
 // instead of applying heuristics to the data?
