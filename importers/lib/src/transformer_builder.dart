@@ -3,9 +3,12 @@ import 'package:beany_core/core/cost_spec.dart';
 import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/price_spec.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:beany_importer/src/csv_importer.dart';
+import 'package:beany_importer/src/transformers_cost.dart';
+import 'package:beany_importer/src/transformers_price.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 
@@ -368,6 +371,55 @@ class CostSpecTransformerBuilder
   String get typeId => 'CostSpecTransformerBuilder';
 }
 
+class PriceSpecTransformerBuilder
+    extends TransformerBuilder<Map<String, String>, PriceSpec> {
+  @override
+  Iterable<Transformer<Map<String, String>, PriceSpec>> build(
+    Map<String, String> input,
+    PriceSpec output,
+  ) sync* {
+    var amountPerSpec = output.amountPer;
+    if (amountPerSpec != null) {
+      if (!amountPerSpec.canResolve) {
+        throw Exception('AmountPer must be resolvable for PriceSpec Builder');
+      }
+      var amount = amountPerSpec.toAmount();
+
+      var builder = AmountTransformerBuilder();
+      var transformers = builder.build(input, amount);
+      for (var tr in transformers) {
+        yield SeqTransformer([
+          tr,
+          PriceSpecPerTransformer(),
+        ]);
+      }
+    }
+
+    var amountTotalSpec = output.amountTotal;
+    if (amountTotalSpec != null) {
+      if (!amountTotalSpec.canResolve) {
+        throw Exception('AmountPer must be resolvable for PriceSpec Builder');
+      }
+      var amount = amountTotalSpec.toAmount();
+
+      var builder = AmountTransformerBuilder();
+      var transformers = builder.build(input, amount);
+      for (var tr in transformers) {
+        yield SeqTransformer([
+          tr,
+          PriceSpecTotalTransformer(),
+        ]);
+      }
+    }
+  }
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String get typeId => 'PriceSpecTransformerBuilder';
+}
+
 class PostingTransformerBuilder
     extends TransformerBuilder<Map<String, String>, PostingSpec> {
   PostingTransformerBuilder();
@@ -398,27 +450,38 @@ class PostingTransformerBuilder
     var amountBuilder = AmountTransformerBuilder();
     var amountTransformers = amountBuilder.build(input, amount);
 
+    var costSpecTransformers = <Transformer<Map<String, String>, CostSpec?>>[];
     var costSpec = output.costSpec;
     if (costSpec != null) {
       var costSpecBuilder = CostSpecTransformerBuilder();
-      var costSpecTransformers = costSpecBuilder.build(input, costSpec);
+      costSpecTransformers = costSpecBuilder.build(input, costSpec).toList();
+    } else {
+      var tr = NullTransformer<Map<String, String>, CostSpec>();
+      costSpecTransformers.add(tr);
+    }
+
+    var priceSpecTransformers =
+        <Transformer<Map<String, String>, PriceSpec?>>[];
+    var priceSpec = output.priceSpec;
+    if (priceSpec != null) {
+      var priceSpecBuilder = PriceSpecTransformerBuilder();
+      priceSpecTransformers = priceSpecBuilder.build(input, priceSpec).toList();
+    } else {
+      var tr = NullTransformer<Map<String, String>, PriceSpec>();
+      priceSpecTransformers.add(tr);
+    }
+
+    for (var amountTr in amountTransformers) {
       for (var costSpecTr in costSpecTransformers) {
-        for (var amountTr in amountTransformers) {
+        for (var priceSpecTr in priceSpecTransformers) {
           yield PostingTransformer(
             accountTransformer: accountTransformer,
             amountTransformer: amountTr,
             costSpecTransformer: costSpecTr,
+            priceSpecTransformer: priceSpecTr,
           );
         }
       }
-      return;
-    }
-
-    for (var amountTr in amountTransformers) {
-      yield PostingTransformer(
-        accountTransformer: accountTransformer,
-        amountTransformer: amountTr,
-      );
     }
   }
 }

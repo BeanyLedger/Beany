@@ -50,14 +50,14 @@ ID,Status,Direction,"Created on","Finished on","Source fee amount","Source fee c
     var actualOutput = statements.map((e) => render(e)).join('\n');
     var expectedOutput = """
 2024-02-04 * "Currency Conversion"
-  id: "BALANCE-1734932751"
+  id: "BALANCE_TRANSACTION-1734932751"
   Assets:Wise                -10831.59 USD @ 0.92775 EUR
-  Expenses:BankCharges           52.82 USD @@ 49.0076225 EUR
+  Expenses:BankCharges           52.82 USD @ 0.92775 EUR
   Assets:Wise                 10000.00 EUR
 
-2024-02-05 * "Converted 10300.00 USD to 9532.28 EUR"
+2024-02-05 * "Currency Conversion"
   id: "BALANCE_TRANSACTION-1735891654"
-  Expenses:Personal:BankCharges:Transferwise      50.24 USD @@ 46.72 EUR
+  Expenses:Personal:BankCharges:Transferwise      50.24 USD @ 0.93 EUR
   Assets:Personal:Transferwise                -10300.00 USD @ 0.93 EUR
   Assets:Personal:Transferwise                  9532.28 EUR
 """;

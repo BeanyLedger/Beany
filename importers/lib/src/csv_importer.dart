@@ -4,6 +4,7 @@ import 'package:beany_core/core/cost_spec.dart';
 import 'package:beany_core/core/currency.dart';
 import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/posting.dart';
+import 'package:beany_core/core/price_spec.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
@@ -18,18 +19,21 @@ class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
   final Transformer<Map<String, String>, Account> accountTransformer;
   final Transformer<Map<String, String>, Amount>? amountTransformer;
   final Transformer<Map<String, String>, CostSpec?>? costSpecTransformer;
+  final Transformer<Map<String, String>, PriceSpec?>? priceSpecTransformer;
 
   @override
   List<Object?> get props => [
         accountTransformer,
         amountTransformer,
         costSpecTransformer,
+        priceSpecTransformer,
       ];
 
   PostingTransformer({
     required this.accountTransformer,
     this.amountTransformer,
     this.costSpecTransformer,
+    this.priceSpecTransformer,
   });
 
   @override
@@ -38,8 +42,10 @@ class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
     var account = accountTransformer.transform(values);
     var amount = amountTransformer?.transform(values);
     var costSpec = costSpecTransformer?.transform(values);
+    var priceSpec = priceSpecTransformer?.transform(values);
 
-    return PostingSpec(account, amount, costSpec: costSpec);
+    return PostingSpec(account, amount,
+        costSpec: costSpec, priceSpec: priceSpec);
   }
 
   @override
@@ -449,53 +455,6 @@ class StringSplittingTransformer extends Transformer<String, String> {
 
   @override
   List<Object?> get props => [part, separator, expectedParts];
-}
-
-class CostSpecTotalTransformer extends Transformer<Decimal, CostSpec> {
-  final Currency currency;
-
-  CostSpecTotalTransformer({required this.currency});
-
-  @override
-  CostSpec transform(Decimal input) {
-    return CostSpec(amountTotal: Amount(input, currency));
-  }
-
-  @override
-  String get typeId => 'CostSpecTotalTransformer';
-
-  @override
-  List<Object?> get props => [currency];
-}
-
-class CostSpecAmountPerTransformer extends Transformer<Amount, CostSpec> {
-  CostSpecAmountPerTransformer();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  CostSpec transform(Amount input) {
-    return CostSpec(amountPer: input);
-  }
-
-  @override
-  String get typeId => 'CostSpecAmountPerTransformer';
-}
-
-class CostSpecAmountTotalTransformer extends Transformer<Amount, CostSpec> {
-  CostSpecAmountTotalTransformer();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  CostSpec transform(Amount input) {
-    return CostSpec(amountTotal: input);
-  }
-
-  @override
-  String get typeId => 'CostSpecAmountTotalTransformer';
 }
 
 class CurrencyTransformerFixed<T> extends Transformer<T, Currency> {
