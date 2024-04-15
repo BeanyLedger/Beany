@@ -8,11 +8,16 @@ import 'package:beany_core/core/price_spec.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/misc/date.dart';
 import 'package:decimal/decimal.dart';
-import 'package:intl/intl.dart';
 
 import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
+
+export 'transformers_date.dart';
+export 'transformers_numbers.dart';
+export 'transformers_cost.dart';
+export 'transformers_price.dart';
+export 'transformers_string.dart';
 
 @immutable
 class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
@@ -263,81 +268,6 @@ class MapValueTransformer extends Transformer<Map<String, String>, String> {
   List<Object?> get props => [key];
 }
 
-class DateTransformerExcel extends Transformer<String, Date> {
-  DateTransformerExcel();
-
-  @override
-  Date transform(String input) {
-    input = input.trim();
-    var days = double.parse(input);
-    var dt = Date(1899, 12, 30).add(Duration(days: days.toInt()));
-    /*
-    if (dt.year < 1900) {
-      throw Exception('Invalid date - Excel Transformer date is too old');
-    }
-    if (dt.year > 2100) {
-      throw Exception(
-          'Invalid date - Excel Transformer date is too much in the futre');
-    }
-    */
-    return Date.truncate(dt);
-  }
-
-  @override
-  String get typeId => 'DateTransformerExcel';
-
-  @override
-  List<Object?> get props => [];
-}
-
-class DateTransformerFormat extends Transformer<String, Date> {
-  final String format;
-
-  DateTransformerFormat(this.format);
-
-  @override
-  Date transform(String input) {
-    var formatter = DateFormat(format);
-    return Date.truncate(formatter.parse(input));
-  }
-
-  @override
-  String get typeId => 'DateTransformerFormat';
-
-  @override
-  List<Object?> get props => [format];
-}
-
-class StringTransformerFixed<T> extends Transformer<T, String> {
-  final String fixedValue;
-
-  StringTransformerFixed(this.fixedValue);
-
-  @override
-  String transform(T input) {
-    return fixedValue;
-  }
-
-  @override
-  String get typeId => 'StringTransformerFixed';
-
-  @override
-  List<Object?> get props => [fixedValue];
-}
-
-class StringTrimmingTransformer extends Transformer<String, String> {
-  @override
-  String transform(String input) {
-    return input.trim();
-  }
-
-  @override
-  String get typeId => 'StringTrimmingTransformer';
-
-  @override
-  List<Object?> get props => [];
-}
-
 /// This is a template class, as it's ignoring the input completely
 /// and we want to be able to pass any kind of input
 /// Normally either a String or Map<String, String>
@@ -356,33 +286,6 @@ class AccountTransformerFixed<T> extends Transformer<T, Account> {
 
   @override
   List<Object?> get props => [fixedValue];
-}
-
-class StringSplittingTransformer extends Transformer<String, String> {
-  final int part;
-  final String separator;
-  final int? expectedParts;
-
-  StringSplittingTransformer(
-    this.part, {
-    this.separator = ' ',
-    this.expectedParts,
-  });
-
-  @override
-  String transform(String input) {
-    var parts = input.split(separator);
-    if (expectedParts != null && parts.length != expectedParts) {
-      throw Exception('Invalid number of parts');
-    }
-    return parts[part];
-  }
-
-  @override
-  String get typeId => 'StringSplittingTransformer';
-
-  @override
-  List<Object?> get props => [part, separator, expectedParts];
 }
 
 class CurrencyTransformerFixed<T> extends Transformer<T, Currency> {

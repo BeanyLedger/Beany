@@ -1,6 +1,5 @@
 import 'package:beany_core/core/core.dart';
 import 'package:beany_importer/src/transformers.dart';
-import 'package:beany_importer/src/transformers_numbers.dart';
 import 'package:test/test.dart';
 
 void main() {
