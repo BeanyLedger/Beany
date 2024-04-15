@@ -116,8 +116,11 @@ Market buy,2022-03-11 13:39:01,IE00B3XXRP09,VUSA,"Vanguard S&P 500 ETF",10.00000
         ),
         costSpecTransformer: SeqTransformer([
           MapValueTransformer("Total (EUR)"),
-          NumberTransformerDecimalPoint(),
-          CostSpecTotalTransformer(currency: CUR('EUR')),
+          AmountFromStringTransformer(
+            numberTransformer: NumberTransformerDecimalPoint(),
+            currencyTransformer: CurrencyTransformerFixed(CUR('EUR')),
+          ),
+          CostSpecAmountTotalTransformer(),
         ]),
       ),
     ],
