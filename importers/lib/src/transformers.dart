@@ -174,6 +174,25 @@ class SeqTransformer<T, R> extends Transformer<T, R> {
       }
       currentType = tr.outputType;
     }
+
+    if (currentType != R) {
+      var currentTypeStr = currentType.toString();
+      var returnTypeStr = R.toString();
+
+      var currentTypeWithoutNull = currentTypeStr.replaceAll('?', '');
+      var returnTypeWithoutNull = returnTypeStr.replaceAll('?', '');
+
+      // It's acceptable if the ReturnType is nullable but the actual type being returned is not
+      // but the reverse is not acceptable
+      if (currentTypeWithoutNull != returnTypeWithoutNull) {
+        throw Exception(
+            'Invalid output type while validating transformers. Expected $R, got $currentType');
+      }
+      if (currentTypeStr.contains('?') && !returnTypeStr.contains('?')) {
+        throw Exception(
+            'Invalid output type while validating transformers. Expected $R, got $currentType');
+      }
+    }
   }
 
   @override
