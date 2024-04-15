@@ -1,5 +1,5 @@
 import 'package:beany_core/core/transaction.dart';
-import 'package:beany_importer/src/csv_importer.dart';
+import 'package:beany_importer/src/transformers.dart';
 import 'package:beany_importer/src/csv_utils.dart';
 import 'package:beany_importer/src/decision_tree.dart';
 

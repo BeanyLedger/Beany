@@ -1,6 +1,6 @@
 import 'package:beany_core/core/amount.dart';
 import 'package:beany_core/core/price_spec.dart';
-import 'package:beany_importer/src/csv_importer.dart';
+import 'package:beany_importer/src/transformers.dart';
 
 class PriceSpecPerTransformer extends Transformer<Amount, PriceSpec> {
   PriceSpecPerTransformer();
