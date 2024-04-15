@@ -13,7 +13,7 @@ import 'package:meta/meta.dart';
 @immutable
 class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
   final Transformer<Map<String, String>, Account> accountTransformer;
-  final Transformer<Map<String, String>, Amount>? amountTransformer;
+  final Transformer<Map<String, String>, Amount?>? amountTransformer;
   final Transformer<Map<String, String>, CostSpec?>? costSpecTransformer;
   final Transformer<Map<String, String>, PriceSpec?>? priceSpecTransformer;
 
@@ -46,6 +46,22 @@ class PostingTransformer extends Transformer<Map<String, String>, PostingSpec> {
 
   @override
   String get typeId => 'PostingTransformer';
+
+  @override
+  PostingTransformer simplify() {
+    return PostingTransformer(
+      accountTransformer: accountTransformer.simplify(),
+      amountTransformer: amountTransformer is NullTransformer
+          ? null
+          : amountTransformer?.simplify(),
+      costSpecTransformer: costSpecTransformer is NullTransformer
+          ? null
+          : costSpecTransformer?.simplify(),
+      priceSpecTransformer: priceSpecTransformer is NullTransformer
+          ? null
+          : priceSpecTransformer?.simplify(),
+    );
+  }
 }
 
 @immutable

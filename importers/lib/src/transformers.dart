@@ -65,6 +65,25 @@ class SeqTransformer<T, R> extends Transformer<T, R> {
 
   @override
   List<Object?> get props => [transformers];
+
+  @override
+  SeqTransformer<T, R> simplify() {
+    var simplifiedTransformers = <Transformer>[];
+    for (var tr in transformers) {
+      if (tr is NoOpTransformer) {
+        continue;
+      }
+
+      tr = tr.simplify();
+      if (tr is SeqTransformer) {
+        simplifiedTransformers.addAll(tr.transformers);
+      } else {
+        simplifiedTransformers.add(tr);
+      }
+    }
+
+    return SeqTransformer(simplifiedTransformers);
+  }
 }
 
 // Calls all the transformers on the input T independently, and gives a list of results
@@ -93,6 +112,8 @@ abstract class Transformer<T, R> extends Equatable {
   Type get outputType => R;
 
   String get typeId;
+
+  Transformer<T, R> simplify() => this;
 }
 
 class TransformerException<T> implements Exception {

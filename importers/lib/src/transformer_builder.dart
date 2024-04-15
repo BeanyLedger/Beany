@@ -725,9 +725,6 @@ class TransactionTransformerBuilder
 
 
 
-// With this, we then need a TransformerSimplifier which removes the NoOpTransformers
-// and combines the SeqTransformers, if possible
-// and removes the NullTransformers
 
 // Maybe the way to reduce the number of solutions is to ask for more data
 // instead of applying heuristics to the data?
