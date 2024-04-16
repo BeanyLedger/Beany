@@ -11,7 +11,6 @@ dependencies:
   yaml: ^3.1.2
   beany_core:
     path: ../core
-  path: ^1.8.3
   fast_immutable_collections: ^9.1.6
   collection: ^1.18.0
   csv: ^6.0.0
