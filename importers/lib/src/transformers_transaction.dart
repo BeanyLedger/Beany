@@ -163,4 +163,26 @@ class TransactionTransformer
 
   @override
   String get typeId => 'TransactionTransformer';
+
+  @override
+  TransactionTransformer simplify() {
+    return TransactionTransformer(
+      dateTransformers: dateTransformers.simplify(),
+      narrationTransformers: narrationTransformers.simplify(),
+      payeeTransformers: payeeTransformers is NullTransformer
+          ? null
+          : payeeTransformers?.simplify(),
+      commentsTransformers: commentsTransformers is NullTransformer
+          ? null
+          : commentsTransformers?.simplify(),
+      metaTransformers: metaTransformers
+          .map((mt) => mt.simplify())
+          .toList()
+          .cast<Transformer<Map<String, String>, (String, MetaValue)>>(),
+      postingTransformers: postingTransformers
+          .map((pt) => pt.simplify())
+          .toList()
+          .cast<Transformer<Map<String, String>, PostingSpec>>(),
+    );
+  }
 }
