@@ -46,6 +46,10 @@ class CsvImporterBuilder {
       var trList =
           builder.build(input, out).toList().cast<TransactionTransformer>();
 
+      if (trList.isEmpty) {
+        throw Exception(
+            "There should be at least one transformer. $input $out");
+      }
       transformerMatrix.add(trList);
     }
 
