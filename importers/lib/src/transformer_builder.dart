@@ -571,6 +571,19 @@ class MetaValueTransformerBuilder
   }
 }
 
+class TransactionMetaDataValueBuildingException implements Exception {
+  final Map<String, String> input;
+  final MetaValue value;
+
+  TransactionMetaDataValueBuildingException(
+      {required this.input, required this.value});
+
+  @override
+  String toString() {
+    return 'TransactionMetaDataValueBuildingException: $input -> $value';
+  }
+}
+
 class MetaDataEntryTransformerBuilder
     extends TransformerBuilder<Map<String, String>, (String, MetaValue)> {
   MetaDataEntryTransformerBuilder();
@@ -589,6 +602,13 @@ class MetaDataEntryTransformerBuilder
     var keyTransformer = StringTransformerFixed<Map<String, String>>(output.$1);
     var valueTransformerBuilder = MetaValueTransformerBuilder();
     var valueTransformers = valueTransformerBuilder.build(input, output.$2);
+
+    if (valueTransformers.isEmpty) {
+      throw TransactionMetaDataValueBuildingException(
+        input: input,
+        value: output.$2,
+      );
+    }
 
     for (var valueTr in valueTransformers) {
       yield MetaDataEntryTransformer(
