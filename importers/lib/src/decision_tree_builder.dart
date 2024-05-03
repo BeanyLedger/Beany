@@ -134,5 +134,5 @@ DecisionNode buildDecisionTree(
     return DecisionLeafNode(transformerNames.first);
   }
 
-  throw Exception("Not implemented");
+  throw Exception("Failed to build a decision tree");
 }
