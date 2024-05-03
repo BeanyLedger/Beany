@@ -55,6 +55,9 @@ class ImporterTestData {
   }
 
   String csvInputForTransformer(String transformerName) {
+    if (trData[transformerName] == null) {
+      throw Exception('Transformer $transformerName not found in fixture');
+    }
     var input = csvHeaders;
     if (!input.endsWith('\n')) {
       input += '\n';
