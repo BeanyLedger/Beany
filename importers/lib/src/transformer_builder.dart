@@ -418,6 +418,44 @@ class PriceSpecTransformerBuilder
   String get typeId => 'PriceSpecTransformerBuilder';
 }
 
+class PostingAmountBuildingException implements Exception {
+  final Map<String, String> input;
+  final Amount amount;
+
+  PostingAmountBuildingException({required this.input, required this.amount});
+
+  @override
+  String toString() {
+    return 'PostingAmountBuildingException: $input -> $amount';
+  }
+}
+
+class PostingCostSpecBuildingException implements Exception {
+  final Map<String, String> input;
+  final CostSpec costSpec;
+
+  PostingCostSpecBuildingException(
+      {required this.input, required this.costSpec});
+
+  @override
+  String toString() {
+    return 'PostingCostSpecBuildingException: $input -> $costSpec';
+  }
+}
+
+class PostingPriceSpecBuildingException implements Exception {
+  final Map<String, String> input;
+  final PriceSpec priceSpec;
+
+  PostingPriceSpecBuildingException(
+      {required this.input, required this.priceSpec});
+
+  @override
+  String toString() {
+    return 'PostingPriceSpecBuildingException: $input -> $priceSpec';
+  }
+}
+
 class PostingTransformerBuilder
     extends TransformerBuilder<Map<String, String>, PostingSpec> {
   PostingTransformerBuilder();
@@ -447,12 +485,21 @@ class PostingTransformerBuilder
     var amount = output.amount!;
     var amountBuilder = AmountTransformerBuilder();
     var amountTransformers = amountBuilder.build(input, amount);
+    if (amountTransformers.isEmpty) {
+      throw PostingAmountBuildingException(input: input, amount: amount);
+    }
 
     var costSpecTransformers = <Transformer<Map<String, String>, CostSpec?>>[];
     var costSpec = output.costSpec;
     if (costSpec != null) {
       var costSpecBuilder = CostSpecTransformerBuilder();
       costSpecTransformers = costSpecBuilder.build(input, costSpec).toList();
+      if (costSpecTransformers.isEmpty) {
+        throw PostingCostSpecBuildingException(
+          input: input,
+          costSpec: costSpec,
+        );
+      }
     } else {
       var tr = NullTransformer<Map<String, String>, CostSpec>();
       costSpecTransformers.add(tr);
@@ -464,6 +511,12 @@ class PostingTransformerBuilder
     if (priceSpec != null) {
       var priceSpecBuilder = PriceSpecTransformerBuilder();
       priceSpecTransformers = priceSpecBuilder.build(input, priceSpec).toList();
+      if (priceSpecTransformers.isEmpty) {
+        throw PostingPriceSpecBuildingException(
+          input: input,
+          priceSpec: priceSpec,
+        );
+      }
     } else {
       var tr = NullTransformer<Map<String, String>, PriceSpec>();
       priceSpecTransformers.add(tr);
@@ -635,6 +688,42 @@ class MultiTransformerProduct<T> {
   }
 }
 
+class TransactionDateBuildingException implements Exception {
+  final Map<String, String> input;
+  final Date date;
+
+  TransactionDateBuildingException({required this.input, required this.date});
+
+  @override
+  String toString() {
+    return 'TransactionDateBuildingException: $input -> $date';
+  }
+}
+
+class NarrationBuildingException implements Exception {
+  final Map<String, String> input;
+  final String narration;
+
+  NarrationBuildingException({required this.input, required this.narration});
+
+  @override
+  String toString() {
+    return 'NarrationBuildingException: $input -> $narration';
+  }
+}
+
+class PayeeBuildingException implements Exception {
+  final Map<String, String> input;
+  final String payee;
+
+  PayeeBuildingException({required this.input, required this.payee});
+
+  @override
+  String toString() {
+    return 'PayeeBuildingException: $input -> $payee';
+  }
+}
+
 class TransactionTransformerBuilder
     extends TransformerBuilder<Map<String, String>, TransactionSpec> {
   TransactionTransformerBuilder();
@@ -668,12 +757,32 @@ class TransactionTransformerBuilder
     );
 
     var dateTransformers = dateBuilder.build(input, Date.truncate(output.date));
+    if (dateTransformers.isEmpty) {
+      throw TransactionDateBuildingException(
+        input: input,
+        date: Date.truncate(output.date),
+      );
+    }
+
     var narrationTransformers = narrationBuilder.build(input, output.narration);
+    if (narrationTransformers.isEmpty) {
+      throw NarrationBuildingException(
+        input: input,
+        narration: output.narration,
+      );
+    }
+
     var payeeTransformers = output.payee != null
         ? payeeBuilder.build(input, output.payee!).toList()
         : <Transformer<Map<String, String>, String?>>[
             NullTransformer<Map<String, String>, String?>(),
           ];
+    if (output.payee != null && payeeTransformers.isEmpty) {
+      throw PayeeBuildingException(
+        input: input,
+        payee: output.payee!,
+      );
+    }
 
     // FIXME: This is a big hack to support comments
     //        as the comments are sometimes parsed as the Posting's preComments
