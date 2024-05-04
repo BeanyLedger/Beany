@@ -10,7 +10,7 @@ import 'fixtures/fixtures.dart';
 void main() {
   for (var fixture in allFixtures) {
     test(fixture.name, () {
-      if (fixture.name == "Trading212" || fixture.name == "Wise") return;
+      if (fixture.name == "Wise") return;
 
       var tree = buildDecisionTree(
         parseCsvToMap(fixture.csvInput).map((e) => e.toIMap()).toIList(),

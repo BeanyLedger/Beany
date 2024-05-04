@@ -74,55 +74,6 @@ import 'package:beany_importer/src/decision_tree.dart';
 import 'package:beany_importer/src/utils/data_frame.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-IList<IMap<String, String>> simplifyFeatures(
-  IList<IMap<String, String>> input,
-) {
-  // Maybe it would be nice to convert this into some kind of data frame
-  // Lets try it without DataFrames and then compare the code
-
-  // 1. Validate the input.
-  var keys = input.first.keys.toISet();
-  for (var row in input) {
-    if (row.keys.toISet() != keys) {
-      throw Exception("All rows should have the same keys");
-    }
-  }
-
-  // 2. Remove the columns where the value is always the same
-  for (var key in keys) {
-    var values = input.map((row) => row[key]).toISet();
-    if (values.length == 1) {
-      input = input.map((map) => map.remove(key)).toIList();
-    }
-  }
-  keys = input.first.keys.toISet();
-
-  // 3. Remove columns where another columns' value is the same
-  for (var i = 0; i < keys.length; i++) {
-    for (var j = i + 1; j < keys.length; j++) {
-      var key1 = keys[i];
-      var key2 = keys[j];
-      var values1 = input.map((row) => row[key1]).toISet();
-      var values2 = input.map((row) => row[key2]).toISet();
-      if (values1 == values2) {
-        input = input.map((map) => map.remove(key2)).toIList();
-      }
-    }
-  }
-  keys = input.first.keys.toISet();
-
-  // 4. Convert all numerical fields to boolean
-  //    This is easy to do when the column is a normal decimal
-  //    what about when it has a currency attached? (Check from the Transformers and split it accordingly, which transformer?)
-  //    - For numerical fields
-  //      Positive, Negtive, Zero, Empty
-
-  // 5. How to Handle currencies?
-  // 6. How to handle dates?
-
-  return input;
-}
-
 double entropy(DataFrame df, String targetColumn) {
   // Count label occurrences
   var labelCounts = df.valueCounts(targetColumn).values.toList();
@@ -203,17 +154,21 @@ DecisionNode buildDecisionTree(
   IList<IMap<String, String>> input,
   List<String> transformerNames,
 ) {
-  // 1. Simplify the features
-  input = simplifyFeatures(input);
-
-  // 2. Build the Decision Tree
-  //    For each key, build a Decision
-  if (transformerNames.isEmpty) {
-    throw Exception("No transformers provided");
+  // Convert the input to a DataFrame
+  var data = <List<String>>[
+    [...input.first.keys, 'Transformer']
+  ];
+  for (var i = 0; i < input.length; i++) {
+    var map = input[i];
+    var row = <String>[];
+    for (var entry in map.entries) {
+      row.add(entry.value);
+    }
+    row.add(transformerNames[i]);
+    data.add(row);
   }
-  if (transformerNames.length == 1) {
-    return DecisionLeafNode(transformerNames.first);
-  }
+  var df = DataFrame.fromArray(data);
 
-  throw Exception("Failed to build a decision tree");
+  var attributes = input.first.keys;
+  return id3(df, attributes.toIList(), 'Transformer');
 }
