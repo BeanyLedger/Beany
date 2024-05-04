@@ -1,3 +1,5 @@
+import 'dart:math';
+
 /*
 
 So the brancher takes the following input:
@@ -69,6 +71,7 @@ Market buy,2022-05-13 08:20:23,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dist)",3.300
 // If the field always has the same value, then it's of no use, and we can remove it
 
 import 'package:beany_importer/src/decision_tree.dart';
+import 'package:beany_importer/src/utils/data_frame.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 IList<IMap<String, String>> simplifyFeatures(
@@ -110,12 +113,90 @@ IList<IMap<String, String>> simplifyFeatures(
 
   // 4. Convert all numerical fields to boolean
   //    This is easy to do when the column is a normal decimal
-  //    what about when it has a currency attached?
+  //    what about when it has a currency attached? (Check from the Transformers and split it accordingly, which transformer?)
+  //    - For numerical fields
+  //      Positive, Negtive, Zero, Empty
 
   // 5. How to Handle currencies?
   // 6. How to handle dates?
 
   return input;
+}
+
+double entropy(DataFrame df, String targetColumn) {
+  // Count label occurrences
+  var labelCounts = df.valueCounts(targetColumn).values.toList();
+  int total = labelCounts.fold(0, (sum, count) => sum + count);
+  double entropy = 0.0;
+
+  for (var count in labelCounts) {
+    double probability = count / total;
+    entropy -= probability * log(probability) / ln2;
+  }
+  return entropy;
+}
+
+double informationGain(DataFrame df, String targetColumn, String attribute) {
+  double totalEntropy = entropy(df, targetColumn);
+  double subsetsEntropy = 0.0;
+  int totalSize = df.nrows;
+
+  // Group by the attribute
+  var grouped = df.groupBy(attribute);
+
+  for (var groupEntry in grouped.entries) {
+    var df = groupEntry.value;
+    double subsetEntropy = entropy(df, targetColumn);
+    subsetsEntropy += (df.nrows / totalSize) * subsetEntropy;
+  }
+
+  return totalEntropy - subsetsEntropy;
+}
+
+DecisionNode id3(
+  DataFrame df,
+  IList<String> attributes,
+  String targetColumn,
+) {
+  // Base cases
+  var labels = df.column(targetColumn).toISet();
+  if (labels.length == 1) {
+    return DecisionLeafNode(labels.first);
+  }
+
+  if (attributes.isEmpty) {
+    throw Exception("No attributes left to split on");
+    // var mostCommonLabel = df.mode([targetColumn]).row(0)[0];
+    // return TreeNode(label: mostCommonLabel);
+  }
+
+  // Choose best attribute
+  String bestAttribute = '';
+  double bestGain = -1;
+  for (var attribute in attributes) {
+    double gain = informationGain(df, targetColumn, attribute);
+    if (gain > bestGain) {
+      bestGain = gain;
+      bestAttribute = attribute;
+    }
+    // FIXME: Maybe there should be a better criteria for 'best'
+    //        Some kind of hueuristic, on each field which can be used to figure out
+    //        when there are multiple options
+    //        - At the end of the day, this is also creating multiple trees
+  }
+
+  // Create normal ID3 node
+  var children = <String, DecisionNode>{};
+  var grouped = df.groupBy(bestAttribute);
+
+  for (var group in grouped.entries) {
+    var value = group.key;
+    // var subset = group.value.removeColumn(bestAttribute);
+    var newAttributes = attributes.remove(bestAttribute);
+    children[value] = id3(group.value, newAttributes, targetColumn);
+  }
+
+  return DecisionEnumNode(fieldName: bestAttribute, branches: children);
 }
 
 DecisionNode buildDecisionTree(
