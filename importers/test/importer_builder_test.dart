@@ -9,7 +9,7 @@ void main() {
   for (var fixture in allFixtures) {
     test(fixture.name, () {
       // FIXME: Stop skipping these tests
-      if (fixture.name == "Trading212" || fixture.name == "Wise") return;
+      if (fixture.name == "Wise") return;
 
       var builder = CsvImporterBuilder(
         csvInput: fixture.csvInput,
