@@ -14,7 +14,7 @@ void main() {
 
       var tree = buildDecisionTree(
         parseCsvToMap(fixture.csvInput).map((e) => e.toIMap()).toIList(),
-        fixture.trData.keys.toList(),
+        fixture.trData.map((e) => e.name).toList(),
       );
 
       expect(tree, fixture.decisionTree);

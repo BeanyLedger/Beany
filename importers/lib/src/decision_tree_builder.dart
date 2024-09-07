@@ -154,6 +154,14 @@ DecisionNode buildDecisionTree(
   IList<IMap<String, String>> input,
   List<String> transformerNames,
 ) {
+  if (input.isEmpty) {
+    throw ArgumentError("No input data");
+  }
+  if (transformerNames.length != input.length) {
+    throw ArgumentError(
+        "Number of transformer names should match the number of input rows");
+  }
+
   // Convert the input to a DataFrame
   var data = <List<String>>[
     [...input.first.keys, 'Transformer']

@@ -192,13 +192,14 @@ void main() {
 
   for (var fixture in allFixtures) {
     group(fixture.name, () {
-      for (var trData in fixture.trData.values) {
+      for (var trData in fixture.trData) {
         test(trData.name, () {
           // FIXME: Avoid skipping this test
           if (fixture.name == "Wise" && trData.name == "Conversion0") {
             return;
           }
-          var csvInput = fixture.csvInputForTransformer(trData.name);
+          final csvInput = '${fixture.csvHeaders}\n${trData.csvInput}';
+
           var input = parseCsvToMap(csvInput)[0];
           var output = trData.transactionSpec;
 

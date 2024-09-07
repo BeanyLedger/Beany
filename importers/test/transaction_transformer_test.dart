@@ -8,9 +8,9 @@ import 'fixtures/fixtures.dart';
 void main() {
   for (var fixture in allFixtures) {
     group(fixture.name, () {
-      for (var trTest in fixture.trData.values) {
+      for (var trTest in fixture.trData) {
         test(trTest.name, () {
-          final csvInput = fixture.csvInputForTransformer(trTest.name);
+          final csvInput = '${fixture.csvHeaders}\n${trTest.csvInput}';
           final input = parseCsvToMap(csvInput).first;
 
           var t = trTest.transformer;

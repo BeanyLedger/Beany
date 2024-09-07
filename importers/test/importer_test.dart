@@ -10,9 +10,7 @@ void main() {
     test(fixture.name, () {
       var importer = CsvImporter(
         decisionTree: fixture.decisionTree,
-        transformers: fixture.trData.map(
-          (key, value) => MapEntry(key, value.transformer),
-        ),
+        transformers: fixture.toTransformerByNameMap(),
       );
 
       var transactions = importer.run(fixture.csvInput);

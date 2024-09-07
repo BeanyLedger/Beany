@@ -54,19 +54,29 @@ class CsvImporterBuilder {
     }
 
     // 3. Name the transformers and all
-    var transformers = _nameTransformers(
-      selectTransformers(transformerMatrix),
-    );
+    var transformersList = selectTransformers(transformerMatrix);
+    var transformersByName = _nameTransformers(transformersList);
+
+    // In order to build the decision tree we need the expected output for each row
+    var outputNames = <String>[];
+    for (var tr in transformersList) {
+      for (var x in transformersByName.entries) {
+        if (x.value == tr) {
+          outputNames.add(x.key);
+          break;
+        }
+      }
+    }
 
     // 4. Create the DecisionTree
     var decisionTree = buildDecisionTree(
       inputRows.map((e) => IMap(e)).toIList(),
-      transformers.keys.toList(),
+      outputNames,
     );
 
     // 5. Return it
     return CsvImporter(
-      transformers: transformers,
+      transformers: transformersByName,
       decisionTree: decisionTree,
     );
   }
@@ -75,13 +85,17 @@ class CsvImporterBuilder {
 Map<String, TransactionTransformer> _nameTransformers(
   List<TransactionTransformer> transformers,
 ) {
-  var names = <String, TransactionTransformer>{};
-  for (var i = 0; i < transformers.length; i++) {
-    var tr = transformers[i];
-    var name = "tr-$i";
-    names[name] = tr;
+  // Remove duplicates
+  var trSet = transformers.toSet();
+
+  var transformersByName = <String, TransactionTransformer>{};
+  var i = 0;
+  for (var tr in trSet) {
+    transformersByName["tr-$i"] = tr;
+    i++;
   }
-  return names;
+
+  return transformersByName;
 }
 
 List<TransactionTransformer> selectTransformers(
@@ -121,9 +135,6 @@ List<TransactionTransformer> selectTransformers(
 
     selected.add(bestTr);
   }
-
-  // Remove duplicates
-  selected = selected.toSet().toList();
 
   return selected;
 }

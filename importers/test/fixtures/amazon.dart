@@ -52,11 +52,7 @@ var _purcahse0 = SingleTransformerTestData(
 
 var amazonTestData = ImporterTestData(
   name: 'Amazon',
-  trData: {
-    _purcahse0.name: _purcahse0,
-  },
-  csvHeaders: """
-0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-""",
+  trData: [_purcahse0],
+  csvHeaders: "0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
   decisionTree: DecisionLeafNode(_purcahse0.name),
 );

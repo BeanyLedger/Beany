@@ -33,7 +33,7 @@ class ImporterTestData {
   final String name;
 
   /// Maps the transformer name to the test data
-  final Map<String, SingleTransformerTestData> trData;
+  final List<SingleTransformerTestData> trData;
   final String csvHeaders;
   final DecisionNode decisionTree;
 
@@ -42,32 +42,21 @@ class ImporterTestData {
     required this.trData,
     required this.csvHeaders,
     required this.decisionTree,
-  });
-
-  String get csvInput {
-    var input = csvHeaders;
-    if (!input.endsWith('\n')) {
-      input += '\n';
-    }
-
-    var lines = trData.values.map((e) => e.csvInput.trim()).join('\n');
-    return input + lines;
+  }) {
+    assert(!csvHeaders.contains('\n'));
   }
 
-  String csvInputForTransformer(String transformerName) {
-    if (trData[transformerName] == null) {
-      throw Exception('Transformer $transformerName not found in fixture');
-    }
-    var input = csvHeaders;
-    if (!input.endsWith('\n')) {
-      input += '\n';
-    }
+  Map<String, TransactionTransformer> toTransformerByNameMap() {
+    // e.name is not unique
+    return {for (var e in trData) e.name: e.transformer};
+  }
 
-    var lines = trData[transformerName]!.csvInput.trim();
-    return input + lines;
+  String get csvInput {
+    var lines = trData.map((e) => e.csvInput.trim()).join('\n');
+    return '$csvHeaders\n$lines';
   }
 
   String get expectedOutput {
-    return trData.values.map((e) => e.output).join('\n');
+    return trData.map((e) => e.output).join('\n');
   }
 }

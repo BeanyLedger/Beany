@@ -181,14 +181,9 @@ Dividend (Ordinary),2022-04-06 07:39:19,IE00B3XXRP09,VUSA,"Vanguard S&P 500 (Dis
 
 var trading212TestData = ImporterTestData(
   name: 'Trading212',
-  trData: {
-    _deposit.name: _deposit,
-    _marketBuy.name: _marketBuy,
-    _dividend.name: _dividend,
-  },
-  csvHeaders: """
-Action,Time,ISIN,Ticker,Name,No. of shares,Price / share,Currency (Price / share),Exchange rate,Total (EUR),Withholding tax,Currency (Withholding tax),Charge amount (EUR),Notes,ID,Currency conversion fee (EUR)
-""",
+  trData: [_deposit, _marketBuy, _dividend],
+  csvHeaders:
+      "Action,Time,ISIN,Ticker,Name,No. of shares,Price / share,Currency (Price / share),Exchange rate,Total (EUR),Withholding tax,Currency (Withholding tax),Charge amount (EUR),Notes,ID,Currency conversion fee (EUR)",
   decisionTree: DecisionEnumNode(fieldName: 'Action', branches: {
     'Deposit': DecisionLeafNode(_deposit.name),
     'Dividend (Ordinary)': DecisionLeafNode(_dividend.name),
