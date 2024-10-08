@@ -25,7 +25,7 @@ directive: (
 			| documentStatement
 			| noteStatement
 			| customStatement
-		) NEWLINE
+		) EOL
 	)
 	| trStatement; // trStatement has a newline requirement inside it
 
@@ -37,7 +37,7 @@ account: ACCOUNT;
 includeStatement: 'include' string;
 optionStatement: 'option' key = string value = string;
 pluginStatement: 'plugin' name = string (value = string)?;
-commentStatement: comment NEWLINE;
+commentStatement: comment EOL;
 
 balanceStatement: date 'balance' account amount;
 closeStatement: date 'close' account;
@@ -50,15 +50,15 @@ documentStatement: date 'document' account string;
 noteStatement: date 'note' account string;
 customStatement: date 'custom' string+;
 
-emptyLine: NEWLINE;
+emptyLine: EOL;
 
-trStatement: trHeader NEWLINE metadata postingSpecWithComments+;
+trStatement: trHeader EOL metadata postingSpecWithComments+;
 trHeader: date trFlag narration = string payee = string? tags?;
 
 trFlag: TR_FLAG;
 comment: COMMENT;
 
-postingSpecWithComments: (comment NEWLINE)* postingSpec NEWLINE;
+postingSpecWithComments: (comment EOL)* postingSpec EOL;
 postingSpec:
 	postingSpecAccountOnly
 	| postingSpecAccountAmount
@@ -89,7 +89,7 @@ date: DATE;
 string: STRING;
 tags: TAG+;
 
-metadata: (metadataKey metadataValue NEWLINE)*;
+metadata: (metadataKey metadataValue EOL)*;
 metadataKey: METAKEY_WITH_COLON;
 metadataValue: string | TAG | number | amount | account | date;
 
@@ -98,6 +98,9 @@ number: MINUS? INTEGER (COMMA INTEGER)* (DECIMAL INTEGER)?;
 /*
  * Lexer Rules
  */
+
+EOL: ('\r' '\n' | '\n' | '\r') ' '*;
+
 fragment DIGIT: [0-9];
 fragment YEAR: DIGIT DIGIT DIGIT DIGIT;
 fragment MONTH: DIGIT DIGIT;
@@ -121,7 +124,6 @@ fragment WORD: [\p{Alnum}\-_]+;
 ACCOUNT: WORD (':' WORD)+;
 
 WHITESPACE: (' ' | '\t')+ -> skip;
-NEWLINE: ('\r'? '\n') | '\r';
 
 TR_FLAG: 'txn' | '!' | '*';
 STRING: '"' (~[\\"] | '\\' .)* '"';
