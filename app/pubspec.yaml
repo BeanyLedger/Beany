@@ -15,7 +15,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_date_range_picker: ^0.0.14
+  flutter_date_range_picker: ^0.1.1
   beany_backend:
     path: ../backend
   beany_core:
