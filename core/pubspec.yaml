@@ -5,7 +5,7 @@ version: 0.0.1
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0"
+  sdk: ">=3.5.3"
 
 dependencies:
   antlr4: ^4.12.0
@@ -13,9 +13,9 @@ dependencies:
   fast_immutable_collections: ^9.0.0
   equatable: ^2.0.5
   quiver: ^3.2.1
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   test: ^1.19.5
   build_runner: any
-  json_serializable: ^6.7.1
+  json_serializable: ^6.8.0
