@@ -234,8 +234,8 @@ void main() {
     expect(actual, input);
   });
 
-  test('Quoted String', () {
-    String p(String str) => parse(str).quoted_string().val();
+  test('String', () {
+    String p(String str) => parse(str).string().val();
 
     expect(p('"Hello"'), "Hello");
     expect(p('"Hello/World"'), "Hello/World");

@@ -34,11 +34,9 @@ currency: CURRENCY;
 amount: number currency;
 account: ACCOUNT;
 
-includeStatement: 'include' quoted_string;
-optionStatement:
-	'option' key = quoted_string value = quoted_string;
-pluginStatement:
-	'plugin' name = quoted_string (value = quoted_string)?;
+includeStatement: 'include' string;
+optionStatement: 'option' key = string value = string;
+pluginStatement: 'plugin' name = string (value = string)?;
 commentStatement: comment NEWLINE;
 
 balanceStatement: date 'balance' account amount;
@@ -46,19 +44,16 @@ closeStatement: date 'close' account;
 openStatement: date 'open' account;
 commodityStatement: date 'commodity' currency;
 priceStatement: date 'price' currency amount;
-queryStatement:
-	date 'query' name = quoted_string value = quoted_string;
-eventStatement:
-	date 'event' name = quoted_string value = quoted_string;
-documentStatement: date 'document' account quoted_string;
-noteStatement: date 'note' account quoted_string;
-customStatement: date 'custom' quoted_string+;
+queryStatement: date 'query' name = string value = string;
+eventStatement: date 'event' name = string value = string;
+documentStatement: date 'document' account string;
+noteStatement: date 'note' account string;
+customStatement: date 'custom' string+;
 
 emptyLine: NEWLINE;
 
 trStatement: trHeader NEWLINE metadata postingSpecWithComments+;
-trHeader:
-	date trFlag narration = quoted_string payee = quoted_string? tags?;
+trHeader: date trFlag narration = string payee = string? tags?;
 
 trFlag: TR_FLAG;
 comment: COMMENT;
@@ -88,21 +83,15 @@ costSpecPer: '{' costSpecExpr '}';
 costSpecTotal: '{{' costSpecExpr '}}';
 
 costSpecExpr: costSpecExprPart (',' costSpecExprPart)*;
-costSpecExprPart: amount | date | quoted_string;
+costSpecExprPart: amount | date | string;
 
 date: DATE;
-quoted_string: Q_STR;
+string: STRING;
 tags: TAG+;
 
 metadata: (metadataKey metadataValue NEWLINE)*;
 metadataKey: METAKEY_WITH_COLON;
-metadataValue:
-	quoted_string
-	| TAG
-	| number
-	| amount
-	| account
-	| date;
+metadataValue: string | TAG | number | amount | account | date;
 
 number: MINUS? INTEGER (COMMA INTEGER)* (DECIMAL INTEGER)?;
 
@@ -135,4 +124,4 @@ WHITESPACE: (' ' | '\t')+ -> skip;
 NEWLINE: ('\r'? '\n') | '\r';
 
 TR_FLAG: 'txn' | '!' | '*';
-Q_STR: '"' (~[\\"] | '\\' .)* '"';
+STRING: '"' (~[\\"] | '\\' .)* '"';

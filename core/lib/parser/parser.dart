@@ -97,7 +97,7 @@ extension AmountParsing on AmountContext {
   }
 }
 
-extension QuotedStringParsing on Quoted_stringContext {
+extension StringParsing on StringContext {
   String val() => text.substring(1, text.length - 1);
 }
 
@@ -143,7 +143,7 @@ extension NoteParsing on NoteStatementContext {
   NoteStatement val() => NoteStatement(
         date()!.val(),
         account()!.val(),
-        quoted_string()!.val(),
+        string()!.val(),
         parsingInfo: _buildParsingInfo(this),
       );
 }
@@ -184,7 +184,7 @@ extension DocumentParsing on DocumentStatementContext {
   DocumentStatement val() => DocumentStatement(
         date()!.val(),
         account()!.val(),
-        quoted_string()!.val(),
+        string()!.val(),
         parsingInfo: _buildParsingInfo(this),
       );
 }
@@ -348,12 +348,12 @@ extension CostSpecExprParsing on CostSpecExprContext {
         continue;
       }
 
-      if (part.quoted_string() != null) {
+      if (part.string() != null) {
         if (label != null) {
           throw ParsingException(
               "Multiple labels in cost spec", _buildParsingInfo(this));
         }
-        label = part.quoted_string()!.val();
+        label = part.string()!.val();
         continue;
       }
     }
@@ -388,8 +388,8 @@ extension MetadataValueParsing on MetadataValueContext {
     if (amount() != null) {
       return MetaValue(amountValue: amount()!.val());
     }
-    if (quoted_string() != null) {
-      return MetaValue(stringValue: quoted_string()!.val());
+    if (string() != null) {
+      return MetaValue(stringValue: string()!.val());
     }
     if (TAG() != null) {
       return MetaValue(tagValue: TAG()!.text!.substring(1));
@@ -478,7 +478,7 @@ extension TransactionParsing on TrStatementContext {
 extension CustomStatementParsing on CustomStatementContext {
   CustomStatement val() => CustomStatement(
         date()!.val(),
-        quoted_strings().map((e) => e.val()).toList(),
+        strings().map((e) => e.val()).toList(),
         parsingInfo: _buildParsingInfo(this),
       );
 }
@@ -528,7 +528,7 @@ extension PluginStatementParsing on PluginStatementContext {
 
 extension IncludeStatementParsing on IncludeStatementContext {
   IncludeStatement val() => IncludeStatement(
-        quoted_string()!.val(),
+        string()!.val(),
         parsingInfo: _buildParsingInfo(this),
       );
 }
