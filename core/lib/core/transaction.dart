@@ -6,8 +6,6 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-import 'package:collection/collection.dart';
-
 import 'posting.dart';
 import 'core.dart';
 import 'meta_value.dart';
@@ -257,7 +255,7 @@ IList<Posting> resolvedPostings(TransactionSpec trSpec) {
     }
 
     return p.amount?.currency;
-  }).whereNotNull();
+  }).nonNulls;
 
   if (currencies.toSet().length != 1) {
     throw PostingResolutinFailure(

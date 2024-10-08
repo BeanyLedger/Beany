@@ -20,7 +20,6 @@ import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/render/prettier.dart';
 import 'package:decimal/decimal.dart';
 import 'package:quiver/iterables.dart';
-import 'package:collection/collection.dart';
 
 abstract class RendererInterface {
   void renderAmountSpec(StringSink sink, AmountSpec amountSpec);
@@ -376,7 +375,7 @@ String _amountPadLeft(TransactionSpec? tr, AmountSpec amount) {
   var num = amount.number;
   if (num == null) return "";
 
-  var numbers = tr.postings.map((e) => e.amount?.number).whereNotNull();
+  var numbers = tr.postings.map((e) => e.amount?.number).nonNulls;
   var numberLengths = numbers.map((n) => renderNumber(n).length);
   var maxNumberLength = max<int>(numberLengths) ?? 0;
 
