@@ -34,21 +34,26 @@ currency: CURRENCY;
 amount: number currency;
 account: ACCOUNT;
 
-includeStatement: 'include' string;
-optionStatement: 'option' key = string value = string;
-pluginStatement: 'plugin' name = string (value = string)?;
+includeStatement: INCLUDE string;
+optionStatement: OPTION key = string value = string;
+pluginStatement: PLUGIN name = string (value = string)?;
 commentStatement: comment EOL;
 
-balanceStatement: date 'balance' account amount;
-closeStatement: date 'close' account;
-openStatement: date 'open' account;
-commodityStatement: date 'commodity' currency;
-priceStatement: date 'price' currency amount;
-queryStatement: date 'query' name = string value = string;
-eventStatement: date 'event' name = string value = string;
-documentStatement: date 'document' account string;
-noteStatement: date 'note' account string;
-customStatement: date 'custom' string+;
+// pushTagStatement: PUSHTAG TAG c = COMMENT? EOL;
+
+// popTagStatement: POPTAG TAG c = COMMENT? EOL;
+
+balanceStatement: date BALANCE account amount;
+closeStatement: date CLOSE account;
+openStatement: date OPEN account;
+commodityStatement: date COMMODITY currency;
+priceStatement: date PRICE currency amount;
+queryStatement: date QUERY name = string value = string;
+eventStatement: date EVENT name = string value = string;
+documentStatement: date DOCUMENT account string;
+noteStatement: date NOTE account string;
+customStatement: date CUSTOM string+;
+// padStatement: date PAD sourceAccount = account targetAccount = account;
 
 emptyLine: EOL;
 
@@ -74,15 +79,15 @@ postingSpecWithCostAndPrice:
 	account amount costSpec priceSpec tags? comment?;
 
 priceSpec: priceSpecPer | priceSpecTotal;
-priceSpecPer: '@' amountSpec;
-priceSpecTotal: '@@' amountSpec;
+priceSpecPer: AT amountSpec;
+priceSpecTotal: ATAT amountSpec;
 amountSpec: number? currency?;
 
 costSpec: costSpecPer | costSpecTotal;
-costSpecPer: '{' costSpecExpr '}';
-costSpecTotal: '{{' costSpecExpr '}}';
+costSpecPer: LCURL costSpecExpr RCURL;
+costSpecTotal: LCURLLCURL costSpecExpr RCURLRCURL;
 
-costSpecExpr: costSpecExprPart (',' costSpecExprPart)*;
+costSpecExpr: costSpecExprPart (COMMA costSpecExprPart)*;
 costSpecExprPart: amount | date | string;
 
 date: DATE;
@@ -93,11 +98,42 @@ metadata: (metadataKey metadataValue EOL)*;
 metadataKey: METAKEY_WITH_COLON;
 metadataValue: string | TAG | number | amount | account | date;
 
-number: MINUS? INTEGER (COMMA INTEGER)* (DECIMAL INTEGER)?;
+number: MINUS? INTEGER (COMMA INTEGER)* (DOT INTEGER)?;
 
 /*
  * Lexer Rules
  */
+
+INCLUDE: 'include';
+// PUSHTAG: 'pushtag'; POPTAG: 'poptag'; PUSHMETA: 'pushmeta'; POPMETA: 'popmeta';
+OPTION: 'option';
+// OPTIONS: 'options';
+PLUGIN: 'plugin';
+// TXN: 'txn';
+BALANCE: 'balance';
+OPEN: 'open';
+CLOSE: 'close';
+COMMODITY: 'commodity';
+// PAD: 'pad';
+EVENT: 'event';
+PRICE: 'price';
+NOTE: 'note';
+DOCUMENT: 'document';
+QUERY: 'query';
+CUSTOM: 'custom';
+// PIPE: '|';
+ATAT: '@@';
+AT: '@';
+LCURLLCURL: '{{';
+RCURLRCURL: '}}';
+LCURL: '{';
+RCURL: '}';
+COMMA: ',';
+// TILDE: '~'; HASH: '#'; ASTERISK: '*'; SLASH: '/'; COLON: ':'; PLUS: '+';
+MINUS: '-';
+// LPAREN: '('; RPAREN: ')'; SEMICOLON: ';';
+DOT: '.';
+// FLAG: '!' | '&' | '#' | '?' | '%';
 
 EOL: ('\r' '\n' | '\n' | '\r') ' '*;
 
@@ -108,9 +144,6 @@ fragment DAY: DIGIT DIGIT;
 DATE: YEAR [-] MONTH [-] DAY;
 
 INTEGER: DIGIT+;
-DECIMAL: '.';
-COMMA: ',';
-MINUS: '-';
 
 fragment METAKEY: [a-z][A-Za-z0-9\\-_]*;
 METAKEY_WITH_COLON: METAKEY ':';
