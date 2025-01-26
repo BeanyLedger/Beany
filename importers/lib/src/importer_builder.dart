@@ -78,6 +78,7 @@ class CsvImporterBuilder {
     return CsvImporter(
       transformers: transformersByName,
       decisionTree: decisionTree,
+      csvTrainingDataHeaders: inputRows.first.keys.toList(),
     );
   }
 }
