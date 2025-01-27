@@ -244,7 +244,16 @@ class BeancountRenderer implements RendererInterface {
     renderAccount(sink, balance.account);
     sink.write('  ');
     renderAmountSpec(sink, balance.amount);
+    if (balance.comment != null) {
+      sink.write(' ; ');
+      sink.write(balance.comment);
+    }
     sink.writeln();
+
+    for (var m in balance.meta.entries) {
+      sink.write(_tab);
+      sink.writeln('${m.key}: ${m.value}');
+    }
   }
 
   @override

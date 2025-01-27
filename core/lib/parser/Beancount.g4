@@ -43,7 +43,8 @@ commentStatement: comment EOL;
 
 // popTagStatement: POPTAG TAG c = COMMENT? EOL;
 
-balanceStatement: date BALANCE account amount;
+balanceStatement:
+	date BALANCE account amount comment? EOL metadata;
 closeStatement: date CLOSE account;
 openStatement: date OPEN account;
 commodityStatement: date COMMODITY currency;

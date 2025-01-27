@@ -162,7 +162,9 @@ extension BalanceParsing on BalanceStatementContext {
         date()!.val(),
         account()!.val(),
         amount()!.val(),
+        meta: metadata()?.val(),
         parsingInfo: _buildParsingInfo(this),
+        comment: comment()?.val(),
       );
 }
 

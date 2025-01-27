@@ -7,6 +7,7 @@ import 'package:beany_core/core/core.dart';
 import 'package:beany_core/core/custom_statement.dart';
 import 'package:beany_core/core/document_statement.dart';
 import 'package:beany_core/core/event_statement.dart';
+import 'package:beany_core/core/meta_value.dart';
 import 'package:beany_core/core/note_statement.dart';
 import 'package:beany_core/core/open_statement.dart';
 import 'package:beany_core/core/price_statement.dart';
@@ -88,22 +89,24 @@ void main() {
   });
 
   test('Balance Parser', () {
-    var input = "2002-01-15 balance Assets:Personal:Transferwise  98.87 EUR";
+    var input =
+        "2002-01-15 balance Assets:Personal:Transferwise  98.87 EUR ; ploop\n  key: \"food\"\n";
     var balance = parse(input).balanceStatement().val();
 
-    expect(render(balance).trim(), input);
+    expect(render(balance).trim(), input.trim());
     expect(
       balance,
       BalanceStatement(
         Date(2002, 01, 15),
         Account('Assets:Personal:Transferwise'),
         Amount(D("98.87"), CUR("EUR")),
+        meta: {"key": MetaValue(stringValue: "food")},
       ),
     );
 
     var statements = parse(input).all().val();
     var actual = statements.map((t) => render(t)).join();
-    expect(actual.trim(), input);
+    expect(actual.trim(), input.trim());
   });
 
   test('Close Parser', () {

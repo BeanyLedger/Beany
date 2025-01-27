@@ -20,6 +20,7 @@ class BalanceStatement extends Equatable implements Directive {
   final Amount amount;
 
   final ParsingInfo? parsingInfo;
+  final String? comment;
 
   BalanceStatement(
     this.date,
@@ -27,6 +28,7 @@ class BalanceStatement extends Equatable implements Directive {
     this.amount, {
     Map<String, MetaValue>? meta,
     this.parsingInfo,
+    this.comment,
   }) : meta = IMap(meta);
 
   @override
