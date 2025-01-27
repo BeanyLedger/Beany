@@ -1,3 +1,4 @@
+import 'package:beany_core/core/statements.dart';
 import 'package:beany_core/core/transaction.dart';
 import 'package:beany_core/parser/parser.dart';
 import 'package:beany_importer/src/csv_utils.dart';
@@ -22,7 +23,10 @@ class CsvImporterBuilder {
     var outputStatements = parse(output).all().val().toList();
     var outputTransactions =
         outputStatements.whereType<TransactionSpec>().toList();
-    if (outputStatements.length != outputTransactions.length) {
+
+    var outputStatementsWithoutComments =
+        outputStatements.where((e) => e is! CommentStatement).toList();
+    if (outputStatementsWithoutComments.length != outputTransactions.length) {
       throw Exception("All output statements should be transactions");
     }
     if (outputTransactions.isEmpty) {
