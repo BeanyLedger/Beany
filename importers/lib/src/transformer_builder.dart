@@ -306,9 +306,11 @@ class AmountTransformerBuilder
     var numberTransformers = numberBuilder.build(input, output.number);
     var currencyTransformers = currencyBuilder.build(input, output.currency);
 
-    if (currencyTransformers.isEmpty) {
-      currencyTransformers = [CurrencyTransformerFixed(output.currency)];
-    }
+    // Always add the fixed option, just in case
+    currencyTransformers = [
+      ...currencyTransformers,
+      CurrencyTransformerFixed(output.currency)
+    ];
 
     for (var numberTr in numberTransformers) {
       for (var currencyTr in currencyTransformers) {
