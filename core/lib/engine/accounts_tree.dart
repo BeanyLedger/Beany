@@ -184,6 +184,5 @@ class AccountNode<T> implements _Node<T> {
     return "AccountNode($accountPart, $children, $val)";
   }
 
-  AccountNode<T>? get parent =>
-      _parent is AccountNode<T> ? _parent as AccountNode<T> : null;
+  AccountNode<T>? get parent => _parent is AccountNode<T> ? _parent : null;
 }
