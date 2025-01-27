@@ -12,13 +12,14 @@ class CsvImporter {
   CsvImporter({
     required this.decisionTree,
     required this.transformers,
-    required this.csvTrainingDataHeaders,
-  });
+    required List<String> trainingDataHeaders,
+  }) : csvTrainingDataHeaders =
+            trainingDataHeaders.map((e) => e.trim()).toList();
 
   List<TransactionSpec> run(String csvInput) {
     final rows = parseCsvToMap(csvInput);
-    if (rows.length < 2) {
-      throw Exception("There should be atleast be a header and a row");
+    if (rows.isEmpty) {
+      throw Exception("There should be atleast be a row");
     }
     final inputHeaders = rows.first.keys.toList();
 

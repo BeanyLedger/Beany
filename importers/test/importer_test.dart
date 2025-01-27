@@ -11,7 +11,7 @@ void main() {
       var importer = CsvImporter(
         decisionTree: fixture.decisionTree,
         transformers: fixture.toTransformerByNameMap(),
-        csvTrainingDataHeaders: fixture.csvHeaders.split(','),
+        trainingDataHeaders: fixture.csvHeaders.split(','),
       );
 
       var transactions = importer.run(fixture.csvInput);
