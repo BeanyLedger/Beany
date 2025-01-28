@@ -18,27 +18,8 @@ class CsvImporterBuilder {
   });
 
   CsvImporter build() {
-    // Get the csv input + transaction match
-    var inputRows = parseCsvToMap(csvInput);
-    var outputStatements = parse(output).all().val().toList();
-    var outputTransactions =
-        outputStatements.whereType<TransactionSpec>().toList();
-
-    var outputStatementsWithoutComments =
-        outputStatements.where((e) => e is! CommentStatement).toList();
-    if (outputStatementsWithoutComments.length != outputTransactions.length) {
-      throw Exception("All output statements should be transactions");
-    }
-    if (outputTransactions.isEmpty) {
-      throw Exception("There should be at least one transaction");
-    }
-    if (inputRows.isEmpty) {
-      throw Exception("There should be at least one row in the input");
-    }
-    if (inputRows.length != outputTransactions.length) {
-      throw Exception(
-          "The number of input rows should match the number of transactions");
-    }
+    var (inputRows, outputTransactions) =
+        parseCsvInputAndOutput(csvInput, output);
 
     // Build a Transformer for each of them
     var transformerMatrix = <List<TransactionTransformer>>[];
@@ -183,4 +164,32 @@ int _computeScore(
   }
 
   return score;
+}
+
+(List<Map<String, String>>, List<TransactionSpec>) parseCsvInputAndOutput(
+  String csvInput,
+  String output,
+) {
+  var inputRows = parseCsvToMap(csvInput);
+  var outputStatements = parse(output).all().val().toList();
+  var outputTransactions =
+      outputStatements.whereType<TransactionSpec>().toList();
+
+  var outputStatementsWithoutComments =
+      outputStatements.where((e) => e is! CommentStatement).toList();
+  if (outputStatementsWithoutComments.length != outputTransactions.length) {
+    throw Exception("All output statements should be transactions");
+  }
+  if (outputTransactions.isEmpty) {
+    throw Exception("There should be at least one transaction");
+  }
+  if (inputRows.isEmpty) {
+    throw Exception("There should be at least one row in the input");
+  }
+  if (inputRows.length != outputTransactions.length) {
+    throw Exception(
+        "The number of input rows should match the number of transactions");
+  }
+
+  return (inputRows, outputTransactions);
 }
