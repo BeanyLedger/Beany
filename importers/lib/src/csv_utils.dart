@@ -1,5 +1,30 @@
 import 'package:csv/csv.dart';
 
+class CsvInvalidStructureException implements Exception {
+  final String csvInput;
+  final int rowNumber;
+  final int expectedColumnCount;
+  final int actualColumnCount;
+  final String reason;
+
+  CsvInvalidStructureException({
+    required this.csvInput,
+    required this.rowNumber,
+    required this.expectedColumnCount,
+    required this.actualColumnCount,
+    required this.reason,
+  });
+
+  @override
+  String toString() {
+    return 'CsvInvalidStructureException: $reason\n'
+        'Row number: $rowNumber\n'
+        'Expected column count: $expectedColumnCount\n'
+        'Actual column count: $actualColumnCount\n'
+        'CSV input: $csvInput';
+  }
+}
+
 List<List<String>> parseCsvToList(String csvInput) {
   // FIXME: This fails on empty lines or lines with just spaces
   final rows = const CsvToListConverter()
@@ -12,6 +37,24 @@ List<List<String>> parseCsvToList(String csvInput) {
       .map((e) => e.map((e) => e.toString()).toList())
       .where((list) => list.isNotEmpty)
       .toList();
+
+  if (rows.isEmpty) {
+    return [];
+  }
+
+  // Ensure all the rows have the same number of columns
+  final columnCount = rows.first.length;
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].length != columnCount) {
+      throw CsvInvalidStructureException(
+        csvInput: csvInput,
+        rowNumber: i,
+        expectedColumnCount: columnCount,
+        actualColumnCount: rows[i].length,
+        reason: 'All rows should have the same number of columns',
+      );
+    }
+  }
 
   return rows;
 }
