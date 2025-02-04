@@ -90,27 +90,39 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
   List<Object?> get props => [];
 
   @override
-  Iterable<Transformer<String, Decimal>> build(String input, Decimal output) {
+  Iterable<Transformer<String, Decimal>> build(
+      String input, Decimal output) sync* {
     var s = input.trim();
-    if (!looksLikeNumber(s)) return [];
-
-    var numTransformer = isDecimalComma(s)
-        ? NumberTransformerDecimalComma()
-        : NumberTransformerDecimalPoint();
-    var num = numTransformer.transform(s);
-
-    // Does not match what we want
-    if (num.abs() != output.abs()) {
-      return [];
+    if (!looksLikeNumber(s)) {
+      return;
     }
 
-    if (num.signum != output.signum) {
-      var tr = SeqTransformer<String, Decimal>(
-        [numTransformer, NumberTransformerFlipSign()],
-      );
-      return [tr];
+    var numTransformers = switch (isDecimalComma(s)) {
+      true => [NumberTransformerDecimalComma()],
+      false => [NumberTransformerDecimalPoint()],
+      null => [
+          NumberTransformerDecimalComma(),
+          NumberTransformerDecimalPoint(),
+        ],
+    };
+    for (var numTransformer in numTransformers) {
+      var num = numTransformer.transform(s);
+
+      // Does not match what we want
+      if (num.abs() != output.abs()) {
+        continue;
+      }
+
+      if (num.signum != output.signum) {
+        var tr = SeqTransformer<String, Decimal>(
+          [numTransformer, NumberTransformerFlipSign()],
+        );
+        yield tr;
+        continue;
+      }
+
+      yield numTransformer;
     }
-    return [numTransformer];
   }
 
   static bool looksLikeNumber(String s) {
@@ -119,13 +131,13 @@ class NumberTransformerBuilder extends TransformerBuilder<String, Decimal> {
   }
 }
 
-bool isDecimalComma(String s) {
+bool? isDecimalComma(String s) {
   for (var i = s.length - 1; i >= 0; i--) {
     if (s[i] == ',') return true;
     if (s[i] == '.') return false;
   }
 
-  throw Exception('Cannot figure out if the number is decimal comma or point');
+  return null;
 }
 
 /// Runs the given Transformer for each value in the map

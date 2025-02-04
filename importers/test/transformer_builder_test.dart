@@ -44,6 +44,7 @@ void main() {
       testData: [
         TestData("37.91", D("37.91")),
         TestData("44.333,22", D("44333.22")),
+        TestData("20", D("20")),
         TestData("22D", D("44333.22"), shouldFail: true),
       ],
     ),
